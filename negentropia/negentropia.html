@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+<title>Negentropia</title>
+
+<script type="text/javascript" src="lib/gl-matrix-1.3.7.min.js"></script>
+<script type="text/javascript" src="lib/webgl-utils.js"></script>
+<script type="text/javascript" src="lib/webgl-debug.js"></script>
+<script type="text/javascript" src="lib/Stats.js"></script>
+<script type="text/javascript" src="lib/game-shim.js"></script>
+<script type="text/javascript" src="lib/dat.gui.min.js"></script>
+
+<script type="text/javascript" src="neg-model.js"></script>
+<script type="text/javascript" src="Picker.js"></script>
+<script type="text/javascript" src="cube.js"></script>
+<script type="text/javascript" src="texture.js"></script>
+<script type="text/javascript" src="mesh.js"></script>
+<script type="text/javascript" src="sphere.js"></script>
+<script type="text/javascript" src="camera.js"></script>
+<script type="text/javascript" src="globe.js"></script> <!-- debug -->
+
+<script id="shader-vs" type="x-shader/x-vertex">
+  attribute vec3 aVertexPosition;
+  attribute vec4 aVertexColor;    // flat color
+  attribute vec2 aTextureCoord;   // plus texture
+
+  uniform mat4 uMVMatrix;
+  uniform mat4 uPMatrix;
+
+  varying vec4 vPosition;
+  varying vec4 vColor;
+  varying vec2 vTextureCoord;
+
+  void main(void) {
+    //gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    vPosition = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    gl_Position = vPosition;
+	// We will combine color and texture in the fragment shader
+	// It may actually be faster to just assign both of these anyway
+    vTextureCoord = aTextureCoord;
+    vColor = aVertexColor;
+  }
+</script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float; // required
+
+	uniform float uTextureWeight; // 0.0=flat vertex color (vColor) ... 1.0=full texture (vTextureCoord)
+	uniform float uSkyboxWeight;
+	uniform sampler2D uSampler;
+	uniform samplerCube uCubeSampler;
+	uniform vec4 uPickingColor;
+	uniform bool uOffscreen; // rendering offscreen for pointer picking
+
+    varying vec4 vPosition;
+    varying vec4 vColor;
+	varying vec2 vTextureCoord;
+
+    void main(void) {
+	
+		if (uOffscreen) {
+			// rendering offscreen for pointer picking
+			gl_FragColor = uPickingColor;
+			return; // return does not work for main() ???
+		}
+		else {
+			vec4 texColor = texture2D(uSampler, vTextureCoord) * uTextureWeight; // weighted texture
+			vec4 vertColor = vColor * (1.0 - uTextureWeight);  // weighted color
+			vec4 cubeColor = textureCube(uCubeSampler, vPosition.xyz / vPosition.w);
+			gl_FragColor = uSkyboxWeight * cubeColor + (1.0 - uSkyboxWeight) * (texColor + vertColor);
+			//gl_FragColor = texColor + vertColor; // combine texture + color
+			//gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // white opaque
+			//gl_FragColor = vColor; // flat color
+		}
+    }
+</script>
+
+<script type="text/javascript">
+
+	// Global variables
+	var neg_canvas;
+	
+	// negentropia global context
+	var neg = {
+		pMatrix: mat4.create(),				// projection matrix
+		lastTime: 0,						// animate elpased time calculation
+		ongoingImageLoads: [],
+		
+		sphereList: [],
+		modelList: [],
+		meshList: [],
+		textureTable: {},
+		
+		// set checkboxes' default here
+		showOffscreen: false,
+		renderMaxRate: false,
+	    debugLostContext: true,
+	    debugWebGL: true,
+		backface_culling: true,
+		
+		drawOnce: false,
+		
+		cameraHomeCoord: [0.0, 0.0, 13.0]
+	};
+	
+	function initGL(canvas) {
+		/*
+		try {
+            		gl = canvas.getContext("experimental-webgl");
+            		gl.viewportWidth = canvas.width;
+            		gl.viewportHeight = canvas.height;
+        	} catch (e) {
+        	}
+        	if (!gl) {
+            		alert("Could not initialise WebGL!");
+        	}
+		*/
+
+		// another way to do the same
+		neg.gl = WebGLUtils.setupWebGL(canvas);
+		
+		if (neg.debugWebGL) {
+			// DEBUG-only wrapper context -- performance PENALTY!
+			neg.gl = WebGLDebugUtils.makeDebugContext(neg.gl);
+		}
+		
+		neg.picker = new Picker(neg.gl, canvas.width, canvas.height);
+    }
+
+    function loadShaderFromDOM(gl, id) {
+        var shaderScript = document.getElementById(id);
+        if (!shaderScript) {
+            return null;
+        }
+
+        var str = "";
+        var k = shaderScript.firstChild;
+        while (k) {
+            if (k.nodeType == 3) { // 3 corresponds to TEXT_NODE
+                str += k.textContent;
+            }
+            k = k.nextSibling;
+        }
+
+        var shader;
+        if (shaderScript.type == "x-shader/x-fragment") {
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
+        } else if (shaderScript.type == "x-shader/x-vertex") {
+            shader = gl.createShader(gl.VERTEX_SHADER);
+        } else {
+            return null;
+        }
+
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS) && !gl.isContextLost()) {
+            alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
+			gl.deleteShader(shader);
+            return null;
+        }
+
+        return shader;
+    }
+
+
+
+    function initShaders() {
+        var fragmentShader = loadShaderFromDOM(neg.gl, "shader-fs");
+        var vertexShader = loadShaderFromDOM(neg.gl, "shader-vs");
+
+        neg.shaderProgram = neg.gl.createProgram();
+        neg.gl.attachShader(neg.shaderProgram, vertexShader);
+        neg.gl.attachShader(neg.shaderProgram, fragmentShader);
+        neg.gl.linkProgram(neg.shaderProgram);
+
+        if (!neg.gl.getProgramParameter(neg.shaderProgram, neg.gl.LINK_STATUS) && !neg.gl.isContextLost()) {
+            alert("Error linking program: " + neg.gl.getProgramInfoLog(neg.shaderProgram));
+        }
+
+        neg.gl.useProgram(neg.shaderProgram);
+
+		// get vertex attribute array location (index) 
+        neg.vertexPositionAttributeLoc = neg.gl.getAttribLocation(neg.shaderProgram, "aVertexPosition");
+		// enable vertex attribute at this location (index)
+		// if disabled, this attribute won't be used for draw calls
+        neg.gl.enableVertexAttribArray(neg.vertexPositionAttributeLoc);
+		
+		neg.vertexTextureAttributeLoc = neg.gl.getAttribLocation(neg.shaderProgram, "aTextureCoord");
+		// texture attribute is enabled for NegModel
+		// but disabled for Sphere model
+		//neg.gl.enableVertexAttribArray(neg.vertexTextureAttributeLoc);
+		//neg.gl.disableVertexAttribArray(neg.vertexTextureAttributeLoc);
+
+		// get vertex attribute array location (index) 
+		neg.vertexColorAttributeLoc = neg.gl.getAttribLocation(neg.shaderProgram, "aVertexColor");
+		// enable vertex attribute at this location (index)
+		// if disabled, this attribute won't be used for draw calls
+		//neg.gl.enableVertexAttribArray(neg.vertexColorAttributeLoc);
+
+        neg.pMatrixUniformLoc = neg.gl.getUniformLocation(neg.shaderProgram, "uPMatrix");
+        neg.mvMatrixUniformLoc = neg.gl.getUniformLocation(neg.shaderProgram, "uMVMatrix");
+		neg.texWeightUniformLoc = neg.gl.getUniformLocation(neg.shaderProgram, "uTextureWeight");
+		neg.uniformSamplerLoc = neg.gl.getUniformLocation(neg.shaderProgram, "uSampler");
+		neg.uniformPickingColorLoc = neg.gl.getUniformLocation(neg.shaderProgram, "uPickingColor");
+		neg.uniformOffscreenLoc = neg.gl.getUniformLocation(neg.shaderProgram, "uOffscreen");
+		neg.uniformSkyboxWeightLoc = neg.gl.getUniformLocation(neg.shaderProgram, "uSkyboxWeight");
+		neg.uniformCubeSamplerLoc = neg.gl.getUniformLocation(neg.shaderProgram, "uCubeSampler");
+    }
+
+	// send matrices to graphic card
+	function uploadModelViewMatrix(mvMat) {
+		neg.gl.uniformMatrix4fv(neg.mvMatrixUniformLoc, false, mvMat);
+	}
+
+	function initBuffers() {
+ 		for (var i in neg.sphereList) {
+			neg.sphereList[i].initBuffers();
+		}
+
+ 		for (var i in neg.modelList) {
+			neg.modelList[i].initBuffers();
+		}
+		
+		for (var i in neg.meshList) {
+			neg.meshList[i].initBuffers();
+		}
+		
+		neg.skybox.initBuffers();
+    }
+
+    function degToRad(degrees) {
+        return degrees * Math.PI / 180;
+    }
+
+	function drawScene(offscreen) {
+        neg.gl.viewport(0, 0, neg_canvas.width, neg_canvas.height); // define viewport size
+		//neg.gl.depthRange(0.0, 1.0); // default
+		
+		// http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
+        neg.gl.clear(neg.gl.COLOR_BUFFER_BIT | neg.gl.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
+
+		// set perspective matrix
+		// field of view y: 45 degrees
+		// width to height ratio
+		// view from 1.0 to 1000.0 distance units
+		//
+		// tan(45/2) = (h/2) / near
+		// h = 2 * tan(45/2) * near
+		// h = 2 * 0.414 * 1.0
+		// h = 0.828
+		//
+        mat4.perspective(neg.options.fieldOfViewY, neg_canvas.width / neg_canvas.height, 1.0, 1000.0, neg.pMatrix);
+		neg.gl.uniformMatrix4fv(neg.pMatrixUniformLoc, false, neg.pMatrix);
+		
+		neg.gl.uniform1f(neg.uniformSkyboxWeightLoc, 0.0); // uSkyboxWeight=0.0 : non-skybox render 
+		
+		// draw flat color objects
+		neg.gl.enableVertexAttribArray(neg.vertexColorAttributeLoc);
+		neg.gl.uniform1f(neg.texWeightUniformLoc, 0.0); // uTextureWeight: 0.0=flat vertex color only
+		neg.gl.disableVertexAttribArray(neg.vertexTextureAttributeLoc);
+		
+		for (var i in neg.sphereList) {
+			neg.sphereList[i].drawInstances(offscreen);
+		}
+			
+		// draw textured objects
+		if (!offscreen) {
+			//neg.gl.uniform1f(neg.texWeightUniformLoc, 0.5); // uTextureWeight: 50% texture
+			neg.gl.uniform1f(neg.texWeightUniformLoc, 1.0); // uTextureWeight: 100% texture
+			neg.gl.enableVertexAttribArray(neg.vertexTextureAttributeLoc);
+		}
+
+		for (var i in neg.modelList) {
+			neg.modelList[i].drawInstances(offscreen);
+		}
+		
+		for (var i in neg.meshList) {
+			neg.meshList[i].drawInstances(offscreen);
+		}
+
+		// draw skybox
+		if (!offscreen) {
+			
+			var unit = 1;
+			neg.gl.activeTexture(neg.gl.TEXTURE0 + unit);
+			neg.gl.bindTexture(neg.gl.TEXTURE_CUBE_MAP, neg.skybox.cubemapTexture);
+			neg.gl.uniform1i(neg.uniformCubeSamplerLoc, unit);
+					
+			neg.gl.uniform1f(neg.uniformSkyboxWeightLoc, 1.0); // uSkyboxWeight=1.0 : skybox render
+			neg.skybox.drawInstances(false);
+			
+		}
+
+		// clean up
+		neg.gl.bindBuffer(neg.gl.ARRAY_BUFFER, null);
+		neg.gl.bindBuffer(neg.gl.ELEMENT_ARRAY_BUFFER, null);		
+		neg.gl.bindTexture(neg.gl.TEXTURE_2D, null);
+		neg.gl.bindTexture(neg.gl.TEXTURE_CUBE_MAP, null);		
+	}
+	
+	function render() {
+		
+		// off-screen rendering
+		neg.gl.bindFramebuffer(neg.gl.FRAMEBUFFER, neg.picker.framebuffer);
+		neg.gl.uniform1i(neg.uniformOffscreenLoc, true);
+		drawScene(true);
+		
+		// on-screen rendering
+		neg.gl.bindFramebuffer(neg.gl.FRAMEBUFFER, null);
+		if (neg.showOffscreen) {
+			neg.gl.uniform1i(neg.uniformOffscreenLoc, true);
+			drawScene(true);
+		}
+		else {
+			neg.gl.uniform1i(neg.uniformOffscreenLoc, false);
+			drawScene(false);
+		}
+
+	}
+	
+	function SphereInstance(sphere, center, scale, animation) {
+		this.sphere    = sphere;
+		this.center    = center;
+		this.scale     = scale;
+		this.animation = animation;
+		this.zAngle    = 0;
+		this.zOrbit    = 0;
+		this.growth    = 0;
+		this.rotationQuaternion = quat4.identity();
+		this.mvMatrix  = mat4.create();
+		this.name = 'Sphere ' + generateNameId();
+		this.boundingRadius = this.sphere.radius * this.scale;
+	}
+	
+	SphereInstance.prototype.rotate = function(elapsedTime) {
+		this.zAngle += 90 * elapsedTime / 1000.0; // degrees per second
+		this.zAngle %= 360;
+	}
+	
+	SphereInstance.prototype.move = function(elapsedTime) {
+		this.zOrbit += 180 * elapsedTime / 1000.0; // degrees per second
+		this.zOrbit %= 360;
+	}
+
+	SphereInstance.prototype.grow = function(elapsedTime) {
+		this.growth += 45 * elapsedTime / 1000.0; // degrees per second
+		this.growth %= 360;
+	}
+	
+	SphereInstance.prototype.coord = function() {
+		var position = this.center.slice(0); // copy array
+		
+		// Oscillate on z axis
+		position[2] += 2 * Math.sin(degToRad(this.zOrbit));
+		
+		return position;
+	}
+	
+	SphereInstance.prototype.draw = function(offscreen) {
+	
+		// Won´t draw object to offscreen framebuffer without picking color
+		if (offscreen && !this.pickingColor) {
+			return;
+		}
+						
+		var s = this.scale * (1 + Math.sin(degToRad(this.growth))); 
+		
+		//if (false) {
+			// matrix rotation
+			
+			// load mvMatrix with either identity or lookAt
+			//mat4.identity(this.mvMatrix);
+			mat4.lookAt(neg.cam_eye, neg.cam_center, neg.cam_up, this.mvMatrix);
+			mat4.translate(this.mvMatrix, this.coord());
+			mat4.rotate(this.mvMatrix, degToRad(this.zAngle), [0, 0, 1]);
+		/*
+		}
+		else {
+			// quaternion rotation
+
+			var tmpMat = mat4.create();
+			mat4.lookAt(neg.cam_eye, neg.cam_center, neg.cam_up, tmpMat);
+			quat4.fromAngleAxis(degToRad(this.zAngle), [0, 0, 1], this.rotationQuaternion);			
+			mat4.fromRotationTranslation(this.rotationQuaternion, this.coord(), this.mvMatrix);
+			mat4.multiply(tmpMat, this.mvMatrix);
+			this.mvMatrix = tmpMat;
+		}
+		*/
+
+		mat4.scale(this.mvMatrix, [s, s, s]);
+			
+        uploadModelViewMatrix(this.mvMatrix);
+			
+		// Send picking color to fragment shader
+		if (offscreen) {
+			if (this.pickingColor) {
+				neg.gl.uniform4fv(neg.uniformPickingColorLoc, this.pickingColor);
+			}
+		}
+
+		neg.gl.drawElements(neg.gl.TRIANGLES, this.sphere.vertexIndexBufferNumItens, neg.gl.UNSIGNED_SHORT, 0);
+	}
+		
+	function Sphere(radius, bands) {
+		this.instanceList = [];
+		this.radius = radius;
+		this.bands = bands;
+	}
+
+	function generateNameId() {
+		if (!neg.genNameId) {
+			neg.genNameId = 0;
+		}
+		
+		return ++neg.genNameId;
+	}	
+	
+	function generatePickingColor() {
+		var f = 1/16;
+		
+		if (!neg.genPickColor) {
+			neg.genPickColor = [0.0, 0.0, 0.0, 1.0];
+		}
+		
+		neg.genPickColor[0] += f;
+		if (neg.genPickColor[0] > 1.0) {
+			neg.genPickColor[0] = 0;
+			neg.genPickColor[1] += f;
+			if (neg.genPickColor[1] > 1.0) {
+				neg.genPickColor[1] = 0;
+				neg.genPickColor[2] += f;
+				if (neg.genPickColor[2] > 1.0) {
+					neg.genPickColor[2] = 0;
+					console.info("picking color overflow");
+				}
+			}
+		}
+		
+		console.info('picking color = ' + neg.genPickColor[0] + ',' + neg.genPickColor[1] + ',' + neg.genPickColor[2]);
+		
+		return neg.genPickColor.slice(0);
+	}
+	
+	Sphere.prototype.addInstance = function(center, scale, animation, pick) {
+		var si = new SphereInstance(this, center, scale, animation);
+		if (pick) {
+			si.pickingColor = generatePickingColor();
+		}
+		this.instanceList.push(si);
+	}
+		
+	Sphere.prototype.animateInstances = function(elapsedTime) {
+		for (var i in this.instanceList) {
+			if (this.instanceList[i].animation) {
+				this.instanceList[i].animation(elapsedTime);
+			}
+		}
+	}
+		
+		Sphere.prototype.drawInstances = function(offscreen) {
+		
+		    neg.gl.bindBuffer(neg.gl.ARRAY_BUFFER, this.vertexPositionBuffer);
+        	neg.gl.vertexAttribPointer(neg.vertexPositionAttributeLoc, this.vertexPositionBufferItemSize, neg.gl.FLOAT, false, 0, 0);
+
+    		neg.gl.bindBuffer(neg.gl.ARRAY_BUFFER, this.vertexColorBuffer);
+    		neg.gl.vertexAttribPointer(neg.vertexColorAttributeLoc, this.vertexColorBufferItemSize, neg.gl.FLOAT, false, 0, 0);
+	
+			neg.gl.bindBuffer(neg.gl.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
+			
+			for (var i in this.instanceList) {
+				this.instanceList[i].draw(offscreen);
+			}
+		}
+		
+	Sphere.prototype.initBuffers = function() {
+		
+			// some nice colors
+			var colors = [
+			[1.0, 0.0, 0.0, 1.0],
+			[1.0, 1.0, 0.0, 1.0],
+			[0.0, 1.0, 0.0, 1.0],
+			[1.0, 0.5, 0.5, 1.0],
+			[1.0, 0.0, 1.0, 1.0],
+			[0.0, 0.0, 1.0, 1.0],
+			];
+			
+			var currColor = 0; // cycle thru colors
+
+			var latitudeBands = this.bands;
+			var longitudeBands = this.bands * 2;
+		
+			var vertexPositionData = [];
+			var vertexColorData = [];			
+			var vertexIndexData = [];
+			
+			vertexPositionData.itemSize = 3;
+			
+			var theta = Math.PI;
+			for (var lat = 0; lat < latitudeBands; ++lat) {
+				var theta1 = theta - Math.PI / latitudeBands;
+				var sinTheta = Math.sin(theta);
+				var cosTheta = Math.cos(theta);
+				var sinTheta1 = Math.sin(theta1);
+				var cosTheta1 = Math.cos(theta1);
+				
+				var phi = 0;
+				for (var lon = 0; lon < longitudeBands; ++lon) {
+					var phi1 = phi + 2 * Math.PI / longitudeBands;
+					var sinPhi = Math.sin(phi);
+					var cosPhi = Math.cos(phi);
+					var sinPhi1 = Math.sin(phi1);
+					var cosPhi1 = Math.cos(phi1);
+					
+					// top left
+					var top_left_index = vertexPositionData.length / vertexPositionData.itemSize;
+					vertexPositionData.push(this.radius * sinPhi * cosTheta); // x
+					vertexPositionData.push(this.radius * sinPhi * sinTheta); // y
+					vertexPositionData.push(this.radius * cosPhi);            // z
+					
+					// down left
+					var down_left_index = vertexPositionData.length / vertexPositionData.itemSize;
+					vertexPositionData.push(this.radius * sinPhi * cosTheta1); // x
+					vertexPositionData.push(this.radius * sinPhi * sinTheta1); // y
+					vertexPositionData.push(this.radius * cosPhi);             // z
+
+					// top right
+					var top_right_index = vertexPositionData.length / vertexPositionData.itemSize;
+					vertexPositionData.push(this.radius * sinPhi1 * cosTheta); // x
+					vertexPositionData.push(this.radius * sinPhi1 * sinTheta); // y
+					vertexPositionData.push(this.radius * cosPhi1);            // z
+
+					// down right
+					var down_right_index = vertexPositionData.length / vertexPositionData.itemSize;
+					vertexPositionData.push(this.radius * sinPhi1 * cosTheta1); // x
+					vertexPositionData.push(this.radius * sinPhi1 * sinTheta1); // y
+					vertexPositionData.push(this.radius * cosPhi1);             // z
+					
+					// Add one color 4 times (square vertices)
+					for (var i = 0; i < 4; ++i) {
+						vertexColorData = vertexColorData.concat(colors[currColor]);
+					}
+					currColor = (currColor + 1) % colors.length; // cycle to next color
+					
+					// First triangle
+					vertexIndexData.push(top_left_index);
+					vertexIndexData.push(down_left_index);
+					vertexIndexData.push(top_right_index);
+					
+					// Second triangle
+					vertexIndexData.push(top_right_index);
+					vertexIndexData.push(down_right_index);
+					vertexIndexData.push(down_left_index);
+					
+					phi = phi1;
+				}
+				
+				theta = theta1;
+			}
+			
+			this.vertexPositionBuffer = neg.gl.createBuffer();
+			neg.gl.bindBuffer(neg.gl.ARRAY_BUFFER, this.vertexPositionBuffer);
+			neg.gl.bufferData(neg.gl.ARRAY_BUFFER, new Float32Array(vertexPositionData), neg.gl.STATIC_DRAW);
+
+			this.vertexColorBuffer = neg.gl.createBuffer();
+			neg.gl.bindBuffer(neg.gl.ARRAY_BUFFER, this.vertexColorBuffer);
+			neg.gl.bufferData(neg.gl.ARRAY_BUFFER, new Float32Array(vertexColorData), neg.gl.STATIC_DRAW);
+
+			this.vertexIndexBuffer = neg.gl.createBuffer();
+			neg.gl.bindBuffer(neg.gl.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
+			neg.gl.bufferData(neg.gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndexData), neg.gl.STATIC_DRAW);
+
+        	this.vertexPositionBufferItemSize = vertexPositionData.itemSize;
+    		this.vertexColorBufferItemSize = 4;
+			this.vertexIndexBufferNumItens = vertexIndexData.length;		
+		}
+	
+	function initSpheres() {
+		var s;
+		
+		s = new Sphere(2, 5);
+		neg.sphereList.push(s);
+		s.addInstance([-3.0, 0.0, -10.0], 1.0, SphereInstance.prototype.rotate, true);
+		s.addInstance([0.0, 2.0, -20.0], 2.5, SphereInstance.prototype.rotate, true);
+		
+		s = new Sphere(2.5, 10);
+		neg.sphereList.push(s);
+		s.addInstance([3.0, 0.0, -10.0], 1.0, SphereInstance.prototype.move, true);
+		s.addInstance([0.0, -4.0, -15.0], .5, SphereInstance.prototype.move, true);
+
+		s = new Sphere(1, 7);
+		neg.sphereList.push(s);
+		s.addInstance([-6.0, -3.0, -15.0], 2.0, SphereInstance.prototype.grow, false);
+	}
+
+	function initCubes() {
+		var cubeModel;
+		
+		cubeModel = new NegModel(cubeVerticesCoord, cubeTextureCoord, cubeColors, cubeVertexIndices);
+		neg.modelList.push(cubeModel);
+		cubeModel.addFace(0, 6, "wood_128x128.jpg"); // face 1 (vertices 0 to 5)
+		cubeModel.addFace(6, 6, "wood_floor_256.jpg"); // face 2 (vertices 6 to 11)
+		cubeModel.addFace(12, 18, "wicker_256.jpg"); // 3 faces (vertices 12 to 29)
+		//cubeModel.addFace(18, 6, null);
+		//cubeModel.addFace(24, 6, null);
+		cubeModel.addFace(30, 6, null); // face 6 with flat color only
+		var scale = 1.0;
+		var edgeLength = 2.0;
+		var mi = cubeModel.addInstance([-6.0, 3.0, -13.0], scale, NegModelInstance.prototype.rotate1, true);
+		mi.boundingRadius = scale * edgeLength * Math.sqrt(3) / 2;
+	}
+	
+	function pushRGBAWhite(array) {
+		// since 1.0 white is very bright for a grid
+		// we use a darker gray
+		array.push(0.7); // r
+		array.push(0.7); // g
+		array.push(0.7); // b
+		array.push(1.0); // a
+	}
+	
+	function initGrids() {
+		var verticesCoord = [];
+		var verticesColors = [];
+		//var verticesTextureCoord = [];
+		var verticesIndices = [];
+		
+		var w = 10.0;
+		var h = 10.0;
+		var max_x = w/2;
+		var min_x = -max_x;
+		var max_y = h/2;
+		var min_y = -max_y;
+		var vi = 0;
+		
+		for (var x = min_x ; x <= max_x; x += 1.0) {
+			// v0
+			verticesCoord.push(x);     // x
+			verticesCoord.push(min_y); // y
+			verticesCoord.push(0.0);     // z
+			pushRGBAWhite(verticesColors);
+			//verticesTextureCoord.push(0.0); // s
+			//verticesTextureCoord.push(0.0); // t
+			verticesIndices.push(vi);
+			++vi;
+			// v1
+			verticesCoord.push(x);     // x
+			verticesCoord.push(max_y); // y
+			verticesCoord.push(0.0);     // z
+			pushRGBAWhite(verticesColors);
+			//verticesTextureCoord.push(0.0); // s
+			//verticesTextureCoord.push(0.0); // t
+			verticesIndices.push(vi);
+			++vi;
+		}
+
+		for (var y = min_y ; y <= max_y; y += 1.0) {
+			// v0
+			verticesCoord.push(min_x);     // x
+			verticesCoord.push(y); // y
+			verticesCoord.push(0.0);     // z
+			pushRGBAWhite(verticesColors);
+			//verticesTextureCoord.push(0.0); // s
+			//verticesTextureCoord.push(0.0); // t
+			verticesIndices.push(vi);
+			++vi;
+			// v1
+			verticesCoord.push(max_x);     // x
+			verticesCoord.push(y); // y
+			verticesCoord.push(0.0);     // z
+			pushRGBAWhite(verticesColors);
+			//verticesTextureCoord.push(0.0); // s
+			//verticesTextureCoord.push(0.0); // t
+			verticesIndices.push(vi);
+			++vi;
+		}
+		
+		verticesColors.constantColor = [0.0, 0.4, 0.0, 1.0]; // green
+		
+		var gridModel = new NegModel(verticesCoord, null, verticesColors, verticesIndices, neg.gl.LINES, 0.0);
+		neg.modelList.push(gridModel);
+		
+		gridModel.addFace(0, verticesIndices.length, null); // single untextured face for all vertices
+		gridModel.addInstance([0.0, 0.0, 0.0], 1.0, null, false);
+	}
+	
+	function globe1(center, pick) {
+		var globe1 = new Mesh(cubeVerticesCoord, cubeTextureCoord, cubeColors, cubeVertexIndices, neg.gl.TRIANGLES, .8);
+		neg.meshList.push(globe1);
+		globe1.addFace(0, 36, "ear0xuu2.jpg");
+		var scale = 1.0;
+		var edgeLength = 2.0;
+		var mi = globe1.addInstance(center, scale, MeshInstance.prototype.orbitZ, pick);
+		mi.boundingRadius = scale * edgeLength * Math.sqrt(3) / 2;
+		mi.orbitTranslation = [1.0, 0.0, 0.0];
+		mi.orbitQuaternion = quat4.identity();
+	}
+	
+	function globe2(center, pick) {
+		var globeVerticesCoords = [];
+		var globeTextureCoords = [];
+		var globeColors = [];
+		var globeIndices = [];
+
+		var radius = 1.5;
+		sphereGenerate(radius, 5, globeVerticesCoords, globeTextureCoords, globeIndices);
+		
+		for (var i = 0; i < globeIndices.length; ++i) {
+			globeColors.push(0.6); // r
+			globeColors.push(0.0); // g
+			globeColors.push(0.0); // b
+			globeColors.push(1.0); // a
+		}
+		//globeColors.constantColor = [0.0, 0.0, 0.8, 1.0]; // if texture fails, fallback to blue
+		
+		var globe2 = new Mesh(globeVerticesCoords, globeTextureCoords, globeColors, globeIndices, neg.gl.TRIANGLES, .8);
+		neg.meshList.push(globe2);
+		globe2.addFace(0, globeIndices.length, "ear0xuu2.jpg");
+		var	scale = 1.0;
+		var mi = globe2.addInstance(center, scale, MeshInstance.prototype.rotateZ, pick);
+		mi.boundingRadius = scale * radius;	
+	}
+	
+	function globe3(center, pick, objData) {
+		//var globe3 = new Mesh(cubeVerticesCoord, cubeTextureCoord, cubeColors, cubeVertexIndices, neg.gl.TRIANGLES, .8);
+		//globe3.addFace(0, cubeVertexIndices.length, "ear0xuu2.jpg");
+		var globe3 = new Mesh(objData.verticesCoord, objData.verticesTextureCoord, objData.verticesColors, objData.verticesIndices, neg.gl.TRIANGLES, .8);
+		globe3.addFace(0, objData.verticesIndices.length, "ear0xuu2.jpg");
+		neg.meshList.push(globe3);
+		var scale = 1.0;
+		var edgeLength = 2.0;
+		var mi = globe3.addInstance(center, scale, MeshInstance.prototype.orbitZ, pick);
+		mi.boundingRadius = scale * edgeLength * Math.sqrt(3) / 2;
+		mi.orbitTranslation = [1.0, 0.0, 0.0];
+		mi.orbitQuaternion = quat4.identity();
+	}
+
+	function globe4(center, pick) {
+		var globe4 = new NegModel(cubeVerticesCoord, cubeTextureCoord, cubeColors, cubeVertexIndices, neg.gl.TRIANGLES, .8);
+		neg.modelList.push(globe4);
+		globe4.addFace(0, 36, "ear0xuu2.jpg");
+		var scale = 1.0;
+		var edgeLength = 2.0;
+		var mi = globe4.addInstance(center, scale, NegModelInstance.prototype.rotate1, pick);
+		mi.boundingRadius = scale * edgeLength * Math.sqrt(3) / 2;
+	}
+
+	function globe5(center, pick, bands, radius, imageFilename) {
+		var globeVerticesCoords = [];
+		var globeTextureCoords = [];
+		var globeColors = [];
+		var globeIndices = [];
+
+		sphereGenerate(radius, bands, globeVerticesCoords, globeTextureCoords, globeIndices);
+		
+		/*
+		// if texture fails, fallback to red
+		for (var i = 0; i < globeIndices.length; ++i) {
+			globeColors.push(0.6); // r
+			globeColors.push(0.0); // g
+			globeColors.push(0.0); // b
+			globeColors.push(1.0); // a
+		}
+		*/
+		globeColors.constantColor = [0.0, 0.0, 0.8, 1.0]; // if texture fails, fallback to blue
+		
+		var globe2 = new Mesh(globeVerticesCoords, globeTextureCoords, globeColors, globeIndices, neg.gl.TRIANGLES, .8);
+		neg.meshList.push(globe2);
+		globe2.addFace(0, globeIndices.length, imageFilename);
+		var	scale = 1.0;
+		var mi = globe2.addInstance(center, scale, MeshInstance.prototype.rotateZ, pick);
+		mi.boundingRadius = scale * radius;	
+	}
+	
+	function initGlobes() {
+		var pick = false;
+		
+		globe1([4.0, -3.0, 3.0], pick);         // mesh static  cube
+		globe2([2.0, -1.0, 3.0], pick);         // mesh dynamic sphere
+		globe1([-4.0, 3.0, 2.0], pick);         // mesh static  cube
+		globe2([-2.0, 1.0, 2.0], pick);         // mesh dynamic sphere
+		globe3([0.0, -2.0, 1.0], pick, globeA); // mesh static  sphere
+		globe4([3.0, -2.0, 2.0], pick);         // neg  static  cube
+		
+		globe5([-3.0, -3.0, 2.0], pick, 15, 2, "earthmap1k.jpg");
+		globe5([3.0, 3.0, 2.0], pick, 15, 2, "mars500x250.png");		
+	}
+	function initSkyboxMesh() {
+
+		
+		neg.skybox = new Mesh(cubeVerticesCoord, cubeTextureCoord, cubeColors, cubeVertexIndices);
+		
+		//neg.modelList.push(cubeModel);
+		//cubeModel.addFace(0, 6, "wood_128x128.jpg"); // face 1 (vertices 0 to 5)
+		//cubeModel.addFace(6, 6, "wood_floor_256.jpg"); // face 2 (vertices 6 to 11)
+		//cubeModel.addFace(12, 18, "wicker_256.jpg"); // 3 faces (vertices 12 to 29)
+		//cubeModel.addFace(18, 6, null);
+		//cubeModel.addFace(24, 6, null);
+		//cubeModel.addFace(30, 6, null); // face 6 with flat color only
+		
+		neg.skybox.addFace(0, cubeVertexIndices.length, null); // single untextured face for all vertices
+		
+		//var scale = 100.0;
+		//var edgeLength = 2.0;
+		var mi = neg.skybox.addInstance(neg.cameraHomeCoord.slice(0), 100.0, null /* anim */, false /* pick */);
+		//mi.boundingRadius = scale * edgeLength * Math.sqrt(3) / 2;
+		
+	}
+	
+	function initWorldObjects() {
+		initGrids();
+		initSpheres();
+		initCubes();
+		initGlobes();
+		initSkyboxMesh();
+	}
+	
+	// Stats.js
+	function initStats() {
+		neg.stats = new Stats();
+
+		neg.stats.setMode(0); // 0: fps, 1: ms
+
+		//stats.domElement.style.left = '0px';
+		//stats.domElement.style.top = '0px';
+		//stats.domElement.style.float = 'left';
+		neg.stats.domElement.style.float = 'none';
+		
+		var framerate = document.getElementById("framerate");
+		if (framerate.appendChild) {
+		
+			// remove all existing node children
+		    while (framerate.childNodes.length > 0) {
+				framerate.removeChild(framerate.firstChild);       
+			}
+			
+			// attach child
+			framerate.appendChild(neg.stats.domElement);
+		}
+	}
+	
+	function stopAnimation() {
+		//cancelAnimFrame(); // cancelAnimFrame from webgl-utils.js DOESN'T work
+		if (neg.reqId) {
+			window.cancelAnimationFrame(neg.reqId); // from Brandon Jones game-shim.js
+			neg.reqId = undefined;
+		}
+		if (neg.timeoutId) {
+			clearTimeout(neg.timeoutId);
+			neg.timeoutId = undefined;
+		}
+	}
+	
+	function cancelImageLoads() {
+		// Ignore all ongoing image loads by removing their onload handler
+		for (var i = 0; i < neg.ongoingImageLoads.length; i++) {
+			neg.ongoingImageLoads[i].onload = undefined;
+			neg.ongoingImageLoads[i].onerror = undefined;
+			neg.ongoingImageLoads[i].onabort = undefined;
+		}
+		neg.ongoingImageLoads = [];		
+	}
+	
+	function handleLostContext(event) {
+		event.preventDefault();
+		stopAnimation();
+		cancelImageLoads();
+		
+		neg.textureTable = {}; // reload textures
+	}
+	
+	function stop() {
+		stopAnimation();
+		cancelImageLoads();
+		WebGLDebugUtils.resetToInitialState(neg.gl);
+		neg.gl = null;
+	}
+	
+	function handleRestoredContext() {
+		// re-setup all your WebGL state and re-create all your WebGL resources when the context is restored.
+		initContext();
+	}
+	
+	function simulateLostContext(canvas) {
+		canvas.loseContext();
+	}
+	
+	function initTextures() {
+ 		for (var i in neg.modelList) {
+			neg.modelList[i].initTextures();
+		}		
+		for (var i in neg.meshList) {
+			neg.meshList[i].initTextures();
+		}		
+	}
+
+	function initSkyboxCubemap() {
+
+		neg.skybox.cubemapTexture = neg.gl.createTexture();
+	
+		neg.gl.bindTexture(neg.gl.TEXTURE_CUBE_MAP, neg.skybox.cubemapTexture);
+		neg.gl.texParameteri(neg.gl.TEXTURE_CUBE_MAP, neg.gl.TEXTURE_MAG_FILTER, neg.gl.LINEAR);
+		neg.gl.texParameteri(neg.gl.TEXTURE_CUBE_MAP, neg.gl.TEXTURE_MIN_FILTER, neg.gl.LINEAR);
+	
+		loadCubemapFace(neg.gl.TEXTURE_CUBE_MAP_POSITIVE_X, neg.skybox.cubemapTexture, 'texture/space_rt.jpg');
+		loadCubemapFace(neg.gl.TEXTURE_CUBE_MAP_NEGATIVE_X, neg.skybox.cubemapTexture, 'texture/space_lf.jpg');
+		loadCubemapFace(neg.gl.TEXTURE_CUBE_MAP_POSITIVE_Y, neg.skybox.cubemapTexture, 'texture/space_up.jpg');
+		loadCubemapFace(neg.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, neg.skybox.cubemapTexture, 'texture/space_dn.jpg');
+		loadCubemapFace(neg.gl.TEXTURE_CUBE_MAP_POSITIVE_Z, neg.skybox.cubemapTexture, 'texture/space_fr.jpg');
+		loadCubemapFace(neg.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, neg.skybox.cubemapTexture, 'texture/space_bk.jpg');	
+	}
+	
+	function backfaceCulling(enable) {
+		if (enable) {
+			neg.gl.frontFace(neg.gl.CCW);
+			neg.gl.cullFace(neg.gl.BACK);
+			neg.gl.enable(neg.gl.CULL_FACE);		
+		}
+		else {
+			neg.gl.disable(neg.gl.CULL_FACE);		
+		}
+	}
+	
+	function initContext() {
+		initShaders();
+		initBuffers();
+		initTextures();
+		initSkyboxCubemap();
+		
+    	neg.gl.clearColor(0.0, 0.0, 0.0, 1.0); // clear color is black fully opaque
+	    neg.gl.enable(neg.gl.DEPTH_TEST);          // perform depth testing
+		neg.gl.depthFunc(neg.gl.LESS);             // gl.LESS is default depth test
+		
+		backfaceCulling(neg.backface_culling);
+	
+		tick();
+	}
+	
+	function wheelScroll(delta) {
+		//console.info("wheelScroll: " + delta);
+		
+		var step = delta / 120; // 1 movement unit for every 120 wheel units
+
+		if (neg.selected) {
+			neg.selected_distance -= step;
+
+			var closest = closestCameraDistance(neg.selected.boundingRadius, neg.options.fieldOfViewY);
+			
+			if (neg.selected_distance < closest) {
+				// can't approach further
+				neg.selected_distance = closest;
+			}
+			
+			return;
+		}
+		
+		var direction = vec3.create();
+		vec3.subtract(neg.cam_center, neg.cam_eye, direction);
+		move_camera(direction, step);
+	}
+	
+	function ffWheel(event) {
+		//console.info("ffWheel: detail = " + event.detail);
+		wheelScroll(-40 * event.detail);
+		event.preventDefault(); // prevent window scroll
+		return false; // prevent window scroll
+	}
+
+	function nonFFWheel(event) {
+		//console.info("nonFFWheel wheelDelta = " + event.wheelDelta);
+		wheelScroll(event.wheelDelta);
+		event.preventDefault(); // prevent window scroll
+		return false; // prevent window scroll
+	}
+
+	var Options = function() {
+		this.fieldOfViewY = 45;
+	};
+	
+	function start(loadWorldObjects, resetCamera) {
+
+		neg.options = new Options();
+		neg.gui = new dat.GUI();
+		neg.gui.add(neg.options, 'fieldOfViewY', 10, 180);
+		
+		// cache debug display gui elements
+		neg.camEyeElem = document.getElementById("cam_eye");
+		neg.camCenterElem = document.getElementById("cam_center");
+		neg.camUpElem = document.getElementById("cam_up");
+  
+		// init checkboxes
+		document.getElementById('backface_culling').checked = neg.backface_culling;
+		document.getElementById('debug_pick_check').checked = neg.showOffscreen;
+		document.getElementById('debug_max_framerate').checked = neg.renderMaxRate;
+		document.getElementById('debug_lost_context').checked = neg.debugLostContext;
+		document.getElementById('debug_webgl').checked = neg.debugWebGL;
+
+		// It seems the debug wrappers for Canvas and GL don't support
+		// restarting cleanly. For some reason, the underlying behavior
+		// isn't fully restored when those objects are re-created.
+		// I suspect of remaining state on the wrappers.
+		// Then we disable those controls here.
+		// The working way is to change their defaults under the "neg" global variable.
+		document.getElementById('debug_lost_context').disabled = neg.debugLostContext;
+		document.getElementById('debug_webgl').disabled = neg.debugWebGL;
+
+		neg_canvas = document.getElementById("main_canvas");
+		
+		if (neg.debugLostContext) {
+			// DEBUG wrapper context
+			neg_canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(neg_canvas);
+		}
+		
+		neg_canvas.addEventListener("webglcontextlost", function(event) { handleLostContext(event); }, false);
+		neg_canvas.addEventListener("webglcontextrestored", handleRestoredContext, false);
+		neg_canvas.addEventListener("mouseup", handleMouseUp, false);
+		neg_canvas.addEventListener("mousedown", handleMouseDown, false);
+		
+		// mouse wheel on firefox:
+		window.addEventListener("DOMMouseScroll", ffWheel, false);
+		
+		// mouse wheel on other browsers:
+		neg_canvas.addEventListener("mousewheel", nonFFWheel, false);		
+
+		var lost_context_button = document.getElementById("lost_context_button");
+		if (lost_context_button) {
+			lost_context_button.addEventListener("mousedown", function () { simulateLostContext(neg_canvas); }, false);
+		}
+
+		initStats();		
+		initGL(neg_canvas);
+		
+		if (loadWorldObjects) {
+			initWorldObjects();
+		}
+		
+		neg.cam = new Camera();
+		
+		if (resetCamera) {
+			camera_home();
+		}
+		
+		initContext();
+	}
+
+	function tick() {
+		neg.stats.update();         // update framerate statistics
+		
+		if (!neg.drawOnce) {
+			//
+			// tells the browser to call us when a repaint is needed
+			//
+			if (neg.renderMaxRate) {
+				// DEBUG maximum frame rate
+				// We can't actually loop at full speed since javascript
+				// single thread would lock up the user interface
+				neg.timeoutId = setTimeout(tick, 1); // render every 1 ms (1000 fps)
+			}
+			else {
+				// requestAnimFrame() from webgl-utils.js
+				//requestAnimFrame(tick);
+				//
+				// requestAnimationFrame() from Brandon Jones' shim-game.js works better
+				neg.reqId = window.requestAnimationFrame(tick);
+			}
+		}
+		
+		animate();		    // update state
+		render(); 			// draw
+   	}
+
+	function animate() {
+        var timeNow = new Date().getTime();
+        if (neg.lastTime != 0) {
+        	var elapsed = timeNow - neg.lastTime;
+	
+			for (var i in neg.sphereList) {
+				neg.sphereList[i].animateInstances(elapsed);
+			}
+			
+			for (var i in neg.modelList) {
+				neg.modelList[i].animateInstances(elapsed);
+			}
+
+			for (var i in neg.meshList) {
+				neg.meshList[i].animateInstances(elapsed);
+			}
+		}
+        neg.lastTime = timeNow;
+	
+		// tracking camera
+		if (neg.selected) {
+			// FIXME: don't show cam coords on HTML page for every frame (possible severe performance penalty?)
+			
+			var center = neg.selected.coord();		
+			var v = vec3.create();
+			vec3.subtract(neg.cam_eye, center, v); // v pointing from obj center towards eye
+			vec3.normalize(v);                     // v is unit
+			v[0] *= neg.selected_distance;         // v length set to neg.selected_distance
+			v[1] *= neg.selected_distance;
+			v[2] *= neg.selected_distance;
+			var eye = vec3.create();
+			vec3.add(center, v, eye);
+			camUpdateEye(eye);
+			camUpdateCenter(center);
+			
+			if (neg.screenStart) {
+				rotateEye(neg.screenStart, neg.screenEnd);
+				neg.screenStart = null;
+				neg.screenEnd = null;
+			}
+				
+		}
+    }
+	
+	function findInstance(color) {
+		for (var i in neg.sphereList) {
+			var s = neg.sphereList[i];
+			
+			for (var j in s.instanceList) {
+				var si = s.instanceList[j];
+				if (si.pickingColor) {
+					if (neg.picker.compare(color, si.pickingColor)) {
+						return si;
+					}
+				}
+			}
+		}
+			
+		for (var i in neg.modelList) {
+			var m = neg.modelList[i];
+			
+			for (var j in m.instanceList) {
+				var mi = m.instanceList[j];
+				if ('pickingColor' in mi) {
+					if (neg.picker.compare(color, mi.pickingColor)) {
+						return mi;
+					}
+				}
+			}
+		}
+
+		for (var i in neg.meshList) {
+			var m = neg.meshList[i];
+			
+			for (var j in m.instanceList) {
+				var mi = m.instanceList[j];
+				if ('pickingColor' in mi) {
+					if (neg.picker.compare(color, mi.pickingColor)) {
+						return mi;
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+function camera_home() {
+	/*
+	neg.cam_eye = [0, 0, 13];	
+	neg.cam_center = [0, 0, 0];
+	neg.cam_up = [0, 1, 0];	
+	*/
+	
+	camUpdateEye(neg.cameraHomeCoord.slice(0));
+	camUpdateCenter([0, 0, 0]);
+	camUpdateUp([0, 1, 0]);
+	
+	select(null); /* untrack object (if any) */
+}
+
+function begin_button() {
+	camera_home();
+}
+
+function move_camera(direction, step) {
+	vec3.normalize(direction);
+	direction[0] *= step;
+	direction[1] *= step;
+	direction[2] *= step;
+	vec3.add(neg.cam_center, direction);
+	vec3.add(neg.cam_eye, direction);
+	
+	camUpdateEye(neg.cam_eye);
+	camUpdateCenter(neg.cam_center);
+}
+	
+function forward_button() {
+
+	var step = 1.0;
+
+	if (neg.selected) {
+		neg.selected_distance -= step;
+		return;
+	}
+	
+	var direction = vec3.create();
+	vec3.subtract(neg.cam_center, neg.cam_eye, direction);
+	move_camera(direction, step);
+}
+
+function back_button() {
+
+	var step = 1.0;
+
+	if (neg.selected) {
+		neg.selected_distance += step;
+		return;
+	}
+
+	var direction = vec3.create();
+	vec3.subtract(neg.cam_eye, neg.cam_center, direction);
+	move_camera(direction, step);
+}
+
+function getMousePosition(canvas, event) {
+	var x, y, top = 0, left = 0;
+
+	for (var c = canvas; c && c.offsetParent; c = c.offsetParent) {
+		left += c.offsetLeft;
+		top += c.offsetTop;
+	}
+
+	left -= window.pageXOffset;
+	top  -= window.pageYOffset;
+
+ 	//console.info('canvas left=' + left + ', top=' + top);
+ 	//console.info('mouse x=' + event.clientX + ', y=' + event.clientY);
+	
+	x = event.clientX - left;
+	y = event.clientY - top;
+	
+ 	//console.info('rel x=' + x + ', y=' + y);
+	
+	y = canvas.height - y; // flip y axis
+	
+ 	//console.info('gl x=' + x + ', y=' + y);	
+	
+	return [x, y];
+}
+
+function camUpdateEye(eye) {
+	neg.cam_eye = eye;
+	neg.camEyeElem.innerHTML = eye[0] + ',' + eye[1] + ',' + eye[2];
+}
+
+function camUpdateCenter(center) {
+	neg.cam_center = center;
+	neg.camCenterElem.innerHTML = center[0] + ',' + center[1] + ',' + center[2];
+}
+
+function camUpdateUp(up) {
+	neg.cam_up = up;
+	neg.camUpElem.innerHTML = up[0] + ',' + up[1] + ',' + up[2];
+}
+
+function closestCameraDistance(boundingRadius, fovy_degree) {
+	return boundingRadius / Math.sin(fovy_degree * Math.PI / 360.0); 
+}
+
+function select(obj) {
+
+	// first selection: save distance
+	if (obj && (neg.select != obj)) {
+		neg.selected_distance = vec3.dist(neg.cam_eye, obj.coord());
+	}
+	
+	// second selection: minimum view distance
+	if (obj && (neg.selected == obj)) {
+		if (neg.selected.boundingRadius) {
+			//neg.selected_distance = 3.0 * neg.selected.boundingRadius; // 3.0 * radius is empiric
+			//neg.selected_distance = neg.selected.boundingRadius / Math.sin(neg.options.fieldOfViewY * Math.PI / 360.0); 
+			neg.selected_distance = closestCameraDistance(neg.selected.boundingRadius, neg.options.fieldOfViewY);
+		}
+	}
+	
+	neg.selected = obj;
+	
+	if (neg.selected) {
+		document.getElementById("selected").innerHTML = neg.selected.name + ' (distance=' + neg.selected_distance + ')';
+	}
+	else {
+		document.getElementById("selected").innerHTML = 'NONE';
+	}
+	
+}
+
+function handleMouseUp(event) {
+	var coords = getMousePosition(neg_canvas, event);
+
+	neg_canvas.removeEventListener("mousemove", handleMouseMove, false);
+	
+	if (neg.isDragging) {
+		// dragging finished
+		neg.isDragging = false;
+		neg.dragStartCoords = null;
+		//console.info('drag end = ' + coords[0] + ',' + coords[1]);
+		return;
+	}
+
+	var color = neg.picker.find(coords);
+	
+	console.info('offscreen pixel at (' + coords[0] + ',' + coords[1] + ') = readout ('+ color[0] + ',' + color[1] + ',' + color[2] + ',' + color[3] + ')');
+	
+	var obj = findInstance(color);
+	if (obj) {
+		console.info('mouse click HIT');
+		select(obj);
+	}
+	else {
+		console.info('mouse click MISS');
+		select(null);
+	}
+}
+
+function handleMouseDown(event) {
+	neg.dragStartCoords = getMousePosition(neg_canvas, event);
+	
+	neg_canvas.addEventListener("mousemove", handleMouseMove, false);
+}
+
+function rotateEye(screenStart, screenEnd) {
+
+	// get mouse dragging from screen to world coordinates
+	var view = mat4.create();
+	mat4.lookAt(neg.cam_eye, neg.cam_center, neg.cam_up, view);
+	var proj = mat4.create();
+	mat4.perspective(neg.options.fieldOfViewY, neg_canvas.width / neg_canvas.height, 1.0, 1000.0, proj);
+	var viewport = vec4.create([0, 0, neg_canvas.width, neg_canvas.height]);
+	var worldStart = vec3.create();
+	vec3.unproject(screenStart, view, proj, viewport, worldStart);
+	var worldEnd = vec3.create();
+	vec3.unproject(screenEnd, view, proj, viewport, worldEnd);
+
+	console.info('world start = ' + worldStart[0] + ',' + worldStart[1] + ',' + worldStart[2]);
+	console.info('world end   = ' + worldEnd[0] + ',' + worldEnd[1] + ',' + worldEnd[2]);
+	
+	// turn world coordinates into vectors centered at selected object
+	var center = neg.selected.coord();
+	vec3.subtract(worldStart, center);
+	vec3.subtract(worldEnd, center);
+	
+	// get rotation axis between two vectors
+	var axis = vec3.create();
+	vec3.cross(worldStart, worldEnd, axis);
+	
+	// get rotation angle between two vectors
+	vec3.normalize(worldStart);
+	vec3.normalize(worldEnd);
+	var angle = Math.acos(vec3.dot(worldStart, worldEnd));
+	
+	if (Math.abs(angle) < 0.001) {
+		return;
+	}
+	
+	//console.info('angle = ' + angle * 180 / Math.PI);
+		
+	// rotate eye
+	var rotMat = mat4.create();
+	mat4.identity(rotMat);
+	mat4.rotate(rotMat, angle, axis);
+	mat4.translate(rotMat, center);
+	mat4.multiplyVec3(rotMat, neg.cam_eye);
+	
+	camUpdateEye(neg.cam_eye);
+}
+
+function handleMouseMove(event) {
+	var coords = getMousePosition(neg_canvas, event);
+	console.info('drag curr = ' + coords[0] + ',' + coords[1]);
+
+	neg.isDragging = true;
+	
+	if (!neg.selected) {
+		return;
+	}
+
+	neg.screenStart = vec3.create([neg.dragStartCoords[0], neg.dragStartCoords[1], 0.0]);
+	neg.screenEnd = vec3.create([coords[0], coords[1], 0.0]);
+	
+	neg.dragStartCoords = coords;
+}
+
+function debug_pick(event) {
+	// We set a global variable to avoid querying the DOM tree inside the render loop
+	neg.showOffscreen = document.getElementById('debug_pick_check').checked;
+}
+
+function debug_max_fps(event) {
+	// We set a global variable to avoid querying the DOM tree inside the render loop
+	neg.renderMaxRate = document.getElementById('debug_max_framerate').checked;
+}
+
+function debug_lost_context(event) {
+	// We set a global variable to avoid querying the DOM tree inside the render loop
+	neg.debugLostContext = document.getElementById('debug_lost_context').checked;
+	
+	stop(); // stop everything
+	start(false, false); // restart everything
+}
+
+function debug_webgl(event) {
+	// We set a global variable to avoid querying the DOM tree inside the render loop
+	neg.debugWebGL = document.getElementById('debug_webgl').checked;
+
+	stop() // stop everything
+	start(false, false); // restart everything
+}
+
+function culling(event) {
+	// We set a global variable to avoid querying the DOM tree inside the render loop
+	neg.backface_culling = document.getElementById('backface_culling').checked;
+
+	backfaceCulling(neg.backface_culling);
+}
+
+</script>
+
+</head>
+
+
+<body onload="start(true, true)">
+
+<div id="framerate"></div>
+
+<canvas id="main_canvas" style="border: 2px solid black;" width="750" height="400">
+    Browser missing &lt;canvas&gt; support!
+</canvas>
+
+<div>
+Selected: <span id="selected" ></span>
+</div>
+
+Camera:
+<div>eye=<span id="cam_eye" ></span></div>
+<div>center=<span id="cam_center" ></span></div>
+<div>up=<span id="cam_up" ></span></div>
+
+<button id="lost_context_button" type="button">Lost Context</button>
+<button id="begin" type="button" onclick="begin_button()">CamBegin</button>
+<button id="forward" type="button" onclick="forward_button()">CamForward</button>
+<button id="back" type="button" onclick="back_button()">CamBack</button>
+<div>
+<input type="checkbox" id="backface_culling" onclick="culling()">Backface culling
+<input type="checkbox" id="debug_pick_check" onclick="debug_pick()">Debug pick
+<input type="checkbox" id="debug_max_framerate" onclick="debug_max_fps()">Debug maximum framerate
+<input type="checkbox" id="debug_lost_context" onclick="debug_lost_context()">Debug lost context
+<input type="checkbox" id="debug_webgl" onclick="debug_webgl()">Debug WebGL
+</div>
+
+
+
+
+
+</body>
+
+</html>
+
