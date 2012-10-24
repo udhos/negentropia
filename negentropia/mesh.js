@@ -2,7 +2,9 @@
 function MeshFace(vertexIndexOffset, vertexIndexNumber, textureName) {
 	this.vertexIndexOffset = vertexIndexOffset;
 	this.vertexIndexNumber = vertexIndexNumber;
-	this.textureName = textureName;
+	if (textureName != null) {
+		this.textureName = textureName;
+	}
 }
 
 function MeshInstance(model, center, scale, animation) {
@@ -129,10 +131,8 @@ MeshInstance.prototype.draw = function(offscreen) {
 	
 	for (var i in this.model.faceList) {
 		var face = this.model.faceList[i];
-		
 
-		if ('verticesTextureCoord' in this.model) {
-			if (!offscreen) {
+		if (!offscreen && ('verticesTextureCoord' in this.model) && (face.textureName != null)) {
 				var texture = neg.textureTable[face.textureName];
 				var unit = 0;
 				neg.gl.activeTexture(neg.gl.TEXTURE0 + unit);
@@ -140,7 +140,6 @@ MeshInstance.prototype.draw = function(offscreen) {
 				neg.gl.uniform1i(neg.uniformSamplerLoc, unit);
 				
 				neg.gl.enableVertexAttribArray(neg.vertexTextureAttributeLoc);
-			}
 		}
 		else {
 			neg.gl.disableVertexAttribArray(neg.vertexTextureAttributeLoc);
@@ -258,7 +257,10 @@ Mesh.prototype.animateInstances = function(elapsedTime) {
 Mesh.prototype.initTextures = function() {
 	for (var i in this.faceList) {
 		var face = this.faceList[i];
-		loadTexture(face.textureName);
+		//console.log("initTextures: [" + face.textureName + "]");
+		if (face.textureName != null) {
+			loadTexture(face.textureName);
+		}
 	}
 	
 	/*

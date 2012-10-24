@@ -2,7 +2,9 @@
 function NegFace(vertexIndexOffset, vertexIndexNumber, textureName) {
 	this.vertexIndexOffset = vertexIndexOffset;
 	this.vertexIndexNumber = vertexIndexNumber;
-	this.textureName = textureName;
+	if (textureName != null) {
+		this.textureName = textureName;
+	}
 }
 
 function NegModelInstance(model, center, scale, animation) {
@@ -178,7 +180,9 @@ NegModel.prototype.animateInstances = function(elapsedTime) {
 NegModel.prototype.initTextures = function() {
 	for (var i in this.faceList) {
 		var face = this.faceList[i];
-		loadTexture(face.textureName);
+		if (face.textureName != null) {
+			loadTexture(face.textureName);
+		}
 	}
 	
 	var unit = 0;
