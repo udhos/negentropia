@@ -4,10 +4,11 @@ function textureFinishedLoading(url, image, texture) {
   
   neg.gl.bindTexture(neg.gl.TEXTURE_2D, texture);
   neg.gl.pixelStorei(neg.gl.UNPACK_FLIP_Y_WEBGL, true);
-  neg.gl.texImage2D(neg.gl.TEXTURE_2D, 0, neg.gl.RGBA, neg.gl.RGBA, neg.gl.UNSIGNED_BYTE, image);
 
   neg.gl.texParameteri(neg.gl.TEXTURE_2D, neg.gl.TEXTURE_MAG_FILTER, neg.gl.NEAREST);
   neg.gl.texParameteri(neg.gl.TEXTURE_2D, neg.gl.TEXTURE_MIN_FILTER, neg.gl.NEAREST);
+
+	neg.gl.texImage2D(neg.gl.TEXTURE_2D, 0, neg.gl.RGBA, neg.gl.RGBA, neg.gl.UNSIGNED_BYTE, image);
 
 	/*
 	While OpenGL 2.0 and later for the desktop offer full support for non-power-of-two (NPOT) textures, OpenGL ES 2.0 and WebGL have only limited NPOT support. The restrictions are defined in Sections 3.8.2, "Shader Execution", and 3.7.11, "Mipmap Generation", of the OpenGL ES 2.0 specification, and are summarized here:
@@ -27,7 +28,7 @@ function textureFinishedLoading(url, image, texture) {
 	neg.gl.texParameteri(neg.gl.TEXTURE_2D, neg.gl.TEXTURE_WRAP_S, neg.gl.CLAMP_TO_EDGE);
 	neg.gl.texParameteri(neg.gl.TEXTURE_2D, neg.gl.TEXTURE_WRAP_T, neg.gl.CLAMP_TO_EDGE);  
 	
-  neg.gl.bindTexture(neg.gl.TEXTURE_2D, null); 
+	neg.gl.bindTexture(neg.gl.TEXTURE_2D, null); 
 }
 
 function textureLoadError(url, image) {
@@ -68,7 +69,15 @@ function cubemapFaceFinishedLoading(targetFace, url, image, texture) {
 	console.log("loaded cubemap face: " + url);
 
     neg.gl.bindTexture(neg.gl.TEXTURE_CUBE_MAP, texture);
+	
+	neg.gl.texParameteri(neg.gl.TEXTURE_CUBE_MAP, neg.gl.TEXTURE_MAG_FILTER, neg.gl.NEAREST);
+	neg.gl.texParameteri(neg.gl.TEXTURE_CUBE_MAP, neg.gl.TEXTURE_MIN_FILTER, neg.gl.NEAREST);
+	
     neg.gl.texImage2D(targetFace, 0, neg.gl.RGBA, neg.gl.RGBA, neg.gl.UNSIGNED_BYTE, image);
+
+	neg.gl.texParameteri(neg.gl.TEXTURE_CUBE_MAP, neg.gl.TEXTURE_WRAP_S, neg.gl.CLAMP_TO_EDGE);
+	neg.gl.texParameteri(neg.gl.TEXTURE_CUBE_MAP, neg.gl.TEXTURE_WRAP_T, neg.gl.CLAMP_TO_EDGE);
+	
 	neg.gl.bindTexture(neg.gl.TEXTURE_CUBE_MAP, null);
 }
 
