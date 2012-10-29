@@ -92,13 +92,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	
 	//fmt.Printf("handler url=%s fullPath=%s\n", path, fullPath)
 	log.Printf("handler url=%s fullPath=%s\n", path, fullPath)
-	
+
 	/*
 	f, err := os.Open(fullPath)
 	var modtime time.Time
 	http.ServeContent(w, r, fullPath, modtime, f)
 	*/
 	http.ServeFile(w, r, fullPath)	
+
+	var delay time.Duration = 20
+	log.Printf("handler url=%s fullPath=%s sleeping %d secs", path, fullPath, delay)
+	time.Sleep(delay * time.Second)
+	
 	return
 
 	page, ok = pageCache[path]
