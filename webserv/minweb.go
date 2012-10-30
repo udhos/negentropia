@@ -10,36 +10,37 @@ import (
 )
 
 var (
-	rootPath string = "c:\\wwwroot"
+	rootPath string = "../wwwroot"
 )
 
 func absPath(path string) string {
 	return rootPath + path
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-
+func static(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
-
-	log.Printf("handler path=%s\n", path)	
-	
 	fullPath := absPath(path)
-	
-	log.Printf("handler url=%s fullPath=%s\n", path, fullPath)
+	//log.Printf("static url=%s fullPath=%s", path, fullPath)
 
 	http.ServeFile(w, r, fullPath)	
+	log.Printf("served static url=%s fullPath=%s", path, fullPath)
 
+	return
 	var delay time.Duration = 20
-	log.Printf("served url=%s fullPath=%s sleeping %d secs", path, fullPath, delay)
+	log.Printf("sleeping %d secs", delay)
 	time.Sleep(delay * time.Second)
 }
 
-func main() {
-	log.Printf("server starting\n")	
-
-	http.HandleFunc("/", handler)
-	err := http.ListenAndServe(":8080", nil)
+func serve(addr string) {
+	log.Printf("server starting on " + addr)	
+	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
+}
+
+func main() {
+	http.HandleFunc("/", static)
+	go serve(":8080")
+	serve(":8000")
 }
