@@ -1,0 +1,38 @@
+<html>
+
+<head>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/googleapis/0.0.4/googleapis.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("identitytoolkit", "1", {packages: ["ac"], language:"en"});
+</script>
+<script type="text/javascript">
+  $(function() {
+    window.google.identitytoolkit.setConfig({
+        developerKey: "AIzaSyBicjTMZW3oYfwfsfxRUuuCa-f15Pn6FF4",
+        companyName: "NegCorp",
+        callbackUrl: "http://localhost:8080/n/callback",
+        realm: "",
+        userStatusUrl: "http://localhost:8080/n/userstatus",
+        loginUrl: "http://localhost:8080/n/login",
+        signupUrl: "http://localhost:8080/n/signup",
+        homeUrl: "http://localhost:8080/n/",
+        logoutUrl: "http://localhost:8080/n/signout",
+        idps: ["Gmail", "GoogleApps", "Yahoo", "AOL"],
+        tryFederatedFirst: true,
+        useCachedUserStatus: false,
+        useContextParam: true
+    });
+    $("#navbar").accountChooser();
+  });
+</script>
+</head>
+
+<body>
+<!-- Insert the navbar element somewhere in the HTML page -->
+<div id="navbar"></div>
+</body>
+
+</html>

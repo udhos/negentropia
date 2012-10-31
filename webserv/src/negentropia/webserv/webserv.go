@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	rootPath string = "../wwwroot"
+	rootPath string = "C:\\tmp\\devel\\negentropia\\wwwroot"
 )
 
 func absPath(path string) string {
