@@ -25,6 +25,12 @@ func static(w http.ResponseWriter, r *http.Request) {
 
 	http.ServeFile(w, r, fullPath)	
 	log.Printf("served static url=%s fullPath=%s", path, fullPath)
+
+	/*
+	var delay time.Duration = 20 
+	log.Printf("blocking for %d secs", delay)
+	time.Sleep(delay * time.Second)
+	*/
 }
 
 func serve(addr string) {
@@ -36,7 +42,8 @@ func serve(addr string) {
 }
 
 func main() {
-	http.HandleFunc("/", static)
+	//http.HandleFunc("/", static)
+	http.Handle("/", http.FileServer(http.Dir(rootPath)))
 	http.HandleFunc("/n/callback", handler.Callback)
 	go serve(":8080")
 	serve(":8000")
