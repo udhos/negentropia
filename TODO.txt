@@ -1,5 +1,7 @@
 TODO
 
-T1 See https://developers.google.com/identity-toolkit/v1/acguide
+T2 See http://code.google.com/p/goauth2/
+
+T1 CANCELLED See https://developers.google.com/identity-toolkit/v1/acguide
 
 END
