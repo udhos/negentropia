@@ -1,7 +1,9 @@
 TODO
 
-T2 See http://code.google.com/p/goauth2/
-
+T2 OAUTH2 
+   See http://code.google.com/p/goauth2/
+       https://developers.google.com/accounts/docs/OAuth2WebServer
+   
 T1 CANCELLED See https://developers.google.com/identity-toolkit/v1/acguide
 
 END
