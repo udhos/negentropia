@@ -19,13 +19,26 @@ func absPath(path string) string {
 	return rootPath + path
 }
 
+/*
 func static(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	fullPath := absPath(path)
 
 	http.ServeFile(w, r, fullPath)	
 	log.Printf("served static url=%s fullPath=%s", path, fullPath)
+}
+*/
 
+// Wrapper type for Handler
+type StaticHandler struct {
+	innerHandler http.Handler // save trapped/wrapped Handler
+}
+
+func (handler StaticHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+	log.Printf("StaticHandler.ServeHTTP url=%s", path)
+	handler.innerHandler.ServeHTTP(w, r)                // call trapped/wrapped Handler
+	
 	/*
 	var delay time.Duration = 20 
 	log.Printf("blocking for %d secs", delay)
@@ -43,7 +56,9 @@ func serve(addr string) {
 
 func main() {
 	//http.HandleFunc("/", static)
-	http.Handle("/", http.FileServer(http.Dir(rootPath)))
+	//http.Handle("/", http.FileServer(http.Dir(rootPath)))
+	http.Handle("/", StaticHandler{http.FileServer(http.Dir(rootPath))})
+	http.HandleFunc("/n", handler.Home)
 	http.HandleFunc("/n/callback", handler.Callback)
 	go serve(":8080")
 	serve(":8000")
