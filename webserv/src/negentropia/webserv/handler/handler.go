@@ -8,14 +8,14 @@ var (
 	templateRootPath string
 )
 
-func SetRootPath(path string) {
+func SetTemplateRoot(path string) {
 	templateRootPath = path
 }
 
-func RootPath() string {
+func TemplateRoot() string {
 	return templateRootPath
 }
 
 func TemplatePath(path string) string {
-	return RootPath() + "\\" + path
+	return TemplateRoot() + "/" + path
 }

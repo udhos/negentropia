@@ -12,28 +12,14 @@ import (
 )
 
 var (
-	rootPath     string = "C:\\tmp\\devel\\negentropia\\wwwroot"
-	templatePath string = "C:\\tmp\\devel\\negentropia\\template"
+	staticPath   string = "/tmp/devel/negentropia/wwwroot"
+	templatePath string = "/tmp/devel/negentropia/template"
 )
 
 // Initialize package main
 func init() {
-	handler.SetRootPath(templatePath)
+	handler.SetTemplateRoot(templatePath)
 }
-
-/*
-func absPath(path string) string {
-	return rootPath + path
-}
-
-func static(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	fullPath := absPath(path)
-
-	http.ServeFile(w, r, fullPath)	
-	log.Printf("served static url=%s fullPath=%s", path, fullPath)
-}
-*/
 
 // Wrapper type for Handler
 type StaticHandler struct {
@@ -64,7 +50,7 @@ func main() {
 	//http.HandleFunc("/", static)
 	//http.Handle("/", http.FileServer(http.Dir(rootPath)))
 
-	http.Handle("/", StaticHandler{http.FileServer(http.Dir(rootPath))})
+	http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
 	http.HandleFunc("/n/", handler.Home)
 	http.HandleFunc("/n/login", handler.Login)
 	http.HandleFunc("/n/loginAuth", handler.LoginAuth)
