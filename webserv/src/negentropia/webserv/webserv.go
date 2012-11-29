@@ -4,6 +4,8 @@ import (
 	//"os"
 	//"fmt"
 	"log"
+	"flag"
+	"strings"
 	//"time"
 	//"io/ioutil"
 	"net/http"
@@ -11,13 +13,18 @@ import (
 	"negentropia/webserv/handler"
 )
 
+type portList []string
+
 var (
-	staticPath   string = "/tmp/devel/negentropia/wwwroot"
-	templatePath string = "/tmp/devel/negentropia/template"
+	staticPath   string   = "/tmp/devel/negentropia/wwwroot"
+	templatePath string   = "/tmp/devel/negentropia/template"
+	listenOn     portList = []string{":8000", ":8080"}
 )
 
 // Initialize package main
 func init() {
+	flag.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
+
 	handler.SetTemplateRoot(templatePath)
 }
 
@@ -39,14 +46,33 @@ func (handler StaticHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func serve(addr string) {
-	log.Printf("server starting on " + addr)
+	if addr == "" {
+		log.Printf("server starting on :http (empty address)")
+	} else {
+		log.Printf("server starting on " + addr)
+	}
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
 }
 
+// String is the method to get the flag value, part of the flag.Value interface.
+func (pl *portList) String() string {
+	return strings.Join(*pl, ",")
+}
+
+// Set is the method to set the flag value, part of the flag.Value interface.
+// Set's argument is a string to be parsed to set the flag.
+// It's a comma-separated list, so we split it.
+func (pl *portList) Set(value string) error {
+	*pl = strings.Split(value, ",") // redefine portList
+	return nil
+}
+
 func main() {
+	flag.Parse()
+	
 	//http.HandleFunc("/", static)
 	//http.Handle("/", http.FileServer(http.Dir(rootPath)))
 
@@ -56,6 +82,10 @@ func main() {
 	http.HandleFunc("/n/loginAuth", handler.LoginAuth)
 	http.HandleFunc("/n/callback", handler.Callback)
 
-	go serve(":8080")
-	serve(":8000")
+	last := len(listenOn) - 1
+	// serve ports except the last one
+	for _, port := range listenOn[:last] {
+		go serve(port)
+	}
+	serve(listenOn[last]) // serve last port
 }
