@@ -7,4 +7,6 @@
 <div>Password: <input type="password" name="Passwd"><input type="submit" value="Login"></div>
 
 <div><input type="submit" value="Google Login"></div>
+
+<div><input type="submit" value="Facebook Login"></div>
 </form>
