@@ -1,12 +1,12 @@
-<h1>{{.Title}}</h1>
+<h1>Welcome to Negentropia</h1>
 
 <form action="/n/loginAuth" method="POST">
 
 <div>Email: <input type="email" spellcheck="false" name="Email" value="" placeholder="me@example.com"></div>
 
-<div>Password: <input type="password" name="Passwd"><input type="submit" value="Login"></div>
+<div>Password: <input type="password" name="Passwd"><input type="submit" name="LoginButton" value="Login"><font color="red">{{.LoginBadAuth}}</font></div>
 
-<div><input type="submit" value="Google Login"></div>
+<div><input type="submit" name="GoogleButton" value="Google Login"></div>
 
-<div><input type="submit" value="Facebook Login"></div>
+<div><input type="submit" name="FacebookButton" value="Facebook Login"></div>
 </form>
