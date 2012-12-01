@@ -53,7 +53,7 @@ func serve(addr string) {
 	}
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
-		log.Fatal("ListenAndServe:", err)
+		log.Panicf("ListenAndServe: %s: %s", addr, err)
 	}
 }
 

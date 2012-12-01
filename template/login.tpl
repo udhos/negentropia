@@ -1,3 +1,7 @@
+
+{{ define "title" }}Negentropia{{ end }}
+
+{{ define "content" }}
 <h1>Welcome to Negentropia</h1>
 
 <form action="/n/loginAuth" method="POST">
@@ -9,4 +13,7 @@
 <div><input type="submit" name="GoogleButton" value="Google Login"></div>
 
 <div><input type="submit" name="FacebookButton" value="Facebook Login"></div>
+
+<div><input type="submit" name="BrokenButton" value="Invalid Login"></div>
 </form>
+{{ end }}

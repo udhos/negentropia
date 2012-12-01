@@ -15,18 +15,26 @@ type Page struct {
 	LoginBadAuth string
 }
 
-func sendLogin(w http.ResponseWriter, p Page) {
+func sendLogin(w http.ResponseWriter, p Page) error {
 	// FIXME: we're loading template every time
-    t, _ := template.ParseFiles(TemplatePath("login.tpl"))
-    t.Execute(w, p)
+    t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("login.tpl"))
+	if err != nil {
+		return err
+	}
+	if err = t.Execute(w, p); err != nil {
+		return err
+	}
+	return nil
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	
 	log.Printf("handler.login url=%s", path)
-
-	sendLogin(w, Page{})
+	
+	if err := sendLogin(w, Page{}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func auth(email string, auth string) bool {
@@ -56,14 +64,17 @@ func LoginAuth(w http.ResponseWriter, r *http.Request) {
 				http.Redirect(w, r, "/n/", http.StatusFound)
 			} else {
 				// bad auth
-				sendLogin(w, Page{"Invalid email/password. Please try again."})
+				if err := sendLogin(w, Page{"Invalid email/password. Please try again."}); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
 			}
 		case google != "":
 			fmt.Fprintf(w, "handler.loginAuth: google")
 		case facebook != "":
 			fmt.Fprintf(w, "handler.loginAuth: facebook")
 		default:
-			fmt.Fprintf(w, "handler.loginAuth: missing button")
+			log.Printf("handler.loginAuth: missing button")
+			http.Redirect(w, r, "/n/login", http.StatusFound)
 	}
 }
 
