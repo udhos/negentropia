@@ -20,7 +20,7 @@ func main() {
 	for i := 0; i < 10; i++ {
 		go func(i int) {
 			fmt.Printf("%d got counter: %d\n", i, <-ids)
-			
+
 			//Inform the caller that we're done :o)
 			done <- true
 		}(i)
