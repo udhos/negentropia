@@ -8,11 +8,14 @@ import (
 	//"io/ioutil"
 	"net/http"
 	"html/template"
+
+	"code.google.com/p/goauth2/oauth"	
 )
 
 type Page struct {
     //Title string
-	LoginBadAuth string
+	PasswdBadAuth string
+	GoogleAuthMsg string
 }
 
 func sendLogin(w http.ResponseWriter, p Page) error {
@@ -41,6 +44,34 @@ func auth(email string, auth string) bool {
 	return false
 }
 
+func googleOauth2Config() *oauth.Config {
+	return &oauth.Config{
+	
+		// Sensitive info, do not commit it to git repo
+		ClientId:     "xxx",
+		ClientSecret: "xxx",
+		
+		Scope:        "https://www.googleapis.com/auth/userinfo.profile",
+		AuthURL:      "https://accounts.google.com/o/oauth2/auth",
+		TokenURL:     "https://accounts.google.com/o/oauth2/token",
+		RedirectURL:  "http://localhost:8080/n/googleCallback",
+	}
+}
+
+func googleOauth2(w http.ResponseWriter, r *http.Request) {
+	log.Printf("handler.loginAuth: google")
+	
+	config := googleOauth2Config()
+	
+	// Step one, get an authorization code from the data provider.
+	
+	url := config.AuthCodeURL("")
+	
+	http.Redirect(w, r, url, http.StatusFound)
+	
+	// See next steps under googleCallback handler
+}
+
 func LoginAuth(w http.ResponseWriter, r *http.Request) {
 	//path := r.URL.Path
 
@@ -64,13 +95,15 @@ func LoginAuth(w http.ResponseWriter, r *http.Request) {
 				http.Redirect(w, r, "/n/", http.StatusFound)
 			} else {
 				// bad auth
-				if err := sendLogin(w, Page{"Invalid email/password. Please try again."}); err != nil {
+				if err := sendLogin(w, Page{PasswdBadAuth: "Invalid email/password. Please try again."}); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 				}
 			}
 		case google != "":
-			fmt.Fprintf(w, "handler.loginAuth: google")
+			//fmt.Fprintf(w, "handler.loginAuth: google")
+			googleOauth2(w, r)
 		case facebook != "":
+			log.Printf("handler.loginAuth: facebook")
 			fmt.Fprintf(w, "handler.loginAuth: facebook")
 		default:
 			log.Printf("handler.loginAuth: missing button")

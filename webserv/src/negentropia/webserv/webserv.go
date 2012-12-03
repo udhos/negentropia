@@ -80,7 +80,7 @@ func main() {
 	http.HandleFunc("/n/", handler.Home)
 	http.HandleFunc("/n/login", handler.Login)
 	http.HandleFunc("/n/loginAuth", handler.LoginAuth)
-	http.HandleFunc("/n/callback", handler.Callback)
+	http.HandleFunc("/n/googleCallback", handler.GoogleCallback)
 
 	last := len(listenOn) - 1
 	// serve ports except the last one
