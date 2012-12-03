@@ -1,4 +1,6 @@
 // Dustin post on golang-nuts
+// See also tickers.go
+// See also https://gobyexample.com/tickers
 
 package main
 
