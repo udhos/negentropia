@@ -23,6 +23,8 @@ var (
 
 // Initialize package main
 func init() {
+	handler.GoogleId = flag.String("gId", "", "google client id")
+	handler.GoogleSecret = flag.String("gSecret", "", "google client secret")
 	flag.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
 
 	handler.SetTemplateRoot(templatePath)

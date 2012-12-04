@@ -1,16 +1,23 @@
 package handler
 
 import (
-	"io"
-	"os"
+	//"io"
+	//"os"
 	"fmt"
 	"log"
+	//"errors"
 	//"time"
-	//"io/ioutil"
+	"io/ioutil"
 	"net/http"
+	"encoding/json"
 	
 	"code.google.com/p/goauth2/oauth"
 )
+
+type GoogleProfile struct {
+	Id   string
+	Name string
+}
 
 func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
@@ -34,7 +41,6 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	// Step two, exchange the authorization code for an access token.
 	
 	tok, err := transp.Exchange(code)
-	err = nil
 	if err != nil {
 		msg := fmt.Sprintf("handler.googleCallback url=%s Exchange: %s", path, err)
 		log.Printf(msg)
@@ -57,7 +63,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	*/
 
 	// Send sequest
-	req, err := transp.Client().Get(apiRequest)
+	resp, err := transp.Client().Get(apiRequest)
 	if err != nil {
 		msg := fmt.Sprintf("handler.googleCallback url=%s Request: %s", path, err)
 		log.Printf(msg)
@@ -67,6 +73,19 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	
-	io.Copy(os.Stdout, req.Body)
-	io.Copy(w, req.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	
+	var profile GoogleProfile
+	
+	er := json.Unmarshal(body, &profile)
+	if er != nil {
+		msg := fmt.Sprintf("handler.googleCallback url=%s Unmarshal: %s", path, err)
+		log.Printf(msg)
+
+		if err := sendLogin(w, Page{GoogleAuthMsg: msg}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+	
+	log.Printf("name=%s id=%s", profile.Name, profile.Id)
 }

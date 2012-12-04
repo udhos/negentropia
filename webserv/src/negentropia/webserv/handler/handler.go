@@ -6,6 +6,8 @@ import (
 
 var (
 	templateRootPath string
+	GoogleId         *string
+	GoogleSecret     *string
 )
 
 func SetTemplateRoot(path string) {

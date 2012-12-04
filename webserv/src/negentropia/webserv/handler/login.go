@@ -46,11 +46,8 @@ func auth(email string, auth string) bool {
 
 func googleOauth2Config() *oauth.Config {
 	return &oauth.Config{
-	
-		// Sensitive info, do not commit it to git repo
-		ClientId:     "xxx",
-		ClientSecret: "xxx",
-		
+		ClientId:     *GoogleId,
+		ClientSecret: *GoogleSecret,
 		Scope:        "https://www.googleapis.com/auth/userinfo.profile",
 		AuthURL:      "https://accounts.google.com/o/oauth2/auth",
 		TokenURL:     "https://accounts.google.com/o/oauth2/token",
