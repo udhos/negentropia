@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	
 	"code.google.com/p/goauth2/oauth"
+	"github.com/bradfitz/gomemcache/memcache"
 )
 
 type GoogleProfile struct {
@@ -74,11 +75,19 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		msg := fmt.Sprintf("handler.googleCallback url=%s ioutil.ReadAll: %s", path, err)
+		log.Printf(msg)
+
+		if err := sendLogin(w, Page{GoogleAuthMsg: msg}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
 	
 	var profile GoogleProfile
 	
-	er := json.Unmarshal(body, &profile)
-	if er != nil {
+	err = json.Unmarshal(body, &profile)
+	if err != nil {
 		msg := fmt.Sprintf("handler.googleCallback url=%s Unmarshal: %s", path, err)
 		log.Printf(msg)
 
@@ -87,7 +96,20 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	
-	log.Printf("name=%s id=%s", profile.Name, profile.Id)
+	log.Printf("handler.googleCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
+	
+	mc := memcache.New("127.0.0.1:11211")
+    err = mc.Set(&memcache.Item{Key: "session", Value: []byte("123456")})
+	if err != nil {
+		log.Printf("handler.googleCallback mc.Set url=%s err=%s", path, err)
+	}
+	var it *memcache.Item
+    it, err = mc.Get("session")
+	if err != nil {
+		log.Printf("handler.googleCallback mc.Get url=%s err=%s", path, err)
+	} else {
+		log.Printf("handler.googleCallback url=%s session=%s", path, it.Value)
+	}
 	
 	http.Redirect(w, r, "/n/", http.StatusFound)
 }

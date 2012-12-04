@@ -21,10 +21,13 @@ git clone https://code.google.com/p/negentropia/
 # 3. install goauth2
 go get code.google.com/p/goauth2/oauth
 
-# 4. Build and install (to negentropia\webserv\bin)
+# 4. Install memcache
+go get github.com/bradfitz/gomemcache/memcache
+
+# 5. Build and install (to negentropia\webserv\bin)
 go install negentropia\webserv
 
-# 5. Run
+# 6. Run
 # Under Linux:
 negentropia\webserv\bin\webserv
 # Under Windows:
@@ -35,9 +38,13 @@ BUILDING UNDER WINDOWS:
 
 # windows git bash:
 
-mkdir -p /c/tmp/devel
+export DEVEL=/c/tmp/devel
+export GOPATH=$DEVEL/negentropia/webserv
 
-cd /c/tmp/devel
+go get github.com/bradfitz/gomemcache/memcache
+
+mkdir -p $DEVEL
+cd $DEVEL
 
 git clone https://code.google.com/p/negentropia/
 

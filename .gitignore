@@ -7,3 +7,8 @@
 !*.js
 !*.jpg
 !*.png
+!*.ico
+negentropia
+template
+webserv
+wwwroot
