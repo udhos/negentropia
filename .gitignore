@@ -1,0 +1,9 @@
+*
+!.gitignore
+!*.go
+!*.html
+!*.tpl
+!*.txt
+!*.js
+!*.jpg
+!*.png
