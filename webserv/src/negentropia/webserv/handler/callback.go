@@ -88,4 +88,6 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	log.Printf("name=%s id=%s", profile.Name, profile.Id)
+	
+	http.Redirect(w, r, "/n/", http.StatusFound)
 }
