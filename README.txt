@@ -10,6 +10,15 @@ REQUIREMENTS
 # Install Mercurial - required for packages such as: go get code.google.com/p/goauth2/oauth
 # http://mercurial.selenic.com/downloads/
 
+# Install Memcached
+# http://memcached.org/
+#
+# memcached 1.4.2 for Windows 7 64-bit:
+# http://www.urielkatz.com/archive/detail/memcached-64-bit-windows/
+# http://www.urielkatz.com/projects/memcached-win64/memcached-win64.zip
+# http://dl.dropbox.com/u/103946/memcached-win64.zip
+# http://fajarmf.net/apps/memcached-win64.zip
+
 
 GENERAL BUILDING INSTRUCTIONS:
 
@@ -21,13 +30,16 @@ git clone https://code.google.com/p/negentropia/
 # 3. install goauth2
 go get code.google.com/p/goauth2/oauth
 
-# 4. Install memcache
+# 4. Install memcache client library
 go get github.com/bradfitz/gomemcache/memcache
 
 # 5. Build and install (to negentropia\webserv\bin)
 go install negentropia\webserv
 
-# 6. Run
+# 6. Start memcached
+memcached.exe -vv -p 12211 -U 12211
+
+# 7. Run
 # Under Linux:
 negentropia\webserv\bin\webserv
 # Under Windows:
@@ -36,19 +48,22 @@ negentropia\webserv\bin\webserv.exe
 
 BUILDING UNDER WINDOWS:
 
-# windows git bash:
+## windows git bash:
 
 export DEVEL=/c/tmp/devel
 export GOPATH=$DEVEL/negentropia/webserv
-
-go get github.com/bradfitz/gomemcache/memcache
 
 mkdir -p $DEVEL
 cd $DEVEL
 
 git clone https://code.google.com/p/negentropia/
 
-# windows dos prompt:
+go get github.com/bradfitz/gomemcache/memcache
+
+## windows dos prompt:
+
+# start memcached
+memcached.exe -vv -p 11211 -U 11211
 
 set DEVEL=C:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv

@@ -98,7 +98,6 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	
 	log.Printf("handler.googleCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
 	
-	mc := memcache.New("127.0.0.1:11211")
     err = mc.Set(&memcache.Item{Key: "session", Value: []byte("123456")})
 	if err != nil {
 		log.Printf("handler.googleCallback mc.Set url=%s err=%s", path, err)
