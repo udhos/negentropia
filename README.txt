@@ -37,7 +37,7 @@ go get github.com/bradfitz/gomemcache/memcache
 go install negentropia\webserv
 
 # 6. Start memcached
-memcached.exe -vv -p 12211 -U 12211
+memcached.exe -vv -p 11211 -U 11211
 
 # 7. Run
 # Under Linux:
