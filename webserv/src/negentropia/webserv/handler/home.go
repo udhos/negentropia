@@ -11,6 +11,7 @@ import (
 )
 
 type HomePage struct {
+	Account string
 }
 
 func sendHome(w http.ResponseWriter, p HomePage) error {
@@ -30,7 +31,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	
 	log.Printf("handler.home url=%s", path)
 	
-	if err := sendHome(w, HomePage{}); err != nil {
+	if err := sendHome(w, HomePage{"home guest"}); err != nil {
 		log.Printf("handler.home url=%s %s", path, err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}	

@@ -14,6 +14,7 @@ import (
 
 type Page struct {
     //Title string
+	Account       string
 	PasswdBadAuth string
 	GoogleAuthMsg string
 }
@@ -35,7 +36,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	
 	log.Printf("handler.login url=%s", path)
 	
-	if err := sendLogin(w, Page{}); err != nil {
+	if err := sendLogin(w, Page{Account: "guest"}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
