@@ -8,7 +8,7 @@
 !*.jpg
 !*.png
 !*.ico
-negentropia
-template
-webserv
-wwwroot
+!negentropia
+!template
+!webserv
+!wwwroot
