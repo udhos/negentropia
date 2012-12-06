@@ -37,7 +37,7 @@ go get github.com/bradfitz/gomemcache/memcache
 go install negentropia\webserv
 
 # 6. Start memcached
-memcached.exe -vv -p 11211 -U 11211
+memcached -vv -p 11211
 
 # 7. Run
 # Under Linux:
@@ -63,7 +63,7 @@ go get github.com/bradfitz/gomemcache/memcache
 ## windows dos prompt:
 
 # start memcached
-memcached.exe -vv -p 11211 -U 11211
+memcached.exe -vv -p 11211
 
 set DEVEL=C:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv
