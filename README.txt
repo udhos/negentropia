@@ -74,7 +74,10 @@ go get code.google.com/p/goauth2/oauth
 # build
 go install negentropia\webserv
 
-# run
+# run:
+#   -- google login requires Google API "Client ID" and "Client secret"
+%DEVEL%\negentropia\webserv\bin\webserv.exe -gId=putIdHere -gSecret=putSecretHere
+#   -- if you don't need google login:
 %DEVEL%\negentropia\webserv\bin\webserv.exe
 
 --THE END--
