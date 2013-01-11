@@ -3,11 +3,17 @@ package session
 import (
 	"log"
 	"time"
-	//"errors"
+	"errors"
 	"strings"
 	"net/http"
 	
 	"github.com/bradfitz/gomemcache/memcache"
+)
+
+const (
+	AUTH_PROV_CRED     = 0
+	AUTH_PROV_GOOGLE   = 1
+	AUTH_PROV_FACEBOOK = 2
 )
 
 var (
@@ -16,7 +22,10 @@ var (
 )
 
 type Session struct {
-	Id string
+	SessionId        string
+	AuthProvider     int    // 1 = Google
+	AuthProviderId   string // "102990441336549717697" (Google Profile)
+	AuthProviderName string // "Everton Marques"
 }
 
 func init() {
@@ -24,7 +33,7 @@ func init() {
 	mc = memcache.New(mcServerList...)
 }
 
-func sessionLookup() string {
+func sessionGet() string {
 	//var it *memcache.Item
     it, err := mc.Get("session")
 	if err != nil {
@@ -34,7 +43,7 @@ func sessionLookup() string {
 	return string(it.Value)
 }
 
-func sessionSave(value string) error {
+func sessionSet(value string) error {
     err := mc.Set(&memcache.Item{Key: "session", Value: []byte(value), Expiration: 24*3600})
 	if err != nil {
 		log.Printf("handler.googleCallback mc.Set err=%s", err)
@@ -66,32 +75,55 @@ func newCookie(name, value string) *http.Cookie {
 	return cookie
 }
 
-func newSession(id string) *Session {
-	return &Session{id}
+func newSession(sid string, provider int, acctId string, acctName string) *Session {
+	return &Session{sid, provider, acctId, acctName}
 }
 
-func Get(w http.ResponseWriter, r *http.Request) *Session {
+func sessionLoad(sessionId string) *Session {
+	return nil
+}
+
+func sessionSave(session *Session) error {
+	return errors.New("sessionSave: FIXME: WRITEME")
+}
+
+func Get(r *http.Request) *Session {
 
 	cook, err := r.Cookie("session")
-	if err == nil {
-		log.Printf("session.Get FOUND cookie:session=%s", cook.Value)
-		
-		sId := sessionLookup();
-
-		log.Printf("session.Get FOUND DB:session=%s", sId)
-		
-		return newSession(cook.Value)
+	if err != nil {
+		log.Printf("session.Get cookie NOT FOUND: err=%s", err)
+		return nil
 	}
-	
-	// Create cookie
-	
-	sessionId := "test123456"
 
-	ck := newCookie("session", sessionId)
+	log.Printf("session.Get FOUND cookie session=%s", cook.Value)
+		
+	session := sessionLoad(cook.Value);
+	if session == nil {
+		log.Printf("session.Get: failure loading session id=%s", cook.Value)	
+		return nil
+	}
+
+	log.Printf("session.Get LOADED session=%s", cook.Value)
+		
+	return session
+}
+
+func Set(w http.ResponseWriter, provider int, acctId string, acctName string) *Session {
+		
+	sessionId := "test123456" // FIXME: generation new session id
+	log.Printf("session.Set FIXME: generation new session id")
+
+	session := newSession(sessionId, provider, acctId, acctName)
 	
-	http.SetCookie(w, ck)
+	err := sessionSave(session)
+	if (err != nil) {
+		log.Printf("session.Set: failure saving session id=%s", sessionId)
+		return nil
+	}
+
+	cook := newCookie("session", sessionId)
+
+	http.SetCookie(w, cook)
 	
-	sessionSave(sessionId)
-	
-	return newSession(ck.Value)
+	return session
 }

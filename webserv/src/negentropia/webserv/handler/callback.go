@@ -99,23 +99,18 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	log.Printf("handler.googleCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
-	
-	/*
-    err = mc.Set(&memcache.Item{Key: "session", Value: []byte("123456"), Expiration: 24*3600})
-	if err != nil {
-		log.Printf("handler.googleCallback mc.Set url=%s err=%s", path, err)
+
+	s := session.Get(r)
+	if (s == nil) {
+		s = session.Set(w, session.AUTH_PROV_GOOGLE, profile.Id, profile.Name)
 	}
-	var it *memcache.Item
-    it, err = mc.Get("session")
-	if err != nil {
-		log.Printf("handler.googleCallback mc.Get url=%s err=%s", path, err)
-	} else {
-		log.Printf("handler.googleCallback url=%s session=%s", path, it.Value)
+	if (s == nil) {
+		log.Printf("handler.googleCallback url=%s could not establish session", path)	
+		http.Error(w, "handler.googleCallback could not establish session", http.StatusInternalServerError)
+		return
 	}
-	*/
 	
-	s := session.Get(w, r)
-	log.Printf("handler.googleCallback url=%s session=%s", path, s.Id)
+	log.Printf("handler.googleCallback url=%s session=%s DONE", path, s.SessionId)
 	
 	http.Redirect(w, r, "/n/", http.StatusFound)
 }
