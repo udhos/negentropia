@@ -110,8 +110,8 @@ func Get(r *http.Request) *Session {
 
 func Set(w http.ResponseWriter, provider int, acctId string, acctName string) *Session {
 		
-	sessionId := "test123456" // FIXME: generation new session id
-	log.Printf("session.Set FIXME: generation new session id")
+	sessionId := "test123456" // FIXME: generate new session id
+	log.Printf("session.Set FIXME: generate new session id")
 
 	session := newSession(sessionId, provider, acctId, acctName)
 	
