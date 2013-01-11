@@ -11,8 +11,10 @@ import (
 	"net/http"
 	"encoding/json"
 	
+	"negentropia/webserv/session"
+	
 	"code.google.com/p/goauth2/oauth"
-	"github.com/bradfitz/gomemcache/memcache"
+	//"github.com/bradfitz/gomemcache/memcache"
 )
 
 type GoogleProfile struct {
@@ -98,6 +100,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	
 	log.Printf("handler.googleCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
 	
+	/*
     err = mc.Set(&memcache.Item{Key: "session", Value: []byte("123456"), Expiration: 24*3600})
 	if err != nil {
 		log.Printf("handler.googleCallback mc.Set url=%s err=%s", path, err)
@@ -109,6 +112,10 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Printf("handler.googleCallback url=%s session=%s", path, it.Value)
 	}
+	*/
+	
+	s := session.Get(w, r)
+	log.Printf("handler.googleCallback url=%s session=%s", path, s.Id)
 	
 	http.Redirect(w, r, "/n/", http.StatusFound)
 }

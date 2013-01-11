@@ -9,6 +9,13 @@
 !*.png
 !*.ico
 !negentropia
+!negentropia/lib
+!negentropia/texture
 !template
 !webserv
+!webserv/src
+!webserv/src/negentropia/webserv
+!webserv/src/negentropia/webserv/handler
+!webserv/src/negentropia/webserv/session
 !wwwroot
+!wwwroot/hello
