@@ -27,6 +27,7 @@ var (
 	redisPassword string  = ""
 	redisDb       int64   = -1
 	redisClient   *redis.Client
+	redisExpire   int64   = 2 * 86400 // expire keys after 2 days
 )
 
 type Session struct {
@@ -66,9 +67,12 @@ func sessionSet(value string) error {
 */
 
 func newCookie(name, value string) *http.Cookie {
-	var maxAge int = 86400
+	var maxAge int = 0
 	var expires time.Time
 
+    // MaxAge=0 means no 'Max-Age' attribute specified.
+    // MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0'
+    // MaxAge>0 means Max-Age attribute present and given in seconds
 	if maxAge > 0 {
 		expires = time.Now().Add(time.Duration(maxAge) * time.Second)
 	} else if maxAge < 0 {
@@ -117,6 +121,8 @@ func sessionSave(session *Session) error {
 	redisClient.HSet(session.SessionId, "AuthProvider",     strconv.Itoa(session.AuthProvider))
 	redisClient.HSet(session.SessionId, "AuthProviderId",   session.AuthProviderId)
 	redisClient.HSet(session.SessionId, "AuthProviderName", session.AuthProviderName)
+
+	redisClient.Expire(session.SessionId, redisExpire)
 	
 	return nil
 }
