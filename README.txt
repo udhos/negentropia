@@ -19,6 +19,12 @@ REQUIREMENTS
 # http://dl.dropbox.com/u/103946/memcached-win64.zip
 # http://fajarmf.net/apps/memcached-win64.zip
 
+# Install Redis
+# http://redis.io/download
+#
+# Redis 2.4.5 for Windows 7 64-bit:
+# https://github.com/dmajkic/redis/downloads
+
 
 GENERAL BUILDING INSTRUCTIONS:
 
@@ -30,8 +36,11 @@ git clone https://code.google.com/p/negentropia/
 # 3. install goauth2
 go get code.google.com/p/goauth2/oauth
 
+# 4. Install redis client library
+go get github.com/vmihailenco/redis
+
 # 4. Install memcache client library
-go get github.com/bradfitz/gomemcache/memcache
+#go get github.com/bradfitz/gomemcache/memcache
 
 # 5. Build and install (to negentropia\webserv\bin)
 go install negentropia\webserv
@@ -58,26 +67,36 @@ cd $DEVEL
 
 git clone https://code.google.com/p/negentropia/
 
-go get github.com/bradfitz/gomemcache/memcache
+go get github.com/vmihailenco/redis
+
+#go get github.com/bradfitz/gomemcache/memcache
 
 ## windows dos prompt:
 
-# start memcached
-memcached.exe -vv -p 11211
+@rem start memcached
+@rem c:\memcached-win64\memcached.exe -vv -vv -p 11211
+
+@rem start redis
+c:\redis-2.4.5-win32-win64\64bit\redis-server.exe
 
 set DEVEL=C:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv
 
-# install goauth2
+@rem install goauth2
 go get code.google.com/p/goauth2/oauth
 
-# build
+@rem build
 go install negentropia\webserv
 
-# run:
-#   -- google login requires Google API "Client ID" and "Client secret"
+@rem run:
+@rem   -- google login requires Google API "Client ID" and "Client secret"
 %DEVEL%\negentropia\webserv\bin\webserv.exe -gId=putIdHere -gSecret=putSecretHere
-#   -- if you don't need google login:
+@rem   -- if you don't need google login:
 %DEVEL%\negentropia\webserv\bin\webserv.exe
+
+
+RUNNING / TESTING
+
+Open http://localhost:8080/n/
 
 --THE END--

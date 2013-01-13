@@ -3,11 +3,13 @@ package session
 import (
 	"log"
 	"time"
-	"errors"
-	"strings"
+	//"errors"
+	//"strings"
+	"strconv"
 	"net/http"
 	
-	"github.com/bradfitz/gomemcache/memcache"
+	//"github.com/bradfitz/gomemcache/memcache"
+	"github.com/vmihailenco/redis"
 )
 
 const (
@@ -17,8 +19,14 @@ const (
 )
 
 var (
+	/*
 	mcServerList     []string         = []string{"127.0.0.1:11211", "127.0.0.1:12000"}
 	mc               *memcache.Client
+	*/
+	redisAddr     string  = "localhost:6379"
+	redisPassword string  = ""
+	redisDb       int64   = -1
+	redisClient   *redis.Client
 )
 
 type Session struct {
@@ -29,10 +37,15 @@ type Session struct {
 }
 
 func init() {
+	/*
 	log.Printf("session.init(): memcache client for: " + strings.Join(mcServerList, ","))
 	mc = memcache.New(mcServerList...)
+	*/
+	log.Printf("session.init(): redis client for: %s", redisAddr)
+	redisClient = redis.NewTCPClient(redisAddr, redisPassword, redisDb)
 }
 
+/*
 func sessionGet() string {
 	//var it *memcache.Item
     it, err := mc.Get("session")
@@ -50,6 +63,7 @@ func sessionSet(value string) error {
 	}
 	return err
 }
+*/
 
 func newCookie(name, value string) *http.Cookie {
 	var maxAge int = 86400
@@ -80,11 +94,31 @@ func newSession(sid string, provider int, acctId string, acctName string) *Sessi
 }
 
 func sessionLoad(sessionId string) *Session {
-	return nil
+
+	if !redisClient.Exists(sessionId).Val() {
+		return nil
+	}
+	
+	var (
+		//err          error
+		provider     int 
+		profileId    string
+		profileName  string
+	)
+	
+	provider, _   = strconv.Atoi(redisClient.HGet(sessionId, "AuthProvider").Val())
+	profileId     = redisClient.HGet(sessionId, "AuthProviderId").Val()
+	profileName   = redisClient.HGet(sessionId, "AuthProviderName").Val()
+	
+	return newSession(sessionId, provider, profileId, profileName)
 }
 
 func sessionSave(session *Session) error {
-	return errors.New("sessionSave: FIXME: WRITEME")
+	redisClient.HSet(session.SessionId, "AuthProvider",     strconv.Itoa(session.AuthProvider))
+	redisClient.HSet(session.SessionId, "AuthProviderId",   session.AuthProviderId)
+	redisClient.HSet(session.SessionId, "AuthProviderName", session.AuthProviderName)
+	
+	return nil
 }
 
 func Get(r *http.Request) *Session {
@@ -117,7 +151,7 @@ func Set(w http.ResponseWriter, provider int, acctId string, acctName string) *S
 	
 	err := sessionSave(session)
 	if (err != nil) {
-		log.Printf("session.Set: failure saving session id=%s", sessionId)
+		log.Printf("session.Set: failure saving session id=%s error=[%s]", sessionId, err)
 		return nil
 	}
 
