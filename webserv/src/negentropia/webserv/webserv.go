@@ -80,6 +80,7 @@ func main() {
 
 	http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
 	http.HandleFunc("/n/", handler.Home)
+	http.HandleFunc("/n/logout", handler.Logout)
 	http.HandleFunc("/n/login", handler.Login)
 	http.HandleFunc("/n/loginAuth", handler.LoginAuth)
 	http.HandleFunc("/n/googleCallback", handler.GoogleCallback)

@@ -66,8 +66,7 @@ func sessionSet(value string) error {
 }
 */
 
-func newCookie(name, value string) *http.Cookie {
-	var maxAge int = 0
+func newCookie(name, value string, maxAge int) *http.Cookie {
 	var expires time.Time
 
     // MaxAge=0 means no 'Max-Age' attribute specified.
@@ -161,9 +160,21 @@ func Set(w http.ResponseWriter, provider int, acctId string, acctName string) *S
 		return nil
 	}
 
-	cook := newCookie("session", sessionId)
+	// MaxAge=0 means no 'Max-Age' attribute specified.
+	cook := newCookie("session", sessionId, 0)
 
 	http.SetCookie(w, cook)
 	
 	return session
+}
+
+func Delete(w http.ResponseWriter, session *Session) {
+
+	redisClient.Del(session.SessionId)
+	
+	// MaxAge<0 means delete cookie now
+	cook := newCookie("session", "", -1)
+
+	http.SetCookie(w, cook)
+
 }
