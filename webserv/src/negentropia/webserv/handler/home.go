@@ -8,6 +8,8 @@ import (
 	//"io/ioutil"
 	"net/http"
 	"html/template"	
+	
+	"negentropia/webserv/session"	
 )
 
 type HomePage struct {
@@ -31,7 +33,16 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	
 	log.Printf("handler.home url=%s", path)
 	
-	if err := sendHome(w, HomePage{"home guest"}); err != nil {
+	var account string
+	
+	s := session.Get(r)
+	if s == nil {
+		account = ""
+	} else {
+		account = s.AuthProviderName
+	}
+	
+	if err := sendHome(w, HomePage{account}); err != nil {
 		log.Printf("handler.home url=%s %s", path, err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}	

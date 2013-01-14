@@ -9,7 +9,9 @@ import (
 	"net/http"
 	"html/template"
 
-	"code.google.com/p/goauth2/oauth"	
+	"code.google.com/p/goauth2/oauth"
+	
+	"negentropia/webserv/session"
 )
 
 type Page struct {
@@ -34,9 +36,18 @@ func sendLogin(w http.ResponseWriter, p Page) error {
 func Login(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path
 	
-	log.Printf("handler.login url=%s", path)
+	log.Printf("handler.Login url=%s", path)
 	
-	if err := sendLogin(w, Page{Account: "guest"}); err != nil {
+	var account string
+	
+	s := session.Get(r)
+	if s == nil {
+		account = ""
+	} else {
+		account = s.AuthProviderName
+	}	
+	
+	if err := sendLogin(w, Page{Account:account}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -57,7 +68,7 @@ func googleOauth2Config() *oauth.Config {
 }
 
 func googleOauth2(w http.ResponseWriter, r *http.Request) {
-	log.Printf("handler.loginAuth: google")
+	log.Printf("handler.LoginAuth: google")
 	
 	config := googleOauth2Config()
 	
@@ -80,7 +91,7 @@ func LoginAuth(w http.ResponseWriter, r *http.Request) {
 	google := r.FormValue("GoogleButton");
 	facebook := r.FormValue("FacebookButton");	
 	
-	//debug := "handler.loginAuth url=%s email=%s pass=%s login=%s google=%s facebook=%s"
+	//debug := "handler.LoginAuth url=%s email=%s pass=%s login=%s google=%s facebook=%s"
 	//log.Printf(debug, path, email, password, login, google, facebook)
 	//fmt.Fprintf(w, debug, path, email, password, login, google, facebook)
 	
@@ -98,13 +109,13 @@ func LoginAuth(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		case google != "":
-			//fmt.Fprintf(w, "handler.loginAuth: google")
+			//fmt.Fprintf(w, "handler.LoginAuth: google")
 			googleOauth2(w, r)
 		case facebook != "":
-			log.Printf("handler.loginAuth: facebook")
-			fmt.Fprintf(w, "handler.loginAuth: facebook")
+			log.Printf("handler.LoginAuth: facebook")
+			fmt.Fprintf(w, "handler.LoginAuth: facebook")
 		default:
-			log.Printf("handler.loginAuth: missing button")
+			log.Printf("handler.LoginAuth: missing button")
 			http.Redirect(w, r, "/n/login", http.StatusFound)
 	}
 }

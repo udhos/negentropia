@@ -5,7 +5,7 @@
     </head>
     <body>
 		<nav>
-			{{.Account}}
+			{{if .Account}}{{.}}<a href="/n/logout">logout</a>{{else}}<a href="/n/login">login</a>{{end}}
 		</nav>
 		
         <section id="contents">

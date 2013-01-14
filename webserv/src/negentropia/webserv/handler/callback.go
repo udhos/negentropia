@@ -11,10 +11,10 @@ import (
 	"net/http"
 	"encoding/json"
 	
-	"negentropia/webserv/session"
-	
 	"code.google.com/p/goauth2/oauth"
 	//"github.com/bradfitz/gomemcache/memcache"
+	
+	"negentropia/webserv/session"
 )
 
 type GoogleProfile struct {
