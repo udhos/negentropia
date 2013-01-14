@@ -126,6 +126,10 @@ func sessionSave(session *Session) error {
 	return nil
 }
 
+func newSessionId() string {
+	return strconv.FormatInt(redisClient.Incr("sessionIdGenerator").Val(), 10)
+}
+
 func Get(r *http.Request) *Session {
 
 	cook, err := r.Cookie("session")
@@ -149,8 +153,7 @@ func Get(r *http.Request) *Session {
 
 func Set(w http.ResponseWriter, provider int, acctId string, acctName string) *Session {
 		
-	sessionId := "test123456" // FIXME: generate new session id
-	log.Printf("session.Set FIXME: generate new session id")
+	sessionId := newSessionId()
 
 	session := newSession(sessionId, provider, acctId, acctName)
 	
@@ -176,5 +179,4 @@ func Delete(w http.ResponseWriter, session *Session) {
 	cook := newCookie("session", "", -1)
 
 	http.SetCookie(w, cook)
-
 }

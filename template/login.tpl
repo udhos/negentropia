@@ -1,6 +1,4 @@
-
 {{ define "title" }}Negentropia{{ end }}
-
 {{ define "content" }}
 <h1>Welcome to Negentropia</h1>
 
