@@ -24,6 +24,10 @@ REQUIREMENTS
 #
 # Redis 2.4.5 for Windows 7 64-bit:
 # https://github.com/dmajkic/redis/downloads
+# 
+# Microsoft Official Redis for Windows at Microsoft Open Tech:
+# https://github.com/MSOpenTech/redis
+# https://github.com/MSOpenTech/redis/blob/bksavecow/msvs/bin/release/redisbin.zip
 
 
 GENERAL BUILDING INSTRUCTIONS:
@@ -77,7 +81,10 @@ go get github.com/vmihailenco/redis
 @rem c:\memcached-win64\memcached.exe -vv -vv -p 11211
 
 @rem start redis
+@rem dmajkic redis:
 c:\redis-2.4.5-win32-win64\64bit\redis-server.exe
+@rem microsoft redis:
+c:\redisbin\redis-server.exe
 
 set DEVEL=C:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv
