@@ -14,12 +14,10 @@ import (
 	"negentropia/webserv/session"
 )
 
-func Logout(w http.ResponseWriter, r *http.Request) {
+func Logout(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
-	
 	log.Printf("handler.Logout url=%s", path)
 
-	s := session.Get(r)
 	if s != nil {
 		session.Delete(w, s)
 	}

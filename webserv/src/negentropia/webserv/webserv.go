@@ -11,6 +11,7 @@ import (
 	"net/http"
 
 	"negentropia/webserv/handler"
+	"negentropia/webserv/session"
 )
 
 type portList []string
@@ -72,6 +73,12 @@ func (pl *portList) Set(value string) error {
 	return nil
 }
 
+// Add session parameter to handle
+func trapHandle(w http.ResponseWriter, r *http.Request, handler func(http.ResponseWriter, *http.Request, *session.Session)) {
+	s := session.Get(r)
+	handler(w, r, s)
+}
+
 func main() {
 	flag.Parse()
 	
@@ -79,11 +86,19 @@ func main() {
 	//http.Handle("/", http.FileServer(http.Dir(rootPath)))
 
 	http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
-	http.HandleFunc("/n/", handler.Home)
-	http.HandleFunc("/n/logout", handler.Logout)
+	//http.HandleFunc("/n/", handler.Home)
+	
+	http.HandleFunc("/n/", func (w http.ResponseWriter, r *http.Request) { handler.Home(w,r) } )
+	//http.HandleFunc("/n/logout", handler.Logout)
+	
+	http.HandleFunc("/n/logout", func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
+	
 	http.HandleFunc("/n/login", handler.Login)
+	
 	http.HandleFunc("/n/loginAuth", handler.LoginAuth)
+	
 	http.HandleFunc("/n/googleCallback", handler.GoogleCallback)
+	
 
 	last := len(listenOn) - 1
 	// serve ports except the last one
