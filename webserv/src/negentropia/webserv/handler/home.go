@@ -13,7 +13,12 @@ import (
 )
 
 type HomePage struct {
-	Account string
+	Account        string
+	
+	ShowNavAccount bool
+	ShowNavHome    bool
+	ShowNavLogin   bool
+	ShowNavLogout  bool
 }
 
 func sendHome(w http.ResponseWriter, p HomePage) error {
@@ -28,21 +33,20 @@ func sendHome(w http.ResponseWriter, p HomePage) error {
 	return nil
 }
 
-func Home(w http.ResponseWriter, r *http.Request) {
+func Home(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 	
 	log.Printf("handler.home url=%s", path)
 	
 	var account string
 	
-	s := session.Get(r)
 	if s == nil {
 		account = ""
 	} else {
 		account = s.AuthProviderName
 	}
 	
-	if err := sendHome(w, HomePage{account}); err != nil {
+	if err := sendHome(w, HomePage{Account:account,ShowNavAccount:true}); err != nil {
 		log.Printf("handler.home url=%s %s", path, err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}	

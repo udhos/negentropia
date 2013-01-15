@@ -15,10 +15,14 @@ import (
 )
 
 type Page struct {
-    //Title string
-	Account       string
 	PasswdBadAuth string
 	GoogleAuthMsg string
+
+	Account       string
+	ShowNavAccount bool
+	ShowNavHome    bool
+	ShowNavLogin   bool
+	ShowNavLogout  bool	
 }
 
 func sendLogin(w http.ResponseWriter, p Page) error {
@@ -33,21 +37,18 @@ func sendLogin(w http.ResponseWriter, p Page) error {
 	return nil
 }
 
-func Login(w http.ResponseWriter, r *http.Request) {
+func Login(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
-	
 	log.Printf("handler.Login url=%s", path)
 	
 	var account string
-	
-	s := session.Get(r)
 	if s == nil {
 		account = ""
 	} else {
 		account = s.AuthProviderName
 	}	
 	
-	if err := sendLogin(w, Page{Account:account}); err != nil {
+	if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -81,8 +82,15 @@ func googleOauth2(w http.ResponseWriter, r *http.Request) {
 	// See next steps under googleCallback handler
 }
 
-func LoginAuth(w http.ResponseWriter, r *http.Request) {
+func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	//path := r.URL.Path
+
+	var account string
+	if s == nil {
+		account = ""
+	} else {
+		account = s.AuthProviderName
+	}	
 
 	login := r.FormValue("LoginButton");
 	//email := r.FormValue("Email");
@@ -104,7 +112,7 @@ func LoginAuth(w http.ResponseWriter, r *http.Request) {
 				http.Redirect(w, r, "/n/", http.StatusFound)
 			} else {
 				// bad auth
-				if err := sendLogin(w, Page{PasswdBadAuth: "Invalid email/password. Please try again."}); err != nil {
+				if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,PasswdBadAuth: "Invalid email/password. Please try again."}); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 				}
 			}

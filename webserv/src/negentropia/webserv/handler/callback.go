@@ -22,8 +22,15 @@ type GoogleProfile struct {
 	Name string
 }
 
-func GoogleCallback(w http.ResponseWriter, r *http.Request) {
+func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
+	
+	var account string
+	if s == nil {
+		account = ""
+	} else {
+		account = s.AuthProviderName
+	}		
 
 	code := r.FormValue("code");
 	
@@ -48,7 +55,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 		msg := fmt.Sprintf("handler.googleCallback url=%s Exchange: %s", path, err)
 		log.Printf(msg)
 
-		if err := sendLogin(w, Page{GoogleAuthMsg: msg}); err != nil {
+		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,GoogleAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
@@ -71,7 +78,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 		msg := fmt.Sprintf("handler.googleCallback url=%s Request: %s", path, err)
 		log.Printf(msg)
 
-		if err := sendLogin(w, Page{GoogleAuthMsg: msg}); err != nil {
+		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,GoogleAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
@@ -81,7 +88,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 		msg := fmt.Sprintf("handler.googleCallback url=%s ioutil.ReadAll: %s", path, err)
 		log.Printf(msg)
 
-		if err := sendLogin(w, Page{GoogleAuthMsg: msg}); err != nil {
+		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,GoogleAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
@@ -93,14 +100,13 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request) {
 		msg := fmt.Sprintf("handler.googleCallback url=%s Unmarshal: %s", path, err)
 		log.Printf(msg)
 
-		if err := sendLogin(w, Page{GoogleAuthMsg: msg}); err != nil {
+		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,GoogleAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
 	
 	log.Printf("handler.googleCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
 
-	s := session.Get(r)
 	if (s == nil) {
 		s = session.Set(w, session.AUTH_PROV_GOOGLE, profile.Id, profile.Name)
 	}

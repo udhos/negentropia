@@ -82,23 +82,12 @@ func trapHandle(w http.ResponseWriter, r *http.Request, handler func(http.Respon
 func main() {
 	flag.Parse()
 	
-	//http.HandleFunc("/", static)
-	//http.Handle("/", http.FileServer(http.Dir(rootPath)))
-
 	http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
-	//http.HandleFunc("/n/", handler.Home)
-	
-	http.HandleFunc("/n/", func (w http.ResponseWriter, r *http.Request) { handler.Home(w,r) } )
-	//http.HandleFunc("/n/logout", handler.Logout)
-	
-	http.HandleFunc("/n/logout", func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
-	
-	http.HandleFunc("/n/login", handler.Login)
-	
-	http.HandleFunc("/n/loginAuth", handler.LoginAuth)
-	
-	http.HandleFunc("/n/googleCallback", handler.GoogleCallback)
-	
+	http.HandleFunc("/n/",               func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) } )
+	http.HandleFunc("/n/logout",         func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
+	http.HandleFunc("/n/login",          func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) } )
+	http.HandleFunc("/n/loginAuth",      func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) } )
+	http.HandleFunc("/n/googleCallback", func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.GoogleCallback) } )	
 
 	last := len(listenOn) - 1
 	// serve ports except the last one
