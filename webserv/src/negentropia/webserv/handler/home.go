@@ -38,13 +38,7 @@ func Home(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	
 	log.Printf("handler.home url=%s", path)
 	
-	var account string
-	
-	if s == nil {
-		account = ""
-	} else {
-		account = s.AuthProviderName
-	}
+	account := accountLabel(s)
 	
 	if err := sendHome(w, HomePage{Account:account,ShowNavAccount:true}); err != nil {
 		log.Printf("handler.home url=%s %s", path, err.Error())

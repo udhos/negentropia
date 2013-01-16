@@ -18,20 +18,16 @@ import (
 )
 
 type GoogleProfile struct {
-	Id   string
-	Name string
+	Id    string
+	Name  string
+	Email string
 }
 
 func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 	
-	var account string
-	if s == nil {
-		account = ""
-	} else {
-		account = s.AuthProviderName
-	}		
-
+	account := accountLabel(s)
+	
 	code := r.FormValue("code");
 	
 	/*
@@ -93,6 +89,8 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 		}
 	}
 	
+	//log.Printf("handler.googleCallback url=%s body=%s", path, body)
+	
 	var profile GoogleProfile
 	
 	err = json.Unmarshal(body, &profile)
@@ -108,7 +106,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 	log.Printf("handler.googleCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
 
 	if (s == nil) {
-		s = session.Set(w, session.AUTH_PROV_GOOGLE, profile.Id, profile.Name)
+		s = session.Set(w, session.AUTH_PROV_GOOGLE, profile.Id, profile.Name, profile.Email)
 	}
 	if (s == nil) {
 		log.Printf("handler.googleCallback url=%s could not establish session", path)	

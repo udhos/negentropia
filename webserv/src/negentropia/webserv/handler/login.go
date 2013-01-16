@@ -41,12 +41,7 @@ func Login(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 	log.Printf("handler.Login url=%s", path)
 	
-	var account string
-	if s == nil {
-		account = ""
-	} else {
-		account = s.AuthProviderName
-	}	
+	account := accountLabel(s)
 	
 	if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -61,7 +56,7 @@ func googleOauth2Config() *oauth.Config {
 	return &oauth.Config{
 		ClientId:     *GoogleId,
 		ClientSecret: *GoogleSecret,
-		Scope:        "https://www.googleapis.com/auth/userinfo.profile",
+		Scope:        "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
 		AuthURL:      "https://accounts.google.com/o/oauth2/auth",
 		TokenURL:     "https://accounts.google.com/o/oauth2/token",
 		RedirectURL:  "http://localhost:8080/n/googleCallback",
@@ -85,12 +80,7 @@ func googleOauth2(w http.ResponseWriter, r *http.Request) {
 func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	//path := r.URL.Path
 
-	var account string
-	if s == nil {
-		account = ""
-	} else {
-		account = s.AuthProviderName
-	}	
+	account := accountLabel(s)
 
 	login := r.FormValue("LoginButton");
 	//email := r.FormValue("Email");

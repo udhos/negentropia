@@ -31,10 +31,11 @@ var (
 )
 
 type Session struct {
-	SessionId        string
-	AuthProvider     int    // 1 = Google
-	AuthProviderId   string // "102990441336549717697" (Google Profile)
-	AuthProviderName string // "Everton Marques"
+	SessionId    string
+	AuthProvider int    // 1 = Google
+	ProfileId    string // "102990441336549717697" (Google Profile)
+	ProfileName  string // "Everton Marques"
+	ProfileEmail string
 }
 
 func init() {
@@ -92,8 +93,8 @@ func newCookie(name, value string, maxAge int) *http.Cookie {
 	return cookie
 }
 
-func newSession(sid string, provider int, acctId string, acctName string) *Session {
-	return &Session{sid, provider, acctId, acctName}
+func newSession(sid string, provider int, profId, profName, profEmail string) *Session {
+	return &Session{sid, provider, profId, profName, profEmail}
 }
 
 func sessionLoad(sessionId string) *Session {
@@ -107,19 +108,22 @@ func sessionLoad(sessionId string) *Session {
 		provider     int 
 		profileId    string
 		profileName  string
+		profileEmail string
 	)
 	
-	provider, _   = strconv.Atoi(redisClient.HGet(sessionId, "AuthProvider").Val())
-	profileId     = redisClient.HGet(sessionId, "AuthProviderId").Val()
-	profileName   = redisClient.HGet(sessionId, "AuthProviderName").Val()
+	provider, _  = strconv.Atoi(redisClient.HGet(sessionId, "AuthProvider").Val())
+	profileId    = redisClient.HGet(sessionId, "ProfileId").Val()
+	profileName  = redisClient.HGet(sessionId, "ProfileName").Val()
+	profileEmail = redisClient.HGet(sessionId, "ProfileEmail").Val()
 	
-	return newSession(sessionId, provider, profileId, profileName)
+	return newSession(sessionId, provider, profileId, profileName, profileEmail)
 }
 
 func sessionSave(session *Session) error {
-	redisClient.HSet(session.SessionId, "AuthProvider",     strconv.Itoa(session.AuthProvider))
-	redisClient.HSet(session.SessionId, "AuthProviderId",   session.AuthProviderId)
-	redisClient.HSet(session.SessionId, "AuthProviderName", session.AuthProviderName)
+	redisClient.HSet(session.SessionId, "AuthProvider", strconv.Itoa(session.AuthProvider))
+	redisClient.HSet(session.SessionId, "ProfileId",    session.ProfileId)
+	redisClient.HSet(session.SessionId, "ProfileName",  session.ProfileName)
+	redisClient.HSet(session.SessionId, "ProfileEmail", session.ProfileEmail)
 
 	redisClient.Expire(session.SessionId, redisExpire)
 	
@@ -151,11 +155,11 @@ func Get(r *http.Request) *Session {
 	return session
 }
 
-func Set(w http.ResponseWriter, provider int, acctId string, acctName string) *Session {
+func Set(w http.ResponseWriter, provider int, profId, profName, profEmail string) *Session {
 		
 	sessionId := newSessionId()
 
-	session := newSession(sessionId, provider, acctId, acctName)
+	session := newSession(sessionId, provider, profId, profName, profEmail)
 	
 	err := sessionSave(session)
 	if (err != nil) {

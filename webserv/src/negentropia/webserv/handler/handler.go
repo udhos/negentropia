@@ -5,6 +5,8 @@ import (
 	//"strings"
 	
 	//"github.com/bradfitz/gomemcache/memcache"
+	
+	"negentropia/webserv/session"
 )
 
 var (
@@ -35,3 +37,12 @@ func TemplateRoot() string {
 func TemplatePath(path string) string {
 	return TemplateRoot() + "/" + path
 }
+
+func accountLabel(s *session.Session) string {
+	if s == nil {
+		return ""
+	}
+	
+	return s.ProfileName + " (" + s.ProfileEmail + ")"
+}
+
