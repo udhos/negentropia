@@ -8,6 +8,7 @@
 !*.jpg
 !*.png
 !*.ico
+!*.cmd
 !negentropia
 !negentropia/lib
 !negentropia/texture
