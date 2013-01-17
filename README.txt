@@ -10,24 +10,15 @@ REQUIREMENTS
 # Install Mercurial - required for packages such as: go get code.google.com/p/goauth2/oauth
 # http://mercurial.selenic.com/downloads/
 
-# Install Memcached
-# http://memcached.org/
-#
-# memcached 1.4.2 for Windows 7 64-bit:
-# http://www.urielkatz.com/archive/detail/memcached-64-bit-windows/
-# http://www.urielkatz.com/projects/memcached-win64/memcached-win64.zip
-# http://dl.dropbox.com/u/103946/memcached-win64.zip
-# http://fajarmf.net/apps/memcached-win64.zip
-
 # Install Redis
 # http://redis.io/download
 #
-# Redis 2.4.5 for Windows 7 64-bit:
-# https://github.com/dmajkic/redis/downloads
-# 
 # Microsoft Official Redis for Windows at Microsoft Open Tech:
 # https://github.com/MSOpenTech/redis
 # https://github.com/MSOpenTech/redis/blob/bksavecow/msvs/bin/release/redisbin.zip
+#
+# Redis 2.4.5 for Windows 7 64-bit:
+# https://github.com/dmajkic/redis/downloads
 
 
 GENERAL BUILDING INSTRUCTIONS:
@@ -42,9 +33,6 @@ go get code.google.com/p/goauth2/oauth
 
 # 4. Install redis client library
 go get github.com/vmihailenco/redis
-
-# 4. Install memcache client library
-#go get github.com/bradfitz/gomemcache/memcache
 
 # 5. Build and install (to negentropia\webserv\bin)
 go install negentropia\webserv
@@ -73,12 +61,7 @@ git clone https://code.google.com/p/negentropia/
 
 go get github.com/vmihailenco/redis
 
-#go get github.com/bradfitz/gomemcache/memcache
-
 ## windows dos prompt:
-
-@rem start memcached
-@rem c:\memcached-win64\memcached.exe -vv -vv -p 11211
 
 @rem start redis
 @rem dmajkic redis:
