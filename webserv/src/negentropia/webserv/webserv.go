@@ -20,21 +20,39 @@ import (
 type portList []string
 
 var (
-	staticPath   string   = "/tmp/devel/negentropia/wwwroot"
-	templatePath string   = "/tmp/devel/negentropia/template"
+	staticPath   string         = "/tmp/devel/negentropia/wwwroot"
+	templatePath string         = "/tmp/devel/negentropia/template"
 	configFile   string	
-	listenOn     portList = []string{":8000", ":8080"}
+	listenOn     portList       = []string{":8000", ":8080"}
+	configFlags  *flag.FlagSet  = flag.NewFlagSet("config flags", flag.ExitOnError)
 )
 
 // Initialize package main
 func init() {
+	/*
 	handler.GoogleId = flag.String("gId", "", "google client id")
 	handler.GoogleSecret = flag.String("gSecret", "", "google client secret")
 	flag.StringVar(&configFile, "config", "", "load config flags from this file")
 	flag.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
+	*/
 
+	handler.GoogleId = configFlags.String("gId", "", "google client id")
+	handler.GoogleSecret = configFlags.String("gSecret", "", "google client secret")
+	configFlags.StringVar(&configFile, "config", "", "load config flags from this file")
+	configFlags.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
+	configFlags.Parse(os.Args[1:])
+	
 	handler.SetTemplateRoot(templatePath)
 }
+
+/*
+func flagSetInit(fs *flag.FlagSet) {
+	handler.GoogleId = fs.String("gId", "", "google client id")
+	handler.GoogleSecret = fs.String("gSecret", "", "google client secret")
+	fs.StringVar(&configFile, "config", "", "load config flags from this file")
+	fs.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
+}
+*/
 
 // Wrapper type for Handler
 type StaticHandler struct {
@@ -119,14 +137,39 @@ func loadFlagsFromFile(config string) ([]string, error) {
 	return flags, nil
 }
 
-func main() {
-	flag.Parse()
+func loadConfig() error {
+	f, err := loadFlagsFromFile(configFile)
+	if err != nil {
+		log.Printf("failure reading config flags: %s", err);		
+		return err
+	}
 	
-	if configFile != "" {
-		f, err := loadFlagsFromFile(configFile)
-		if err != nil {
-			return
-		}
+	err = configFlags.Parse(f)
+	if err != nil {
+		log.Printf("failure parsing config flags: %s", err);	
+		return err
+	}
+	
+	//log.Printf("loaded %d flags", len(f))
+	
+	return nil
+}
+
+func main() {
+	//flag.Parse()
+	
+	err := loadConfig()
+	if err != nil {
+		log.Printf("failure loading config flags: %s", err);
+		return
+	}
+	
+	if *handler.GoogleId == "" {
+		log.Printf("warning: google client id is UNDEFINED: google login won't be available")
+	}
+	
+	if *handler.GoogleSecret == "" {
+		log.Printf("warning: google client secret is UNDEFINED: google login won't be available")
 	}
 	
 	http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
