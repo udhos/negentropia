@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	AUTH_PROV_CRED     = 0
+	AUTH_PROV_PASSWORD = 0 // local password
 	AUTH_PROV_GOOGLE   = 1
 	AUTH_PROV_FACEBOOK = 2
 )
@@ -102,6 +102,10 @@ func newSession(sid string, provider int, profId, profName, profEmail string) *S
 	return s
 }
 
+func RedisQueryField(key, field string) string {
+	return redisClient.HGet(key, field).Val()
+}
+
 func sessionLoad(sessionId string) *Session {
 
 	if !redisClient.Exists(sessionId).Val() {
@@ -167,7 +171,7 @@ func Set(w http.ResponseWriter, provider int, profId, profName, profEmail string
 	session := newSession(sessionId, provider, profId, profName, profEmail)
 	
 	err := sessionSave(session)
-	if (err != nil) {
+	if err != nil {
 		log.Printf("session.Set: failure saving session id=%s error=[%s]", sessionId, err)
 		return nil
 	}

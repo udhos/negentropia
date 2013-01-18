@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"io"
 	//"os"
 	"fmt"
 	"log"
 	//"time"
 	//"io/ioutil"
 	"net/http"
+	"crypto/sha1"
 	"html/template"
 
 	"code.google.com/p/goauth2/oauth"
@@ -48,8 +50,20 @@ func Login(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	}
 }
 
-func auth(email string, auth string) bool {
-	return false
+func passDigest(pass string) string {
+	h := sha1.New()
+	io.WriteString(h, pass)
+	return fmt.Sprintf("%0x", h.Sum(nil))
+}
+
+func passwordAuth(email string, pass string) bool {
+	passHash := passDigest(pass)
+
+	dbHash := session.RedisQueryField(email, "password-sha1-hex")
+	
+	log.Printf("login.auth: email=%s auth=%s provided=%s", email, dbHash, passHash)	
+	
+	return passHash == dbHash
 }
 
 func googleOauth2Config(host, port string) *oauth.Config {
@@ -83,7 +97,7 @@ func googleOauth2(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
-	//path := r.URL.Path
+	path := r.URL.Path
 
 	account := accountLabel(s)
 
@@ -102,8 +116,20 @@ func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 		case login != "":
 			email := r.FormValue("Email");
 			password := r.FormValue("Passwd");
-			if auth(email, password) {
+			if passwordAuth(email, password) {
 				// auth ok
+
+				if s != nil {
+					session.Delete(w, s)
+				}
+				name := session.RedisQueryField(email, "name")
+				s = session.Set(w, session.AUTH_PROV_PASSWORD, email, name, email)
+				if s == nil {
+					log.Printf("login.LoginAuth url=%s could not establish session", path)	
+					http.Error(w, "login.LoginAuth could not establish session", http.StatusInternalServerError)
+					return
+				}
+				
 				http.Redirect(w, r, "/n/", http.StatusFound)
 			} else {
 				// bad auth
