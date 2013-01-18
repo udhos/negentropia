@@ -18,7 +18,7 @@
         </section>
 		
         <footer id="footer">
-			Copyright (c) 2012 Negentropia
+			Copyright (c) 2013 Negentropia Team
         </footer>
     </body>
 </html>

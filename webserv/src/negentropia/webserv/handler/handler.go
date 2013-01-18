@@ -17,6 +17,8 @@ var (
 	mcServerList     []string         = []string{"127.0.0.1:11211", "127.0.0.1:12000"}
 	mc               *memcache.Client
 	*/
+	RedirectHost     string
+	RedirectPort     string
 )
 
 /*

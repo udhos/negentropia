@@ -52,21 +52,26 @@ func auth(email string, auth string) bool {
 	return false
 }
 
-func googleOauth2Config() *oauth.Config {
+func googleOauth2Config(host, port string) *oauth.Config {
+
+	redirect := "http://" + host + port + "/n/googleCallback"
+	
+	log.Printf("handler.googleOauth2Config: redirect=%s", redirect)
+
 	return &oauth.Config{
 		ClientId:     *GoogleId,
 		ClientSecret: *GoogleSecret,
 		Scope:        "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
 		AuthURL:      "https://accounts.google.com/o/oauth2/auth",
 		TokenURL:     "https://accounts.google.com/o/oauth2/token",
-		RedirectURL:  "http://localhost:8080/n/googleCallback",
+		RedirectURL:  "http://" + host + port + "/n/googleCallback",
 	}
 }
 
 func googleOauth2(w http.ResponseWriter, r *http.Request) {
-	log.Printf("handler.LoginAuth: google")
-	
-	config := googleOauth2Config()
+	log.Printf("handler.LoginAuth: google url=%s", r.URL)
+
+	config := googleOauth2Config(RedirectHost, RedirectPort)
 	
 	// Step one, get an authorization code from the data provider.
 	

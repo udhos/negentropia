@@ -23,7 +23,7 @@ var (
 	mcServerList     []string         = []string{"127.0.0.1:11211", "127.0.0.1:12000"}
 	mc               *memcache.Client
 	*/
-	redisAddr     string  = "localhost:6379"
+	//RedisAddr     string
 	redisPassword string  = ""
 	redisDb       int64   = -1
 	redisClient   *redis.Client
@@ -38,13 +38,16 @@ type Session struct {
 	ProfileEmail string
 }
 
+/*
 func init() {
-	/*
 	log.Printf("session.init(): memcache client for: " + strings.Join(mcServerList, ","))
 	mc = memcache.New(mcServerList...)
-	*/
-	log.Printf("session.init(): redis client for: %s", redisAddr)
-	redisClient = redis.NewTCPClient(redisAddr, redisPassword, redisDb)
+}
+*/
+
+func Init(serverAddr string) {
+	log.Printf("session.Init(): redis client for: %s", serverAddr)
+	redisClient = redis.NewTCPClient(serverAddr, redisPassword, redisDb)
 }
 
 /*
@@ -94,7 +97,9 @@ func newCookie(name, value string, maxAge int) *http.Cookie {
 }
 
 func newSession(sid string, provider int, profId, profName, profEmail string) *Session {
-	return &Session{sid, provider, profId, profName, profEmail}
+	s := &Session{sid, provider, profId, profName, profEmail}
+	log.Printf("newSession sessionId=%s email=%s", s.SessionId, s.ProfileEmail)
+	return s
 }
 
 func sessionLoad(sessionId string) *Session {

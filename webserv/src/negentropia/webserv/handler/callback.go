@@ -38,7 +38,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 
 	// See previous step under loginAuth handler
 
-	config := googleOauth2Config()
+	config := googleOauth2Config(RedirectHost, RedirectPort)	
 
 	// Set up a Transport with our config, define the cache
 	transp := &oauth.Transport{Config: config}

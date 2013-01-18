@@ -7,9 +7,9 @@ import (
 	//"fmt"
 	"log"
 	"flag"
+	//"time"
 	"errors"
 	"strings"
-	//"time"
 	//"io/ioutil"
 	"net/http"	
 
@@ -17,14 +17,16 @@ import (
 	"negentropia/webserv/session"
 )
 
-type portList []string
+//type portList []string
 
 var (
 	staticPath   string         = "/tmp/devel/negentropia/wwwroot"
 	templatePath string         = "/tmp/devel/negentropia/template"
 	configFile   string	
-	listenOn     portList       = []string{":8000", ":8080"}
+	//listenOn     portList       = []string{":8000", ":8080"}
+	listenAddr   string
 	configFlags  *flag.FlagSet  = flag.NewFlagSet("config flags", flag.ExitOnError)
+	redisAddr    string
 )
 
 // Initialize package main
@@ -39,8 +41,10 @@ func init() {
 	handler.GoogleId = configFlags.String("gId", "", "google client id")
 	handler.GoogleSecret = configFlags.String("gSecret", "", "google client secret")
 	configFlags.StringVar(&configFile, "config", "", "load config flags from this file")
-	configFlags.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
-	configFlags.Parse(os.Args[1:])
+	//configFlags.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
+	configFlags.StringVar(&listenAddr, "listenOn", ":8080", "listen address [addr]:port")
+	configFlags.StringVar(&handler.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")	
+	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
 	
 	handler.SetTemplateRoot(templatePath)
 }
@@ -77,12 +81,24 @@ func serve(addr string) {
 	} else {
 		log.Printf("server starting on " + addr)
 	}
+			
 	err := http.ListenAndServe(addr, nil)
+	/*
+	s := &http.Server{
+		Addr:           addr,
+		Handler:        nil,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}
+	err := s.ListenAndServe()
+	*/
 	if err != nil {
 		log.Panicf("ListenAndServe: %s: %s", addr, err)
-	}
+	}	
 }
 
+/*
 // String is the method to get the flag value, part of the flag.Value interface.
 func (pl *portList) String() string {
 	return strings.Join(*pl, ",")
@@ -95,6 +111,7 @@ func (pl *portList) Set(value string) error {
 	*pl = strings.Split(value, ",") // redefine portList
 	return nil
 }
+*/
 
 // Add session parameter to handle
 func trapHandle(w http.ResponseWriter, r *http.Request, handler func(http.ResponseWriter, *http.Request, *session.Session)) {
@@ -137,8 +154,8 @@ func loadFlagsFromFile(config string) ([]string, error) {
 	return flags, nil
 }
 
-func loadConfig() error {
-	f, err := loadFlagsFromFile(configFile)
+func loadConfig(config string) error {
+	f, err := loadFlagsFromFile(config)
 	if err != nil {
 		log.Printf("failure reading config flags: %s", err);		
 		return err
@@ -155,13 +172,27 @@ func loadConfig() error {
 	return nil
 }
 
-func main() {
-	//flag.Parse()
+func getPort(hostPort string) string {
+	pair := strings.Split(listenAddr, ":")
+	if len(pair) == 1 {
+		return ""
+	}
 	
-	err := loadConfig()
-	if err != nil {
-		log.Printf("failure loading config flags: %s", err);
-		return
+	return ":" + pair[1]
+}
+
+func main() {
+	// Parse flags from command-line
+	//flag.Parse()
+	configFlags.Parse(os.Args[1:])
+
+	// Parse flags from file
+	if configFile != "" {
+		err := loadConfig(configFile)
+		if err != nil {
+			log.Printf("failure loading config flags: %s", err);
+			return
+		}
 	}
 	
 	if *handler.GoogleId == "" {
@@ -172,17 +203,24 @@ func main() {
 		log.Printf("warning: google client secret is UNDEFINED: google login won't be available")
 	}
 	
+	session.Init(redisAddr)
+
+	handler.RedirectPort = getPort(listenAddr)
+
 	http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
 	http.HandleFunc("/n/",               func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) } )
 	http.HandleFunc("/n/logout",         func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
 	http.HandleFunc("/n/login",          func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) } )
 	http.HandleFunc("/n/loginAuth",      func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) } )
 	http.HandleFunc("/n/googleCallback", func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.GoogleCallback) } )	
-
+	
+	/*
 	last := len(listenOn) - 1
 	// serve ports except the last one
 	for _, port := range listenOn[:last] {
 		go serve(port)
 	}
 	serve(listenOn[last]) // serve last port
+	*/
+	serve(listenAddr)
 }
