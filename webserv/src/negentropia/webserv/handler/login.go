@@ -17,14 +17,15 @@ import (
 )
 
 type Page struct {
-	PasswdBadAuth string
-	GoogleAuthMsg string
+	PasswdBadAuth   string
+	GoogleAuthMsg   string
+	FacebookAuthMsg string	
 
-	Account       string
-	ShowNavAccount bool
-	ShowNavHome    bool
-	ShowNavLogin   bool
-	ShowNavLogout  bool	
+	Account         string
+	ShowNavAccount  bool
+	ShowNavHome     bool
+	ShowNavLogin    bool
+	ShowNavLogout   bool	
 }
 
 func sendLogin(w http.ResponseWriter, p Page) error {
@@ -78,7 +79,23 @@ func googleOauth2Config(host, port string) *oauth.Config {
 		Scope:        "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
 		AuthURL:      "https://accounts.google.com/o/oauth2/auth",
 		TokenURL:     "https://accounts.google.com/o/oauth2/token",
-		RedirectURL:  "http://" + host + port + "/n/googleCallback",
+		RedirectURL:  redirect,
+	}
+}
+
+func facebookOauth2Config(host, port string) *oauth.Config {
+
+	redirect := "http://" + host + port + "/n/facebookCallback"
+	
+	log.Printf("handler.facebookOauth2Config: redirect=%s", redirect)
+
+	return &oauth.Config{
+		ClientId:     *FacebookId,
+		ClientSecret: *FacebookSecret,
+		Scope:        "",
+		AuthURL:      "https://www.facebook.com/dialog/oauth",
+		TokenURL:     "https://graph.facebook.com/oauth/access_token",
+		RedirectURL:  redirect,
 	}
 }
 
@@ -94,6 +111,20 @@ func googleOauth2(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, url, http.StatusFound)
 	
 	// See next steps under googleCallback handler
+}
+
+func facebookOauth2(w http.ResponseWriter, r *http.Request) {
+	log.Printf("handler.LoginAuth: facebook url=%s", r.URL)
+
+	config := facebookOauth2Config(RedirectHost, RedirectPort)
+	
+	// Step one, get an authorization code from the data provider.
+	
+	url := config.AuthCodeURL("")
+	
+	http.Redirect(w, r, url, http.StatusFound)
+	
+	// See next steps under facebookCallback handler
 }
 
 func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
@@ -138,11 +169,9 @@ func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 				}
 			}
 		case google != "":
-			//fmt.Fprintf(w, "handler.LoginAuth: google")
 			googleOauth2(w, r)
 		case facebook != "":
-			log.Printf("handler.LoginAuth: facebook")
-			fmt.Fprintf(w, "handler.LoginAuth: facebook")
+			facebookOauth2(w, r)		
 		default:
 			log.Printf("handler.LoginAuth: missing button")
 			http.Redirect(w, r, "/n/login", http.StatusFound)

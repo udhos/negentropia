@@ -10,7 +10,7 @@
 
 <div><input type="submit" name="GoogleButton" value="Google Login"><font color="red">{{.GoogleAuthMsg}}</font></div>
 
-<div><input type="submit" name="FacebookButton" value="Facebook Login"></div>
+<div><input type="submit" name="FacebookButton" value="Facebook Login"><font color="red">{{.FacebookAuthMsg}}</font></div>
 
 <div><input type="submit" name="BrokenButton" value="Invalid Login"></div>
 </form>

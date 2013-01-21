@@ -31,17 +31,11 @@ var (
 
 // Initialize package main
 func init() {
-	/*
-	handler.GoogleId = flag.String("gId", "", "google client id")
-	handler.GoogleSecret = flag.String("gSecret", "", "google client secret")
-	flag.StringVar(&configFile, "config", "", "load config flags from this file")
-	flag.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
-	*/
-
 	handler.GoogleId = configFlags.String("gId", "", "google client id")
 	handler.GoogleSecret = configFlags.String("gSecret", "", "google client secret")
+	handler.FacebookId = configFlags.String("fId", "", "facebook client id")
+	handler.FacebookSecret = configFlags.String("fSecret", "", "facebook client secret")
 	configFlags.StringVar(&configFile, "config", "", "load config flags from this file")
-	//configFlags.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
 	configFlags.StringVar(&listenAddr, "listenOn", ":8080", "listen address [addr]:port")
 	configFlags.StringVar(&handler.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")	
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
@@ -197,10 +191,15 @@ func main() {
 	
 	if *handler.GoogleId == "" {
 		log.Printf("warning: google client id is UNDEFINED: google login won't be available")
-	}
-	
+	}	
 	if *handler.GoogleSecret == "" {
 		log.Printf("warning: google client secret is UNDEFINED: google login won't be available")
+	}
+	if *handler.FacebookId == "" {
+		log.Printf("warning: facebook client id is UNDEFINED: facebook login won't be available")
+	}
+	if *handler.FacebookSecret == "" {
+		log.Printf("warning: facebook client secret is UNDEFINED: facebook login won't be available")
 	}
 	
 	session.Init(redisAddr)
@@ -208,11 +207,12 @@ func main() {
 	handler.RedirectPort = getPort(listenAddr)
 
 	http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
-	http.HandleFunc("/n/",               func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) } )
-	http.HandleFunc("/n/logout",         func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
-	http.HandleFunc("/n/login",          func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) } )
-	http.HandleFunc("/n/loginAuth",      func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) } )
-	http.HandleFunc("/n/googleCallback", func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.GoogleCallback) } )	
+	http.HandleFunc("/n/",                 func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) } )
+	http.HandleFunc("/n/logout",           func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
+	http.HandleFunc("/n/login",            func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) } )
+	http.HandleFunc("/n/loginAuth",        func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) } )
+	http.HandleFunc("/n/googleCallback",   func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.GoogleCallback) } )
+	http.HandleFunc("/n/facebookCallback", func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.FacebookCallback) } )		
 	
 	/*
 	last := len(listenOn) - 1

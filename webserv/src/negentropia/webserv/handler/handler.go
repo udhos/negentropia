@@ -11,14 +11,12 @@ import (
 
 var (
 	templateRootPath string
-	GoogleId         *string
-	GoogleSecret     *string
-	/*
-	mcServerList     []string         = []string{"127.0.0.1:11211", "127.0.0.1:12000"}
-	mc               *memcache.Client
-	*/
-	RedirectHost     string
-	RedirectPort     string
+	GoogleId       *string
+	GoogleSecret   *string
+	FacebookId     *string
+	FacebookSecret *string
+	RedirectHost    string
+	RedirectPort    string
 )
 
 /*
