@@ -60,6 +60,8 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,GoogleAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		
+		return
 	}
 
 	// FIXME: Load cached token, if available.
@@ -83,6 +85,8 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,GoogleAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		
+		return
 	}
 	
 	body, err := ioutil.ReadAll(resp.Body)
@@ -93,6 +97,8 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,GoogleAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		
+		return
 	}
 	
 	//log.Printf("handler.googleCallback url=%s body=%s", path, body)
@@ -107,6 +113,8 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,GoogleAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		
+		return
 	}
 	
 	log.Printf("handler.googleCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
@@ -150,6 +158,8 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,FacebookAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		
+		return
 	}
 
 	// FIXME: Load cached token, if available.
@@ -157,7 +167,7 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 	transp.Token = &oauth.Token{AccessToken: tok.AccessToken}
 
 	// FIXME: Tack on the extra parameters, if specified.
-	apiRequest := "https://www.googleapis.com/oauth2/v1/userinfo"
+	apiRequest := "https://graph.facebook.com/me"
 	/*
 	if *authparam != "" {
 		*apiRequest += *authparam + ctoken.AccessToken
@@ -173,6 +183,8 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,FacebookAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		
+		return
 	}
 	
 	body, err := ioutil.ReadAll(resp.Body)
@@ -183,6 +195,8 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,FacebookAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		
+		return
 	}
 	
 	var profile FacebookProfile
@@ -195,6 +209,8 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,FacebookAuthMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+		
+		return
 	}
 	
 	log.Printf("handler.facebookCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
