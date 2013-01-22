@@ -11,9 +11,11 @@ import (
 	"net/http"
 	"encoding/json"
 	
-	"code.google.com/p/goauth2/oauth"
-	//"github.com/bradfitz/gomemcache/memcache"
-	
+	//"code.google.com/p/goauth2/oauth" // facebook broken
+	//"github.com/robfig/goauth2/oauth" // google broken
+	//"code.google.com/r/jasonmcvetta-goauth2" // go get broken
+	"github.com/HairyMezican/goauth2/oauth"
+
 	"negentropia/webserv/session"
 )
 
@@ -117,7 +119,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 		return
 	}
 	
-	log.Printf("handler.googleCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
+	log.Printf("handler.googleCallback url=%s name=%s id=%s email=%s", path, profile.Name, profile.Id, profile.Email)
 
 	if (s == nil) {
 		s = session.Set(w, session.AUTH_PROV_GOOGLE, profile.Id, profile.Name, profile.Email)
@@ -167,6 +169,7 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 	transp.Token = &oauth.Token{AccessToken: tok.AccessToken}
 
 	// FIXME: Tack on the extra parameters, if specified.
+	//apiRequest := "https://graph.facebook.com/me?fields=name,email"
 	apiRequest := "https://graph.facebook.com/me"
 	/*
 	if *authparam != "" {
@@ -198,6 +201,8 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 		
 		return
 	}
+
+	log.Printf("handler.facebookCallback url=%s body=%s", path, body)
 	
 	var profile FacebookProfile
 	
@@ -213,7 +218,7 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 		return
 	}
 	
-	log.Printf("handler.facebookCallback url=%s name=%s id=%s", path, profile.Name, profile.Id)
+	log.Printf("handler.facebookCallback url=%s name=%s id=%s email=%s", path, profile.Name, profile.Id, profile.Email)
 
 	if (s == nil) {
 		s = session.Set(w, session.AUTH_PROV_FACEBOOK, profile.Id, profile.Name, profile.Email)

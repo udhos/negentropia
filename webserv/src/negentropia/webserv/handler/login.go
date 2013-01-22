@@ -11,7 +11,10 @@ import (
 	"crypto/sha1"
 	"html/template"
 
-	"code.google.com/p/goauth2/oauth"
+	//"code.google.com/p/goauth2/oauth" // facebook broken
+	//"github.com/robfig/goauth2/oauth" // google broken
+	//"code.google.com/r/jasonmcvetta-goauth2" // go get broken
+	"github.com/HairyMezican/goauth2/oauth"
 	
 	"negentropia/webserv/session"
 )
@@ -92,7 +95,7 @@ func facebookOauth2Config(host, port string) *oauth.Config {
 	return &oauth.Config{
 		ClientId:     *FacebookId,
 		ClientSecret: *FacebookSecret,
-		Scope:        "",
+		Scope:        "email",
 		AuthURL:      "https://www.facebook.com/dialog/oauth",
 		TokenURL:     "https://graph.facebook.com/oauth/access_token",
 		RedirectURL:  redirect,

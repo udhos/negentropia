@@ -29,7 +29,12 @@ git clone https://code.google.com/p/negentropia/
 # 2. Set GOPATH to negentropia\webserv
 
 # 3. install goauth2
-go get code.google.com/p/goauth2/oauth
+#
+# http://code.google.com/p/goauth2/					OAuth 2.0 for Go clients. Doesn't work with Facebook: http://code.google.com/p/goauth2/issues/detail?id=4 
+# https://github.com/robfig/goauth2					A fork of code.google.com/p/goauth2 that supports Facebook
+# https://github.com/HairyMezican/goauth2/			This is mostly copied from http://code.google.com/p/goauth2/
+#													The original code will fail when contacting facebook; this code fixes that problem
+# http://code.google.com/r/jasonmcvetta-goauth2/	This clone contains changes to stock Goauth2 detailed by Ryan.C.K. here: http://code.google.com/p/goauth2/issues/detail?id=4
 
 # 4. Install redis client library
 go get github.com/vmihailenco/redis
@@ -59,7 +64,9 @@ cd $DEVEL
 
 git clone https://code.google.com/p/negentropia/
 
+# fetch from github with git bash
 go get github.com/vmihailenco/redis
+go get github.com/HairyMezican/goauth2/oauth
 
 ## windows dos prompt:
 
@@ -72,8 +79,21 @@ c:\redisbin\redis-server.exe
 set DEVEL=C:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv
 
+@rem fetch from code.google.com with DOS prompt
+@rem
 @rem install goauth2
-go get code.google.com/p/goauth2/oauth
+@rem
+@rem facebook broken:
+@rem go get code.google.com/p/goauth2/oauth
+@rem
+@rem google broken:
+@rem go get github.com/robfig/goauth2/oauth
+@rem
+@rem go get broken:
+@rem go get code.google.com/r/jasonmcvetta-goauth2/
+@rem
+@rem load from git bash:
+@rem go get github.com/HairyMezican/goauth2/oauth
 
 @rem build
 go install negentropia\webserv
