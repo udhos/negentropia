@@ -18,5 +18,6 @@
 !webserv/src/negentropia/webserv
 !webserv/src/negentropia/webserv/handler
 !webserv/src/negentropia/webserv/session
+!webserv/src/negentropia/webserv/store
 !wwwroot
 !wwwroot/hello

@@ -17,6 +17,7 @@ import (
 	"github.com/HairyMezican/goauth2/oauth"
 	
 	"negentropia/webserv/session"
+	"negentropia/webserv/store"
 )
 
 type Page struct {
@@ -63,7 +64,8 @@ func passDigest(pass string) string {
 func passwordAuth(email string, pass string) bool {
 	passHash := passDigest(pass)
 
-	dbHash := session.RedisQueryField(email, "password-sha1-hex")
+	//dbHash := session.RedisQueryField(email, "password-sha1-hex")
+	dbHash := store.QueryField(email, "password-sha1-hex")
 	
 	log.Printf("login.auth: email=%s auth=%s provided=%s", email, dbHash, passHash)	
 	

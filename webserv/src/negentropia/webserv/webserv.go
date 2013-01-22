@@ -15,6 +15,7 @@ import (
 
 	"negentropia/webserv/handler"
 	"negentropia/webserv/session"
+	"negentropia/webserv/store"
 )
 
 //type portList []string
@@ -203,6 +204,8 @@ func main() {
 	}
 	
 	session.Init(redisAddr)
+	
+	store.Init(redisAddr)
 
 	handler.RedirectPort = getPort(listenAddr)
 

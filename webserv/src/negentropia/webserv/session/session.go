@@ -10,6 +10,8 @@ import (
 	
 	//"github.com/bradfitz/gomemcache/memcache"
 	"github.com/vmihailenco/redis"
+	
+	"negentropia/webserv/store"
 )
 
 const (
@@ -103,7 +105,8 @@ func newSession(sid string, provider int, profId, profName, profEmail string) *S
 }
 
 func RedisQueryField(key, field string) string {
-	return redisClient.HGet(key, field).Val()
+	//return redisClient.HGet(key, field).Val()
+	return store.QueryField(key, field)
 }
 
 func sessionLoad(sessionId string) *Session {
