@@ -7,6 +7,7 @@ import (
 	"log"
 	//"errors"
 	//"time"
+	"strings"
 	"io/ioutil"
 	"net/http"
 	"encoding/json"
@@ -121,6 +122,14 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 	
 	log.Printf("handler.googleCallback url=%s name=%s id=%s email=%s", path, profile.Name, profile.Id, profile.Email)
 
+	// required non-empty email
+	if strings.TrimSpace(profile.Email) == "" {
+		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,GoogleAuthMsg: "Google email is required"}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}	
+		return
+	}
+	
 	if (s == nil) {
 		s = session.Set(w, session.AUTH_PROV_GOOGLE, profile.Id, profile.Name, profile.Email)
 	}
@@ -219,6 +228,14 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 	}
 	
 	log.Printf("handler.facebookCallback url=%s name=%s id=%s email=%s", path, profile.Name, profile.Id, profile.Email)
+
+	// required non-empty email
+	if strings.TrimSpace(profile.Email) == "" {
+		if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,FacebookAuthMsg: "Facebook email is required"}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}	
+		return
+	}
 
 	if (s == nil) {
 		s = session.Set(w, session.AUTH_PROV_FACEBOOK, profile.Id, profile.Name, profile.Email)
