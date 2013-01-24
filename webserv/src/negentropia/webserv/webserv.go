@@ -203,7 +203,7 @@ func main() {
 		log.Printf("warning: facebook client secret is UNDEFINED: facebook login won't be available")
 	}
 	
-	session.Init(redisAddr)
+	//session.Init(redisAddr)
 	
 	store.Init(redisAddr)
 

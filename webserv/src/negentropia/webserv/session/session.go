@@ -9,7 +9,7 @@ import (
 	"net/http"
 	
 	//"github.com/bradfitz/gomemcache/memcache"
-	"github.com/vmihailenco/redis"
+	//"github.com/vmihailenco/redis"
 	
 	"negentropia/webserv/store"
 )
@@ -26,10 +26,13 @@ var (
 	mc               *memcache.Client
 	*/
 	//RedisAddr     string
+	/*
 	redisPassword string  = ""
 	redisDb       int64   = -1
 	redisClient   *redis.Client
 	redisExpire   int64   = 2 * 86400 // expire keys after 2 days
+	*/
+	sessionKeyExpire int64   = 2 * 86400 // expire keys after 2 days	
 )
 
 type Session struct {
@@ -47,10 +50,12 @@ func init() {
 }
 */
 
+/*
 func Init(serverAddr string) {
 	log.Printf("session.Init(): redis client for: %s", serverAddr)
 	redisClient = redis.NewTCPClient(serverAddr, redisPassword, redisDb)
 }
+*/
 
 /*
 func sessionGet() string {
@@ -111,7 +116,12 @@ func RedisQueryField(key, field string) string {
 
 func sessionLoad(sessionId string) *Session {
 
+	/*
 	if !redisClient.Exists(sessionId).Val() {
+		return nil
+	}
+	*/
+	if !store.Exists(sessionId) {
 		return nil
 	}
 	
@@ -122,28 +132,43 @@ func sessionLoad(sessionId string) *Session {
 		profileName  string
 		profileEmail string
 	)
-	
+
+	/*
 	provider, _  = strconv.Atoi(redisClient.HGet(sessionId, "AuthProvider").Val())
 	profileId    = redisClient.HGet(sessionId, "ProfileId").Val()
 	profileName  = redisClient.HGet(sessionId, "ProfileName").Val()
 	profileEmail = redisClient.HGet(sessionId, "ProfileEmail").Val()
+	*/
+	provider, _  = strconv.Atoi(store.QueryField(sessionId, "AuthProvider"))
+	profileId    = store.QueryField(sessionId, "ProfileId")
+	profileName  = store.QueryField(sessionId, "ProfileName")
+	profileEmail = store.QueryField(sessionId, "ProfileEmail")
 	
 	return newSession(sessionId, provider, profileId, profileName, profileEmail)
 }
 
 func sessionSave(session *Session) error {
+	/*
 	redisClient.HSet(session.SessionId, "AuthProvider", strconv.Itoa(session.AuthProvider))
 	redisClient.HSet(session.SessionId, "ProfileId",    session.ProfileId)
 	redisClient.HSet(session.SessionId, "ProfileName",  session.ProfileName)
 	redisClient.HSet(session.SessionId, "ProfileEmail", session.ProfileEmail)
 
 	redisClient.Expire(session.SessionId, redisExpire)
+	*/
+	store.SetField(session.SessionId, "AuthProvider", strconv.Itoa(session.AuthProvider))
+	store.SetField(session.SessionId, "ProfileId",    session.ProfileId)
+	store.SetField(session.SessionId, "ProfileName",  session.ProfileName)
+	store.SetField(session.SessionId, "ProfileEmail", session.ProfileEmail)
+
+	store.Expire(session.SessionId, sessionKeyExpire)
 	
 	return nil
 }
 
 func newSessionId() string {
-	return strconv.FormatInt(redisClient.Incr("sessionIdGenerator").Val(), 10)
+	//return strconv.FormatInt(redisClient.Incr("sessionIdGenerator").Val(), 10)
+	return strconv.FormatInt(store.Incr("sessionIdGenerator"), 10)
 }
 
 func Get(r *http.Request) *Session {
@@ -189,7 +214,8 @@ func Set(w http.ResponseWriter, provider int, profId, profName, profEmail string
 
 func Delete(w http.ResponseWriter, session *Session) {
 
-	redisClient.Del(session.SessionId)
+	//redisClient.Del(session.SessionId)
+	store.Del(session.SessionId)
 	
 	// MaxAge<0 means delete cookie now
 	cook := newCookie("session", "", -1)
