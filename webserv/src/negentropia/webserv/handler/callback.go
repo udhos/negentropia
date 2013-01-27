@@ -18,6 +18,7 @@ import (
 	"github.com/HairyMezican/goauth2/oauth"
 
 	"negentropia/webserv/session"
+	"negentropia/webserv/cfg"
 )
 
 type GoogleProfile struct {
@@ -141,7 +142,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 	
 	log.Printf("handler.googleCallback url=%s session=%s DONE", path, s.SessionId)
 	
-	http.Redirect(w, r, "/n/", http.StatusFound)
+	http.Redirect(w, r, cfg.HomePath(), http.StatusFound)
 }
 
 func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session) {
@@ -248,5 +249,5 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 	
 	log.Printf("handler.facebookCallback url=%s session=%s DONE", path, s.SessionId)
 	
-	http.Redirect(w, r, "/n/", http.StatusFound)
+	http.Redirect(w, r, cfg.HomePath(), http.StatusFound)
 }

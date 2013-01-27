@@ -2,7 +2,7 @@
 {{ define "content" }}
 <h1>Welcome to Negentropia</h1>
 
-<form action="/n/loginAuth" method="POST">
+<form action="{{.LoginAuthPath}}" method="POST">
 
 <div>Email: <input type="email" spellcheck="false" name="Email" value="" placeholder="me@example.com"></div>
 

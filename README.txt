@@ -107,6 +107,6 @@ go install negentropia\webserv
 
 RUNNING / TESTING
 
-Open http://localhost:8080/n/
+Open http://localhost:8080/ne/
 
 --THE END--

@@ -8,11 +8,16 @@ import (
 	//"io/ioutil"
 	"net/http"
 	"html/template"	
-	
-	"negentropia/webserv/session"	
+
+	"negentropia/webserv/cfg"	
+	"negentropia/webserv/session"
 )
 
 type HomePage struct {
+	HomePath		string
+	LoginPath		string
+	LogoutPath		string
+	
 	Account        string
 	
 	ShowNavAccount bool
@@ -22,6 +27,10 @@ type HomePage struct {
 }
 
 func sendHome(w http.ResponseWriter, p HomePage) error {
+	p.HomePath   = cfg.HomePath()
+	p.LoginPath  = cfg.LoginPath()
+	p.LogoutPath = cfg.LogoutPath()
+
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("home.tpl"))
 	if err != nil {

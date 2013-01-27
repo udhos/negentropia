@@ -16,18 +16,21 @@ import (
 	"negentropia/webserv/handler"
 	"negentropia/webserv/session"
 	"negentropia/webserv/store"
+	"negentropia/webserv/cfg"
 )
 
 //type portList []string
 
 var (
-	staticPath   string         = "/tmp/devel/negentropia/wwwroot"
-	templatePath string         = "/tmp/devel/negentropia/template"
-	configFile   string	
+	staticPath    string         = "/tmp/devel/negentropia/wwwroot"
+	templatePath  string         = "/tmp/devel/negentropia/template"
+	configFile    string	
 	//listenOn     portList       = []string{":8000", ":8080"}
-	listenAddr   string
+	listenAddr    string
 	configFlags  *flag.FlagSet  = flag.NewFlagSet("config flags", flag.ExitOnError)
-	redisAddr    string
+	redisAddr     string
+
+	basePath				string
 )
 
 // Initialize package main
@@ -40,6 +43,7 @@ func init() {
 	configFlags.StringVar(&listenAddr, "listenOn", ":8080", "listen address [addr]:port")
 	configFlags.StringVar(&handler.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")	
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
+	configFlags.StringVar(&basePath, "path", "/ne", "www base path")
 	
 	handler.SetTemplateRoot(templatePath)
 }
@@ -209,13 +213,15 @@ func main() {
 
 	handler.RedirectPort = getPort(listenAddr)
 
+	cfg.SetBasePath(basePath)
+
 	http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
-	http.HandleFunc("/n/",                 func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) } )
-	http.HandleFunc("/n/logout",           func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
-	http.HandleFunc("/n/login",            func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) } )
-	http.HandleFunc("/n/loginAuth",        func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) } )
-	http.HandleFunc("/n/googleCallback",   func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.GoogleCallback) } )
-	http.HandleFunc("/n/facebookCallback", func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.FacebookCallback) } )		
+	http.HandleFunc(cfg.HomePath(),             func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) } )
+	http.HandleFunc(cfg.LogoutPath(),           func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
+	http.HandleFunc(cfg.LoginPath(),            func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) } )
+	http.HandleFunc(cfg.LoginAuthPath(),        func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) } )
+	http.HandleFunc(cfg.GoogleCallbackPath(),   func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.GoogleCallback) } )
+	http.HandleFunc(cfg.FacebookCallbackPath(), func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.FacebookCallback) } )	
 	
 	/*
 	last := len(listenOn) - 1

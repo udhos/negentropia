@@ -15,12 +15,18 @@ import (
 	//"github.com/robfig/goauth2/oauth" // google broken
 	//"code.google.com/r/jasonmcvetta-goauth2" // go get broken
 	"github.com/HairyMezican/goauth2/oauth"
-	
+
+	"negentropia/webserv/cfg"
+	"negentropia/webserv/store"	
 	"negentropia/webserv/session"
-	"negentropia/webserv/store"
 )
 
 type Page struct {
+	HomePath		string
+	LoginPath		string
+	LogoutPath		string
+	LoginAuthPath	string
+	
 	PasswdBadAuth   string
 	GoogleAuthMsg   string
 	FacebookAuthMsg string	
@@ -33,6 +39,11 @@ type Page struct {
 }
 
 func sendLogin(w http.ResponseWriter, p Page) error {
+	p.HomePath   = cfg.HomePath()
+	p.LoginPath  = cfg.LoginPath()
+	p.LogoutPath = cfg.LogoutPath()
+	p.LoginAuthPath = cfg.LoginAuthPath()
+	
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("login.tpl"))
 	if err != nil {
@@ -74,7 +85,7 @@ func passwordAuth(email string, pass string) bool {
 
 func googleOauth2Config(host, port string) *oauth.Config {
 
-	redirect := "http://" + host + port + "/n/googleCallback"
+	redirect := "http://" + host + port + cfg.GoogleCallbackPath()
 	
 	log.Printf("handler.googleOauth2Config: redirect=%s", redirect)
 
@@ -90,7 +101,7 @@ func googleOauth2Config(host, port string) *oauth.Config {
 
 func facebookOauth2Config(host, port string) *oauth.Config {
 
-	redirect := "http://" + host + port + "/n/facebookCallback"
+	redirect := "http://" + host + port + cfg.FacebookCallbackPath()
 	
 	log.Printf("handler.facebookOauth2Config: redirect=%s", redirect)
 
@@ -166,7 +177,7 @@ func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 					return
 				}
 				
-				http.Redirect(w, r, "/n/", http.StatusFound)
+				http.Redirect(w, r, cfg.HomePath(), http.StatusFound)
 			} else {
 				// bad auth
 				if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,PasswdBadAuth: "Invalid email/password. Please try again."}); err != nil {
@@ -179,7 +190,7 @@ func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 			facebookOauth2(w, r)		
 		default:
 			log.Printf("handler.LoginAuth: missing button")
-			http.Redirect(w, r, "/n/login", http.StatusFound)
+			http.Redirect(w, r, cfg.LoginPath(), http.StatusFound)
 	}
 }
 

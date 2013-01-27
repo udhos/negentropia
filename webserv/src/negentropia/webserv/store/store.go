@@ -115,7 +115,7 @@ func serveDel() {
 */
 
 func Init(serverAddr string) {
-	log.Printf("store.Init(): redis client for: %s", serverAddr)
+	log.Printf("store.Init: redis client for: %s", serverAddr)
 	redisClient = redis.NewTCPClient(serverAddr, redisPassword, redisDb)
 	/*
 	go serveQueryField()
