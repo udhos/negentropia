@@ -38,6 +38,27 @@ var (
 	delReq         chan string        = make(chan string)
 )
 
+func serve() {
+	log.Printf("store.serve: goroutine started")
+	for {
+		select {
+			case r := <- queryReq:
+				queryRep <- redisClient.HGet(r.key, r.field).Val()
+			case r := <- setReq:
+				redisClient.HSet(r.key, r.field, r.value)
+			case r := <- expReq:
+				redisClient.Expire(r.key, r.expire)
+			case key := <- existsReq:
+				existsRep <- redisClient.Exists(key).Val()
+			case key := <- incrReq:
+				incrRep <- redisClient.Incr(key).Val()
+			case key := <- delReq:
+				redisClient.Incr(key)
+		}
+	}
+}
+
+/*
 func serveQueryField() {
 	log.Printf("store.serveQueryField: goroutine started")
 	// receives values from the channel repeatedly until it is closed
@@ -91,16 +112,20 @@ func serveDel() {
 	}
 	log.Printf("store.serveDel: PANIC: delReq channel closed")
 }
+*/
 
 func Init(serverAddr string) {
 	log.Printf("store.Init(): redis client for: %s", serverAddr)
 	redisClient = redis.NewTCPClient(serverAddr, redisPassword, redisDb)
+	/*
 	go serveQueryField()
 	go serveSetField()	
 	go serveExpire()	
 	go serveExists()
 	go serveIncr()
 	go serveDel()
+	*/
+	go serve()
 }
 
 func QueryField(key, field string) string {
