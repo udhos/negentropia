@@ -11,6 +11,11 @@ type KeyField struct {
 	field string
 }
 
+type KeyValue struct {
+	key   string
+	value string
+}
+
 type KeyFieldValue struct {
 	key   string
 	field string
@@ -29,7 +34,7 @@ var (
 	redisExpire    int64         = 2 * 86400 // expire keys after 2 days
 	queryReq       chan KeyField      = make(chan KeyField)
 	queryRep       chan string        = make(chan string)
-	setReq         chan KeyFieldValue = make(chan KeyFieldValue)
+	setFieldReq    chan KeyFieldValue = make(chan KeyFieldValue)
 	expReq         chan KeyExpire     = make(chan KeyExpire)
 	existsReq      chan string        = make(chan string)
 	existsRep      chan bool          = make(chan bool)
@@ -38,6 +43,7 @@ var (
 	delReq         chan string        = make(chan string)
 	fieldExistsReq chan KeyField      = make(chan KeyField)
 	fieldExistsRep chan bool          = make(chan bool)
+	setReq         chan KeyValue      = make(chan KeyValue)
 )
 
 func serve() {
@@ -46,7 +52,7 @@ func serve() {
 		select {
 			case r := <- queryReq:
 				queryRep <- redisClient.HGet(r.key, r.field).Val()
-			case r := <- setReq:
+			case r := <- setFieldReq:
 				redisClient.HSet(r.key, r.field, r.value)
 			case r := <- expReq:
 				redisClient.Expire(r.key, r.expire)
@@ -58,6 +64,8 @@ func serve() {
 				redisClient.Incr(key)
 			case r := <- fieldExistsReq:
 				fieldExistsRep <- redisClient.HExists(r.key, r.field).Val()
+			case r := <- setReq:
+				redisClient.Set(r.key, r.value)
 		}
 	}
 }
@@ -138,7 +146,7 @@ func QueryField(key, field string) string {
 }
 
 func SetField(key, field, value string) {
-	setReq <- KeyFieldValue{key, field, value} // send key,field,value
+	setFieldReq <- KeyFieldValue{key, field, value} // send key,field,value
 }
 
 func Expire(key string, expire int64) {
@@ -162,4 +170,8 @@ func Del(key string) {
 func FieldExists(key, field string) bool {
 	fieldExistsReq <- KeyField{key, field} // send key,field
 	return <- fieldExistsRep // read reply and return it
+}
+
+func Set(key, value string) {
+	setReq <- KeyValue{key, value} // send key,value
 }

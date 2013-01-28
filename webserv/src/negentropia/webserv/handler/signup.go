@@ -7,6 +7,7 @@ import (
 	"log"
 	//"time"
 	//"io/ioutil"
+	"strconv"
 	"net/http"
 	//"crypto/sha1"
 	"html/template"
@@ -68,6 +69,10 @@ func Signup(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	}
 }
 
+func newConfirmationId() string {
+	return "c" + strconv.FormatInt(store.Incr("confirmationIdGenerator"), 10)
+}
+
 func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 	log.Printf("handler.SignupProcess url=%s", path)
@@ -102,10 +107,14 @@ func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 		}
 		return
 	}
+	
+	confId := newConfirmationId()
+	store.Set(confId, email)
+	store.Expire(confId, unconfirmedExpire) // Expire confirmation id after 2 days
 
 	store.SetField(email, "name", name)
 	store.SetField(email, "password-sha1-hex", passDigest(password))
-	store.SetField(email, "unconfirmed", "")
+	store.SetField(email, "unconfirmed", confId) // Save confirmation id here only for informational purpose
 	store.Expire(email, unconfirmedExpire) // Expire unconfirmed email after 2 days
 	
 	msg := "The new account has been created, and a confirmation email has been sent to " + email + ". Please check your email to enable the account."
