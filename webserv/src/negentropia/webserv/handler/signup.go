@@ -12,6 +12,7 @@ import (
 	"html/template"
 
 	"negentropia/webserv/cfg"
+	"negentropia/webserv/store"	
 	"negentropia/webserv/session"
 )
 
@@ -21,10 +22,12 @@ type SignupPage struct {
 	LogoutPath		  string
 	SignupProcessPath string
 
-	EmailValue        string	
+	EmailValue        string
+	BadEmailMsg       string
 	BadPasswdMsg      string
 	BadConfirmMsg     string
 	BadSignupMsg      string
+	SignupDoneMsg     string	
 	
 	Account         string
 	ShowNavAccount  bool
@@ -32,6 +35,10 @@ type SignupPage struct {
 	ShowNavLogin    bool
 	ShowNavLogout   bool	
 }
+
+var (
+	unconfirmedExpire int64 = 2 * 86400 // expire unconfirmed email after 2 days
+)
 
 func sendSignup(w http.ResponseWriter, p SignupPage) error {
 	p.HomePath          = cfg.HomePath()
@@ -65,5 +72,44 @@ func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 	log.Printf("handler.SignupProcess url=%s", path)
 
-	//account := accountLabel(s)
+	account := accountLabel(s)
+	
+	name := r.FormValue("Name")
+	email := formatEmail(r.FormValue("Email"))
+	password := r.FormValue("Passwd")
+	confirm := r.FormValue("Confirm")
+	
+	if email == "" {
+		msg := "Please enter email address."
+		if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	if store.Exists(email) && !store.FieldExists(email, "unconfirmed") {
+		msg := "The address " + email + " is already taken."
+		if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg,EmailValue:email}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+	
+	if password != confirm {
+		msg := "Password don't match."
+		if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadConfirmMsg:msg,EmailValue:email}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	store.SetField(email, "name", name)
+	store.SetField(email, "password-sha1-hex", passDigest(password))
+	store.SetField(email, "unconfirmed", "")
+	store.Expire(email, unconfirmedExpire) // Expire unconfirmed email after 2 days
+	
+	msg := "The new account has been created, and a confirmation email has been sent to " + email + ". Please check your email to enable the account."
+	if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,SignupDoneMsg:msg,EmailValue:email}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

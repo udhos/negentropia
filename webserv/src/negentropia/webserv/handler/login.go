@@ -146,8 +146,22 @@ func facebookOauth2(w http.ResponseWriter, r *http.Request) {
 	// See next steps under facebookCallback handler
 }
 
+func sessionStart(w http.ResponseWriter, r *http.Request, s *session.Session, email string) {
+	if s != nil {
+		session.Delete(w, s)
+	}
+	name := session.RedisQueryField(email, "name")
+	s = session.Set(w, session.AUTH_PROV_PASSWORD, email, name, email)
+	if s == nil {
+		log.Printf("login.LoginAuth url=%s could not establish session", r.URL.Path)	
+		http.Error(w, "login.LoginAuth could not establish session", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, cfg.HomePath(), http.StatusFound)
+}
+
 func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
-	path := r.URL.Path
 
 	account := accountLabel(s)
 
@@ -177,6 +191,7 @@ func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 			if passwordAuth(email, password) {
 				// auth ok
 
+				/*
 				if s != nil {
 					session.Delete(w, s)
 				}
@@ -189,6 +204,10 @@ func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 				}
 				
 				http.Redirect(w, r, cfg.HomePath(), http.StatusFound)
+				*/
+				
+				sessionStart(w, r, s, email)
+				
 			} else {
 				// bad auth
 				if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,PasswdBadAuth:"Invalid email/password. Please try again.",EmailValue:email}); err != nil {
