@@ -1,10 +1,14 @@
 {{ define "title" }}Negentropia{{ end }}
 {{ define "content" }}
-<h1>Welcome to Negentropia</h1>
+<h1>Login</h1>
+
+<form action="{{.SignupPath}}" method="POST">
+New user? <input type="submit" name="SignupButton" value="Signup">
+</form>
 
 <form action="{{.LoginAuthPath}}" method="POST">
 
-<div>Email: <input type="email" spellcheck="false" name="Email" value="" placeholder="me@example.com"></div>
+<div>Email: <input type="email" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com"></div>
 
 <div>Password: <input type="password" name="Passwd"><input type="submit" name="LoginButton" value="Login"><font color="red">{{.PasswdBadAuth}}</font></div>
 
@@ -14,4 +18,5 @@
 
 <div><input type="submit" name="BrokenButton" value="Invalid Login"></div>
 </form>
+
 {{ end }}

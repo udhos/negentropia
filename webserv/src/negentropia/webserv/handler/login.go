@@ -26,6 +26,8 @@ type Page struct {
 	LoginPath		string
 	LogoutPath		string
 	LoginAuthPath	string
+	SignupPath		string
+	EmailValue      string
 	
 	PasswdBadAuth   string
 	GoogleAuthMsg   string
@@ -39,10 +41,11 @@ type Page struct {
 }
 
 func sendLogin(w http.ResponseWriter, p Page) error {
-	p.HomePath   = cfg.HomePath()
-	p.LoginPath  = cfg.LoginPath()
-	p.LogoutPath = cfg.LogoutPath()
+	p.HomePath      = cfg.HomePath()
+	p.LoginPath     = cfg.LoginPath()
+	p.LogoutPath    = cfg.LogoutPath()
 	p.LoginAuthPath = cfg.LoginAuthPath()
+	p.SignupPath    = cfg.SignupPath()
 	
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("login.tpl"))
@@ -161,7 +164,15 @@ func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	
 	switch {
 		case login != "":
-			email := formatEmail(r.FormValue("Email"))
+			email := formatEmail(r.FormValue("Email"))		
+			if store.FieldExists(email, "unconfirmed") {
+				msg := "The address " + email + " has not been confirmed."
+				if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,PasswdBadAuth:msg,EmailValue:email}); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+				}
+				return
+			}
+				
 			password := r.FormValue("Passwd")
 			if passwordAuth(email, password) {
 				// auth ok
@@ -180,7 +191,7 @@ func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 				http.Redirect(w, r, cfg.HomePath(), http.StatusFound)
 			} else {
 				// bad auth
-				if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,PasswdBadAuth: "Invalid email/password. Please try again."}); err != nil {
+				if err := sendLogin(w, Page{Account:account,ShowNavAccount:true,ShowNavHome:true,PasswdBadAuth:"Invalid email/password. Please try again.",EmailValue:email}); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 				}
 			}

@@ -36,6 +36,8 @@ var (
 	incrReq        chan string        = make(chan string)
 	incrRep        chan int64         = make(chan int64)	
 	delReq         chan string        = make(chan string)
+	fieldExistsReq chan KeyField      = make(chan KeyField)
+	fieldExistsRep chan bool          = make(chan bool)
 )
 
 func serve() {
@@ -54,6 +56,8 @@ func serve() {
 				incrRep <- redisClient.Incr(key).Val()
 			case key := <- delReq:
 				redisClient.Incr(key)
+			case r := <- fieldExistsReq:
+				fieldExistsRep <- redisClient.HExists(r.key, r.field).Val()
 		}
 	}
 }
@@ -153,4 +157,9 @@ func Incr(key string) int64 {
 
 func Del(key string) {
 	delReq <- key // send key
+}
+
+func FieldExists(key, field string) bool {
+	fieldExistsReq <- KeyField{key, field} // send key,field
+	return <- fieldExistsRep // read reply and return it
 }

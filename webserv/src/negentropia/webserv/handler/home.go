@@ -45,7 +45,7 @@ func sendHome(w http.ResponseWriter, p HomePage) error {
 func Home(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 	
-	log.Printf("handler.home url=%s", path)
+	log.Printf("handler.Home url=%s", path)
 	
 	account := accountLabel(s)
 	

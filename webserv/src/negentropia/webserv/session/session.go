@@ -175,11 +175,11 @@ func Get(r *http.Request) *Session {
 
 	cook, err := r.Cookie("session")
 	if err != nil {
-		log.Printf("session.Get cookie NOT FOUND: err=%s", err)
+		//log.Printf("session.Get cookie NOT FOUND: err=%s", err)
 		return nil
 	}
 
-	log.Printf("session.Get FOUND cookie session=%s", cook.Value)
+	//log.Printf("session.Get FOUND cookie session=%s", cook.Value)
 		
 	session := sessionLoad(cook.Value);
 	if session == nil {
@@ -187,7 +187,7 @@ func Get(r *http.Request) *Session {
 		return nil
 	}
 
-	log.Printf("session.Get LOADED session=%s", cook.Value)
+	//log.Printf("session.Get LOADED session=%s", cook.Value)
 		
 	return session
 }
