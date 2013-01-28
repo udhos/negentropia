@@ -14,7 +14,7 @@
 
 <div><input type="submit" name="SignupButton" value="Signup"><font color="red">{{.BadSignupMsg}}</font></div>
 
-<div><font color="blue">{{.SignupDoneMsg}}</font></div>
-
 </form>
+
+<div><font color="blue">{{.SignupDoneMsg}}</font></div>
 {{ end }}

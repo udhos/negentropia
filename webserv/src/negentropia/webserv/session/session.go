@@ -167,8 +167,7 @@ func sessionSave(session *Session) error {
 }
 
 func newSessionId() string {
-	//return strconv.FormatInt(redisClient.Incr("sessionIdGenerator").Val(), 10)
-	return strconv.FormatInt(store.Incr("sessionIdGenerator"), 10)
+	return "s" + strconv.FormatInt(store.Incr("sessionIdGenerator"), 10)
 }
 
 func Get(r *http.Request) *Session {

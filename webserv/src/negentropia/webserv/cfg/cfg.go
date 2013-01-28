@@ -13,6 +13,8 @@ var (
 	facebookCallbackPath	string
 	signupPath				string
 	signupProcessPath		string
+	confirmPath				string
+	confirmProcessPath		string	
 )
 
 func SetBasePath(basePath string) {
@@ -26,6 +28,8 @@ func SetBasePath(basePath string) {
 	facebookCallbackPath = basePath + "/facebookCallback"
 	signupPath           = basePath + "/signup"
 	signupProcessPath    = basePath + "/signupProcess"
+	confirmPath          = basePath + "/confirm"
+	confirmProcessPath   = basePath + "/confirmProcess"
 }
 
 func HomePath()             string { return homePath }
@@ -36,3 +40,5 @@ func GoogleCallbackPath()   string { return googleCallbackPath }
 func FacebookCallbackPath() string { return facebookCallbackPath }
 func SignupPath()           string { return signupPath }
 func SignupProcessPath()    string { return signupProcessPath }
+func ConfirmPath()          string { return confirmPath }
+func ConfirmProcessPath()   string { return confirmProcessPath }

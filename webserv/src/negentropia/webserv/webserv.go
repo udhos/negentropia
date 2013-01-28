@@ -224,6 +224,8 @@ func main() {
 	http.HandleFunc(cfg.FacebookCallbackPath(), func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.FacebookCallback) } )	
 	http.HandleFunc(cfg.SignupPath(),           func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Signup) } )	
 	http.HandleFunc(cfg.SignupProcessPath(),    func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.SignupProcess) } )	
+	http.HandleFunc(cfg.ConfirmPath(),          func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Confirm) } )	
+	http.HandleFunc(cfg.ConfirmProcessPath(),   func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ConfirmProcess) } )	
 	
 	/*
 	last := len(listenOn) - 1
