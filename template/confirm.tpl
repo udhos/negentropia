@@ -1,6 +1,6 @@
 {{ define "title" }}Negentropia{{ end }}
 {{ define "content" }}
-<h1>Sign up</h1>
+<h1>Confirm Email Adress</h1>
 
 <form action="{{.ConfirmProcessPath}}" method="POST">
 

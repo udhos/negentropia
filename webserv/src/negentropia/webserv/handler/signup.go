@@ -101,7 +101,7 @@ func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	}
 	
 	if password != confirm {
-		msg := "Password don't match."
+		msg := "Passwords don't match."
 		if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadConfirmMsg:msg,EmailValue:email}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
