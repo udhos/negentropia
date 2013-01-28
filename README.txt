@@ -21,7 +21,7 @@ REQUIREMENTS
 # https://github.com/dmajkic/redis/downloads
 
 
-GENERAL BUILDING INSTRUCTIONS:
+GENERAL BUILDING GUIDELINES:
 
 # 1. Clone the git repository:
 git clone https://code.google.com/p/negentropia/
@@ -35,6 +35,7 @@ git clone https://code.google.com/p/negentropia/
 # https://github.com/HairyMezican/goauth2/			This is mostly copied from http://code.google.com/p/goauth2/
 #													The original code will fail when contacting facebook; this code fixes that problem
 # http://code.google.com/r/jasonmcvetta-goauth2/	This clone contains changes to stock Goauth2 detailed by Ryan.C.K. here: http://code.google.com/p/goauth2/issues/detail?id=4
+go get github.com/HairyMezican/goauth2/oauth
 
 # 4. Install redis client library
 go get github.com/vmihailenco/redis
@@ -42,8 +43,8 @@ go get github.com/vmihailenco/redis
 # 5. Build and install (to negentropia\webserv\bin)
 go install negentropia\webserv
 
-# 6. Start memcached
-memcached -vv -p 11211
+# 6. Start redis
+redis-server
 
 # 7. Run
 # Under Linux:
@@ -70,43 +71,50 @@ go get github.com/HairyMezican/goauth2/oauth
 
 ## windows dos prompt:
 
-@rem start redis
-@rem dmajkic redis:
-c:\redis-2.4.5-win32-win64\64bit\redis-server.exe
+@rem start redis (on cmd.exe window 1)
 @rem microsoft redis:
-c:\redisbin\redis-server.exe
+\redisbin\redis-server.exe
 
-set DEVEL=C:\tmp\devel
-set GOPATH=%DEVEL%\negentropia\webserv
-
-@rem fetch from code.google.com with DOS prompt
-@rem
-@rem install goauth2
-@rem
-@rem facebook broken:
-@rem go get code.google.com/p/goauth2/oauth
-@rem
-@rem google broken:
-@rem go get github.com/robfig/goauth2/oauth
-@rem
-@rem go get broken:
-@rem go get code.google.com/r/jasonmcvetta-goauth2/
-@rem
-@rem load from git bash:
-@rem go get github.com/HairyMezican/goauth2/oauth
-
-@rem build
-go install negentropia\webserv
-
-@rem run:
-@rem   -- google login requires Google API "Client ID" and "Client secret"
-%DEVEL%\negentropia\webserv\bin\webserv.exe -gId=putIdHere -gSecret=putSecretHere
-@rem   -- if you don't need google login:
-%DEVEL%\negentropia\webserv\bin\webserv.exe
+@rem build webserver (on cmd.exe window 2):
+\tmp\devel\negentropia\webserver-build.cmd
 
 
-RUNNING / TESTING
+CONFIGURING
 
-Open http://localhost:8080/ne/
+The webserver-run.cmd script reads config from the following file:
+	\tmp\devel\webserv-config.txt
+
+If you want to enable support for Google login:
+	1. Login to https://code.google.com/apis/console/
+	2. Create a new project: API Project -> Create
+	3. Under "API Access", create a "Client ID for web applications"
+	4. Under "Client ID for web applications", notice the fields "Client ID" and "Client secret"
+	5. Add the following lines to webserv-config.txt:
+	-gId=putGoogleClientIdHere
+	-gSecret=putGoogleClientSecretHere
+	6. Under "Client ID for web applications", add the following URLs:
+	Redirect URIs:		http://localhost:8080/ne/googleCallback
+	JavaScript origins:	http://localhost:8080
+
+If you want to enable support for Facebook login:
+	1. Login to https://developers.facebook.com/apps
+	2. Register as a developer
+	3. Create a new app
+	4. Select the app on the left menu, then notice the fields "App ID/API Key" and "App Secret"
+	5. Add the following lines to webserv-config.txt:	
+	-fId=putFacebookAppIdHere
+	-fSecret=putFacebookAppSecretHere
+	6. Click on "Edit Settings"
+	7. Check the box "Website with Facebook Login"
+	8. Add http://localhost:8080/ne/facebookCallback to the field "Site URL"
+
+
+RUNNING / TESTING UNDER WINDOWS
+
+@rem run webserver (on cmd.exe window 2):
+@rem webserver-run.cmd reads config from \tmp\devel\webserv-config.txt
+\tmp\devel\negentropia\webserver-run.cmd
+
+Point your web browser to http://localhost:8080/ne/
 
 --THE END--
