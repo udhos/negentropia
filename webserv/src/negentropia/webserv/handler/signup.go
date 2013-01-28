@@ -22,6 +22,7 @@ type SignupPage struct {
 	LoginPath		  string
 	LogoutPath		  string
 	SignupProcessPath string
+	ConfirmPath       string	
 
 	EmailValue        string
 	BadEmailMsg       string
@@ -46,6 +47,7 @@ func sendSignup(w http.ResponseWriter, p SignupPage) error {
 	p.LoginPath         = cfg.LoginPath()
 	p.LogoutPath        = cfg.LogoutPath()
 	p.SignupProcessPath = cfg.SignupProcessPath()
+	p.ConfirmPath       = cfg.ConfirmPath()
 	
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("signup.tpl"))

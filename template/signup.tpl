@@ -17,4 +17,6 @@
 </form>
 
 <div><font color="blue">{{.SignupDoneMsg}}</font></div>
+
+<div>Once you have signed up, please <a href="{{.ConfirmPath}}">confirm your email address</a>.</div>
 {{ end }}
