@@ -2,7 +2,7 @@ package handler
 
 import (
 	//"log"
-	//"strings"
+	"strings"
 	
 	//"github.com/bradfitz/gomemcache/memcache"
 	
@@ -45,4 +45,9 @@ func accountLabel(s *session.Session) string {
 	
 	return s.ProfileName + " (" + s.ProfileEmail + ")"
 }
+
+func formatEmail(email string) string {
+	return strings.ToLower(strings.TrimSpace(email))
+}
+
 

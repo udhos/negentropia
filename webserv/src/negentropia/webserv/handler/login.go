@@ -161,8 +161,8 @@ func LoginAuth(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	
 	switch {
 		case login != "":
-			email := r.FormValue("Email");
-			password := r.FormValue("Passwd");
+			email := formatEmail(r.FormValue("Email"))
+			password := r.FormValue("Passwd")
 			if passwordAuth(email, password) {
 				// auth ok
 
