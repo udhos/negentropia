@@ -2,6 +2,7 @@ package handler
 
 import (
 	//"log"
+	"path"
 	"strings"
 	
 	//"github.com/bradfitz/gomemcache/memcache"
@@ -10,13 +11,13 @@ import (
 )
 
 var (
-	templateRootPath string
-	GoogleId       *string
-	GoogleSecret   *string
-	FacebookId     *string
-	FacebookSecret *string
-	RedirectHost    string
-	RedirectPort    string
+	templateRootPath  string
+	GoogleId         *string
+	GoogleSecret     *string
+	FacebookId       *string
+	FacebookSecret   *string
+	RedirectHost      string
+	RedirectPort      string
 )
 
 /*
@@ -26,16 +27,16 @@ func init() {
 }
 */
 
-func SetTemplateRoot(path string) {
-	templateRootPath = path
+func SetTemplateRoot(p string) {
+	templateRootPath = p
 }
 
 func TemplateRoot() string {
 	return templateRootPath
 }
 
-func TemplatePath(path string) string {
-	return TemplateRoot() + "/" + path
+func TemplatePath(p string) string {
+	return path.Join(TemplateRoot(), p)
 }
 
 func accountLabel(s *session.Session) string {

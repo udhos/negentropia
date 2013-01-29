@@ -22,13 +22,12 @@ import (
 //type portList []string
 
 var (
-	staticPath    string         = "/tmp/devel/negentropia/wwwroot"
-	templatePath  string         = "/tmp/devel/negentropia/template"
-	configFile    string	
-	//listenOn     portList       = []string{":8000", ":8080"}
-	listenAddr    string
-	configFlags  *flag.FlagSet  = flag.NewFlagSet("config flags", flag.ExitOnError)
-	redisAddr     string
+	staticMap		string
+	templatePath	string
+	configFile		string	
+	listenAddr		string
+	configFlags		*flag.FlagSet  = flag.NewFlagSet("config flags", flag.ExitOnError)
+	redisAddr		string
 
 	basePath				string
 )
@@ -44,8 +43,8 @@ func init() {
 	configFlags.StringVar(&handler.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")	
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
 	configFlags.StringVar(&basePath, "path", "/ne", "www base path")
-	
-	handler.SetTemplateRoot(templatePath)
+	configFlags.StringVar(&templatePath, "template", "", "template root path")
+	configFlags.StringVar(&staticMap, "static", "", "www static mapping")
 }
 
 /*
@@ -63,8 +62,7 @@ type StaticHandler struct {
 }
 
 func (handler StaticHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	log.Printf("StaticHandler.ServeHTTP url=%s", path)
+	log.Printf("StaticHandler.ServeHTTP url=%s", r.URL.Path)
 	handler.innerHandler.ServeHTTP(w, r) // call trapped/wrapped Handler
 
 	/*
@@ -194,6 +192,15 @@ func main() {
 		}
 	}
 	
+	log.Printf("template root path: %s", templatePath)
+	if templatePath == "" {
+		log.Printf("template root path is required")
+		return
+	}
+	handler.SetTemplateRoot(templatePath)
+
+	handler.RedirectPort = getPort(listenAddr)
+	
 	if *handler.GoogleId == "" {
 		log.Printf("warning: google client id is UNDEFINED: google login won't be available")
 	}	
@@ -209,13 +216,20 @@ func main() {
 	
 	//session.Init(redisAddr)
 	
-	store.Init(redisAddr)
-
-	handler.RedirectPort = getPort(listenAddr)
+	store.Init(redisAddr)		
 
 	cfg.SetBasePath(basePath)
 
-	http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
+	//http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
+	
+	for _, pair := range strings.Split(staticMap, ",") {
+		pDir := strings.Split(pair, ":")
+		p := pDir[0]
+		dir := pDir[1]
+		log.Printf("installing static handler from path %s to directory %s", p, dir)
+		http.Handle(p, StaticHandler{http.StripPrefix(p,http.FileServer(http.Dir(dir)))})
+	}
+	
 	http.HandleFunc(cfg.HomePath(),             func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) } )
 	http.HandleFunc(cfg.LogoutPath(),           func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
 	http.HandleFunc(cfg.LoginPath(),            func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) } )

@@ -71,8 +71,7 @@ go get github.com/HairyMezican/goauth2/oauth
 
 ## windows dos prompt:
 
-@rem start redis (on cmd.exe window 1)
-@rem microsoft redis:
+@rem start microsoft redis (on cmd.exe window 1)
 \redisbin\redis-server.exe
 
 @rem build webserver (on cmd.exe window 2):
