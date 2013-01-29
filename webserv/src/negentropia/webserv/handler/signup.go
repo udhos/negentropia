@@ -72,7 +72,7 @@ func Signup(w http.ResponseWriter, r *http.Request, s *session.Session) {
 }
 
 func newConfirmationId() string {
-	return "c" + strconv.FormatInt(store.Incr("confirmationIdGenerator"), 10)
+	return "c:" + strconv.FormatInt(store.Incr("i:confirmationIdGenerator"), 10)
 }
 
 func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {

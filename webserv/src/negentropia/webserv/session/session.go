@@ -7,10 +7,7 @@ import (
 	//"strings"
 	"strconv"
 	"net/http"
-	
-	//"github.com/bradfitz/gomemcache/memcache"
-	//"github.com/vmihailenco/redis"
-	
+		
 	"negentropia/webserv/store"
 )
 
@@ -18,20 +15,11 @@ const (
 	AUTH_PROV_PASSWORD = 0 // local password
 	AUTH_PROV_GOOGLE   = 1
 	AUTH_PROV_FACEBOOK = 2
+	
+	SESSION_ID = "sid" // session id
 )
 
 var (
-	/*
-	mcServerList     []string         = []string{"127.0.0.1:11211", "127.0.0.1:12000"}
-	mc               *memcache.Client
-	*/
-	//RedisAddr     string
-	/*
-	redisPassword string  = ""
-	redisDb       int64   = -1
-	redisClient   *redis.Client
-	redisExpire   int64   = 2 * 86400 // expire keys after 2 days
-	*/
 	sessionKeyExpire int64   = 2 * 86400 // expire keys after 2 days	
 )
 
@@ -42,40 +30,6 @@ type Session struct {
 	ProfileName  string // "Everton Marques"
 	ProfileEmail string
 }
-
-/*
-func init() {
-	log.Printf("session.init(): memcache client for: " + strings.Join(mcServerList, ","))
-	mc = memcache.New(mcServerList...)
-}
-*/
-
-/*
-func Init(serverAddr string) {
-	log.Printf("session.Init(): redis client for: %s", serverAddr)
-	redisClient = redis.NewTCPClient(serverAddr, redisPassword, redisDb)
-}
-*/
-
-/*
-func sessionGet() string {
-	//var it *memcache.Item
-    it, err := mc.Get("session")
-	if err != nil {
-		log.Printf("handler.googleCallback mc.Get err=%s", err)
-		return ""
-	}
-	return string(it.Value)
-}
-
-func sessionSet(value string) error {
-    err := mc.Set(&memcache.Item{Key: "session", Value: []byte(value), Expiration: 24*3600})
-	if err != nil {
-		log.Printf("handler.googleCallback mc.Set err=%s", err)
-	}
-	return err
-}
-*/
 
 func newCookie(name, value string, maxAge int) *http.Cookie {
 	var expires time.Time
@@ -110,35 +64,22 @@ func newSession(sid string, provider int, profId, profName, profEmail string) *S
 }
 
 func RedisQueryField(key, field string) string {
-	//return redisClient.HGet(key, field).Val()
 	return store.QueryField(key, field)
 }
 
 func sessionLoad(sessionId string) *Session {
 
-	/*
-	if !redisClient.Exists(sessionId).Val() {
-		return nil
-	}
-	*/
 	if !store.Exists(sessionId) {
 		return nil
 	}
 	
 	var (
-		//err          error
 		provider     int 
 		profileId    string
 		profileName  string
 		profileEmail string
 	)
 
-	/*
-	provider, _  = strconv.Atoi(redisClient.HGet(sessionId, "AuthProvider").Val())
-	profileId    = redisClient.HGet(sessionId, "ProfileId").Val()
-	profileName  = redisClient.HGet(sessionId, "ProfileName").Val()
-	profileEmail = redisClient.HGet(sessionId, "ProfileEmail").Val()
-	*/
 	provider, _  = strconv.Atoi(store.QueryField(sessionId, "AuthProvider"))
 	profileId    = store.QueryField(sessionId, "ProfileId")
 	profileName  = store.QueryField(sessionId, "ProfileName")
@@ -148,14 +89,6 @@ func sessionLoad(sessionId string) *Session {
 }
 
 func sessionSave(session *Session) error {
-	/*
-	redisClient.HSet(session.SessionId, "AuthProvider", strconv.Itoa(session.AuthProvider))
-	redisClient.HSet(session.SessionId, "ProfileId",    session.ProfileId)
-	redisClient.HSet(session.SessionId, "ProfileName",  session.ProfileName)
-	redisClient.HSet(session.SessionId, "ProfileEmail", session.ProfileEmail)
-
-	redisClient.Expire(session.SessionId, redisExpire)
-	*/
 	store.SetField(session.SessionId, "AuthProvider", strconv.Itoa(session.AuthProvider))
 	store.SetField(session.SessionId, "ProfileId",    session.ProfileId)
 	store.SetField(session.SessionId, "ProfileName",  session.ProfileName)
@@ -167,12 +100,12 @@ func sessionSave(session *Session) error {
 }
 
 func newSessionId() string {
-	return "s" + strconv.FormatInt(store.Incr("sessionIdGenerator"), 10)
+	return "s:" + strconv.FormatInt(store.Incr("i:sessionIdGenerator"), 10)
 }
 
 func Get(r *http.Request) *Session {
 
-	cook, err := r.Cookie("session")
+	cook, err := r.Cookie(SESSION_ID)
 	if err != nil {
 		//log.Printf("session.Get cookie NOT FOUND: err=%s", err)
 		return nil
@@ -204,7 +137,7 @@ func Set(w http.ResponseWriter, provider int, profId, profName, profEmail string
 	}
 
 	// MaxAge=0 means no 'Max-Age' attribute specified.
-	cook := newCookie("session", sessionId, 0)
+	cook := newCookie(SESSION_ID, sessionId, 0)
 
 	http.SetCookie(w, cook)
 	
@@ -213,11 +146,10 @@ func Set(w http.ResponseWriter, provider int, profId, profName, profEmail string
 
 func Delete(w http.ResponseWriter, session *Session) {
 
-	//redisClient.Del(session.SessionId)
 	store.Del(session.SessionId)
 	
 	// MaxAge<0 means delete cookie now
-	cook := newCookie("session", "", -1)
+	cook := newCookie(SESSION_ID, "", -1)
 
 	http.SetCookie(w, cook)
 }

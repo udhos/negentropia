@@ -1,5 +1,13 @@
 package store
 
+/*
+	Some key conventions:
+	s:xxx	session id
+	c:xxx	confirmation id
+	i:xxx	id generator		session.go -> i:sessionIdGenerator , signup.go -> i:confirmationIdGenerator
+	xxx@yyy	email
+*/
+
 import (
 	"log"
 	
