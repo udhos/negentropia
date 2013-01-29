@@ -1,0 +1,21 @@
+#
+# negentropia webserver sample flag config file
+#
+
+# Install static file handler for www root path
+-static=/:/tmp/devel/negentropia/wwwroot
+
+# Location of www templates
+-template=/tmp/devel/negentropia/template
+
+# If you want to enable support for Google login
+#-gId=putGoogleClientIdHere
+#-gSecret=putGoogleClientSecretHere
+
+# If you want to enable support for Facebook login
+#-fId=putFacebookAppIdHere
+#-fSecret=putFacebookAppSecretHere
+	
+#
+# end-of-file
+#

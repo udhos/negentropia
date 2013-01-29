@@ -83,6 +83,13 @@ CONFIGURING
 The webserver-run.cmd script reads config from the following file:
 	\tmp\devel\webserv-config.txt
 
+You should start by copying the following example configuration:
+	\tmp\devel\negentropia\webserv-config-sample.txt
+	
+	copy \tmp\devel\negentropia\webserv-config-sample.txt \tmp\devel\webserv-config.txt
+
+Then tweak \tmp\devel\webserv-config.txt
+
 If you want to enable support for Google login:
 	1. Login to https://code.google.com/apis/console/
 	2. Create a new project: API Project -> Create
