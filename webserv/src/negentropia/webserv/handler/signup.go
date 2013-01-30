@@ -78,7 +78,7 @@ func newConfirmationId() string {
 
 func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, subject, msgPlain, msgHtml string) {
 
-	log.Printf("signup.sendSmtp: auth=[%s] password=[%s] sender=[%s] recipient=[%s]", authUser, authPass, sender, recipient)
+	log.Printf("signup.sendSmtp: auth=[%s] sender=[%s] recipient=[%s] sending...", authUser, sender, recipient)
 
 	auth := smtp.PlainAuth(
 		"",
@@ -117,7 +117,7 @@ func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, s
 		log.Printf("signup.sendSmtp: failure: %s", err)
 	}
 
-	log.Printf("signup.sendSmtp: done")
+	log.Printf("signup.sendSmtp: auth=[%s] sender=[%s] recipient=[%s] done", authUser, sender, recipient)
 }
 
 func sendMail(email, confId string) {
