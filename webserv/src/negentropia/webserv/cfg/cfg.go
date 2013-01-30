@@ -14,7 +14,16 @@ var (
 	signupPath				string
 	signupProcessPath		string
 	confirmPath				string
-	confirmProcessPath		string	
+	confirmProcessPath		string
+	
+	Protocol		string
+	RedirectHost	string
+	RedirectPort	string
+		
+	SmtpAuthUser	string
+	SmtpAuthPass	string
+	SmtpAuthServer	string
+	SmtpHostPort	string
 )
 
 func SetBasePath(basePath string) {
@@ -42,3 +51,6 @@ func SignupPath()           string { return signupPath }
 func SignupProcessPath()    string { return signupProcessPath }
 func ConfirmPath()          string { return confirmPath }
 func ConfirmProcessPath()   string { return confirmProcessPath }
+
+func ConfirmURL()          string { return Protocol + "://" + RedirectHost + RedirectPort + confirmPath }
+func ConfirmProcessURL()   string { return Protocol + "://" + RedirectHost + RedirectPort + confirmProcessPath }

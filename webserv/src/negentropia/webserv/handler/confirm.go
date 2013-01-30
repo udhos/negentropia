@@ -35,6 +35,11 @@ type ConfirmPage struct {
 	ShowNavLogout   bool	
 }
 
+const (
+	FORM_VAR_EMAIL = "Email"
+	FORM_VAR_CONFIRM_ID = "ConfirmId"
+)
+
 func sendConfirm(w http.ResponseWriter, p ConfirmPage) error {
 	p.HomePath           = cfg.HomePath()
 	p.LoginPath          = cfg.LoginPath()
@@ -67,8 +72,8 @@ func ConfirmProcess(w http.ResponseWriter, r *http.Request, s *session.Session) 
 
 	account := accountLabel(s)
 	
-	email := formatEmail(r.FormValue("Email"))
-	confId := r.FormValue("ConfirmId")
+	email := formatEmail(r.FormValue(FORM_VAR_EMAIL))
+	confId := r.FormValue(FORM_VAR_CONFIRM_ID)
 
 	if email == "" {
 		msg := "Please enter email address."

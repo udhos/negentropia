@@ -16,8 +16,10 @@ var (
 	GoogleSecret     *string
 	FacebookId       *string
 	FacebookSecret   *string
+	/*
 	RedirectHost      string
 	RedirectPort      string
+	*/
 )
 
 /*

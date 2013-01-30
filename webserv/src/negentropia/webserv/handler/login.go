@@ -121,7 +121,7 @@ func facebookOauth2Config(host, port string) *oauth.Config {
 func googleOauth2(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handler.LoginAuth: google url=%s", r.URL)
 
-	config := googleOauth2Config(RedirectHost, RedirectPort)
+	config := googleOauth2Config(cfg.RedirectHost, cfg.RedirectPort)
 	
 	// Step one, get an authorization code from the data provider.
 	
@@ -135,7 +135,7 @@ func googleOauth2(w http.ResponseWriter, r *http.Request) {
 func facebookOauth2(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handler.LoginAuth: facebook url=%s", r.URL)
 
-	config := facebookOauth2Config(RedirectHost, RedirectPort)
+	config := facebookOauth2Config(cfg.RedirectHost, cfg.RedirectPort)
 	
 	// Step one, get an authorization code from the data provider.
 	

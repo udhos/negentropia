@@ -8,6 +8,14 @@
 # Location of www templates
 -template=/tmp/devel/negentropia/template
 
+# If you want to enable local accounts,
+# provide SMTP mail relay server information
+# (used to confirm new users' email adresses)
+-smtpAuthUser=user@exampledomain
+-smtpAuthPass=putPasswordHere
+-smtpAuthServer=smtp.exampledomain.com
+-smtpHostPort=smtp.exampledomain.com:587
+  
 # If you want to enable support for Google login
 #-gId=putGoogleClientIdHere
 #-gSecret=putGoogleClientSecretHere

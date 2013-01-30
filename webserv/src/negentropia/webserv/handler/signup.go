@@ -3,11 +3,12 @@ package handler
 import (
 	//"io"
 	//"os"
-	//"fmt"
+	"fmt"
 	"log"
 	//"time"
 	//"io/ioutil"
 	"strconv"
+	"net/smtp"
 	"net/http"
 	//"crypto/sha1"
 	"html/template"
@@ -75,6 +76,87 @@ func newConfirmationId() string {
 	return "c:" + strconv.FormatInt(store.Incr("i:confirmationIdGenerator"), 10)
 }
 
+func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, subject, msgPlain, msgHtml string) {
+
+	log.Printf("signup.sendSmtp: auth=[%s] password=[%s] sender=[%s] recipient=[%s]", authUser, authPass, sender, recipient)
+
+	auth := smtp.PlainAuth(
+		"",
+		authUser,
+		authPass,
+		authServer,
+	)
+
+	sub := fmt.Sprintf("Subject: %s\r\n", subject)
+	from := fmt.Sprintf("From: <%s>\r\n", sender)
+	to := fmt.Sprintf("To: <%s>\r\n", recipient)
+	bodyTemplate := "Content-Type: multipart/alternative; boundary=20cf307d051035ce0404d47a8e9b\r\n" +
+		"\r\n" +
+		"--20cf307d051035ce0404d47a8e9b\r\n" +
+		"Content-Type: text/plain; charset=ISO-8859-1\r\n" +
+		"\r\n" +
+		"%s" +
+		"\r\n" +
+		"--20cf307d051035ce0404d47a8e9b\r\n" +
+		"Content-Type: text/html; charset=ISO-8859-1\r\n" +
+		"\r\n" +
+		"%s" +
+		"\r\n" +
+		"--20cf307d051035ce0404d47a8e9b--\r\n"
+
+	body := fmt.Sprintf(bodyTemplate, msgPlain, msgHtml)
+
+	err := smtp.SendMail(
+		smtpHostPort,
+		auth,
+		sender,
+		[]string{recipient},
+		[]byte(sub+from+to+body),
+	)
+	if err != nil {
+		log.Printf("signup.sendSmtp: failure: %s", err)
+	}
+
+	log.Printf("signup.sendSmtp: done")
+}
+
+func sendMail(email, confId string) {
+	confURL := cfg.ConfirmURL()
+	clickURL := fmt.Sprintf("%s?%s=%s&%s=%s", cfg.ConfirmProcessURL(), FORM_VAR_EMAIL, email, FORM_VAR_CONFIRM_ID, confId)
+	mPlain := "This is an automatic message from an unattended mailbox. Please do not reply.\r\n" +
+		"\r\n" +
+		"The confirmation id for address %s is: %s\r\n" +
+		"\r\n" +
+		"If you want to confirm the signup for the new account, please:\r\n" +
+		"\r\n" +
+		"Either open: %s\r\n" +
+		"\r\n" +
+		"OR\r\n" +
+		"\r\n" +
+		"Enter the confirmation id at: %s\r\n" +
+		"\r\n" +
+		"Otherwise just ignore this message.\r\n"
+
+	mHtml := "This is an automatic message from an unattended mailbox. Please do not reply.\r\n" +
+		"\r\n" +
+		"The confirmation id for address %s is: %s\r\n" +
+		"\r\n" +
+		"If you want to confirm the signup for the new account, please:\r\n" +
+		"\r\n" +
+		"Either click <a href=\"%s\">%s</a>\r\n" +
+		"\r\n" +
+		"OR\r\n" +
+		"\r\n" +
+		"Enter the confirmation id at <a href=\"%s\">%s</a>\r\n" +
+		"\r\n" +
+		"Otherwise just ignore this message.\r\n"
+
+	msgPlain := fmt.Sprintf(mPlain, email, confId, clickURL, confURL)
+	msgHtml := fmt.Sprintf(mHtml, email, confId, clickURL, clickURL, confURL, confURL)
+	
+	sendSmtp(cfg.SmtpAuthUser, cfg.SmtpAuthPass, cfg.SmtpAuthServer, cfg.SmtpHostPort, cfg.SmtpAuthUser, email, "Negentropia mail confirmation", msgPlain, msgHtml)
+}
+
 func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 	log.Printf("handler.SignupProcess url=%s", path)
@@ -118,6 +200,8 @@ func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	store.SetField(email, "password-sha1-hex", passDigest(password))
 	store.SetField(email, "unconfirmed", confId) // Save confirmation id here only for informational purpose
 	store.Expire(email, unconfirmedExpire) // Expire unconfirmed email after 2 days
+
+	go sendMail(email, confId)	
 	
 	msg := "The new account has been created, and a confirmation email has been sent to " + email + ". Please check your email to enable the account."
 	if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,SignupDoneMsg:msg,EmailValue:email}); err != nil {

@@ -28,8 +28,7 @@ var (
 	listenAddr		string
 	configFlags		*flag.FlagSet  = flag.NewFlagSet("config flags", flag.ExitOnError)
 	redisAddr		string
-
-	basePath				string
+	basePath		string
 )
 
 // Initialize package main
@@ -40,11 +39,17 @@ func init() {
 	handler.FacebookSecret = configFlags.String("fSecret", "", "facebook client secret")
 	configFlags.StringVar(&configFile, "config", "", "load config flags from this file")
 	configFlags.StringVar(&listenAddr, "listenOn", ":8080", "listen address [addr]:port")
-	configFlags.StringVar(&handler.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")	
+	configFlags.StringVar(&cfg.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")	
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
 	configFlags.StringVar(&basePath, "path", "/ne", "www base path")
 	configFlags.StringVar(&templatePath, "template", "", "template root path")
 	configFlags.StringVar(&staticMap, "static", "", "www static mapping")
+	configFlags.StringVar(&cfg.Protocol, "proto", "http", "protocol")
+
+	configFlags.StringVar(&cfg.SmtpAuthUser, "smtpAuthUser", "user@domain.com", "smtp auth user")
+	configFlags.StringVar(&cfg.SmtpAuthPass, "smtpAuthPass", "putPasswordHere", "smtp auth password")
+	configFlags.StringVar(&cfg.SmtpAuthServer, "smtpAuthServer", "smtp.gmail.com", "smtp server")
+	configFlags.StringVar(&cfg.SmtpHostPort, "smtpHostPort", "smtp.gmail.com:587", "smtp server host:port")
 }
 
 /*
@@ -199,7 +204,7 @@ func main() {
 	}
 	handler.SetTemplateRoot(templatePath)
 
-	handler.RedirectPort = getPort(listenAddr)
+	cfg.RedirectPort = getPort(listenAddr)
 	
 	if *handler.GoogleId == "" {
 		log.Printf("warning: google client id is UNDEFINED: google login won't be available")
