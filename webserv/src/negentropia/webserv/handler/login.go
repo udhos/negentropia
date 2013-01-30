@@ -27,6 +27,7 @@ type Page struct {
 	LogoutPath		string
 	LoginAuthPath	string
 	SignupPath		string
+	ResetPassPath   string
 	EmailValue      string
 	
 	PasswdBadAuth   string
@@ -46,6 +47,7 @@ func sendLogin(w http.ResponseWriter, p Page) error {
 	p.LogoutPath    = cfg.LogoutPath()
 	p.LoginAuthPath = cfg.LoginAuthPath()
 	p.SignupPath    = cfg.SignupPath()
+	p.ResetPassPath = cfg.ResetPassPath()
 	
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("login.tpl"))

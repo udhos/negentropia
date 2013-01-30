@@ -64,10 +64,12 @@ func sendSignup(w http.ResponseWriter, p SignupPage) error {
 func Signup(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 	log.Printf("handler.Signup url=%s", path)
-	
+
 	account := accountLabel(s)
 	
-	if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true}); err != nil {
+	email := formatEmail(r.FormValue("Email"))
+	
+	if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,EmailValue:email}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
