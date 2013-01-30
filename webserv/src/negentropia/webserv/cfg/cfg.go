@@ -52,5 +52,8 @@ func SignupProcessPath()    string { return signupProcessPath }
 func ConfirmPath()          string { return confirmPath }
 func ConfirmProcessPath()   string { return confirmProcessPath }
 
+func HomeURL()			   string { return Protocol + "://" + RedirectHost + RedirectPort + homePath }
 func ConfirmURL()          string { return Protocol + "://" + RedirectHost + RedirectPort + confirmPath }
 func ConfirmProcessURL()   string { return Protocol + "://" + RedirectHost + RedirectPort + confirmProcessPath }
+func GoogleCallbackURL()   string { return Protocol + "://" + RedirectHost + RedirectPort + googleCallbackPath }
+func FacebookCallbackURL() string { return Protocol + "://" + RedirectHost + RedirectPort + facebookCallbackPath }

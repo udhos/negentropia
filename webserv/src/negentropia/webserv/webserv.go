@@ -218,14 +218,12 @@ func main() {
 	if *handler.FacebookSecret == "" {
 		log.Printf("warning: facebook client secret is UNDEFINED: facebook login won't be available")
 	}
-	
-	//session.Init(redisAddr)
-	
+		
 	store.Init(redisAddr)		
 
 	cfg.SetBasePath(basePath)
 
-	//http.Handle("/", StaticHandler{http.FileServer(http.Dir(staticPath))})
+	log.Printf("home URL: %s", cfg.HomeURL())
 	
 	for _, pair := range strings.Split(staticMap, ",") {
 		pDir := strings.Split(pair, ":")

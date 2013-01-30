@@ -48,7 +48,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 
 	// See previous step under loginAuth handler
 
-	config := googleOauth2Config(cfg.RedirectHost, cfg.RedirectPort)	
+	config := googleOauth2Config()	
 
 	// Set up a Transport with our config, define the cache
 	transp := &oauth.Transport{Config: config}
@@ -156,7 +156,7 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 	
 	// See previous step under loginAuth handler
 
-	config := facebookOauth2Config(cfg.RedirectHost, cfg.RedirectPort)	
+	config := facebookOauth2Config()	
 
 	// Set up a Transport with our config, define the cache
 	transp := &oauth.Transport{Config: config}

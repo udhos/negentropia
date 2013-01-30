@@ -86,9 +86,9 @@ func passwordAuth(email string, pass string) bool {
 	return passHash == dbHash
 }
 
-func googleOauth2Config(host, port string) *oauth.Config {
+func googleOauth2Config() *oauth.Config {
 
-	redirect := "http://" + host + port + cfg.GoogleCallbackPath()
+	redirect := cfg.GoogleCallbackURL()
 	
 	log.Printf("handler.googleOauth2Config: redirect=%s", redirect)
 
@@ -102,9 +102,9 @@ func googleOauth2Config(host, port string) *oauth.Config {
 	}
 }
 
-func facebookOauth2Config(host, port string) *oauth.Config {
+func facebookOauth2Config() *oauth.Config {
 
-	redirect := "http://" + host + port + cfg.FacebookCallbackPath()
+	redirect := cfg.FacebookCallbackURL()
 	
 	log.Printf("handler.facebookOauth2Config: redirect=%s", redirect)
 
@@ -121,7 +121,7 @@ func facebookOauth2Config(host, port string) *oauth.Config {
 func googleOauth2(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handler.LoginAuth: google url=%s", r.URL)
 
-	config := googleOauth2Config(cfg.RedirectHost, cfg.RedirectPort)
+	config := googleOauth2Config()
 	
 	// Step one, get an authorization code from the data provider.
 	
@@ -135,7 +135,7 @@ func googleOauth2(w http.ResponseWriter, r *http.Request) {
 func facebookOauth2(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handler.LoginAuth: facebook url=%s", r.URL)
 
-	config := facebookOauth2Config(cfg.RedirectHost, cfg.RedirectPort)
+	config := facebookOauth2Config()
 	
 	// Step one, get an authorization code from the data provider.
 	
