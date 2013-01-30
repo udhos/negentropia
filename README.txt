@@ -90,6 +90,14 @@ You should start by copying the following example configuration:
 
 Then tweak \tmp\devel\webserv-config.txt
 
+If you want to enable local accounts:
+	Provide the following SMTP mail relay server information
+	(used to confirm new users' email adresses):
+	-smtpAuthUser=user@exampledomain
+	-smtpAuthPass=putPasswordHere
+	-smtpAuthServer=smtp.exampledomain.com
+	-smtpHostPort=smtp.exampledomain.com:587
+
 If you want to enable support for Google login:
 	1. Login to https://code.google.com/apis/console/
 	2. Create a new project: API Project -> Create
