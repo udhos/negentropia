@@ -1,34 +1,34 @@
 package main
 
 import (
-	"os"
-	"io"
 	"bufio"
+	"io"
+	"os"
 	//"fmt"
-	"log"
 	"flag"
+	"log"
 	//"time"
 	"errors"
 	"strings"
 	//"io/ioutil"
-	"net/http"	
+	"net/http"
 
+	"negentropia/webserv/cfg"
 	"negentropia/webserv/handler"
 	"negentropia/webserv/session"
 	"negentropia/webserv/store"
-	"negentropia/webserv/cfg"
 )
 
 //type portList []string
 
 var (
-	staticMap		string
-	templatePath	string
-	configFile		string	
-	listenAddr		string
-	configFlags		*flag.FlagSet  = flag.NewFlagSet("config flags", flag.ExitOnError)
-	redisAddr		string
-	basePath		string
+	staticMap    string
+	templatePath string
+	configFile   string
+	listenAddr   string
+	configFlags  *flag.FlagSet = flag.NewFlagSet("config flags", flag.ExitOnError)
+	redisAddr    string
+	basePath     string
 )
 
 // Initialize package main
@@ -39,7 +39,7 @@ func init() {
 	handler.FacebookSecret = configFlags.String("fSecret", "", "facebook client secret")
 	configFlags.StringVar(&configFile, "config", "", "load config flags from this file")
 	configFlags.StringVar(&listenAddr, "listenOn", ":8080", "listen address [addr]:port")
-	configFlags.StringVar(&cfg.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")	
+	configFlags.StringVar(&cfg.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
 	configFlags.StringVar(&basePath, "path", "/ne", "www base path")
 	configFlags.StringVar(&templatePath, "template", "", "template root path")
@@ -83,21 +83,21 @@ func serve(addr string) {
 	} else {
 		log.Printf("server starting on " + addr)
 	}
-			
+
 	err := http.ListenAndServe(addr, nil)
 	/*
-	s := &http.Server{
-		Addr:           addr,
-		Handler:        nil,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-	err := s.ListenAndServe()
+		s := &http.Server{
+			Addr:           addr,
+			Handler:        nil,
+			ReadTimeout:    10 * time.Second,
+			WriteTimeout:   10 * time.Second,
+			MaxHeaderBytes: 1 << 20,
+		}
+		err := s.ListenAndServe()
 	*/
 	if err != nil {
 		log.Panicf("ListenAndServe: %s: %s", addr, err)
-	}	
+	}
 }
 
 /*
@@ -129,17 +129,17 @@ func loadFlagsFromFile(config string) ([]string, error) {
 		log.Printf("failure opening flags config file: %s: %s", config, err)
 		return nil, err
 	}
-	
+
 	defer input.Close()
-	
-	var flags []string 
+
+	var flags []string
 	var num int = 0
-	
+
 	reader := bufio.NewReader(input)
 	for line, pref, fail := reader.ReadLine(); fail != io.EOF; line, pref, fail = reader.ReadLine() {
 		if fail != nil {
 			log.Printf("failure reading line from flags config file: %s: %s", config, err)
-			break;
+			break
 		}
 		num++
 		if pref {
@@ -153,25 +153,25 @@ func loadFlagsFromFile(config string) ([]string, error) {
 		//log.Printf("flag config line [%d]: flag=[%s]", num, f)
 		flags = append(flags, f)
 	}
-	
+
 	return flags, nil
 }
 
 func loadConfig(config string) error {
 	f, err := loadFlagsFromFile(config)
 	if err != nil {
-		log.Printf("failure reading config flags: %s", err);		
+		log.Printf("failure reading config flags: %s", err)
 		return err
 	}
-	
+
 	err = configFlags.Parse(f)
 	if err != nil {
-		log.Printf("failure parsing config flags: %s", err);	
+		log.Printf("failure parsing config flags: %s", err)
 		return err
 	}
-	
+
 	//log.Printf("loaded %d flags", len(f))
-	
+
 	return nil
 }
 
@@ -180,7 +180,7 @@ func getPort(hostPort string) string {
 	if len(pair) == 1 {
 		return ""
 	}
-	
+
 	return ":" + pair[1]
 }
 
@@ -193,11 +193,11 @@ func main() {
 	if configFile != "" {
 		err := loadConfig(configFile)
 		if err != nil {
-			log.Printf("failure loading config flags: %s", err);
+			log.Printf("failure loading config flags: %s", err)
 			return
 		}
 	}
-	
+
 	log.Printf("template root path: %s", templatePath)
 	if templatePath == "" {
 		log.Printf("template root path is required")
@@ -206,10 +206,10 @@ func main() {
 	handler.SetTemplateRoot(templatePath)
 
 	cfg.RedirectPort = getPort(listenAddr)
-	
+
 	if *handler.GoogleId == "" {
 		log.Printf("warning: google client id is UNDEFINED: google login won't be available")
-	}	
+	}
 	if *handler.GoogleSecret == "" {
 		log.Printf("warning: google client secret is UNDEFINED: google login won't be available")
 	}
@@ -219,41 +219,50 @@ func main() {
 	if *handler.FacebookSecret == "" {
 		log.Printf("warning: facebook client secret is UNDEFINED: facebook login won't be available")
 	}
-		
-	store.Init(redisAddr)		
+
+	store.Init(redisAddr)
 
 	cfg.SetBasePath(basePath)
 
 	log.Printf("home URL: %s", cfg.HomeURL())
-	
-	for _, pair := range strings.Split(staticMap, ",") {
-		pDir := strings.Split(pair, ":")
-		p := pDir[0]
-		dir := pDir[1]
-		log.Printf("installing static handler from path %s to directory %s", p, dir)
-		http.Handle(p, StaticHandler{http.StripPrefix(p,http.FileServer(http.Dir(dir)))})
+
+	staticMap := strings.TrimSpace(staticMap)
+	if staticMap == "" {
+		log.Printf("no static map defined")
+	} else {
+		for _, pair := range strings.Split(staticMap, ",") {
+			pDir := strings.Split(pair, ":")
+			if len(pDir) != 2 {
+				log.Printf("bad static map pair: pair=[%s] map=[%s]", pair, staticMap)
+				return
+			}
+			p := pDir[0]
+			dir := pDir[1]
+			log.Printf("installing static handler from path %s to directory %s", p, dir)
+			http.Handle(p, StaticHandler{http.StripPrefix(p, http.FileServer(http.Dir(dir)))})
+		}
 	}
-	
-	http.HandleFunc(cfg.HomePath(),             func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) } )
-	http.HandleFunc(cfg.LogoutPath(),           func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) } )
-	http.HandleFunc(cfg.LoginPath(),            func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) } )
-	http.HandleFunc(cfg.LoginAuthPath(),        func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) } )
-	http.HandleFunc(cfg.GoogleCallbackPath(),   func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.GoogleCallback) } )
-	http.HandleFunc(cfg.FacebookCallbackPath(), func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.FacebookCallback) } )	
-	http.HandleFunc(cfg.SignupPath(),           func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Signup) } )	
-	http.HandleFunc(cfg.SignupProcessPath(),    func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.SignupProcess) } )	
-	http.HandleFunc(cfg.ConfirmPath(),          func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Confirm) } )	
-	http.HandleFunc(cfg.ConfirmProcessPath(),   func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ConfirmProcess) } )	
-	http.HandleFunc(cfg.ResetPassPath(),        func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPass) } )	
-	http.HandleFunc(cfg.ResetPassProcessPath(), func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPassProcess) } )	
-	
+
+	http.HandleFunc(cfg.HomePath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) })
+	http.HandleFunc(cfg.LogoutPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) })
+	http.HandleFunc(cfg.LoginPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) })
+	http.HandleFunc(cfg.LoginAuthPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) })
+	http.HandleFunc(cfg.GoogleCallbackPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.GoogleCallback) })
+	http.HandleFunc(cfg.FacebookCallbackPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.FacebookCallback) })
+	http.HandleFunc(cfg.SignupPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Signup) })
+	http.HandleFunc(cfg.SignupProcessPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.SignupProcess) })
+	http.HandleFunc(cfg.ConfirmPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Confirm) })
+	http.HandleFunc(cfg.ConfirmProcessPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ConfirmProcess) })
+	http.HandleFunc(cfg.ResetPassPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPass) })
+	http.HandleFunc(cfg.ResetPassProcessPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPassProcess) })
+
 	/*
-	last := len(listenOn) - 1
-	// serve ports except the last one
-	for _, port := range listenOn[:last] {
-		go serve(port)
-	}
-	serve(listenOn[last]) // serve last port
+		last := len(listenOn) - 1
+		// serve ports except the last one
+		for _, port := range listenOn[:last] {
+			go serve(port)
+		}
+		serve(listenOn[last]) // serve last port
 	*/
 	serve(listenAddr)
 }
