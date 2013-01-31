@@ -32,16 +32,10 @@ func dynamic2(w http.ResponseWriter, r *http.Request) {
 func main() {
 	
 	
-	http.Handle("/", StaticHandler{http.StripPrefix("/", http.FileServer(http.Dir("/tmp/www/root")))})
-	http.Handle("/s", StaticHandler{http.StripPrefix("/s", http.FileServer(http.Dir("/tmp/www/s")))})
-	http.Handle("/s/b", StaticHandler{http.StripPrefix("/s/b", http.FileServer(http.Dir("/tmp/www/sb")))})		
-	
-	/*
-	http.Handle("/", StaticHandler{http.FileServer(http.Dir("/tmp/www/root"))})
-	http.Handle("/s", StaticHandler{http.FileServer(http.Dir("/tmp/www/s"))})
-	http.Handle("/s/b", StaticHandler{http.FileServer(http.Dir("/tmp/www/sb"))})
-	*/
-	
+	http.Handle("/", StaticHandler{http.StripPrefix("/", http.FileServer(http.Dir("/tmp/www/root/")))})
+	http.Handle("/s/", StaticHandler{http.StripPrefix("/s", http.FileServer(http.Dir("/tmp/www/s/")))})
+	http.Handle("/s/b/", StaticHandler{http.StripPrefix("/s/b", http.FileServer(http.Dir("/tmp/www/sb/s/b/")))})		
+		
 	http.HandleFunc("/a/", dynamic1)
 	http.HandleFunc("/a/b", dynamic2)
 
