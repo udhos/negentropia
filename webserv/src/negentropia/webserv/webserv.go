@@ -146,11 +146,12 @@ func loadFlagsFromFile(config string) ([]string, error) {
 			log.Printf("very long flags config line at %d", num)
 			return nil, errors.New("very long flags config line")
 		}
-		if len(line) == 0 || line[0] == '#' {
+		f := strings.TrimSpace(string(line))
+		if f == "" || f[:1] == "#" {
 			continue
 		}
-		//log.Printf("line [%d]: %s", num, line)
-		flags = append(flags, string(line))
+		//log.Printf("flag config line [%d]: flag=[%s]", num, f)
+		flags = append(flags, f)
 	}
 	
 	return flags, nil
@@ -243,6 +244,8 @@ func main() {
 	http.HandleFunc(cfg.SignupProcessPath(),    func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.SignupProcess) } )	
 	http.HandleFunc(cfg.ConfirmPath(),          func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Confirm) } )	
 	http.HandleFunc(cfg.ConfirmProcessPath(),   func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ConfirmProcess) } )	
+	http.HandleFunc(cfg.ResetPassPath(),        func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPass) } )	
+	http.HandleFunc(cfg.ResetPassProcessPath(), func (w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPassProcess) } )	
 	
 	/*
 	last := len(listenOn) - 1
