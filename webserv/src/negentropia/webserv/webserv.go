@@ -255,6 +255,7 @@ func main() {
 	http.HandleFunc(cfg.ConfirmProcessPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ConfirmProcess) })
 	http.HandleFunc(cfg.ResetPassPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPass) })
 	http.HandleFunc(cfg.ResetPassProcessPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPassProcess) })
+	http.HandleFunc(cfg.ResetPassConfirmPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPassConfirm) })
 
 	/*
 		last := len(listenOn) - 1

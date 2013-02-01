@@ -9,7 +9,7 @@ New user? <input type="submit" name="SignupButton" value="Signup">
 
 <form name="login" action="{{.LoginAuthPath}}" method="POST">
 
-<div>Email: <input type="email" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com" onblur="document.signup.Email.value = this.value;document.recover.Email.value = this.value;"></div>
+<div>Email: <input type="email" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com" onchange="document.signup.Email.value = this.value;document.recover.Email.value = this.value;"></div>
 
 <div>Password: <input type="password" name="Passwd"><input type="submit" name="LoginButton" value="Login"><font color="red">{{.PasswdBadAuth}}</font></div>
 

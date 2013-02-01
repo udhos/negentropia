@@ -3,8 +3,11 @@ package store
 /*
 	Some key conventions:
 	s:xxx	session id
-	c:xxx	confirmation id
-	i:xxx	id generator		session.go -> i:sessionIdGenerator , signup.go -> i:confirmationIdGenerator
+	c:xxx	signup confirmation id
+	r:xxx	reset password confirmation id
+	i:xxx	id generator		session.go		i:sessionIdGenerator
+								signup.go		i:confirmationIdGenerator
+								password.go		i:resetPassConfirmationIdGenerator
 	xxx@yyy	email
 */
 
