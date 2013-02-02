@@ -13,7 +13,7 @@ import (
 	"html/template"
 
 	"negentropia/webserv/cfg"
-	//"negentropia/webserv/store"	
+	"negentropia/webserv/store"	
 	"negentropia/webserv/session"
 )
 
@@ -67,4 +67,51 @@ func ResetPassConfirm(w http.ResponseWriter, r *http.Request, s *session.Session
 func ResetPassConfirmProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	log.Printf("handler.ResetPassConfirmProcess url=%s", r.URL.Path)
 
+	account := accountLabel(s)
+	
+	email := formatEmail(r.FormValue(FORM_VAR_EMAIL))
+	confId := r.FormValue(FORM_VAR_CONFIRM_ID)
+	passwd := r.FormValue(FORM_VAR_PASSWD)
+	confirm := r.FormValue(FORM_VAR_CONFIRM)
+
+	if email == "" {
+		msg := "Please enter email address."
+		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	if !store.Exists(email) {
+		msg := "The address " + email + " is not registered."
+		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg,EmailValue:email}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	if passwd != confirm {
+		msg := "Passwords don't match."
+		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadConfirmMsg:msg,EmailValue:email}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	confEmail := store.Get(confId)	
+	if (confEmail != email) {
+		msg := "Incorrect confirmation id for address."
+		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadConfirmIdMsg:msg,EmailValue:email}); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+	
+	store.SetField(email, "password-sha1-hex", passDigest(passwd)) // set new password
+	store.Del(confId) // just clean-up
+
+	msg := "The password for address " + email + " has been changed."
+	if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,ResetPassConfirmDoneMsg:msg,EmailValue:email}); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}		
 }

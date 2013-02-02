@@ -104,6 +104,7 @@ func ResetPassProcess(w http.ResponseWriter, r *http.Request, s *session.Session
 	store.Set(confId, email)
 	store.Expire(confId, unconfirmedExpire) // Expire confirmation id after 2 days
 
+	log.Printf("handler.ResetPassProcess: FIXME WRITEME sendMail")
 	//go sendMail(email, confId)	
 	
 	msg := "The validation code for password recovery has been sent to " + email + ". Please check your email to change the password."

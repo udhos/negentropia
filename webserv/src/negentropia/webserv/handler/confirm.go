@@ -38,6 +38,8 @@ type ConfirmPage struct {
 const (
 	FORM_VAR_EMAIL = "Email"
 	FORM_VAR_CONFIRM_ID = "ConfirmId"
+	FORM_VAR_PASSWD = "Passwd"
+	FORM_VAR_CONFIRM = "Confirm"
 )
 
 func sendConfirm(w http.ResponseWriter, p ConfirmPage) error {
@@ -102,8 +104,7 @@ func ConfirmProcess(w http.ResponseWriter, r *http.Request, s *session.Session) 
 		
 	store.DelField(email, "unconfirmed") // remove lock
 	store.Persist(email)                 // remove expire
-	
-	store.Del(confId) // just clean-up
+	store.Del(confId)                    // just clean-up
 	
 	msg := "The address " + email + " has been enabled. You can login now."
 	if err := sendConfirm(w, ConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,ConfirmDoneMsg:msg,EmailValue:email}); err != nil {
