@@ -1,0 +1,11 @@
+
+#footer { text-align:center; color:darkgreen; }
+
+body { font-size:100%; font-family:Verdana, Arial, sansserif; }
+input { font-size: 1em; font-family:Arial, Helvetica, serif; }
+
+.failmsg { color:red; }
+
+.donemsg { color:blue; }
+
+#account { background-color:lightgreen; }

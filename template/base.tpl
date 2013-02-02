@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+		<link rel="stylesheet" type="text/css" href="/negentropia.css">
         <title>{{ template "title" . }}</title>
     </head>
     <body>
 		<nav>
 			{{if .ShowNavAccount}}
-			{{if .Account}}{{.Account}} - <a href="{{.LogoutPath}}">logout</a>{{else}}<a href="{{.LoginPath}}">login</a>{{end}}
+			{{if .Account}}<span id="account">{{.Account}}</span> - <a href="{{.LogoutPath}}">logout</a>{{else}}<a href="{{.LoginPath}}">login</a>{{end}}
 			{{end}}
 			{{if .ShowNavHome}}- <a href="{{.HomePath}}">home</a>{{end}}						
 			{{if .ShowNavLogin}}- <a href="{{.LoginPath}}">login</a>{{end}}

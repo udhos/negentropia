@@ -4,13 +4,13 @@
 
 <form action="{{.ResetPassProcessPath}}" method="POST">
 
-<div>Email: <input type="email" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com" ><font color="red">{{.BadEmailMsg}}</font></div>
+<div>Email: <input type="email" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com" ><span class="failmsg">{{.BadEmailMsg}}</span></div>
 
-<div><input type="submit" name="ResetPassButton" value="Reset Password"><font color="red"></font></div>
+<div><input type="submit" name="ResetPassButton" value="Reset Password"></div>
 
 </form>
 
-<div><font color="blue">{{.ResetPassDoneMsg}}</font></div>
+<div class="donemsg">{{.ResetPassDoneMsg}}</div>
 
-<div>Once you have requested the password recovery code, please <a href="{{.ResetPassConfirmPath}}">enter the new password</a>.</div>
+<p>Once you have requested the password recovery code, please <a href="{{.ResetPassConfirmPath}}">enter the new password</a>.</p>
 {{ end }}

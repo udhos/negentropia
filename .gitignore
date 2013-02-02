@@ -10,6 +10,7 @@
 !*.ico
 !*.cmd
 !*.sh
+!*.css
 !negentropia
 !negentropia/lib
 !negentropia/texture
