@@ -24,6 +24,7 @@ type ResetPassConfirmPage struct {
 	ResetPassConfirmProcessPath string
 	
 	EmailValue        string
+	ConfirmIdValue        string
 	BadEmailMsg       string
 	BadConfirmIdMsg     string	
 	BadPasswdMsg       string	
@@ -58,8 +59,11 @@ func ResetPassConfirm(w http.ResponseWriter, r *http.Request, s *session.Session
 	log.Printf("handler.ResetPassConfirm url=%s", r.URL.Path)
 	
 	account := accountLabel(s)
+
+	email := formatEmail(r.FormValue(FORM_VAR_EMAIL))
+	confId := r.FormValue(FORM_VAR_CONFIRM_ID)
 	
-	if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true}); err != nil {
+	if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,EmailValue:email,ConfirmIdValue:confId}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -76,7 +80,7 @@ func ResetPassConfirmProcess(w http.ResponseWriter, r *http.Request, s *session.
 
 	if email == "" {
 		msg := "Please enter email address."
-		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg}); err != nil {
+		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg,ConfirmIdValue:confId}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
@@ -84,7 +88,7 @@ func ResetPassConfirmProcess(w http.ResponseWriter, r *http.Request, s *session.
 
 	if !store.Exists(email) {
 		msg := "The address " + email + " is not registered."
-		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg,EmailValue:email}); err != nil {
+		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg,EmailValue:email,ConfirmIdValue:confId}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
@@ -92,7 +96,7 @@ func ResetPassConfirmProcess(w http.ResponseWriter, r *http.Request, s *session.
 
 	if passwd != confirm {
 		msg := "Passwords don't match."
-		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadConfirmMsg:msg,EmailValue:email}); err != nil {
+		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadConfirmMsg:msg,EmailValue:email,ConfirmIdValue:confId}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
@@ -101,7 +105,7 @@ func ResetPassConfirmProcess(w http.ResponseWriter, r *http.Request, s *session.
 	confEmail := store.Get(confId)	
 	if (confEmail != email) {
 		msg := "Incorrect confirmation id for address."
-		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadConfirmIdMsg:msg,EmailValue:email}); err != nil {
+		if err := sendResetPassConfirm(w, ResetPassConfirmPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadConfirmIdMsg:msg,EmailValue:email,ConfirmIdValue:confId}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return

@@ -6,7 +6,7 @@
 
 <div>Email: <input type="email" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com"><font color="red">{{.BadEmailMsg}}</font></div>
 
-<div>Confirmation id: <input type="text" name="ConfirmId"><font color="red">{{.BadConfirmIdMsg}}</font></div>
+<div>Confirmation id: <input type="text" name="ConfirmId" value="{{.ConfirmIdValue}}"><font color="red">{{.BadConfirmIdMsg}}</font></div>
 
 <div>New Password: <input type="password" name="Passwd"><font color="red">{{.BadPasswdMsg}}</font></div>
 

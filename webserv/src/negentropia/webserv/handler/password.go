@@ -3,9 +3,11 @@ package handler
 import (
 	//"io"
 	//"os"
-	//"fmt"
+	"fmt"
 	"log"
+	"bytes"
 	//"time"
+	//"errors"
 	//"io/ioutil"
 	"strconv"
 	"net/http"
@@ -33,6 +35,26 @@ type PasswordPage struct {
 	ShowNavHome     bool
 	ShowNavLogin    bool
 	ShowNavLogout   bool	
+}
+
+type ResetPassEmail struct {
+	Email      string
+	ConfirmId  string
+	ClickURL   string
+	ConfirmURL string
+}
+
+func loadEmailTemplate(filename string, e ResetPassEmail) (string, error) {
+	// FIXME: we're loading template every time
+    t, err := template.ParseFiles(TemplatePath(filename))
+	if err != nil {
+		return "", err
+	}
+	buf := &bytes.Buffer{}
+	if err = t.Execute(buf, e); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
 }
 
 func sendResetPass(w http.ResponseWriter, p PasswordPage) error {
@@ -67,6 +89,25 @@ func ResetPass(w http.ResponseWriter, r *http.Request, s *session.Session) {
 
 func newResetPassConfirmationId() string {
 	return "r:" + strconv.FormatInt(store.Incr("i:resetPassConfirmationIdGenerator"), 10)
+}
+
+func sendResetPassEmail(email, confId string) {
+	confURL := cfg.ResetPassConfirmURL()
+	clickURL := fmt.Sprintf("%s?%s=%s&%s=%s", confURL, FORM_VAR_EMAIL, email, FORM_VAR_CONFIRM_ID, confId)
+	emailInfo := ResetPassEmail{email, confId, clickURL, confURL}
+	var err error
+	var msgPlain string
+	if msgPlain, err = loadEmailTemplate("resetPassEmailPlain.tpl", emailInfo); err != nil {
+		log.Printf("handler.sendResetPassEmail: failure loading PLAIN template for password recovery email: %s", err)
+		return
+	}
+	var msgHtml string
+	if msgHtml, err = loadEmailTemplate("resetPassEmailHtml.tpl", emailInfo); err != nil {
+		log.Printf("handler.sendResetPassEmail: failure loading HTML template for password recovery email: %s", err)
+		return
+	}
+	
+	sendSmtp(cfg.SmtpAuthUser, cfg.SmtpAuthPass, cfg.SmtpAuthServer, cfg.SmtpHostPort, cfg.SmtpAuthUser, email, "Negentropia password recovery", msgPlain, msgHtml)
 }
 
 func ResetPassProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
@@ -104,8 +145,7 @@ func ResetPassProcess(w http.ResponseWriter, r *http.Request, s *session.Session
 	store.Set(confId, email)
 	store.Expire(confId, unconfirmedExpire) // Expire confirmation id after 2 days
 
-	log.Printf("handler.ResetPassProcess: FIXME WRITEME sendMail")
-	//go sendMail(email, confId)	
+	go sendResetPassEmail(email, confId)	
 	
 	msg := "The validation code for password recovery has been sent to " + email + ". Please check your email to change the password."
 	if err := sendResetPass(w, PasswordPage{Account:account,ShowNavAccount:true,ShowNavHome:true,ResetPassDoneMsg:msg,EmailValue:email}); err != nil {

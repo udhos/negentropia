@@ -12,5 +12,5 @@
 
 <div><font color="blue">{{.ResetPassDoneMsg}}</font></div>
 
-<div>Once you have request password recovery, please <a href="{{.ResetPassConfirmPath}}">enter the new password</a>.</div>
+<div>Once you have requested the password recovery code, please <a href="{{.ResetPassConfirmPath}}">enter the new password</a>.</div>
 {{ end }}
