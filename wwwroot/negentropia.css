@@ -1,11 +1,23 @@
 
-#footer { text-align:center; color:darkgreen; }
+#footer { text-align: center; color: darkgreen; }
 
-body { font-size:100%; font-family:Verdana, Arial, sansserif; }
-input { font-size: 1em; font-family:Arial, Helvetica, serif; }
+body { font-size: 100%; font-family: Verdana, Arial, sansserif; }
+input { font-size: 1em; font-family: Arial, Helvetica, serif; }
 
-.failmsg { color:red; }
+.emailInputText: { width: 300px; }
 
-.donemsg { color:blue; }
+.failmsg { color: red; }
+
+.donemsg { color: blue; }
+
+.loginbox {
+text-align: center;
+border-radius: 15px;
+width: 400px;
+/* max-width: 100%; */
+padding: 5px;
+border: 3px solid gray;
+margin: 0px;
+}
 
 #account { background-color:lightgreen; }
