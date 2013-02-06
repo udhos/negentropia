@@ -15,6 +15,7 @@ import (
 
 type HomePage struct {
 	HomePath		string
+	SignupPath		string
 	LoginPath		string
 	LogoutPath		string
 	
@@ -22,14 +23,18 @@ type HomePage struct {
 	
 	ShowNavAccount bool
 	ShowNavHome    bool
+	ShowNavSignup  bool
 	ShowNavLogin   bool
 	ShowNavLogout  bool
 }
 
 func sendHome(w http.ResponseWriter, p HomePage) error {
 	p.HomePath   = cfg.HomePath()
+	p.SignupPath = cfg.SignupPath()
 	p.LoginPath  = cfg.LoginPath()
 	p.LogoutPath = cfg.LogoutPath()
+	
+	p.ShowNavSignup = true
 
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("home.tpl"))

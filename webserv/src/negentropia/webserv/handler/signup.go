@@ -21,6 +21,7 @@ import (
 
 type SignupPage struct {
 	HomePath		  string
+	SignupPath		  string	
 	LoginPath		  string
 	LogoutPath		  string
 	SignupProcessPath string
@@ -36,6 +37,7 @@ type SignupPage struct {
 	Account         string
 	ShowNavAccount  bool
 	ShowNavHome     bool
+	ShowNavSignup	bool
 	ShowNavLogin    bool
 	ShowNavLogout   bool	
 }
@@ -46,10 +48,13 @@ var (
 
 func sendSignup(w http.ResponseWriter, p SignupPage) error {
 	p.HomePath          = cfg.HomePath()
+	p.SignupPath        = cfg.SignupPath()	
 	p.LoginPath         = cfg.LoginPath()
 	p.LogoutPath        = cfg.LogoutPath()
 	p.SignupProcessPath = cfg.SignupProcessPath()
 	p.ConfirmPath       = cfg.ConfirmPath()
+
+	p.ShowNavSignup = false
 	
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("signup.tpl"))

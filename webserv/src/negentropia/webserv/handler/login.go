@@ -23,10 +23,10 @@ import (
 
 type Page struct {
 	HomePath		string
+	SignupPath		string
 	LoginPath		string
 	LogoutPath		string
 	LoginAuthPath	string
-	SignupPath		string
 	ResetPassPath   string
 	EmailValue      string
 	
@@ -37,6 +37,7 @@ type Page struct {
 	Account         string
 	ShowNavAccount  bool
 	ShowNavHome     bool
+	ShowNavSignup   bool	
 	ShowNavLogin    bool
 	ShowNavLogout   bool	
 }
@@ -48,6 +49,8 @@ func sendLogin(w http.ResponseWriter, p Page) error {
 	p.LoginAuthPath = cfg.LoginAuthPath()
 	p.SignupPath    = cfg.SignupPath()
 	p.ResetPassPath = cfg.ResetPassPath()
+
+	p.ShowNavSignup = true
 	
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("login.tpl"))

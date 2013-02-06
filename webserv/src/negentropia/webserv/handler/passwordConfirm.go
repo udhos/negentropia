@@ -19,6 +19,7 @@ import (
 
 type ResetPassConfirmPage struct {
 	HomePath		   string
+	SignupPath			 string
 	LoginPath		   string
 	LogoutPath		   string
 	ResetPassConfirmProcessPath string
@@ -34,15 +35,19 @@ type ResetPassConfirmPage struct {
 	Account         string
 	ShowNavAccount  bool
 	ShowNavHome     bool
+	ShowNavSignup   bool
 	ShowNavLogin    bool
 	ShowNavLogout   bool	
 }
 
 func sendResetPassConfirm(w http.ResponseWriter, p ResetPassConfirmPage) error {
 	p.HomePath           = cfg.HomePath()
+	p.SignupPath         = cfg.SignupPath()	
 	p.LoginPath          = cfg.LoginPath()
 	p.LogoutPath         = cfg.LogoutPath()
 	p.ResetPassConfirmProcessPath = cfg.ResetPassConfirmProcessPath()
+	
+	p.ShowNavSignup = true
 	
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("passwordConfirm.tpl"))

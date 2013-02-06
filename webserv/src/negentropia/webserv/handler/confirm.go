@@ -19,6 +19,7 @@ import (
 
 type ConfirmPage struct {
 	HomePath		   string
+	SignupPath		   string	
 	LoginPath		   string
 	LogoutPath		   string
 	ConfirmProcessPath string
@@ -31,6 +32,7 @@ type ConfirmPage struct {
 	Account         string
 	ShowNavAccount  bool
 	ShowNavHome     bool
+	ShowNavSignup   bool	
 	ShowNavLogin    bool
 	ShowNavLogout   bool	
 }
@@ -44,9 +46,12 @@ const (
 
 func sendConfirm(w http.ResponseWriter, p ConfirmPage) error {
 	p.HomePath           = cfg.HomePath()
+	p.SignupPath         = cfg.SignupPath()	
 	p.LoginPath          = cfg.LoginPath()
 	p.LogoutPath         = cfg.LogoutPath()
 	p.ConfirmProcessPath = cfg.ConfirmProcessPath()
+	
+	p.ShowNavSignup = true
 	
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("confirm.tpl"))

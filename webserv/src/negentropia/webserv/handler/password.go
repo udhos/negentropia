@@ -21,6 +21,7 @@ import (
 
 type PasswordPage struct {
 	HomePath		     string
+	SignupPath			 string
 	LoginPath		     string
 	LogoutPath		     string
 	ResetPassProcessPath string
@@ -33,6 +34,7 @@ type PasswordPage struct {
 	Account         string
 	ShowNavAccount  bool
 	ShowNavHome     bool
+	ShowNavSignup   bool
 	ShowNavLogin    bool
 	ShowNavLogout   bool	
 }
@@ -59,10 +61,13 @@ func loadEmailTemplate(filename string, e ResetPassEmail) (string, error) {
 
 func sendResetPass(w http.ResponseWriter, p PasswordPage) error {
 	p.HomePath           = cfg.HomePath()
+	p.SignupPath         = cfg.SignupPath()
 	p.LoginPath          = cfg.LoginPath()
 	p.LogoutPath         = cfg.LogoutPath()
 	p.ResetPassProcessPath = cfg.ResetPassProcessPath()
 	p.ResetPassConfirmPath = cfg.ResetPassConfirmPath()	
+	
+	p.ShowNavSignup = true
 	
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("password.tpl"))
