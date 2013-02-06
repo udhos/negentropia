@@ -7,6 +7,7 @@ import (
 	"log"
 	//"time"
 	//"io/ioutil"
+	"strings"
 	"strconv"
 	"net/smtp"
 	"net/http"
@@ -122,7 +123,7 @@ func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, s
 	)
 	var result string
 	if err != nil {
-		log.Printf("sendSmtp: failure: %s", err)
+		log.Printf("sendSmtp: failure: %q", strings.Split(err.Error(), "\n"))
 		result = "FAIL"
 	} else {
 		result = "SENT"
