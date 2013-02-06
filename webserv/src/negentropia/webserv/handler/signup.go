@@ -100,22 +100,26 @@ func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, s
 		authServer,
 	)
 
+	mime := "MIME-version: 1.0;\r\n"
+	boundary := "20cf307d051035ce0404d47a8e9b"
 	sub := fmt.Sprintf("Subject: %s\r\n", subject)
 	from := fmt.Sprintf("From: <%s>\r\n", sender)
 	to := fmt.Sprintf("To: <%s>\r\n", recipient)
-	bodyTemplate := "Content-Type: multipart/alternative; boundary=20cf307d051035ce0404d47a8e9b\r\n" +
+	bodyTemplate := "Content-Type: multipart/alternative; boundary=" + boundary + "\r\n" +
 		"\r\n" +
-		"--20cf307d051035ce0404d47a8e9b\r\n" +
+		"--" + boundary + "\r\n" +
 		"Content-Type: text/plain; charset=ISO-8859-1\r\n" +
 		"\r\n" +
 		"%s" +
 		"\r\n" +
-		"--20cf307d051035ce0404d47a8e9b\r\n" +
+		"--" + boundary + "\r\n" +
+		mime +
 		"Content-Type: text/html; charset=ISO-8859-1\r\n" +
 		"\r\n" +
 		"%s" +
-		"\r\n" +
-		"--20cf307d051035ce0404d47a8e9b--\r\n"
+		"\r\n" + 
+		"--" + boundary + "--" +
+		"\r\n"
 
 	body := fmt.Sprintf(bodyTemplate, msgPlain, msgHtml)
 
