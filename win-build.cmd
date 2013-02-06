@@ -1,4 +1,4 @@
-@rem webserver-build
+@rem win-build
 
 set DEVEL=C:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv
@@ -18,6 +18,7 @@ set GOPATH=%DEVEL%\negentropia\webserv
 @rem go get github.com/HairyMezican/goauth2/oauth
 
 @rem build
-go install negentropia\webserv
+go install negentropia/webserv
+go install negentropia/world
 
 @rem eof

@@ -1,0 +1,7 @@
+#
+# negentropia world server sample flag config file
+#
+	
+#
+# end-of-file
+#
