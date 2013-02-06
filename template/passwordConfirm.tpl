@@ -1,10 +1,13 @@
 {{ define "title" }}Negentropia{{ end }}
 {{ define "content" }}
+
+<div class="centerbox">
+
 <h1>Confirm Password Recovery</h1>
 
 <form action="{{.ResetPassConfirmProcessPath}}" method="POST">
 
-<div>Email: <input type="email" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com"><span class="failmsg">{{.BadEmailMsg}}</span></div>
+<div>Email: <input type="email" class="emailInput" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com"><span class="failmsg">{{.BadEmailMsg}}</span></div>
 
 <div>Confirmation id: <input type="text" name="ConfirmId" value="{{.ConfirmIdValue}}"><span class="failmsg">{{.BadConfirmIdMsg}}</span></div>
 
@@ -17,4 +20,7 @@
 </form>
 
 <div class="donemsg">{{.ResetPassConfirmDoneMsg}}</div>
+
+</div>
+
 {{ end }}

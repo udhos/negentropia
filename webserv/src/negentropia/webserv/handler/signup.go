@@ -80,7 +80,12 @@ func newConfirmationId() string {
 
 func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, subject, msgPlain, msgHtml string) {
 
-	log.Printf("sendSmtp: sub=[%s] auth=[%s] sender=[%s] recipient=[%s] sending...", subject, authUser, sender, recipient)
+	var pass string
+	if authPass != "" {
+		pass = "<hidden>"
+	}
+
+	log.Printf("sendSmtp: sub=[%s] auth=[%s] pass=[%s] sender=[%s] recipient=[%s] sending...", subject, authUser, pass, sender, recipient)
 
 	auth := smtp.PlainAuth(
 		"",
@@ -115,11 +120,15 @@ func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, s
 		[]string{recipient},
 		[]byte(sub+from+to+body),
 	)
+	var result string
 	if err != nil {
 		log.Printf("sendSmtp: failure: %s", err)
+		result = "FAIL"
+	} else {
+		result = "SENT"
 	}
 
-	log.Printf("sendSmtp: sub=[%s] auth=[%s] sender=[%s] recipient=[%s] DONE", subject, authUser, sender, recipient)
+	log.Printf("sendSmtp: sub=[%s] auth=[%s] pass=[%s] sender=[%s] recipient=[%s] %s", subject, authUser, pass, sender, recipient, result)
 }
 
 func sendMail(email, confId string) {

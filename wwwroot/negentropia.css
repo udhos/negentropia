@@ -1,22 +1,22 @@
 
+#account { background-color: lightgreen; }
 #footer { text-align: center; color: darkgreen; }
 
 body { font-size: 100%; font-family: Verdana, Arial, sansserif; }
 input { font-size: 1em; font-family: Arial, Helvetica, serif; }
 
-.emailInputText { width: 250px; }
+.bar { text-align: center; margin: 0 auto; }
+.menu { background-color:lightgray; }
 
+.emailInput { width: 250px; }
 .failmsg { color: red; }
-
 .donemsg { color: blue; }
 
-.loginbox {
+.centerbox {
 text-align: center;
 border-radius: 15px;
-width: 400px;
+width: 500px;
 padding: 5px;
 border: 3px solid gray;
 margin: 0 auto;
 }
-
-#account { background-color:lightgreen; }

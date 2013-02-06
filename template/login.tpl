@@ -1,7 +1,7 @@
 {{ define "title" }}Negentropia{{ end }}
 {{ define "content" }}
 
-<div class="loginbox">
+<div class="centerbox">
 
 <h1>Login</h1>
 
@@ -12,7 +12,7 @@ New user? <input type="submit" name="SignupButton" value="Signup">
 
 <form name="login" action="{{.LoginAuthPath}}" method="POST">
 
-<div>Email: <input type="email" class="emailInputText" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com" onchange="document.signup.Email.value = this.value;document.recover.Email.value = this.value;"></div>
+<div>Email: <input type="email" class="emailInput" spellcheck="false" name="Email" value="{{.EmailValue}}" placeholder="me@example.com" onchange="document.signup.Email.value = this.value;document.recover.Email.value = this.value;"></div>
 
 <div>Password: <input type="password" name="Passwd"><input type="submit" name="LoginButton" value="Login"><span class="failmsg">{{.PasswdBadAuth}}</span></div>
 
