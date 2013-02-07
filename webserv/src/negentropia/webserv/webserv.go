@@ -185,6 +185,8 @@ func getPort(hostPort string) string {
 }
 
 func main() {
+	log.Printf("webserv booting")
+
 	// Parse flags from command-line
 	//flag.Parse()
 	configFlags.Parse(os.Args[1:])
@@ -258,6 +260,8 @@ func main() {
 	http.HandleFunc(cfg.ResetPassConfirmPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPassConfirm) })
 	http.HandleFunc(cfg.ResetPassConfirmProcessPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPassConfirmProcess) })
 
+	log.Printf("webserv boot complete")
+	
 	/*
 		last := len(listenOn) - 1
 		// serve ports except the last one
