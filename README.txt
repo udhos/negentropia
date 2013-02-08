@@ -69,26 +69,26 @@ git clone https://code.google.com/p/negentropia/
 go get github.com/vmihailenco/redis
 go get github.com/HairyMezican/goauth2/oauth
 
+# fetch from google code (could be under cmd prompt)
+go get code.google.com/p/go.net/websocket
+
 ## windows dos prompt:
 
-@rem start microsoft redis (on cmd.exe window 1)
-\redisbin\redis-server.exe
-
-@rem build webserver (on cmd.exe window 2):
-\tmp\devel\negentropia\webserver-build.cmd
+@rem build
+\tmp\devel\negentropia\win-build.cmd
 
 
 CONFIGURING
 
-The webserver-run.cmd script reads config from the following file:
-	\tmp\devel\webserv-config.txt
+The win-run-webserv.cmd script reads config from the following file:
+	\tmp\devel\config-webserv.txt
 
 You should start by copying the following example configuration:
-	\tmp\devel\negentropia\webserv-config-sample.txt
+	\tmp\devel\negentropia\config-webserv-sample.txt
 	
-	copy \tmp\devel\negentropia\webserv-config-sample.txt \tmp\devel\webserv-config.txt
+	copy \tmp\devel\negentropia\config-webserv-sample.txt \tmp\devel\config-webserv.txt
 
-Then tweak \tmp\devel\webserv-config.txt
+Then tweak \tmp\devel\config-webserv.txt
 
 If you want to enable local accounts:
 	Provide the following SMTP mail relay server information
@@ -125,9 +125,8 @@ If you want to enable support for Facebook login:
 
 RUNNING / TESTING UNDER WINDOWS
 
-@rem run webserver (on cmd.exe window 2):
-@rem webserver-run.cmd reads config from \tmp\devel\webserv-config.txt
-\tmp\devel\negentropia\webserver-run.cmd
+@rem run:
+\tmp\devel\negentropia\win-run.cmd
 
 Point your web browser to http://localhost:8080/ne/
 

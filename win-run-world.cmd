@@ -1,5 +1,5 @@
 @rem win-run-world
 
-C:\tmp\devel\negentropia\webserv\bin\world.exe -config=\tmp\devel\config-world.txt
+c:\tmp\devel\negentropia\webserv\bin\world.exe -config=c:\tmp\devel\config-world.txt
 
 @rem eof

@@ -1,6 +1,6 @@
 @rem win-build
 
-set DEVEL=C:\tmp\devel
+set DEVEL=c:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv
 
 @rem install goauth2

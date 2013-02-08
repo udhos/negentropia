@@ -8,7 +8,7 @@ cd $DEVEL
 
 git clone https://code.google.com/p/negentropia/
 
-# fetch from github thru git bash
+# fetch from github with git bash
 go get github.com/vmihailenco/redis
 go get github.com/HairyMezican/goauth2/oauth
 
