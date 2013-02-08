@@ -3,6 +3,7 @@
     <head>
 		<link rel="stylesheet" type="text/css" href="/negentropia.css">
         <title>{{ template "title" . }}</title>
+		{{ template "script" . }}
     </head>
     <body>
 		<div class="bar">

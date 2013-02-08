@@ -1,4 +1,6 @@
 {{ define "title" }}Negentropia{{ end }}
+{{ define "script" }}
+{{ end }}
 {{ define "content" }}
 
 <div class="centerbox">

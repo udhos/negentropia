@@ -1,4 +1,12 @@
 {{ define "title" }}Negentropia{{ end }}
+{{ define "script" }}
+
+{{if .Account}}
+<script type="text/javascript">
+</script>
+{{end}}
+
+{{ end }}
 {{ define "content" }}
 
 <div class="centerbox">
