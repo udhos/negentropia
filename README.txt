@@ -41,17 +41,19 @@ go get github.com/HairyMezican/goauth2/oauth
 # 4. Install redis client library
 go get github.com/vmihailenco/redis
 
-# 5. Build and install (to negentropia\webserv\bin)
-go install negentropia\webserv
+# 5. Install websocket
+go get code.google.com/p/go.net/websocket
 
-# 6. Start redis
+# 6. Build and install (to negentropia\webserv\bin)
+go install negentropia\webserv
+go install negentropia\world
+
+# 7. Start redis
 redis-server
 
-# 7. Run
-# Under Linux:
+# 8. Run
 negentropia\webserv\bin\webserv
-# Under Windows:
-negentropia\webserv\bin\webserv.exe
+negentropia\webserv\bin\world
 
 
 BUILDING UNDER WINDOWS:

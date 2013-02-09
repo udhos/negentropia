@@ -9,6 +9,14 @@ import (
 
 func Echo(ws *websocket.Conn) {
 	log.Println("Echoing")
+	
+	sid := "sid"
+	cook , err := ws.Request().Cookie(sid)
+	if err != nil {
+		log.Printf("cookie '%s' NOT FOUND: %s", sid, err)
+	} else {
+		log.Printf("cookie FOUND: '%s'=[%s]", sid, cook.Value)
+	}
 
 	for n := 0; n < 10; n++ {
 		msg := "Hello  " + string(n+48)
