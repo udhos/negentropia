@@ -1,3 +1,4 @@
+
 function initWebSocket() {
 	var wsUri = "ws://127.0.0.2:8000/";
 	console.log("websocket: opening " + wsUri)
@@ -10,6 +11,7 @@ function initWebSocket() {
 
 function onOpen(evt) {
 	console.log("websocket: CONNECTED");
+	doSend("cookie: sid=[" + sid + "]");
 }
 
 function onClose(evt) {

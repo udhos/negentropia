@@ -51,7 +51,7 @@ func newCookie(name, value string, maxAge int) *http.Cookie {
 		MaxAge:   maxAge,
 		Expires:  expires,
 		Secure:   false,
-		HttpOnly: true,
+		HttpOnly: false, /* http-only cookie can't be read by javascript */
 	}
 	
 	return cookie
