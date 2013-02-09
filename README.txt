@@ -15,6 +15,7 @@ REQUIREMENTS
 #
 # Microsoft Official Redis for Windows at Microsoft Open Tech:
 # https://github.com/MSOpenTech/redis
+# https://github.com/MSOpenTech/redis/blob/2.4/msvs/bin/release/redisbin64.zip?raw=true
 # https://github.com/MSOpenTech/redis/blob/bksavecow/msvs/bin/release/redisbin.zip
 #
 # Redis 2.4.5 for Windows 7 64-bit:
