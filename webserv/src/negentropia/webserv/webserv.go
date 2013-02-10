@@ -1,14 +1,11 @@
 package main
 
 import (
-	"bufio"
-	"io"
 	"os"
 	//"fmt"
 	"flag"
 	"log"
 	//"time"
-	"errors"
 	"strings"
 	//"io/ioutil"
 	"net/http"
@@ -17,6 +14,7 @@ import (
 	"negentropia/webserv/handler"
 	"negentropia/webserv/session"
 	"negentropia/webserv/store"
+	"negentropia/webserv/configflag"
 )
 
 //type portList []string
@@ -121,60 +119,6 @@ func trapHandle(w http.ResponseWriter, r *http.Request, handler func(http.Respon
 	handler(w, r, s)
 }
 
-func loadFlagsFromFile(config string) ([]string, error) {
-	log.Printf("loading config flags from file: %s", config)
-
-	input, err := os.Open(config)
-	if err != nil {
-		log.Printf("failure opening flags config file: %s: %s", config, err)
-		return nil, err
-	}
-
-	defer input.Close()
-
-	var flags []string
-	var num int = 0
-
-	reader := bufio.NewReader(input)
-	for line, pref, fail := reader.ReadLine(); fail != io.EOF; line, pref, fail = reader.ReadLine() {
-		if fail != nil {
-			log.Printf("failure reading line from flags config file: %s: %s", config, err)
-			break
-		}
-		num++
-		if pref {
-			log.Printf("very long flags config line at %d", num)
-			return nil, errors.New("very long flags config line")
-		}
-		f := strings.TrimSpace(string(line))
-		if f == "" || f[:1] == "#" {
-			continue
-		}
-		//log.Printf("flag config line [%d]: flag=[%s]", num, f)
-		flags = append(flags, f)
-	}
-
-	return flags, nil
-}
-
-func loadConfig(config string) error {
-	f, err := loadFlagsFromFile(config)
-	if err != nil {
-		log.Printf("failure reading config flags: %s", err)
-		return err
-	}
-
-	err = configFlags.Parse(f)
-	if err != nil {
-		log.Printf("failure parsing config flags: %s", err)
-		return err
-	}
-
-	//log.Printf("loaded %d flags", len(f))
-
-	return nil
-}
-
 func getPort(hostPort string) string {
 	pair := strings.Split(listenAddr, ":")
 	if len(pair) == 1 {
@@ -188,12 +132,11 @@ func main() {
 	log.Printf("webserv booting")
 
 	// Parse flags from command-line
-	//flag.Parse()
 	configFlags.Parse(os.Args[1:])
 
 	// Parse flags from file
 	if configFile != "" {
-		err := loadConfig(configFile)
+		err := configflag.Load(configFlags, configFile)
 		if err != nil {
 			log.Printf("failure loading config flags: %s", err)
 			return

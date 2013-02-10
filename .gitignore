@@ -23,6 +23,7 @@
 !webserv/src/negentropia/webserv/session
 !webserv/src/negentropia/webserv/store
 !webserv/src/negentropia/webserv/cfg
+!webserv/src/negentropia/webserv/configflag
 !webserv/src/negentropia/world
 !wwwroot
 !wwwroot/hello

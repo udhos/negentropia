@@ -91,73 +91,9 @@ func serve() {
 	}
 }
 
-/*
-func serveQueryField() {
-	log.Printf("store.serveQueryField: goroutine started")
-	// receives values from the channel repeatedly until it is closed
-	for r := range queryReq {
-		queryRep <- redisClient.HGet(r.key, r.field).Val()
-	}
-	log.Printf("store.serveQueryField: PANIC: queryReq channel closed")
-}
-
-func serveSetField() {
-	log.Printf("store.serveSetField: goroutine started")
-	// receives values from the channel repeatedly until it is closed
-	for r := range setReq {
-		redisClient.HSet(r.key, r.field, r.value)
-	}
-	log.Printf("store.serveSetField: PANIC: queryReq channel closed")
-}
-
-func serveExpire() {
-	log.Printf("store.serveExpire: goroutine started")
-	// receives values from the channel repeatedly until it is closed
-	for r := range expReq {
-		redisClient.Expire(r.key, r.expire)
-	}
-	log.Printf("store.serveExpire: PANIC: expReq channel closed")
-}
-
-func serveExists() {
-	log.Printf("store.serveExists: goroutine started")
-	// receives values from the channel repeatedly until it is closed
-	for key := range existsReq {
-		existsRep <- redisClient.Exists(key).Val()
-	}
-	log.Printf("store.serveExists: PANIC: existsReq channel closed")
-}
-
-func serveIncr() {
-	log.Printf("store.serveIncr: goroutine started")
-	// receives values from the channel repeatedly until it is closed
-	for key := range incrReq {
-		incrRep <- redisClient.Incr(key).Val()
-	}
-	log.Printf("store.serveIncr: PANIC: incrReq channel closed")
-}
-
-func serveDel() {
-	log.Printf("store.serveDel: goroutine started")
-	// receives values from the channel repeatedly until it is closed
-	for key := range delReq {
-		redisClient.Incr(key)
-	}
-	log.Printf("store.serveDel: PANIC: delReq channel closed")
-}
-*/
-
 func Init(serverAddr string) {
 	log.Printf("store.Init: redis client for: %s", serverAddr)
 	redisClient = redis.NewTCPClient(serverAddr, redisPassword, redisDb)
-	/*
-	go serveQueryField()
-	go serveSetField()	
-	go serveExpire()	
-	go serveExists()
-	go serveIncr()
-	go serveDel()
-	*/
 	go serve()
 }
 

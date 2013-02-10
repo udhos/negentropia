@@ -1,7 +1,11 @@
 
+var CM_CODE_FATAL = 0;
+var	CM_CODE_INFO  = 1;
+var	CM_CODE_AUTH  = 2;
+	
 function initWebSocket() {
 	var wsUri = "ws://127.0.0.2:8000/";
-	console.log("websocket: opening " + wsUri)
+	console.log("websocket: opening " + wsUri);
 	websocket = new WebSocket(wsUri);
 	websocket.onopen = function(evt) { onOpen(evt) };
 	websocket.onclose = function(evt) { onClose(evt) };
@@ -11,7 +15,13 @@ function initWebSocket() {
 
 function onOpen(evt) {
 	console.log("websocket: CONNECTED");
-	doSend("cookie: sid=[" + sid + "]");
+	
+	var msg = {
+		Code: CM_CODE_AUTH,
+		Data: sid
+	};
+  
+	doSend(JSON.stringify(msg));
 }
 
 function onClose(evt) {
@@ -20,7 +30,6 @@ function onClose(evt) {
 
 function onMessage(evt) {
 	console.log("websocket: received: [" + evt.data + "]");
-	doSend("hi there!! (" + evt.data + ")");
 }
 
 function onError(evt) {

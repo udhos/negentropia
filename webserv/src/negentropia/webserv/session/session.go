@@ -59,7 +59,7 @@ func newCookie(name, value string, maxAge int) *http.Cookie {
 
 func newSession(sid string, provider int, profId, profName, profEmail string) *Session {
 	s := &Session{sid, provider, profId, profName, profEmail}
-	log.Printf("newSession sessionId=%s email=%s", s.SessionId, s.ProfileEmail)
+	//log.Printf("newSession sessionId=%s email=%s", s.SessionId, s.ProfileEmail)
 	return s
 }
 
@@ -67,7 +67,7 @@ func RedisQueryField(key, field string) string {
 	return store.QueryField(key, field)
 }
 
-func sessionLoad(sessionId string) *Session {
+func Load(sessionId string) *Session {
 
 	if !store.Exists(sessionId) {
 		return nil
@@ -113,7 +113,7 @@ func Get(r *http.Request) *Session {
 
 	//log.Printf("session.Get FOUND cookie session=%s", cook.Value)
 		
-	session := sessionLoad(cook.Value);
+	session := Load(cook.Value);
 	if session == nil {
 		log.Printf("session.Get: failure loading session id=%s", cook.Value)	
 		return nil
