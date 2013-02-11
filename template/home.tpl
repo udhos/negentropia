@@ -10,13 +10,16 @@
 var sid;
 
 function start() {
-	console.log("starting");
+	var prefix = "negentropia home javascript start(): ";
+	console.log(prefix + "starting");
 
 	sid = docCookies.getItem("sid");
-	console.log("cookie: sid=" + sid);
+	console.log(prefix + "cookie: sid=" + sid);
 
-	initWebSocket();
-	console.log("done");
+	statusElem = document.getElementById("ws_status");
+	
+	initWebSocket(statusElem);
+	console.log(prefix + "done");
 }
 
 window.addEventListener("load", start, false);
@@ -31,6 +34,10 @@ window.addEventListener("load", start, false);
 
 <h1>Welcome to Negentropia</h1>
 <h3>This is Negentropia home location</h3>
+
+<div id="ws_status"></div>
+
 </div>
+
 
 {{ end }}
