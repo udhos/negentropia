@@ -8,6 +8,7 @@ function Camera() {
 	this.tmpEye = vec3.create();
 }
 
+// Apply orientationQuaternion rotation to matrix mat
 Camera.prototype.rotate = function(mat) {
 
 	//quat4.toMat4(this.orientationQuaternion, this.tmpMat);
@@ -19,6 +20,14 @@ Camera.prototype.rotate = function(mat) {
 	mat4.multiply(mat, this.tmpMat);
 }
 
+// Apply eyePosition translation to matrix mat
 Camera.prototype.translate = function(mat) {
 	mat4.translate(mat, vec3.negate(this.eyePosition, this.tmpEye));
+}
+
+// Rotate orientationQuaternion around Y axis
+Camera.prototype.rotateY = function(angle) {
+	quat4.fromAngleAxis(angle, [0,1,0], this.tmpQuat);
+	quat4.multiply(this.orientationQuaternion, this.tmpQuat); 
+	quat4.multiply(this.tmpQuat, this.orientationQuaternion, this.orientationQuaternion); 
 }

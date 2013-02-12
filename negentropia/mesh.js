@@ -70,8 +70,8 @@ MeshInstance.prototype.draw = function(offscreen) {
 	// 3. obj orbit translate
 	// 4. obj orbit rotate
 	// 5. obj translate
-	// 6. camera rotate
-	// 7. camera translate
+	// 6. camera translate
+	// 7. camera rotate
 
 	// camera
 	
@@ -80,11 +80,12 @@ MeshInstance.prototype.draw = function(offscreen) {
 		
 		mat4.identity(this.mvMatrix);
 
-		// 7. camera translate
+		// 7. camera rotate
+		neg.cam.rotate(this.mvMatrix);	
+
+		// 6. camera translate
 		neg.cam.translate(this.mvMatrix);
 
-		// 6. camera rotate
-		neg.cam.rotate(this.mvMatrix);	
 	}
 	else {
 		// matrix camera
