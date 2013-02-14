@@ -1423,7 +1423,7 @@ function debug_max_fps(event) {
 
 function debug_lost_context(event) {
 	// We set a global variable to avoid querying the DOM tree inside the render loop
-	neg.debugLostContext = document.getElementById('debug_lost_context').checked;
+	neg.Context = document.getElementById('debug_lost_context').checked;
 	
 	stop(); // stop everything
 	start(false, false); // restart everything

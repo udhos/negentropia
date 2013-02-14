@@ -4,10 +4,12 @@ var	CM_CODE_INFO  = 1;
 var	CM_CODE_AUTH  = 2;
 
 var wsUri = "ws://127.0.0.2:8000/";
+var wsSid;
 	
-function initWebSocket(status) {
+function initWebSocket(status, sid) {
 	console.log("websocket: opening " + wsUri);
 	status.innerHTML = "opening " + wsUri;
+	wsSid = sid;
 	websocket = new WebSocket(wsUri);
 	websocket.onopen = function(evt) { onOpen(evt, status) };
 	websocket.onclose = function(evt) { onClose(evt, status) };
@@ -21,7 +23,7 @@ function onOpen(evt, status) {
 	
 	var msg = {
 		Code: CM_CODE_AUTH,
-		Data: sid
+		Data: wsSid
 	};
   
 	doSend(JSON.stringify(msg));
