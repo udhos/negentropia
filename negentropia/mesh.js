@@ -85,7 +85,6 @@ MeshInstance.prototype.draw = function(offscreen) {
 
 		// 6. camera translate
 		neg.cam.translate(this.mvMatrix);
-
 	}
 	else {
 		// matrix camera
