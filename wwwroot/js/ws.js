@@ -2,11 +2,12 @@
 var CM_CODE_FATAL = 0;
 var	CM_CODE_INFO  = 1;
 var	CM_CODE_AUTH  = 2;
+
+var wsUri = "ws://127.0.0.2:8000/";
 	
 function initWebSocket(status) {
-	var wsUri = "ws://127.0.0.2:8000/";
 	console.log("websocket: opening " + wsUri);
-	status.innerHTML = "opening";
+	status.innerHTML = "opening " + wsUri;
 	websocket = new WebSocket(wsUri);
 	websocket.onopen = function(evt) { onOpen(evt, status) };
 	websocket.onclose = function(evt) { onClose(evt, status) };
@@ -15,7 +16,7 @@ function initWebSocket(status) {
 }
 
 function onOpen(evt, status) {
-	status.innerHTML = "connected";
+	status.innerHTML = "connected to " + wsUri;
 	console.log("websocket: CONNECTED");
 	
 	var msg = {
@@ -27,7 +28,7 @@ function onOpen(evt, status) {
 }
 
 function onClose(evt, status) {
-	status.innerHTML = "disconnected";
+	status.innerHTML = "disconnected from " + wsUri;
 	console.log("websocket: DISCONNECTED");
 }
 
