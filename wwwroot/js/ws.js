@@ -7,13 +7,13 @@ function initWebSocket(wsUri, status, sid) {
 	console.log("websocket: opening " + wsUri);
 	status.innerHTML = "opening " + wsUri;
 	websocket = new WebSocket(wsUri);
-	websocket.onopen = function(evt) { onOpen(evt, status, sid) };
-	websocket.onclose = function(evt) { onClose(evt, status) };
+	websocket.onopen = function(evt) { onOpen(evt, status, wsUri, sid) };
+	websocket.onclose = function(evt) { onClose(evt, status, wsUri) };
 	websocket.onmessage = function(evt) { onMessage(evt, status) };
 	websocket.onerror = function(evt) { onError(evt, status) };
 }
 
-function onOpen(evt, status, sid) {
+function onOpen(evt, status, wsUri, sid) {
 	status.innerHTML = "connected to " + wsUri;
 	console.log("websocket: CONNECTED");
 	
@@ -25,7 +25,7 @@ function onOpen(evt, status, sid) {
 	doSend(JSON.stringify(msg));
 }
 
-function onClose(evt, status) {
+function onClose(evt, status, wsUri) {
 	status.innerHTML = "disconnected from " + wsUri;
 	console.log("websocket: DISCONNECTED");
 }
