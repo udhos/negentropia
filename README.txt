@@ -83,15 +83,27 @@ go get code.google.com/p/go.net/websocket
 
 CONFIGURING
 
-The win-run-webserv.cmd script reads config from the following file:
+win-run-webserv.cmd script reads config from:
+	\tmp\devel\config-common.txt
 	\tmp\devel\config-webserv.txt
 
-You should start by copying the following example configuration:
-	\tmp\devel\negentropia\config-webserv-sample.txt
-	
-	copy \tmp\devel\negentropia\config-webserv-sample.txt \tmp\devel\config-webserv.txt
+win-run-world.cmd script reads config from:
+	\tmp\devel\config-common.txt
+	\tmp\devel\config-world.txt
 
-Then tweak \tmp\devel\config-webserv.txt
+You should start by copying example configurations:
+	\tmp\devel\negentropia\config-common-sample.txt
+	\tmp\devel\negentropia\config-webserv-sample.txt
+	\tmp\devel\negentropia\config-world-sample.txt
+	
+	copy \tmp\devel\negentropia\config-common-sample.txt \tmp\devel\config-common.txt
+	copy \tmp\devel\negentropia\config-webserv-sample.txt \tmp\devel\config-webserv.txt
+	copy \tmp\devel\negentropia\config-world-sample.txt \tmp\devel\config-world.txt
+
+Then tweak:
+	\tmp\devel\config-common.txt
+	\tmp\devel\config-webserv.txt
+	\tmp\devel\config-world.txt
 
 If you want to enable local accounts:
 	Provide the following SMTP mail relay server information

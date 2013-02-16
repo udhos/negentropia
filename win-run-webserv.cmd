@@ -1,5 +1,6 @@
 @rem win-run-webserver
 
-c:\tmp\devel\negentropia\webserv\bin\webserv.exe -config=c:\tmp\devel\config-webserv.txt
+set DEVEL=c:\tmp\devel
+%DEVEL%\negentropia\webserv\bin\webserv.exe -config=%DEVEL%\config-webserv.txt -config=%DEVEL%\config-common.txt
 
 @rem eof

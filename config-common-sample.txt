@@ -1,0 +1,9 @@
+#
+# negentropia common sample flag config file
+#
+
+-redisAddr=localhost:6379
+	
+#
+# end-of-file
+#

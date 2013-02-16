@@ -20,11 +20,11 @@ import (
 //type portList []string
 
 var (
+	configFlags  *flag.FlagSet = flag.NewFlagSet("config flags", flag.ExitOnError)
+	configList   configflag.FileList
 	staticMap    string
 	templatePath string
-	configFile   string
 	listenAddr   string
-	configFlags  *flag.FlagSet = flag.NewFlagSet("config flags", flag.ExitOnError)
 	redisAddr    string
 	basePath     string
 )
@@ -35,8 +35,8 @@ func init() {
 	handler.GoogleSecret = configFlags.String("gSecret", "", "google client secret")
 	handler.FacebookId = configFlags.String("fId", "", "facebook client id")
 	handler.FacebookSecret = configFlags.String("fSecret", "", "facebook client secret")
-	configFlags.StringVar(&configFile, "config", "", "load config flags from this file")
-	configFlags.StringVar(&listenAddr, "listenOn", ":8080", "listen address [addr]:port")
+	configFlags.Var(&configList, "config", "load config flags from this file")
+	configFlags.StringVar(&listenAddr, "listenOn", ":8080", "http listen address [addr]:port")
 	configFlags.StringVar(&cfg.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
 	configFlags.StringVar(&basePath, "path", "/ne", "www base path")
@@ -45,7 +45,7 @@ func init() {
 	configFlags.StringVar(&cfg.Protocol, "proto", "http", "protocol")
 
 	configFlags.StringVar(&cfg.SmtpAuthUser, "smtpAuthUser", "user@domain.com", "smtp auth user")
-	configFlags.StringVar(&cfg.SmtpAuthPass, "smtpAuthPass", "putPasswordHere", "smtp auth password")
+	configFlags.StringVar(&cfg.SmtpAuthPass, "smtpAuthPass", "", "smtp auth password")
 	configFlags.StringVar(&cfg.SmtpAuthServer, "smtpAuthServer", "smtp.gmail.com", "smtp server")
 	configFlags.StringVar(&cfg.SmtpHostPort, "smtpHostPort", "smtp.gmail.com:587", "smtp server host:port")
 }
@@ -134,13 +134,11 @@ func main() {
 	// Parse flags from command-line
 	configFlags.Parse(os.Args[1:])
 
-	// Parse flags from file
-	if configFile != "" {
-		err := configflag.Load(configFlags, configFile)
-		if err != nil {
-			log.Printf("failure loading config flags: %s", err)
-			return
-		}
+	// Parse flags from files
+	log.Printf("config files: %d", len(configList))
+	if err := configflag.Load(configFlags, configList); err != nil {
+		log.Printf("failure loading config flags: %s", err)
+		return
 	}
 
 	log.Printf("template root path: %s", templatePath)
@@ -163,6 +161,9 @@ func main() {
 	}
 	if *handler.FacebookSecret == "" {
 		log.Printf("warning: facebook client secret is UNDEFINED: facebook login won't be available")
+	}
+	if cfg.SmtpAuthPass == "" {
+		log.Printf("warning: smtp auth password is UNDEFINED: automatic email validation for local accounts won't be available")
 	}
 
 	store.Init(redisAddr)

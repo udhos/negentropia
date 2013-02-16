@@ -3,22 +3,39 @@ package configflag
 import (
 	"io"
 	"os"
+	//"log"
 	"fmt"
 	"flag"
 	"bufio"
 	"strings"
 )
 
-func loadFlagsFromFile(config string) ([]string, error) {
+type FileList []string
+
+// String is the method to get the flag value, part of the flag.Value interface.
+func (fl *FileList) String() string {
+	return strings.Join(*fl, ",")
+}
+
+// Set is the method to set the flag value, part of the flag.Value interface.
+// Set's argument is a string to be parsed to set the flag.
+// It's a comma-separated list, so we split it.
+func (fl *FileList) Set(value string) error {
+	*fl = append(*fl, strings.Split(value, ",")...)
+	return nil
+}
+
+func loadOneFile(config string, flags *[]string) (error) {
+
+	//log.Printf("loadOneFile: %s", config)
 
 	input, err := os.Open(config)
 	if err != nil {
-		return nil, fmt.Errorf("failure opening flags config file: %s: %s", config, err)
+		return fmt.Errorf("failure opening flags config file: %s: %s", config, err)
 	}
 
 	defer input.Close()
 
-	var flags []string
 	var num int = 0
 
 	reader := bufio.NewReader(input)
@@ -29,26 +46,32 @@ func loadFlagsFromFile(config string) ([]string, error) {
 		}
 		num++
 		if pref {
-			return nil, fmt.Errorf("very long flags config line at %d", num)
+			return fmt.Errorf("very long flag from config file %s at line %d", config, num)
 		}
 		f := strings.TrimSpace(string(line))
 		if f == "" || f[:1] == "#" {
 			continue
 		}
-		flags = append(flags, f)
+		*flags = append(*flags, f)
 	}
 
-	return flags, err
+	//log.Printf("loadOneFile: %s: loaded %d flags", config, len(*flags))
+
+	return err
 }
 
-func Load(fs *flag.FlagSet, config string) error {
-	f, err := loadFlagsFromFile(config)
-	if err != nil {
-		return fmt.Errorf("failure reading config flags: %s", err)
-	}
+func Load(fs *flag.FlagSet, configs FileList) error {
+	var f []string
+	
+    for _, cfg := range configs {
+        if err := loadOneFile(cfg, &f); err != nil {
+			return fmt.Errorf("failure loading config file: %s: %s", cfg, err)
+		}
+    }
 
-	err = fs.Parse(f)
-	if err != nil {
+	//log.Printf("Load: %d total flags", len(f))
+
+	if err := fs.Parse(f); err != nil {
 		return fmt.Errorf("failure parsing config flags: %s", err)
 	}
 

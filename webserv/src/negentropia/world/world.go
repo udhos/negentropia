@@ -26,15 +26,15 @@ type ClientMsg struct {
 
 var (
 	configFlags  *flag.FlagSet = flag.NewFlagSet("config flags", flag.ExitOnError)
-	configFile   string
+	configList   configflag.FileList
 	listenAddr   string
 	redisAddr    string
 )
 
 // Initialize package main
 func init() {
-	configFlags.StringVar(&configFile, "config", "", "load config flags from this file")
-	configFlags.StringVar(&listenAddr, "listenOn", "127.0.0.2:8000", "listen address [addr]:port")
+	configFlags.Var(&configList, "config", "load config flags from this file")
+	configFlags.StringVar(&listenAddr, "listenOn", "127.0.0.2:8000", "websocket listen address [addr]:port")
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
 }
 
@@ -95,13 +95,11 @@ func main() {
 	// Parse flags from command-line
 	configFlags.Parse(os.Args[1:])
 
-	// Parse flags from file
-	if configFile != "" {
-		err := configflag.Load(configFlags, configFile)
-		if err != nil {
-			log.Printf("failure loading config flags: %s", err)
-			return
-		}
+	// Parse flags from files
+	log.Printf("config files: %d", len(configList))
+	if err := configflag.Load(configFlags, configList); err != nil {
+		log.Printf("failure loading config flags: %s", err)
+		return
 	}
 	
 	store.Init(redisAddr)
