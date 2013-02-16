@@ -2,28 +2,24 @@
 var CM_CODE_FATAL = 0;
 var	CM_CODE_INFO  = 1;
 var	CM_CODE_AUTH  = 2;
-
-var wsUri = "ws://127.0.0.2:8000/";
-var wsSid;
 	
-function initWebSocket(status, sid) {
+function initWebSocket(wsUri, status, sid) {
 	console.log("websocket: opening " + wsUri);
 	status.innerHTML = "opening " + wsUri;
-	wsSid = sid;
 	websocket = new WebSocket(wsUri);
-	websocket.onopen = function(evt) { onOpen(evt, status) };
+	websocket.onopen = function(evt) { onOpen(evt, status, sid) };
 	websocket.onclose = function(evt) { onClose(evt, status) };
 	websocket.onmessage = function(evt) { onMessage(evt, status) };
 	websocket.onerror = function(evt) { onError(evt, status) };
 }
 
-function onOpen(evt, status) {
+function onOpen(evt, status, sid) {
 	status.innerHTML = "connected to " + wsUri;
 	console.log("websocket: CONNECTED");
 	
 	var msg = {
 		Code: CM_CODE_AUTH,
-		Data: wsSid
+		Data: sid
 	};
   
 	doSend(JSON.stringify(msg));

@@ -1,14 +1,8 @@
 
-// Global variables
-var neg = {
-	debugLostContext: true,
-	debugWebGL: true
-};
-
 function main() {
 	var sid = docCookies.getItem("sid");
 	var statusElem = document.getElementById("ws_status");	
-	initWebSocket(statusElem, sid);
+	initWebSocket(neg.wsUri, statusElem, sid);
 	
 	var canvasbox = document.getElementById("canvasbox");
 	neg.canvas = document.createElement('canvas');

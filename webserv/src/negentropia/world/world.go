@@ -11,6 +11,8 @@ import (
 	"negentropia/webserv/session"
 	"negentropia/webserv/store"
 	"negentropia/webserv/configflag"
+	"negentropia/webserv/util"
+	"negentropia/webserv/share"
 )
 
 const (
@@ -25,10 +27,11 @@ type ClientMsg struct {
 }
 
 var (
-	configFlags  *flag.FlagSet = flag.NewFlagSet("config flags", flag.ExitOnError)
-	configList   configflag.FileList
-	listenAddr   string
-	redisAddr    string
+	configFlags  	*flag.FlagSet = flag.NewFlagSet("config flags", flag.ExitOnError)
+	configList   	configflag.FileList
+	listenAddr   	string
+	redisAddr    	string
+	websocketHost	string
 )
 
 // Initialize package main
@@ -36,6 +39,7 @@ func init() {
 	configFlags.Var(&configList, "config", "load config flags from this file")
 	configFlags.StringVar(&listenAddr, "listenOn", "127.0.0.2:8000", "websocket listen address [addr]:port")
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
+	configFlags.StringVar(&websocketHost, "websocketHost", "127.0.0.2", "host part of redirect in ws://host:port/path")
 }
 
 func Dispatch(ws *websocket.Conn) {
@@ -82,6 +86,10 @@ func serve(addr string) {
 	} else {
 		log.Printf("server starting on " + addr)
 	}
+	
+	wsAddr := "ws://" + websocketHost + util.GetPort(addr)
+	log.Printf("saving websocket address: %s=%s", share.WORLD_WEBSOCKET, wsAddr)
+	store.Set(share.WORLD_WEBSOCKET, wsAddr)
 
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {

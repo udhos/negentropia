@@ -10,6 +10,13 @@
 
 <script type="text/javascript">
 
+// Global variables
+var neg = {
+	debugLostContext: true,
+	debugWebGL: true,
+	wsUri: {{.Websocket}}
+};
+
 function start() {
 	var prefix = "negentropia home javascript start(): ";
 	console.log(prefix + "starting");

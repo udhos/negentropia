@@ -24,6 +24,8 @@
 !webserv/src/negentropia/webserv/store
 !webserv/src/negentropia/webserv/cfg
 !webserv/src/negentropia/webserv/configflag
+!webserv/src/negentropia/webserv/share
+!webserv/src/negentropia/webserv/util
 !webserv/src/negentropia/world
 !wwwroot
 !wwwroot/hello

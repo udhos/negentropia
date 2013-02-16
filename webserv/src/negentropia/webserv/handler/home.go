@@ -11,6 +11,8 @@ import (
 
 	"negentropia/webserv/cfg"	
 	"negentropia/webserv/session"
+	"negentropia/webserv/share"
+	"negentropia/webserv/store"
 )
 
 type HomePage struct {
@@ -26,6 +28,8 @@ type HomePage struct {
 	ShowNavSignup  bool
 	ShowNavLogin   bool
 	ShowNavLogout  bool
+	
+	Websocket		string
 }
 
 func sendHome(w http.ResponseWriter, p HomePage) error {
@@ -35,6 +39,8 @@ func sendHome(w http.ResponseWriter, p HomePage) error {
 	p.LogoutPath = cfg.LogoutPath()
 	
 	p.ShowNavSignup = true
+	
+	p.Websocket = store.Get(share.WORLD_WEBSOCKET)
 
 	// FIXME: we're loading template every time
     t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("home.tpl"))

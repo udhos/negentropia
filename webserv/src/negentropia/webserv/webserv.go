@@ -15,6 +15,7 @@ import (
 	"negentropia/webserv/session"
 	"negentropia/webserv/store"
 	"negentropia/webserv/configflag"
+	"negentropia/webserv/util"
 )
 
 //type portList []string
@@ -119,15 +120,6 @@ func trapHandle(w http.ResponseWriter, r *http.Request, handler func(http.Respon
 	handler(w, r, s)
 }
 
-func getPort(hostPort string) string {
-	pair := strings.Split(listenAddr, ":")
-	if len(pair) == 1 {
-		return ""
-	}
-
-	return ":" + pair[1]
-}
-
 func main() {
 	log.Printf("webserv booting")
 
@@ -148,7 +140,7 @@ func main() {
 	}
 	handler.SetTemplateRoot(templatePath)
 
-	cfg.RedirectPort = getPort(listenAddr)
+	cfg.RedirectPort = util.GetPort(listenAddr)
 
 	if *handler.GoogleId == "" {
 		log.Printf("warning: google client id is UNDEFINED: google login won't be available")
