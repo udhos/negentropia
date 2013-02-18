@@ -132,10 +132,12 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 		}	
 		return
 	}
-	
-	if (s == nil) {
-		s = session.Set(w, session.AUTH_PROV_GOOGLE, profile.Id, profile.Name, profile.Email)
-	}
+
+	if s != nil {
+		session.Delete(w, s)
+		s = nil
+	}		
+	s = session.Set(w, session.AUTH_PROV_GOOGLE, profile.Id, profile.Name, profile.Email)
 	if (s == nil) {
 		log.Printf("handler.googleCallback url=%s could not establish session", path)	
 		http.Error(w, "handler.googleCallback could not establish session", http.StatusInternalServerError)
@@ -242,9 +244,11 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 		return
 	}
 
-	if (s == nil) {
-		s = session.Set(w, session.AUTH_PROV_FACEBOOK, profile.Id, profile.Name, profile.Email)
-	}
+	if s != nil {
+		session.Delete(w, s)
+		s = nil
+	}	
+	s = session.Set(w, session.AUTH_PROV_FACEBOOK, profile.Id, profile.Name, profile.Email)
 	if (s == nil) {
 		log.Printf("handler.facebookCallback url=%s could not establish session", path)	
 		http.Error(w, "handler.facebookCallback could not establish session", http.StatusInternalServerError)
