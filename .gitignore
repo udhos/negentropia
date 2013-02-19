@@ -11,6 +11,7 @@
 !*.cmd
 !*.sh
 !*.css
+!*.dart
 !negentropia
 !negentropia/lib
 !negentropia/texture
@@ -28,6 +29,7 @@
 !webserv/src/negentropia/webserv/util
 !webserv/src/negentropia/world
 !wwwroot
+!wwwroot/dart
 !wwwroot/hello
 !wwwroot/js
 !wwwroot/js/lib

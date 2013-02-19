@@ -6,6 +6,7 @@ import "log"
 
 var (
 	homePath				string
+	homeDartPath			string
 	logoutPath				string
 	loginPath				string
 	loginAuthPath			string
@@ -34,6 +35,7 @@ func SetBasePath(basePath string) {
 	log.Printf("cfg.SetBasePath: www base path: %s", basePath)
 	
 	homePath             = basePath + "/"
+	homeDartPath         = basePath + "/homeDart"
 	logoutPath           = basePath + "/logout"
 	loginPath            = basePath + "/login"
 	loginAuthPath        = basePath + "/loginAuth"
@@ -50,6 +52,7 @@ func SetBasePath(basePath string) {
 }
 
 func HomePath()             string { return homePath }
+func HomeDartPath()         string { return homeDartPath }
 func LogoutPath()           string { return logoutPath }
 func LoginPath()            string { return loginPath }
 func LoginAuthPath()        string { return loginAuthPath }
@@ -64,6 +67,7 @@ func ResetPassProcessPath() string { return resetPassProcessPath }
 func ResetPassConfirmPath() string { return resetPassConfirmPath }
 func ResetPassConfirmProcessPath() string { return resetPassConfirmProcessPath }
 
+// Full URLs to embed in email
 func HomeURL()			   string { return Protocol + "://" + RedirectHost + RedirectPort + homePath }
 func ConfirmURL()          string { return Protocol + "://" + RedirectHost + RedirectPort + confirmPath }
 func ConfirmProcessURL()   string { return Protocol + "://" + RedirectHost + RedirectPort + confirmProcessPath }

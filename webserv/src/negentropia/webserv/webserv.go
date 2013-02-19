@@ -182,6 +182,7 @@ func main() {
 	}
 
 	http.HandleFunc(cfg.HomePath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Home) })
+	http.HandleFunc(cfg.HomeDartPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.HomeDart) })	
 	http.HandleFunc(cfg.LogoutPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) })
 	http.HandleFunc(cfg.LoginPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) })
 	http.HandleFunc(cfg.LoginAuthPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) })
@@ -198,13 +199,5 @@ func main() {
 
 	log.Printf("webserv boot complete")
 	
-	/*
-		last := len(listenOn) - 1
-		// serve ports except the last one
-		for _, port := range listenOn[:last] {
-			go serve(port)
-		}
-		serve(listenOn[last]) // serve last port
-	*/
 	serve(listenAddr)
 }
