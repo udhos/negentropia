@@ -42,11 +42,9 @@ window.addEventListener("load", start, false);
 </div>
 
 <div id="canvasbox">
-<!--
 <canvas id="main_canvas">
 Browser missing &lt;canvas&gt; support!
 </canvas>
--->
 </div>
 
 {{ end }}
