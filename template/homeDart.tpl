@@ -10,6 +10,8 @@
 
 {{ define "content" }}
 
+<span hidden id="wsUri">{{.Websocket}}</span>
+
 <div class="centerbox">
 <h1>Welcome to Negentropia</h1>
 <h3>This is the DART home location</h3>

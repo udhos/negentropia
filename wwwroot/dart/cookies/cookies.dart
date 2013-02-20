@@ -7,7 +7,6 @@ class Cookie {
   static _readCookie() {
     var cookie = new Map();
     var c = document.cookie;
-    print('Readed Cookie:${c}');
     c.split(';').forEach((t) {
       var k = t.indexOf('=');
       if (k > 0)
