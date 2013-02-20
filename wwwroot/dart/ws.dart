@@ -16,6 +16,9 @@ void doSend(String msg) {
 }
 
 void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
+  
+  status.text = "opening $wsUri";
+  
   var fail = false;
   
   if (retrySeconds < 1) {

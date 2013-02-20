@@ -4,8 +4,9 @@ var	CM_CODE_INFO  = 1;
 var	CM_CODE_AUTH  = 2;
 	
 function initWebSocket(wsUri, status, sid) {
-	console.log("websocket: opening " + wsUri);
 	status.innerHTML = "opening " + wsUri;
+	console.log("websocket: opening: " + wsUri);
+	
 	websocket = new WebSocket(wsUri);
 	websocket.onopen = function(evt) { onOpen(evt, status, wsUri, sid) };
 	websocket.onclose = function(evt) { onClose(evt, status, wsUri) };

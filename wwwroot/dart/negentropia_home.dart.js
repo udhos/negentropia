@@ -4067,6 +4067,12 @@ $$._JsonStringifier_stringifyJsonValue_anon = {"": "Closure;box_0,this_1",
   }
 };
 
+$$.convertDartToNative_Dictionary_anon = {"": "Closure;object_0",
+  call$2: function(key, value) {
+    this.object_0[key] = value;
+  }
+};
+
 $$.Cookie__readCookie_anon = {"": "Closure;cookie_0",
   call$1: function(t) {
     var t1, k, t2;
@@ -5836,6 +5842,15 @@ $.FixedSizeListIterator$ = function(array) {
   return new $.FixedSizeListIterator(array, $.length(array), -1, null);
 };
 
+$.convertDartToNative_Dictionary = function(dict) {
+  var object;
+  if (dict == null)
+    return;
+  object = {};
+  $.forEach(dict, new $.convertDartToNative_Dictionary_anon(object));
+  return object;
+};
+
 $.convertNativeToDart_SerializedScriptValue = function(object) {
   return $.convertNativeToDart_AcceptStructuredClone(object, true);
 };
@@ -6159,19 +6174,31 @@ $.Cookie_getCookie = function($name) {
 };
 
 $.main = function() {
-  var canvas, sid;
+  var canvas, sid, wsUri, statusElem;
   canvas = $.CanvasElement_CanvasElement(null, null);
   canvas.set$id("main_canvas");
   document.query$1("#canvasbox").append$1(canvas);
   $.Primitives_printString("canvas '" + $.S(canvas.get$id()) + "' created");
   sid = $.Cookie_getCookie("sid");
   $.Primitives_printString("session id sid=" + $.S(sid));
-  $.initWebSocket(document.query$1("#wsUri").get$text(), sid, 1, document.query$1("#ws_status"));
+  wsUri = document.query$1("#wsUri").get$text();
+  statusElem = document.query$1("#ws_status");
+  $.Primitives_printString("WebGL: initializing");
+  if (canvas.getContext$1("experimental-webgl") == null) {
+    $.Primitives_printString("WebGL: initialization failure: experimental-webgl");
+    if (canvas.getContext$1("webgl") == null) {
+      $.Primitives_printString("WebGL: initialization failure: webgl");
+      return;
+    }
+  }
+  $.Primitives_printString("WebGL: initialized");
+  $.initWebSocket(wsUri, sid, 1, statusElem);
 };
 
 $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
   var t1 = {};
   t1.retrySeconds_0 = retrySeconds;
+  $status.set$text("opening " + $.S(wsUri));
   t1.fail_1 = false;
   if ($.$$lt(t1.retrySeconds_0, 1) === true)
     t1.retrySeconds_0 = 1;
@@ -6495,7 +6522,25 @@ $.$defineNativeClass("HTMLBodyElement", {
 
 $.$defineNativeClass("HTMLButtonElement", {"": "value="});
 
-$.$defineNativeClass("HTMLCanvasElement", {"": "height<,width<"});
+$.$defineNativeClass("HTMLCanvasElement", {"": "height<,width<",
+  getContext$2: function(contextId, attrs) {
+    var t1 = $ === attrs;
+    if (t1)
+      attrs = null;
+    if (!t1)
+      return this._getContext_1$2(contextId, $.convertDartToNative_Dictionary(attrs));
+    return this._getContext_2$1(contextId);
+  },
+  getContext$1: function(contextId) {
+    return this.getContext$2(contextId, $);
+  },
+  _getContext_1$2: function(contextId, attrs) {
+    return this.getContext(contextId,attrs);
+  },
+  _getContext_2$1: function(contextId) {
+    return this.getContext(contextId);
+  }
+});
 
 $.$defineNativeClass("CharacterData", {"": "data>,length>"});
 

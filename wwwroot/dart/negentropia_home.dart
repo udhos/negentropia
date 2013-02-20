@@ -21,5 +21,19 @@ void main() {
   var statusElem = query("#ws_status");
   assert(statusElem != null);
   
+  print("WebGL: initializing");  
+  
+  WebGLRenderingContext gl = canvas.getContext("experimental-webgl");
+  if (gl == null) {
+    print("WebGL: initialization failure: experimental-webgl");
+    gl = canvas.getContext("webgl");
+    if (gl == null) {
+      print("WebGL: initialization failure: webgl");
+      return;
+    }
+  }
+
+  print("WebGL: initialized");  
+
   initWebSocket(wsUri, sid, 1, statusElem);
 }
