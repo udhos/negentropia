@@ -51,15 +51,6 @@ func init() {
 	configFlags.StringVar(&cfg.SmtpHostPort, "smtpHostPort", "smtp.gmail.com:587", "smtp server host:port")
 }
 
-/*
-func flagSetInit(fs *flag.FlagSet) {
-	handler.GoogleId = fs.String("gId", "", "google client id")
-	handler.GoogleSecret = fs.String("gSecret", "", "google client secret")
-	fs.StringVar(&configFile, "config", "", "load config flags from this file")
-	fs.Var(&listenOn, "listenOn", "comma-separated list of [addr]:port pairs")
-}
-*/
-
 // Wrapper type for Handler
 type StaticHandler struct {
 	innerHandler http.Handler // save trapped/wrapped Handler
@@ -68,12 +59,6 @@ type StaticHandler struct {
 func (handler StaticHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("StaticHandler.ServeHTTP url=%s", r.URL.Path)
 	handler.innerHandler.ServeHTTP(w, r) // call trapped/wrapped Handler
-
-	/*
-		var delay time.Duration = 20 
-		log.Printf("blocking for %d secs", delay)
-		time.Sleep(delay * time.Second)
-	*/
 }
 
 func serve(addr string) {
@@ -98,21 +83,6 @@ func serve(addr string) {
 		log.Panicf("ListenAndServe: %s: %s", addr, err)
 	}
 }
-
-/*
-// String is the method to get the flag value, part of the flag.Value interface.
-func (pl *portList) String() string {
-	return strings.Join(*pl, ",")
-}
-
-// Set is the method to set the flag value, part of the flag.Value interface.
-// Set's argument is a string to be parsed to set the flag.
-// It's a comma-separated list, so we split it.
-func (pl *portList) Set(value string) error {
-	*pl = strings.Split(value, ",") // redefine portList
-	return nil
-}
-*/
 
 // Add session parameter to handle
 func trapHandle(w http.ResponseWriter, r *http.Request, handler func(http.ResponseWriter, *http.Request, *session.Session)) {

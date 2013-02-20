@@ -26,3 +26,5 @@ margin: 0 auto;
 #canvasbox { width: 100%; text-align: center; margin: 0 auto; }
 
 #main_canvas { border: 2px solid black; width: 780px; height: 500px; }
+
+#toggle { text-align: center; }

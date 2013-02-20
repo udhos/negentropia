@@ -19,6 +19,6 @@
 <div id="canvasbox">
 </div>
 
-<a href="{{.HomePath}}">javascript</a>
+<div id="toggle">return to <a href="{{.HomePath}}">javascript</a></div>
 
 {{ end }}

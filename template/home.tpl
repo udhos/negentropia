@@ -44,6 +44,6 @@ window.addEventListener("load", start, false);
 <div id="canvasbox">
 </div>
 
-<a href="{{.HomeDartPath}}">dart</a>
+<div id="toggle">switch to <a href="{{.HomeDartPath}}">dart</a></div>
 
 {{ end }}
