@@ -4947,12 +4947,6 @@ $$._JsonStringifier_stringifyJsonValue_anon = {"": "Closure;box_0,this_1",
   }
 };
 
-$$.convertDartToNative_Dictionary_anon = {"": "Closure;object_0",
-  call$2: function(key, value) {
-    this.object_0[key] = value;
-  }
-};
-
 $$.Cookie__readCookie_anon = {"": "Closure;cookie_0",
   call$1: function(t) {
     var t1, k, t2;
@@ -4963,6 +4957,12 @@ $$.Cookie__readCookie_anon = {"": "Closure;cookie_0",
       $.$$indexSet(this.cookie_0, $._uriDecode(t1.substring$2(t, 0, k)), $._uriDecode(t1.substring$1(t, t2.$add(k, 1))));
   },
   $is_TimerCallback1: true
+};
+
+$$.convertDartToNative_Dictionary_anon = {"": "Closure;object_0",
+  call$2: function(key, value) {
+    this.object_0[key] = value;
+  }
 };
 
 $$.FilteredElementList__filtered_anon = {"": "Closure;",
@@ -7034,36 +7034,49 @@ $.Cookie_getCookie = function($name) {
   return;
 };
 
+$.initGL = function(canvas) {
+  var gl, t1, t2;
+  $.Primitives_printString("WebGL: initializing");
+  gl = canvas.getContext3d$0();
+  if (!(gl == null)) {
+    $.Primitives_printString("WebGL: initialized");
+    return gl;
+  }
+  for (t1 = $.CONSTANT1.get$iterator(["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"]); t1.moveNext$0() === true;) {
+    t2 = t1.get$current();
+    gl = canvas.getContext$1(t2);
+    $.Primitives_printString("WebGL: trying context: " + $.S(t2));
+    if (!(gl == null)) {
+      $.Primitives_printString("WebGL: initialized context: " + $.S(t2));
+      return gl;
+    }
+  }
+  $.Primitives_printString("WebGL: initialization failure");
+  return;
+};
+
 $.main = function() {
-  var canvas, canvasbox, sid, wsUri, statusElem, p, a;
+  var canvas, canvasbox, p, a, sid;
   canvas = $.CanvasElement_CanvasElement(null, null);
   canvas.set$id("main_canvas");
   canvasbox = document.query$1("#canvasbox");
   canvasbox.append$1(canvas);
   $.Primitives_printString("canvas '" + $.S(canvas.get$id()) + "' created");
+  if ($.initGL(canvas) == null) {
+    canvas.remove$0();
+    p = document.$$dom_createElement$1("p");
+    p.set$text("WebGL is not supported by this browser.");
+    canvasbox.append$1(p);
+    a = $.AnchorElement_AnchorElement(null);
+    a.set$href("http://get.webgl.org/");
+    a.set$text("Get more information");
+    canvasbox.append$1(a);
+    canvasbox.get$style().set$backgroundColor("lightblue");
+    return;
+  }
   sid = $.Cookie_getCookie("sid");
   $.Primitives_printString("session id sid=" + $.S(sid));
-  wsUri = document.query$1("#wsUri").get$text();
-  statusElem = document.query$1("#ws_status");
-  $.Primitives_printString("WebGL: initializing");
-  if (canvas.getContext$1("experimental-webgl") == null) {
-    $.Primitives_printString("WebGL: initialization failure: experimental-webgl");
-    if (canvas.getContext$1("webgl") == null) {
-      $.Primitives_printString("WebGL: initialization failure: webgl");
-      canvas.remove$0();
-      p = document.$$dom_createElement$1("p");
-      p.set$text("WebGL is not supported by this browser.");
-      canvasbox.append$1(p);
-      a = $.AnchorElement_AnchorElement(null);
-      a.set$href("http://get.webgl.org/");
-      a.set$text("Get more information");
-      canvasbox.append$1(a);
-      canvasbox.get$style().set$backgroundColor("lightblue");
-      return;
-    }
-  }
-  $.Primitives_printString("WebGL: initialized");
-  $.initWebSocket(wsUri, sid, 1, statusElem);
+  $.initWebSocket(document.query$1("#wsUri").get$text(), sid, 1, document.query$1("#ws_status"));
 };
 
 $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
@@ -7416,6 +7429,15 @@ $.$defineNativeClass("HTMLCanvasElement", {"": "height<,width<",
   },
   getContext$1: function(contextId) {
     return this.getContext$2(contextId, $);
+  },
+  getContext3d$6$alpha$antialias$depth$premultipliedAlpha$preserveDrawingBuffer$stencil: function(alpha, antialias, depth, premultipliedAlpha, preserveDrawingBuffer, stencil) {
+    var options, context;
+    options = $.makeLiteralMap(["alpha", alpha, "depth", depth, "stencil", stencil, "antialias", antialias, "premultipliedAlpha", premultipliedAlpha, "preserveDrawingBuffer", preserveDrawingBuffer]);
+    context = this.getContext$2("webgl", options);
+    return context == null ? this.getContext$2("experimental-webgl", options) : context;
+  },
+  getContext3d$0: function() {
+    return this.getContext3d$6$alpha$antialias$depth$premultipliedAlpha$preserveDrawingBuffer$stencil(true, true, true, true, false, false);
   }
 });
 
