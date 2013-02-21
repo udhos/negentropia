@@ -8,7 +8,8 @@ void main() {
   CanvasElement canvas = new CanvasElement();
   assert(canvas != null);
   canvas.id = "main_canvas";
-  query("#canvasbox").append(canvas);  
+  var canvasbox = query("#canvasbox"); 
+  canvasbox.append(canvas);  
   print("canvas '${canvas.id}' created");
   
   var sid = Cookie.getCookie("sid");
@@ -29,6 +30,15 @@ void main() {
     gl = canvas.getContext("webgl");
     if (gl == null) {
       print("WebGL: initialization failure: webgl");
+      canvas.remove();
+      var p = new ParagraphElement();
+      p.text = 'WebGL is not supported by this browser.';
+      canvasbox.append(p);
+      var a = new AnchorElement();
+      a.href = 'http://get.webgl.org/';
+      a.text = 'Get more information';
+      canvasbox.append(a);
+      canvasbox.style.backgroundColor = 'lightblue';
       return;
     }
   }

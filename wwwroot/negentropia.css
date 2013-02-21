@@ -6,7 +6,7 @@ body { font-size: 100%; font-family: Verdana, Arial, sansserif; }
 input { font-size: 1em; font-family: Arial, Helvetica, serif; }
 
 .bar { text-align: center; margin: 0 auto; }
-.menu { background-color:lightgray; }
+.menu { background-color: lightgray; }
 
 .emailInput { width: 250px; }
 .failmsg { color: red; }
@@ -27,4 +27,4 @@ margin: 0 auto;
 
 #main_canvas { border: 2px solid black; width: 780px; height: 500px; }
 
-#toggle { text-align: center; }
+#toggle { text-align: center; margin: 7px; }
