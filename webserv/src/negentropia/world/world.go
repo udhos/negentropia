@@ -64,22 +64,22 @@ func Dispatch(ws *websocket.Conn) {
 	log.Printf("Dispatch: Auth: sid=%s", sid)
 	session := session.Load(sid)
 	if (session == nil) {
-		log.Printf("Dispatch: Auth: invalid session id sid=%s", sid)
+		log.Printf("Dispatch: Auth: sid=%s: invalid session id", sid)
 		websocket.JSON.Send(ws, ClientMsg{CM_CODE_FATAL, "bad auth"})
 		return
 	}
 
 	websocket.JSON.Send(ws, ClientMsg{CM_CODE_INFO, "welcome " + session.ProfileEmail})
 
-	log.Printf("Dispatch: Entering receive loop: %s", session.ProfileEmail)
+	log.Printf("Dispatch: Entering receive loop: sid=%s %s", sid, session.ProfileEmail)
 	for {
 		err = websocket.JSON.Receive(ws, &msg)
 		if err == io.EOF {
-			log.Printf("Receive loop: %s: disconnected", session.ProfileEmail)
+			log.Printf("Recv: %s %s: disconnected", sid, session.ProfileEmail)
 			break
 		}
 		if err != nil {
-			log.Printf("Receive loop: %s: failure: %s", session.ProfileEmail, err)
+			log.Printf("Recv: %s %s: failure: %s", sid, session.ProfileEmail, err)
 			break
 		}
 	}
