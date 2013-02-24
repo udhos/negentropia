@@ -7,7 +7,8 @@ import (
 	//"strings"
 	"strconv"
 	"net/http"
-		
+
+	"negentropia/webserv/util"	
 	"negentropia/webserv/store"
 )
 
@@ -100,7 +101,7 @@ func sessionSave(session *Session) error {
 }
 
 func newSessionId() string {
-	return "s:" + strconv.FormatInt(store.Incr("i:sessionIdGenerator"), 10)
+	return "s:" + strconv.FormatInt(store.Incr("i:sessionIdGenerator"), 10) + util.RandomSuffix();
 }
 
 func Get(r *http.Request) *Session {

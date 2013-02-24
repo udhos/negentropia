@@ -15,6 +15,7 @@ import (
 	"html/template"
 
 	"negentropia/webserv/cfg"
+	"negentropia/webserv/util"
 	"negentropia/webserv/store"	
 	"negentropia/webserv/session"
 )
@@ -81,7 +82,7 @@ func Signup(w http.ResponseWriter, r *http.Request, s *session.Session) {
 }
 
 func newConfirmationId() string {
-	return "c:" + strconv.FormatInt(store.Incr("i:confirmationIdGenerator"), 10)
+	return "c:" + strconv.FormatInt(store.Incr("i:confirmationIdGenerator"), 10) + util.RandomSuffix()
 }
 
 func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, subject, msgPlain, msgHtml string) {

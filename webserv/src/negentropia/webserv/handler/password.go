@@ -15,6 +15,7 @@ import (
 	"html/template"
 
 	"negentropia/webserv/cfg"
+	"negentropia/webserv/util"
 	"negentropia/webserv/store"	
 	"negentropia/webserv/session"
 )
@@ -93,7 +94,7 @@ func ResetPass(w http.ResponseWriter, r *http.Request, s *session.Session) {
 }
 
 func newResetPassConfirmationId() string {
-	return "r:" + strconv.FormatInt(store.Incr("i:resetPassConfirmationIdGenerator"), 10)
+	return "r:" + strconv.FormatInt(store.Incr("i:resetPassConfirmationIdGenerator"), 10) + util.RandomSuffix()
 }
 
 func sendResetPassEmail(email, confId string) {

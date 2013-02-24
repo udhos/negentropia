@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"os"
 	//"fmt"
 	"log"
@@ -39,7 +40,7 @@ func init() {
 	configFlags.Var(&configList, "config", "load config flags from this file")
 	configFlags.StringVar(&listenAddr, "listenOn", "127.0.0.2:8000", "websocket listen address [addr]:port")
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
-	configFlags.StringVar(&websocketHost, "websocketHost", "127.0.0.2", "host part of redirect in ws://host:port/path")
+	configFlags.StringVar(&websocketHost, "websocketHost", "127.0.0.2", "host part of websocket uri: ws://host:port/path")
 }
 
 func Dispatch(ws *websocket.Conn) {
@@ -70,11 +71,15 @@ func Dispatch(ws *websocket.Conn) {
 
 	websocket.JSON.Send(ws, ClientMsg{CM_CODE_INFO, "welcome " + session.ProfileEmail})
 
-	log.Printf("Dispatch: Entering receive loop")
+	log.Printf("Dispatch: Entering receive loop: %s", session.ProfileEmail)
 	for {
 		err = websocket.JSON.Receive(ws, &msg)
+		if err == io.EOF {
+			log.Printf("Receive loop: %s: disconnected", session.ProfileEmail)
+			break
+		}
 		if err != nil {
-			log.Printf("Dispatch: Receive loop: failure: %s", err)
+			log.Printf("Receive loop: %s: failure: %s", session.ProfileEmail, err)
 			break
 		}
 	}

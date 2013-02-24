@@ -4,9 +4,7 @@ import (
 	//"log"
 	"path"
 	"strings"
-	
-	//"github.com/bradfitz/gomemcache/memcache"
-	
+		
 	"negentropia/webserv/session"
 )
 
@@ -16,18 +14,7 @@ var (
 	GoogleSecret     *string
 	FacebookId       *string
 	FacebookSecret   *string
-	/*
-	RedirectHost      string
-	RedirectPort      string
-	*/
 )
-
-/*
-func init() {
-	log.Printf("handler.init(): memcache client for: " + strings.Join(mcServerList, ","))
-	mc = memcache.New(mcServerList...)
-}
-*/
 
 func SetTemplateRoot(p string) {
 	templateRootPath = p
@@ -52,5 +39,3 @@ func accountLabel(s *session.Session) string {
 func formatEmail(email string) string {
 	return strings.ToLower(strings.TrimSpace(email))
 }
-
-
