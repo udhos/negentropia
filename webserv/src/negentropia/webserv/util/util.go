@@ -11,11 +11,21 @@ import (
 )
 
 var (
-	randGen *rand.Rand
+	randCh chan int64 = make(chan int64)
 )
 
-func init() {
-	randGen = rand.New(rand.NewSource(time.Now().Unix()))
+func serveRand() {
+	log.Printf("util.serveRand: goroutine started")
+	
+	randGen := rand.New(rand.NewSource(time.Now().Unix()))
+	
+	for {
+		randCh <- randGen.Int63()
+	}
+}
+				
+func init() {	
+	go serveRand()
 }
 
 func GetPort(hostPort string) string {
@@ -28,12 +38,10 @@ func GetPort(hostPort string) string {
 }
 
 func RandomSuffix() string {
-	log.Printf("handler.RandomSuffix: FIXME: randGen.int63() is goroutine unsafe")
-
-	n := randGen.Int63()
 	
-	// buf := &bytes.Buffer{} // which is better??
-	buf := new(bytes.Buffer)
+	n := <- randCh
+	
+	buf := &bytes.Buffer{} // buf := new(bytes.Buffer) // which is better??
 	if err := binary.Write(buf, binary.BigEndian, n); err != nil {
 		log.Printf("handler.RandomSuffix: binary.Write: failed: %s", err)
 	}
