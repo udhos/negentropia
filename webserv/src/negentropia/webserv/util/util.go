@@ -46,5 +46,5 @@ func RandomSuffix() string {
 		log.Printf("handler.RandomSuffix: binary.Write: failed: %s", err)
 	}
 			
-	return "-" + base64.StdEncoding.EncodeToString(buf.Bytes())
+	return "-" + base64.URLEncoding.EncodeToString(buf.Bytes())
 }
