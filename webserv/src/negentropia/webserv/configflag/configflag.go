@@ -49,7 +49,7 @@ func loadOneFile(config string, flags *[]string) (error) {
 			return fmt.Errorf("very long flag from config file %s at line %d", config, num)
 		}
 		f := strings.TrimSpace(string(line))
-		if f == "" || f[:1] == "#" {
+		if f == "" || f[0] == '#' {
 			continue
 		}
 		*flags = append(*flags, f)
