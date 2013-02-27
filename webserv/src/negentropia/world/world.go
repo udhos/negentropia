@@ -7,6 +7,7 @@ import (
 	"log"
 	"flag"
 	"net/http"
+	
 	"code.google.com/p/go.net/websocket"
 	
 	"negentropia/webserv/session"
@@ -14,6 +15,7 @@ import (
 	"negentropia/webserv/configflag"
 	"negentropia/webserv/util"
 	"negentropia/webserv/share"
+	"negentropia/world/server"
 )
 
 const (
@@ -68,9 +70,11 @@ func Dispatch(ws *websocket.Conn) {
 		websocket.JSON.Send(ws, ClientMsg{CM_CODE_FATAL, "bad auth"})
 		return
 	}
+		
+	server.PlayerAdd(session.SessionId, session.ProfileEmail, ws)
 
 	websocket.JSON.Send(ws, ClientMsg{CM_CODE_INFO, "welcome " + session.ProfileEmail})
-
+	
 	log.Printf("Dispatch: Entering receive loop: sid=%s %s", sid, session.ProfileEmail)
 	for {
 		err = websocket.JSON.Receive(ws, &msg)
@@ -83,6 +87,8 @@ func Dispatch(ws *websocket.Conn) {
 			break
 		}
 	}
+	
+	server.PlayerDel(session.ProfileEmail)
 }
 
 func serve(addr string) {
