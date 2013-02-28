@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io"
+	//"io"
 	"os"
 	//"fmt"
 	"log"
@@ -18,16 +18,6 @@ import (
 	"negentropia/world/server"
 )
 
-const (
-	CM_CODE_FATAL = 0
-	CM_CODE_INFO  = 1
-	CM_CODE_AUTH  = 2
-)
-
-type ClientMsg struct {
-	Code	int
-	Data	string
-}
 
 var (
 	configFlags  	*flag.FlagSet = flag.NewFlagSet("config flags", flag.ExitOnError)
@@ -45,50 +35,76 @@ func init() {
 	configFlags.StringVar(&websocketHost, "websocketHost", "127.0.0.2", "host part of websocket uri: ws://host:port/path")
 }
 
-func Dispatch(ws *websocket.Conn) {
-
-	defer ws.Close()
+func auth(ws *websocket.Conn) *server.Player {
 	
-	var sid string
-	
-	var msg ClientMsg
+	var msg server.ClientMsg
 	err := websocket.JSON.Receive(ws, &msg)
 	if err != nil {
-		log.Printf("Dispatch: Auth: failure: %s", err)
-		return
+		log.Printf("auth: failure: %s", err)
+		return nil
 	}
-	if (msg.Code != CM_CODE_AUTH) {
-		log.Printf("Dispatch: Auth: non-auth code: %d", msg.Code)
-		websocket.JSON.Send(ws, ClientMsg{CM_CODE_FATAL, "auth required"})
-		return
+	
+	if (msg.Code != server.CM_CODE_AUTH) {
+		log.Printf("auth: non-auth code: %d", msg.Code)
+		websocket.JSON.Send(ws, server.ClientMsg{server.CM_CODE_FATAL, "auth required"})
+		return nil
 	}
-	sid = msg.Data
-	log.Printf("Dispatch: Auth: sid=%s", sid)
+	
+	sid := msg.Data
+	log.Printf("auth: sid=%s", sid)
 	session := session.Load(sid)
 	if (session == nil) {
 		log.Printf("Dispatch: Auth: sid=%s: invalid session id", sid)
-		websocket.JSON.Send(ws, ClientMsg{CM_CODE_FATAL, "bad auth"})
+		websocket.JSON.Send(ws, server.ClientMsg{server.CM_CODE_FATAL, "bad auth"})
+		return nil
+	}
+	
+	return &server.Player{sid, session.ProfileEmail, ws, make(chan *server.ClientMsg)}
+}
+
+func sender(p *server.Player) {
+	
+	for msg := range p.SendToPlayer {
+		err := websocket.JSON.Send(p.Websocket, msg)
+		if err != nil {
+			log.Printf("sender: %s %s: failure: %s", p.Sid, p.Email, err)
+			break
+		}
+	}
+	
+	p.Websocket.Close()
+}
+
+func receiver(p *server.Player) {
+	for {
+		msg := new(server.ClientMsg)
+		err := websocket.JSON.Receive(p.Websocket, msg)
+		if err != nil {
+			log.Printf("receiver: %s %s: failure: %s", p.Sid, p.Email, err)
+			break
+		}
+		server.InputCh <- &server.PlayerMsg{p, msg}
+	}
+	
+	p.Websocket.Close()
+}
+
+func dispatch(ws *websocket.Conn) {
+
+	defer ws.Close()
+	
+	newPlayer := auth(ws)
+	if newPlayer == nil {
 		return
 	}
-		
-	server.PlayerAdd(session.SessionId, session.ProfileEmail, ws)
 
-	websocket.JSON.Send(ws, ClientMsg{CM_CODE_INFO, "welcome " + session.ProfileEmail})
+	websocket.JSON.Send(ws, server.ClientMsg{server.CM_CODE_INFO, "welcome " + newPlayer.Email})
 	
-	log.Printf("Dispatch: Entering receive loop: sid=%s %s", sid, session.ProfileEmail)
-	for {
-		err = websocket.JSON.Receive(ws, &msg)
-		if err == io.EOF {
-			log.Printf("Recv: %s %s: disconnected", sid, session.ProfileEmail)
-			break
-		}
-		if err != nil {
-			log.Printf("Recv: %s %s: failure: %s", sid, session.ProfileEmail, err)
-			break
-		}
-	}
+	server.PlayerAddCh <- newPlayer
+	defer func() { server.PlayerDelCh <- newPlayer }()
 	
-	server.PlayerDel(session.ProfileEmail)
+	go sender(newPlayer)
+	receiver(newPlayer)
 }
 
 func serve(addr string) {
@@ -123,7 +139,7 @@ func main() {
 	
 	store.Init(redisAddr)
 	
-	http.Handle("/", websocket.Handler(Dispatch))
+	http.Handle("/", websocket.Handler(dispatch))
 
 	log.Printf("world boot complete")
 	

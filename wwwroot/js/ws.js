@@ -33,6 +33,13 @@ function onClose(evt, status, wsUri) {
 
 function onMessage(evt, status) {
 	console.log("websocket: received: [" + evt.data + "]");
+	
+	var msg = JSON.parse(evt.data);
+	if (msg.Code === CM_CODE_INFO) {
+		if (msg.Data.lastIndexOf("welcome", 0) === 0) {
+			doSend(JSON.stringify({Code: CM_CODE_INFO, Data: "glad to be here :-)"}));
+		}
+	}
 }
 
 function onError(evt, status) {

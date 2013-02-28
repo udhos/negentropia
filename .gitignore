@@ -29,6 +29,7 @@
 !webserv/src/negentropia/webserv/share
 !webserv/src/negentropia/webserv/util
 !webserv/src/negentropia/world
+!webserv/src/negentropia/world/server
 !wwwroot
 !wwwroot/dart
 !wwwroot/dart/cookies
