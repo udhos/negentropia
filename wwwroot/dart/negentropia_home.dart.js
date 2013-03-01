@@ -319,9 +319,9 @@ $$._ExceptionImplementation = {"": "Object;message",
   $isException: true
 };
 
-$$.FormatException = {"": "Object;",
+$$.FormatException = {"": "Object;message",
   toString$0: function() {
-    return "FormatException: " + this.message;
+    return "FormatException: " + $.S(this.message);
   },
   $isException: true
 };
@@ -515,6 +515,9 @@ $$.ObjectInterceptor = {"": "Object;",
   get$isEmpty: function(receiver) {
     return receiver.get$isEmpty();
   },
+  get$isNaN: function(receiver) {
+    return receiver.get$isNaN();
+  },
   get$last: function(receiver) {
     return receiver.get$last();
   },
@@ -545,6 +548,9 @@ $$.ObjectInterceptor = {"": "Object;",
   split$1: function(receiver, a0) {
     return receiver.split$1(a0);
   },
+  startsWith$1: function(receiver, a0) {
+    return receiver.startsWith$1(a0);
+  },
   substring$1: function(receiver, a0) {
     return receiver.substring$1(a0);
   },
@@ -553,6 +559,9 @@ $$.ObjectInterceptor = {"": "Object;",
   },
   toList$0: function(receiver) {
     return receiver.toList$0();
+  },
+  toLowerCase$0: function(receiver) {
+    return receiver.toLowerCase$0();
   },
   toString$0: function(receiver) {
     return receiver.toString$0();
@@ -765,6 +774,9 @@ $$.JSArray = {"": "Object;",
 };
 
 $$.JSNumber = {"": "Object;",
+  get$isNaN: function(receiver) {
+    return isNaN(receiver);
+  },
   remainder$1: function(receiver, b) {
     $.checkNull(b);
     return receiver % b;
@@ -884,6 +896,8 @@ $$.JSString = {"": "Object;",
     return this.codeUnitAt$1(receiver, index);
   },
   codeUnitAt$1: function(receiver, index) {
+    if (!(typeof index === "number"))
+      throw $.$$throw($.ArgumentError$(index));
     if (index < 0)
       throw $.$$throw($.RangeError$value(index));
     if (index >= receiver.length)
@@ -907,6 +921,14 @@ $$.JSString = {"": "Object;",
     $.checkNull(pattern);
     return receiver.split(pattern);
   },
+  startsWith$1: function(receiver, other) {
+    var otherLength;
+    $.checkString(other);
+    otherLength = other.length;
+    if (otherLength > receiver.length)
+      return false;
+    return other == receiver.substring(0, otherLength);
+  },
   substring$2: function(receiver, startIndex, endIndex) {
     var t1;
     $.checkNum(startIndex);
@@ -924,6 +946,9 @@ $$.JSString = {"": "Object;",
   },
   substring$1: function($receiver, startIndex) {
     return this.substring$2($receiver, startIndex, null);
+  },
+  toLowerCase$0: function(receiver) {
+    return receiver.toLowerCase();
   },
   indexOf$2: function(receiver, other, start) {
     $.checkNull(other);
@@ -3900,6 +3925,12 @@ $$.EventStreamProvider = {"": "Object;_eventType",
   }
 };
 
+$$._DOMWindowCrossFrame = {"": "Object;_window",
+  close$0: function() {
+    return this._window.close();
+  }
+};
+
 $$.FixedSizeListIterator = {"": "Object;_array,_length,_position,_current",
   moveNext$0: function() {
     var t1, nextPosition;
@@ -4055,6 +4086,622 @@ $$.JsonUnsupportedObjectError = {"": "Object;unsupportedObject,cause>",
       return "Calling toJson method on object failed.";
     else
       return "Object toJson method returns non-serializable value.";
+  }
+};
+
+$$.JsonListener = {"": "Object;",
+  handleString$1: function(value) {
+  },
+  handleNumber$1: function(value) {
+  },
+  handleBool$1: function(value) {
+  },
+  handleNull$0: function() {
+  },
+  beginObject$0: function() {
+  },
+  propertyName$0: function() {
+  },
+  propertyValue$0: function() {
+  },
+  endObject$0: function() {
+  },
+  beginArray$0: function() {
+  },
+  arrayElement$0: function() {
+  },
+  endArray$0: function() {
+  },
+  fail$3: function(source, position, message) {
+  }
+};
+
+$$.BuildJsonListener = {"": "JsonListener;stack,currentContainer,key,value",
+  pushContainer$0: function() {
+    var t1 = this.currentContainer;
+    if (typeof t1 === "object" && t1 !== null && !!t1.$isMap)
+      this.stack.push(this.key);
+    this.stack.push(this.currentContainer);
+  },
+  popContainer$0: function() {
+    var t1, t2;
+    this.value = this.currentContainer;
+    t1 = this.stack;
+    if (0 >= t1.length)
+      throw $.ioore(0);
+    this.currentContainer = t1.pop();
+    t2 = this.currentContainer;
+    if (typeof t2 === "object" && t2 !== null && !!t2.$isMap) {
+      if (0 >= t1.length)
+        throw $.ioore(0);
+      this.key = t1.pop();
+    }
+  },
+  handleString$1: function(value) {
+    this.value = value;
+  },
+  handleNumber$1: function(value) {
+    this.value = value;
+  },
+  handleBool$1: function(value) {
+    this.value = value;
+  },
+  handleNull$0: function() {
+    this.value = this.value;
+  },
+  beginObject$0: function() {
+    this.pushContainer$0();
+    this.currentContainer = $.makeLiteralMap([]);
+  },
+  propertyName$0: function() {
+    this.key = this.value;
+    this.value = null;
+  },
+  propertyValue$0: function() {
+    $.$$indexSet(this.currentContainer, this.key, this.value);
+    this.value = null;
+    this.key = null;
+  },
+  endObject$0: function() {
+    this.popContainer$0();
+  },
+  beginArray$0: function() {
+    this.pushContainer$0();
+    this.currentContainer = [];
+  },
+  arrayElement$0: function() {
+    $.add(this.currentContainer, this.value);
+    this.value = null;
+  },
+  endArray$0: function() {
+    this.popContainer$0();
+  },
+  get$result: function() {
+    return this.value;
+  }
+};
+
+$$.ReviverJsonListener = {"": "BuildJsonListener;reviver,stack,currentContainer,key,value",
+  reviver$2: function(arg0, arg1) {
+    return this.reviver.call$2(arg0, arg1);
+  },
+  arrayElement$0: function() {
+    this.value = this.reviver$2($.length(this.currentContainer), this.value);
+    $.BuildJsonListener.prototype.arrayElement$0.call(this);
+  },
+  propertyValue$0: function() {
+    this.value = this.reviver$2(this.key, this.value);
+    $.BuildJsonListener.prototype.propertyValue$0.call(this);
+  },
+  get$result: function() {
+    return this.reviver$2("", this.value);
+  }
+};
+
+$$.JsonParser = {"": "Object;source>,listener>",
+  parse$0: function() {
+    var states, t1, $length, t2, t3, state, position, t4, $char, position0;
+    states = [];
+    t1 = this.source;
+    $length = $.length(t1);
+    for (t2 = $.getInterceptor$JSString(t1), t3 = this.listener, state = 0, position = 0; t4 = $.getInterceptor$JSNumber(position), t4.$lt(position, $length) === true;) {
+      $char = t2.charCodeAt$1(t1, position);
+      switch ($char) {
+        case 32:
+        case 13:
+        case 10:
+        case 9:
+          position = t4.$add(position, 1);
+          break;
+        case 34:
+          if ((state & 8) !== 0)
+            this.fail$1(position);
+          position0 = this.parseString$1(t4.$add(position, 1));
+          state = (state | 28) >>> 0;
+          position = position0;
+          break;
+        case 91:
+          if ((state & 4) !== 0)
+            this.fail$1(position);
+          t3.beginArray$0();
+          states.push(state);
+          position = t4.$add(position, 1);
+          state = 1;
+          break;
+        case 123:
+          if ((state & 4) !== 0)
+            this.fail$1(position);
+          t3.beginObject$0();
+          states.push(state);
+          position = t4.$add(position, 1);
+          state = 6;
+          break;
+        case 110:
+          if ((state & 4) !== 0)
+            this.fail$1(position);
+          position = this.parseNull$1(position);
+          state = (state | 28) >>> 0;
+          break;
+        case 102:
+          if ((state & 4) !== 0)
+            this.fail$1(position);
+          position = this.parseFalse$1(position);
+          state = (state | 28) >>> 0;
+          break;
+        case 116:
+          if ((state & 4) !== 0)
+            this.fail$1(position);
+          position = this.parseTrue$1(position);
+          state = (state | 28) >>> 0;
+          break;
+        case 58:
+          if (!(state === 30))
+            this.fail$1(position);
+          t3.propertyName$0();
+          position = t4.$add(position, 1);
+          state = 19;
+          break;
+        case 44:
+          if (state === 31) {
+            t3.propertyValue$0();
+            position = t4.$add(position, 1);
+            state = 22;
+          } else if (state === 29) {
+            t3.arrayElement$0();
+            position = t4.$add(position, 1);
+            state = 17;
+          } else
+            this.fail$1(position);
+          break;
+        case 93:
+          if (state === 1)
+            t3.endArray$0();
+          else if (state === 29) {
+            t3.arrayElement$0();
+            t3.endArray$0();
+          } else
+            this.fail$1(position);
+          if (0 >= states.length)
+            throw $.ioore(0);
+          state = $.$$or(states.pop(), 28);
+          position = t4.$add(position, 1);
+          break;
+        case 125:
+          if (state === 6)
+            t3.endObject$0();
+          else if (state === 31) {
+            t3.propertyValue$0();
+            t3.endObject$0();
+          } else
+            this.fail$1(position);
+          if (0 >= states.length)
+            throw $.ioore(0);
+          state = $.$$or(states.pop(), 28);
+          position = t4.$add(position, 1);
+          break;
+        default:
+          if ((state & 4) !== 0)
+            this.fail$1(position);
+          position = this.parseNumber$2($char, position);
+          state = (state | 28) >>> 0;
+          break;
+      }
+    }
+    if (!(state === 28))
+      this.fail$1(position);
+  },
+  parseTrue$1: function(position) {
+    var t1, t2, t4;
+    if (typeof position !== "number")
+      return this.parseTrue$1$bailout(1, position);
+    t1 = this.source;
+    t2 = $.length(t1);
+    t4 = position + 4;
+    if (typeof t2 !== "number")
+      return this.parseTrue$1$bailout(2, position, t1, t2);
+    if (t2 < t4)
+      this.fail$2(position, "Unexpected identifier");
+    t2 = $.getInterceptor$JSString(t1);
+    if (t2.charCodeAt$1(t1, position + 1) !== 114 || t2.charCodeAt$1(t1, position + 2) !== 117 || t2.charCodeAt$1(t1, position + 3) !== 101)
+      this.fail$1(position);
+    this.listener.handleBool$1(true);
+    return t4;
+  },
+  parseTrue$1$bailout: function(state0, position, t1, t2) {
+    switch (state0) {
+      case 0:
+      case 1:
+        state0 = 0;
+        t1 = this.source;
+        t2 = $.length(t1);
+      case 2:
+        var t4;
+        state0 = 0;
+        t4 = $.getInterceptor$JSNumber(position);
+        if ($.$$lt(t2, t4.$add(position, 4)) === true)
+          this.fail$2(position, "Unexpected identifier");
+        t2 = $.getInterceptor$JSString(t1);
+        if (t2.charCodeAt$1(t1, t4.$add(position, 1)) !== 114 || t2.charCodeAt$1(t1, t4.$add(position, 2)) !== 117 || t2.charCodeAt$1(t1, t4.$add(position, 3)) !== 101)
+          this.fail$1(position);
+        this.listener.handleBool$1(true);
+        return t4.$add(position, 4);
+    }
+  },
+  parseFalse$1: function(position) {
+    var t1, t2, t4;
+    if (typeof position !== "number")
+      return this.parseFalse$1$bailout(1, position);
+    t1 = this.source;
+    t2 = $.length(t1);
+    t4 = position + 5;
+    if (typeof t2 !== "number")
+      return this.parseFalse$1$bailout(2, position, t1, t2);
+    if (t2 < t4)
+      this.fail$2(position, "Unexpected identifier");
+    t2 = $.getInterceptor$JSString(t1);
+    if (t2.charCodeAt$1(t1, position + 1) !== 97 || t2.charCodeAt$1(t1, position + 2) !== 108 || t2.charCodeAt$1(t1, position + 3) !== 115 || t2.charCodeAt$1(t1, position + 4) !== 101)
+      this.fail$1(position);
+    this.listener.handleBool$1(false);
+    return t4;
+  },
+  parseFalse$1$bailout: function(state0, position, t1, t2) {
+    switch (state0) {
+      case 0:
+      case 1:
+        state0 = 0;
+        t1 = this.source;
+        t2 = $.length(t1);
+      case 2:
+        var t4;
+        state0 = 0;
+        t4 = $.getInterceptor$JSNumber(position);
+        if ($.$$lt(t2, t4.$add(position, 5)) === true)
+          this.fail$2(position, "Unexpected identifier");
+        t2 = $.getInterceptor$JSString(t1);
+        if (t2.charCodeAt$1(t1, t4.$add(position, 1)) !== 97 || t2.charCodeAt$1(t1, t4.$add(position, 2)) !== 108 || t2.charCodeAt$1(t1, t4.$add(position, 3)) !== 115 || t2.charCodeAt$1(t1, t4.$add(position, 4)) !== 101)
+          this.fail$1(position);
+        this.listener.handleBool$1(false);
+        return t4.$add(position, 5);
+    }
+  },
+  parseNull$1: function(position) {
+    var t1, t2, t4;
+    if (typeof position !== "number")
+      return this.parseNull$1$bailout(1, position);
+    t1 = this.source;
+    t2 = $.length(t1);
+    t4 = position + 4;
+    if (typeof t2 !== "number")
+      return this.parseNull$1$bailout(2, position, t1, t2);
+    if (t2 < t4)
+      this.fail$2(position, "Unexpected identifier");
+    t2 = $.getInterceptor$JSString(t1);
+    if (t2.charCodeAt$1(t1, position + 1) !== 117 || t2.charCodeAt$1(t1, position + 2) !== 108 || t2.charCodeAt$1(t1, position + 3) !== 108)
+      this.fail$1(position);
+    this.listener.handleNull$0();
+    return t4;
+  },
+  parseNull$1$bailout: function(state0, position, t1, t2) {
+    switch (state0) {
+      case 0:
+      case 1:
+        state0 = 0;
+        t1 = this.source;
+        t2 = $.length(t1);
+      case 2:
+        var t4;
+        state0 = 0;
+        t4 = $.getInterceptor$JSNumber(position);
+        if ($.$$lt(t2, t4.$add(position, 4)) === true)
+          this.fail$2(position, "Unexpected identifier");
+        t2 = $.getInterceptor$JSString(t1);
+        if (t2.charCodeAt$1(t1, t4.$add(position, 1)) !== 117 || t2.charCodeAt$1(t1, t4.$add(position, 2)) !== 108 || t2.charCodeAt$1(t1, t4.$add(position, 3)) !== 108)
+          this.fail$1(position);
+        this.listener.handleNull$0();
+        return t4.$add(position, 4);
+    }
+  },
+  parseString$1: function(position) {
+    var t1, t2, t3, t4, position0, t5, $char, firstEscape, chars, hexStart, value, i, value0, char0, result;
+    t1 = this.source;
+    t2 = $.getInterceptor$JSString(t1);
+    t3 = $.getInterceptor$JSNumber(position);
+    t4 = $.getInterceptor$JSArrayJSString(t1);
+    position0 = position;
+    do {
+      t5 = $.getInterceptor(position0);
+      if (t5.$eq(position0, t4.get$length(t1)) === true)
+        this.fail$2(t3.$sub(position, 1), "Unterminated string");
+      $char = t2.charCodeAt$1(t1, position0);
+      if ($char === 34) {
+        this.listener.handleString$1(t2.substring$2(t1, position, position0));
+        return t5.$add(position0, 1);
+      }
+      if ($char < 32)
+        this.fail$2(position0, "Control character in string");
+      position0 = t5.$add(position0, 1);
+    } while ($char !== 92);
+    firstEscape = $.$$sub(position0, 1);
+    chars = [];
+    for (; true;) {
+      t5 = $.getInterceptor(position0);
+      if (t5.$eq(position0, t4.get$length(t1)) === true)
+        this.fail$2(t3.$sub(position, 1), "Unterminated string");
+      $char = t2.charCodeAt$1(t1, position0);
+      switch ($char) {
+        case 98:
+          $char = 8;
+          break;
+        case 102:
+          $char = 12;
+          break;
+        case 110:
+          $char = 10;
+          break;
+        case 114:
+          $char = 13;
+          break;
+        case 116:
+          $char = 9;
+          break;
+        case 47:
+        case 92:
+        case 34:
+          break;
+        case 117:
+          hexStart = t5.$sub(position0, 1);
+          for (value = 0, i = 0; i < 4; ++i) {
+            position0 = $.$$add(position0, 1);
+            if ($.$$eq(position0, t4.get$length(t1)) === true)
+              this.fail$2(t3.$sub(position, 1), "Unterminated string");
+            $char = t2.charCodeAt$1(t1, position0) - 48;
+            if ($char < 0)
+              this.fail$2(hexStart, "Invalid unicode escape");
+            if ($char < 10) {
+              value0 = value * 16 + $char;
+              value = value0;
+            } else {
+              char0 = (($char | 32) >>> 0) - 49;
+              if (char0 < 0 || char0 > 5)
+                this.fail$2(hexStart, "Invalid unicode escape");
+              value0 = value * 16 + char0 + 10;
+              value = value0;
+            }
+          }
+          $char = value;
+          break;
+        default:
+          if ($char < 32)
+            this.fail$2(position0, "Control character in string");
+          this.fail$2(position0, "Unrecognized string escape");
+      }
+      do {
+        chars.push($char);
+        position0 = $.$$add(position0, 1);
+        t5 = $.getInterceptor(position0);
+        if (t5.$eq(position0, t4.get$length(t1)) === true)
+          this.fail$2(t3.$sub(position, 1), "Unterminated string");
+        $char = t2.charCodeAt$1(t1, position0);
+        if ($char === 34) {
+          result = $.String_String$fromCharCodes(chars);
+          if (t3.$lt(position, firstEscape) === true)
+            result = t2.substring$2(t1, position, firstEscape) + $.S(result);
+          this.listener.handleString$1(result);
+          return t5.$add(position0, 1);
+        }
+        if ($char < 32)
+          this.fail$2(position0, "Control character in string");
+      } while ($char !== 92);
+      position0 = t5.$add(position0, 1);
+    }
+  },
+  parseNumber$2: function($char, position) {
+    var t1, t2, $length, position0, t3, t4;
+    t1 = {};
+    if (typeof position !== "number")
+      return this.parseNumber$2$bailout(1, $char, position, t1);
+    t2 = this.source;
+    $length = $.length(t2);
+    t1.isDouble_0 = false;
+    if ($char === 45) {
+      position0 = position + 1;
+      if (position0 === $length)
+        this.fail$2(position0, "Missing expected digit");
+      $char = $.charCodeAt(t2, position0);
+    } else
+      position0 = position;
+    if ($char < 48 || $char > 57)
+      this.fail$2(position0, "Missing expected digit");
+    t3 = new $.JsonParser_parseNumber_handleLiteral(t1, this, position);
+    if ($char === 48) {
+      position = position0 + 1;
+      if (position === $length)
+        return t3.call$1(position);
+      $char = $.charCodeAt(t2, position);
+      if (48 <= $char && $char <= 57)
+        this.fail$1(position);
+    } else {
+      t4 = $.getInterceptor$JSString(t2);
+      position = position0;
+      do {
+        ++position;
+        if (position === $length)
+          return t3.call$1(position);
+        $char = t4.charCodeAt$1(t2, position);
+      } while (48 <= $char && $char <= 57);
+    }
+    if ($char === 46) {
+      t1.isDouble_0 = true;
+      ++position;
+      if (position === $length)
+        this.fail$2(position, "Missing expected digit");
+      t4 = $.getInterceptor$JSString(t2);
+      $char = t4.charCodeAt$1(t2, position);
+      if ($char < 48 || $char > 57)
+        this.fail$1(position);
+      do {
+        ++position;
+        if (position === $length)
+          return t3.call$1(position);
+        $char = t4.charCodeAt$1(t2, position);
+      } while (48 <= $char && $char <= 57);
+    }
+    if ($char === 101 || $char === 69) {
+      t1.isDouble_0 = true;
+      ++position;
+      if (position === $length)
+        this.fail$2(position, "Missing expected digit");
+      t1 = $.getInterceptor$JSString(t2);
+      $char = t1.charCodeAt$1(t2, position);
+      if ($char === 43 || $char === 45) {
+        ++position;
+        if (position === $length)
+          this.fail$2(position, "Missing expected digit");
+        $char = t1.charCodeAt$1(t2, position);
+      }
+      if ($char < 48 || $char > 57)
+        this.fail$2(position, "Missing expected digit");
+      do {
+        ++position;
+        if (position === $length)
+          return t3.call$1(position);
+        $char = t1.charCodeAt$1(t2, position);
+      } while (48 <= $char && $char <= 57);
+    }
+    return t3.call$1(position);
+  },
+  parseNumber$2$bailout: function(state0, $char, position, t1) {
+    var t2, $length, position0, t3, t4;
+    t2 = this.source;
+    $length = $.length(t2);
+    t1.isDouble_0 = false;
+    if ($char === 45) {
+      position0 = $.$$add(position, 1);
+      if ($.$$eq(position0, $length) === true)
+        this.fail$2(position0, "Missing expected digit");
+      $char = $.charCodeAt(t2, position0);
+    } else
+      position0 = position;
+    if ($char < 48 || $char > 57)
+      this.fail$2(position0, "Missing expected digit");
+    t3 = new $.JsonParser_parseNumber_handleLiteral(t1, this, position);
+    if ($char === 48) {
+      position = $.$$add(position0, 1);
+      if ($.$$eq(position, $length) === true)
+        return t3.call$1(position);
+      $char = $.charCodeAt(t2, position);
+      if (48 <= $char && $char <= 57)
+        this.fail$1(position);
+    } else {
+      t4 = $.getInterceptor$JSString(t2);
+      position = position0;
+      do {
+        position = $.$$add(position, 1);
+        if ($.$$eq(position, $length) === true)
+          return t3.call$1(position);
+        $char = t4.charCodeAt$1(t2, position);
+      } while (48 <= $char && $char <= 57);
+    }
+    if ($char === 46) {
+      t1.isDouble_0 = true;
+      position = $.$$add(position, 1);
+      if ($.$$eq(position, $length) === true)
+        this.fail$2(position, "Missing expected digit");
+      t4 = $.getInterceptor$JSString(t2);
+      $char = t4.charCodeAt$1(t2, position);
+      if ($char < 48 || $char > 57)
+        this.fail$1(position);
+      do {
+        position = $.$$add(position, 1);
+        if ($.$$eq(position, $length) === true)
+          return t3.call$1(position);
+        $char = t4.charCodeAt$1(t2, position);
+      } while (48 <= $char && $char <= 57);
+    }
+    if ($char === 101 || $char === 69) {
+      t1.isDouble_0 = true;
+      position = $.$$add(position, 1);
+      t1 = $.getInterceptor(position);
+      if (t1.$eq(position, $length) === true)
+        this.fail$2(position, "Missing expected digit");
+      t4 = $.getInterceptor$JSString(t2);
+      $char = t4.charCodeAt$1(t2, position);
+      if ($char === 43 || $char === 45) {
+        position = t1.$add(position, 1);
+        if ($.$$eq(position, $length) === true)
+          this.fail$2(position, "Missing expected digit");
+        $char = t4.charCodeAt$1(t2, position);
+      }
+      if ($char < 48 || $char > 57)
+        this.fail$2(position, "Missing expected digit");
+      do {
+        position = $.$$add(position, 1);
+        if ($.$$eq(position, $length) === true)
+          return t3.call$1(position);
+        $char = t4.charCodeAt$1(t2, position);
+      } while (48 <= $char && $char <= 57);
+    }
+    return t3.call$1(position);
+  },
+  fail$2: function(position, message) {
+    var t1, t2, sliceEnd, t4, slice;
+    if (typeof position !== "number")
+      return this.fail$2$bailout(1, position, message);
+    if (typeof message !== "string")
+      return this.fail$2$bailout(1, position, message);
+    t1 = this.listener;
+    t2 = this.source;
+    t1.fail$3(t2, position, message);
+    sliceEnd = position + 20;
+    t1 = $.length(t2);
+    if (typeof t1 !== "number")
+      return this.fail$2$bailout(2, position, 0, t2, sliceEnd, t1);
+    t4 = $.getInterceptor$JSString(t2);
+    slice = sliceEnd > t1 ? "'" + t4.substring$1(t2, position) + "'" : "'" + t4.substring$2(t2, position, sliceEnd) + "...'";
+    throw $.$$throw($.FormatException$("Unexpected character at " + $.S(position) + ": " + slice));
+  },
+  fail$2$bailout: function(state0, position, message, t2, sliceEnd, t1) {
+    switch (state0) {
+      case 0:
+      case 1:
+        state0 = 0;
+        if (message == null)
+          message = "Unexpected character";
+        t1 = this.listener;
+        t2 = this.source;
+        t1.fail$3(t2, position, message);
+        sliceEnd = $.$$add(position, 20);
+        t1 = $.length(t2);
+      case 2:
+        var t4, slice;
+        state0 = 0;
+        t4 = $.getInterceptor$JSString(t2);
+        slice = $.$$gt(sliceEnd, t1) === true ? "'" + t4.substring$1(t2, position) + "'" : "'" + t4.substring$2(t2, position, sliceEnd) + "...'";
+        throw $.$$throw($.FormatException$("Unexpected character at " + $.S(position) + ": " + slice));
+    }
+  },
+  fail$1: function(position) {
+    return this.fail$2(position, null);
   }
 };
 
@@ -4634,7 +5281,18 @@ $$.initWebSocket__anon = {"": "Closure;box_0,wsUri_13,sid_14,status_15",
 
 $$.initWebSocket_anon2 = {"": "Closure;",
   call$1: function(e) {
+    var msg, t1, m;
     $.Primitives_printString("websocket: received: [" + $.S(e.get$data()) + "]");
+    msg = $.parse(e.get$data(), null);
+    t1 = $.getInterceptor$JSArrayJSString(msg);
+    if ($.$$eq(t1.$index(msg, "Code"), 1) === true && $.startsWith(t1.$index(msg, "Data"), "welcome")) {
+      m = $.HashMap$(null, null);
+      m.$indexSet("Code", 3);
+      m.$indexSet("Data", "hi there");
+      t1 = $._JsonStringifier_stringify(m);
+      $.Primitives_printString("websocket: sending: [" + $.S(t1) + "]");
+      $.w.send$1(t1);
+    }
   }
 };
 
@@ -4771,6 +5429,35 @@ $$.NoSuchMethodError_toString_anon = {"": "Closure;box_0",
     $.add(t1.sb_0, ": ");
     $.add(t1.sb_0, $.Error_safeToString(value));
     t1.i_1 = $.$$add(t1.i_1, 1);
+  }
+};
+
+$$._JsonStringifier_stringifyJsonValue_anon = {"": "Closure;box_0,this_1",
+  call$2: function(key, value) {
+    var t1, t2, t3;
+    t1 = this.box_0;
+    t2 = t1.first_0;
+    t3 = this.this_1;
+    if (t2 !== true)
+      $.add(t3.get$sb(), ",\"");
+    else
+      $.add(t3.get$sb(), "\"");
+    t2 = this.this_1;
+    $._JsonStringifier_escape(t2.get$sb(), key);
+    $.add(t2.get$sb(), "\":");
+    t2.stringifyValue$1(value);
+    t1.first_0 = false;
+  }
+};
+
+$$.JsonParser_parseNumber_handleLiteral = {"": "Closure;box_0,this_1,start_2",
+  call$1: function(position) {
+    var t1, literal, value;
+    t1 = this.this_1;
+    literal = $.substring(t1.get$source(), this.start_2, position);
+    value = this.box_0.isDouble_0 === true ? $.double_parse(literal, null) : $.int_parse(literal, null, null);
+    t1.get$listener().handleNumber$1(value);
+    return position;
   }
 };
 
@@ -4927,24 +5614,6 @@ $$.convertNativeToDart_AcceptStructuredClone_walk = {"": "Closure;mustCopy_4,fin
     }
   },
   $is_TimerCallback1: true
-};
-
-$$._JsonStringifier_stringifyJsonValue_anon = {"": "Closure;box_0,this_1",
-  call$2: function(key, value) {
-    var t1, t2, t3;
-    t1 = this.box_0;
-    t2 = t1.first_0;
-    t3 = this.this_1;
-    if (t2 !== true)
-      $.add(t3.get$sb(), ",\"");
-    else
-      $.add(t3.get$sb(), "\"");
-    t2 = this.this_1;
-    $._JsonStringifier_escape(t2.get$sb(), key);
-    $.add(t2.get$sb(), "\":");
-    t2.stringifyValue$1(value);
-    t1.first_0 = false;
-  }
 };
 
 $$.Cookie__readCookie_anon = {"": "Closure;cookie_0",
@@ -5575,6 +6244,63 @@ $.Primitives_printString = function(string) {
     return;
   }
   throw 'Unable to print message: ' + String(string);
+};
+
+$.Primitives__throwFormatException = function(string) {
+  throw $.$$throw($.FormatException$(string));
+};
+
+$.Primitives_parseInt = function(source, radix, handleError) {
+  var match, t1, maxCharCode, digitsPart, i;
+  if (handleError == null)
+    handleError = $.Primitives__throwFormatException;
+  $.checkString(source);
+  match = /^\s*[+-]?((0x[a-f0-9]+)|(\d+)|([a-z0-9]+))\s*$/i.exec(source);
+  if (radix == null) {
+    t1 = $.getInterceptor(match);
+    if (!(match == null)) {
+      if (!(t1.$index(match, 2) == null))
+        return parseInt(source, 16);
+      if (!(t1.$index(match, 3) == null))
+        return parseInt(source, 10);
+      return handleError.call$1(source);
+    }
+    radix = 10;
+  } else {
+    if (!(typeof radix === "number" && Math.floor(radix) === radix))
+      throw $.$$throw($.ArgumentError$("Radix is not an integer"));
+    if (radix < 2 || radix > 36)
+      throw $.$$throw($.RangeError$("Radix " + $.S(radix) + " not in range 2..36"));
+    t1 = $.getInterceptor(match);
+    if (!(match == null)) {
+      if (radix === 10 && !(t1.$index(match, 3) == null))
+        return parseInt(source, 10);
+      if (radix < 10 || t1.$index(match, 3) == null) {
+        maxCharCode = radix <= 10 ? 48 + radix - 1 : 97 + radix - 10 - 1;
+        digitsPart = $.toLowerCase(t1.$index(match, 1));
+        for (i = 0; i < digitsPart.length; ++i)
+          if ($.CONSTANT3.charCodeAt$1(digitsPart, i) > maxCharCode)
+            return handleError.call$1(source);
+      }
+    }
+    radix = radix;
+  }
+  if (match == null)
+    return handleError.call$1(source);
+  return parseInt(source, radix);
+};
+
+$.Primitives_parseDouble = function(source, handleError) {
+  var result;
+  $.checkString(source);
+  if (handleError == null)
+    handleError = $.Primitives__throwFormatException;
+  if (!/^\s*(?:NaN|[+-]?(?:Infinity|(?:\.\d+|\d+(?:\.\d+)?)(?:[eE][+-]?\d+)?))\s*$/.test(source))
+    return handleError.call$1(source);
+  result = parseFloat(source);
+  if ($.CONSTANT7.get$isNaN(result) === true && $.$$eq(source, "NaN") !== true)
+    return handleError.call$1(source);
+  return result;
 };
 
 $.Primitives_objectTypeName = function(object) {
@@ -6552,6 +7278,10 @@ $._ListQueueIterator$ = function(queue) {
   return new $._ListQueueIterator(queue, queue._tail, queue._modificationCount, queue._head, null);
 };
 
+$.double_parse = function(source, handleError) {
+  return $.Primitives_parseDouble(source, handleError);
+};
+
 $.Duration$ = function(days, hours, milliseconds, minutes, seconds) {
   return new $.Duration($.$$add($.$$add($.$$add($.$$add($.$$mul(days, 86400000), $.$$mul(hours, 3600000)), $.$$mul(minutes, 60000)), $.$$mul(seconds, 1000)), milliseconds));
 };
@@ -6566,6 +7296,10 @@ $.Error_safeToString = function(object) {
 
 $.ArgumentError$ = function(message) {
   return new $.ArgumentError(message);
+};
+
+$.RangeError$ = function(message) {
+  return new $.RangeError(message);
 };
 
 $.RangeError$value = function(value) {
@@ -6608,12 +7342,20 @@ $._ExceptionImplementation$ = function(message) {
   return new $._ExceptionImplementation(message);
 };
 
+$.FormatException$ = function(message) {
+  return new $.FormatException(message);
+};
+
 $.IllegalJSRegExpException$ = function(pattern, errmsg) {
   return new $.IllegalJSRegExpException("Illegal pattern: " + $.S(pattern) + ", " + errmsg);
 };
 
 $.IntegerDivisionByZeroException$ = function() {
   return new $.IntegerDivisionByZeroException();
+};
+
+$.int_parse = function(source, onError, radix) {
+  return $.Primitives_parseInt(source, radix, onError);
 };
 
 $.List_List = function($length) {
@@ -6743,6 +7485,21 @@ $._EventStreamSubscription$ = function(_target, _eventType, _onData, _useCapture
   return t1;
 };
 
+$._convertNativeToDart_Window = function(win) {
+  return $._DOMWindowCrossFrame__createSafe(win);
+};
+
+$._DOMWindowCrossFrame$ = function(_window) {
+  return new $._DOMWindowCrossFrame(_window);
+};
+
+$._DOMWindowCrossFrame__createSafe = function(w) {
+  if (w === window)
+    return w;
+  else
+    return $._DOMWindowCrossFrame$(w);
+};
+
 $.FixedSizeListIterator$ = function(array) {
   return new $.FixedSizeListIterator(array, $.length(array), -1, null);
 };
@@ -6822,6 +7579,24 @@ $.JsonUnsupportedObjectError$ = function(unsupportedObject) {
 
 $.JsonUnsupportedObjectError$withCause = function(unsupportedObject, cause) {
   return new $.JsonUnsupportedObjectError(unsupportedObject, cause);
+};
+
+$.parse = function(json, reviver) {
+  var listener = reviver == null ? $.BuildJsonListener$() : $.ReviverJsonListener$(reviver);
+  $.JsonParser$(json, listener).parse$0();
+  return listener.get$result();
+};
+
+$.BuildJsonListener$ = function() {
+  return new $.BuildJsonListener([], null, null, null);
+};
+
+$.ReviverJsonListener$ = function(reviver) {
+  return new $.ReviverJsonListener(reviver, [], null, null, null);
+};
+
+$.JsonParser$ = function(source, listener) {
+  return new $.JsonParser(source, listener);
 };
 
 $._JsonStringifier$ = function(sb) {
@@ -7098,6 +7873,8 @@ $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
 
 $.IsolateNatives__processWorkerMessage.call$2 = $.IsolateNatives__processWorkerMessage;
 $.IsolateNatives__processWorkerMessage.$name = "IsolateNatives__processWorkerMessage";
+$.Primitives__throwFormatException.call$1 = $.Primitives__throwFormatException;
+$.Primitives__throwFormatException.$name = "Primitives__throwFormatException";
 $.$$throw.call$1 = $.$$throw;
 $.$$throw.$name = "$$throw";
 $.$$throw.$is_TimerCallback1 = true;
@@ -7201,6 +7978,9 @@ $.add = function(receiver, a0) {
 $.addLast = function(receiver, a0) {
   return $.getInterceptor$JSArray(receiver).addLast$1(receiver, a0);
 };
+$.charCodeAt = function(receiver, a0) {
+  return $.getInterceptor$JSString(receiver).charCodeAt$1(receiver, a0);
+};
 $.elementAt = function(receiver, a0) {
   return $.getInterceptor$JSArray(receiver).elementAt$1(receiver, a0);
 };
@@ -7237,8 +8017,17 @@ $.replaceAll = function(receiver, a0, a1) {
 $.split = function(receiver, a0) {
   return $.getInterceptor$JSString(receiver).split$1(receiver, a0);
 };
+$.startsWith = function(receiver, a0) {
+  return $.getInterceptor$JSString(receiver).startsWith$1(receiver, a0);
+};
+$.substring = function(receiver, a0, a1) {
+  return $.getInterceptor$JSString(receiver).substring$2(receiver, a0, a1);
+};
 $.toList = function(receiver) {
   return $.getInterceptor$JSArray(receiver).toList$0(receiver);
+};
+$.toLowerCase = function(receiver) {
+  return $.getInterceptor$JSString(receiver).toLowerCase$0(receiver);
 };
 $.toString = function(receiver) {
   return $.getInterceptor(receiver).toString$0(receiver);
@@ -8065,6 +8854,9 @@ $.$defineNativeClass("HTMLMediaElement", {"": "error>"});
 $.$defineNativeClass("MessageEvent", {"": "ports>",
   get$data: function() {
     return $.convertNativeToDart_SerializedScriptValue(this.data);
+  },
+  get$source: function() {
+    return $._convertNativeToDart_Window(this.source);
   }
 });
 
@@ -8203,7 +8995,17 @@ $.$defineNativeClass("HTMLSelectElement", {"": "length>"});
 
 $.$defineNativeClass("SpeechRecognitionError", {"": "error>"});
 
+$.$defineNativeClass("SpeechRecognitionEvent", {"": "result>"});
+
+$.$defineNativeClass("SpeechRecognitionResult", {"": "length>"});
+
 $.$defineNativeClass("TextEvent", {"": "data>"});
+
+$.$defineNativeClass("TransitionEvent", {
+  propertyName$0: function() {
+    return this.propertyName.call$0();
+  }
+});
 
 $.$defineNativeClass("Uint16Array", {
   get$length: function() {
@@ -8583,6 +9385,24 @@ $.$defineNativeClass("WebSocket", {
   }
 });
 
+$.$defineNativeClass("DOMWindow", {
+  $$dom_addEventListener$3: function(type, listener, useCapture) {
+    return this.addEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
+  },
+  close$0: function() {
+    return this.close();
+  },
+  $$dom_removeEventListener$3: function(type, listener, useCapture) {
+    return this.removeEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
+  },
+  get$onError: function() {
+    return $.CONSTANT10.forTarget$1(this);
+  },
+  get$onMessage: function() {
+    return $.CONSTANT.forTarget$1(this);
+  }
+});
+
 $.$defineNativeClass("XPathException", {
   toString$0: function() {
     return this.toString();
@@ -8665,6 +9485,44 @@ $.$defineNativeClass("NamedNodeMap", {
   }
 });
 
+$.$defineNativeClass("WebKitTransitionEvent", {
+  propertyName$0: function() {
+    return this.propertyName.call$0();
+  }
+});
+
+$.$defineNativeClass("SVGFEBlendElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEColorMatrixElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEComponentTransferElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFECompositeElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEConvolveMatrixElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEDiffuseLightingElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEDisplacementMapElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEFloodElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEGaussianBlurElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEImageElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEMergeElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEMorphologyElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFEOffsetElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFESpecularLightingElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFETileElement", {"": "result>"});
+
+$.$defineNativeClass("SVGFETurbulenceElement", {"": "result>"});
+
 $.$defineNativeClass("SVGElement", {
   get$children: function() {
     return $.FilteredElementList$(this);
@@ -8686,12 +9544,14 @@ $.$defineNativeClass("SVGException", {
   }
 });
 
-// 52 dynamic classes.
-// 204 classes
+$.$defineNativeClass("SVGFEDropShadowElement", {"": "result>"});
+
+// 74 dynamic classes.
+// 209 classes
 // 18 !leaf
 (function() {
   var v0_MediaElement = "HTMLMediaElement|HTMLVideoElement|HTMLAudioElement", v1_SvgElement = "SVGElement|SVGStyledElement|SVGAElement|SVGTextContentElement|SVGTextPositioningElement|SVGAltGlyphElement|SVGTSpanElement|SVGTextElement|SVGTRefElement|SVGTextPathElement|SVGCircleElement|SVGClipPathElement|SVGDefsElement|SVGDescElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFEComponentTransferElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDiffuseLightingElement|SVGFEDisplacementMapElement|SVGFEFloodElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMorphologyElement|SVGFEOffsetElement|SVGFESpecularLightingElement|SVGFETileElement|SVGFETurbulenceElement|SVGFilterElement|SVGForeignObjectElement|SVGGElement|SVGImageElement|SVGLineElement|SVGGradientElement|SVGLinearGradientElement|SVGRadialGradientElement|SVGMarkerElement|SVGMaskElement|SVGPathElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRectElement|SVGStopElement|SVGSVGElement|SVGSwitchElement|SVGSymbolElement|SVGTitleElement|SVGUseElement|SVGFEDropShadowElement|SVGGlyphRefElement|SVGMissingGlyphElement|SVGAnimationElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGSetElement|SVGAnimateColorElement|SVGFEDistantLightElement|SVGComponentTransferFunctionElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement|SVGFEMergeNodeElement|SVGFEPointLightElement|SVGFESpotLightElement|SVGMetadataElement|SVGScriptElement|SVGStyleElement|SVGViewElement|SVGAltGlyphDefElement|SVGAltGlyphItemElement|SVGCursorElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGGlyphElement|SVGMPathElement|SVGVKernElement|SVGHKernElement", v2_Element = [v0_MediaElement, v1_SvgElement, "Element|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLSelectElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement|HTMLAppletElement|HTMLBaseFontElement|HTMLDirectoryElement|HTMLFontElement|HTMLFrameElement|HTMLFrameSetElement|HTMLMarqueeElement|HTMLElement|HTMLAnchorElement|HTMLAreaElement|HTMLBRElement|HTMLBaseElement|HTMLBodyElement|HTMLButtonElement|HTMLCanvasElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDivElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFormElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement"].join("|"), v3_DocumentFragment = "DocumentFragment|ShadowRoot", v4_CharacterData = "CharacterData|Text|CDATASection|Comment", v5_Document = "Document|SVGDocument|HTMLDocument", v6_Node = [v2_Element, v3_DocumentFragment, v4_CharacterData, v5_Document, "Node|ProcessingInstruction|Attr|DocumentType|EntityReference|Notation"].join("|");
-  $.dynamicSetMetadata([["HTMLCollection", "HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection"], ["CharacterData", v4_CharacterData], ["SVGElement", v1_SvgElement], ["HTMLMediaElement", v0_MediaElement], ["Uint8Array", "Uint8Array|Uint8ClampedArray"], ["Document", v5_Document], ["DocumentFragment", v3_DocumentFragment], ["Element", v2_Element], ["Node", v6_Node], ["NodeList", "NodeList|RadioNodeList"], ["EventTarget", [v6_Node, "EventTarget|WebSocket"].join("|")]]);
+  $.dynamicSetMetadata([["HTMLCollection", "HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection"], ["CharacterData", v4_CharacterData], ["SVGElement", v1_SvgElement], ["HTMLMediaElement", v0_MediaElement], ["Uint8Array", "Uint8Array|Uint8ClampedArray"], ["Document", v5_Document], ["DocumentFragment", v3_DocumentFragment], ["Element", v2_Element], ["Node", v6_Node], ["NodeList", "NodeList|RadioNodeList"], ["EventTarget", [v6_Node, "EventTarget|WebSocket|DOMWindow"].join("|")]]);
 })();
 
 $.main.call$0 = $.main;

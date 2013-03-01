@@ -7,6 +7,7 @@ import 'dart:json';
 const CM_CODE_FATAL = 0;
 const CM_CODE_INFO  = 1;
 const CM_CODE_AUTH  = 2;
+const CM_CODE_ECHO  = 3;
 
 WebSocket w;
 
@@ -66,6 +67,17 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
   
   w.onMessage.listen((MessageEvent e) {
     print('websocket: received: [${e.data}]');
+    
+    Map msg = parse(e.data);
+    
+    if ((msg["Code"] == CM_CODE_INFO) && (msg["Data"].startsWith("welcome"))) {
+      // test echo loop thru server
+      var m = new Map();
+      m["Code"] = CM_CODE_ECHO;
+      m["Data"] = "hi there";
+      doSend(stringify(m));
+    }
+    
   });
 }
 
