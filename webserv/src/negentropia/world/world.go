@@ -70,6 +70,7 @@ func sender(p *server.Player) {
 			log.Printf("sender: %s %s: failure: %s", p.Sid, p.Email, err)
 			break
 		}
+		//log.Printf("sender: %s %s: %q", p.Sid, p.Email, msg)
 	}
 	
 	p.Websocket.Close()
@@ -83,6 +84,7 @@ func receiver(p *server.Player) {
 			log.Printf("receiver: %s %s: failure: %s", p.Sid, p.Email, err)
 			break
 		}
+		//log.Printf("receiver: %s %s: %q", p.Sid, p.Email, msg)
 		server.InputCh <- &server.PlayerMsg{p, msg}
 	}
 	

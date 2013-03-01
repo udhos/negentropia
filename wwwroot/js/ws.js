@@ -2,6 +2,7 @@
 var CM_CODE_FATAL = 0;
 var	CM_CODE_INFO  = 1;
 var	CM_CODE_AUTH  = 2;
+var	CM_CODE_ECHO  = 3;
 	
 function initWebSocket(wsUri, status, sid) {
 	status.innerHTML = "opening " + wsUri;
@@ -37,7 +38,7 @@ function onMessage(evt, status) {
 	var msg = JSON.parse(evt.data);
 	if (msg.Code === CM_CODE_INFO) {
 		if (msg.Data.lastIndexOf("welcome", 0) === 0) {
-			doSend(JSON.stringify({Code: CM_CODE_INFO, Data: "glad to be here :-)"}));
+			doSend(JSON.stringify({Code: CM_CODE_ECHO, Data: "hi there"}));
 		}
 	}
 }

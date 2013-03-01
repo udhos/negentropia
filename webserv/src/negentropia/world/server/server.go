@@ -12,6 +12,7 @@ const (
 	CM_CODE_FATAL = 0
 	CM_CODE_INFO  = 1
 	CM_CODE_AUTH  = 2
+	CM_CODE_ECHO  = 3
 )
 
 type ClientMsg struct {
@@ -55,6 +56,10 @@ func serve() {
 
 func input(p *Player, m *ClientMsg) {
 	log.Printf("server.input: %s: %q", p.Email, m)
+	
+	if (m.Code == CM_CODE_ECHO) {
+		p.SendToPlayer <- &ClientMsg{CM_CODE_INFO, "echo: " + m.Data}
+	}
 }
 
 func init() {
