@@ -25,6 +25,7 @@ type Player struct {
 	Email         string
 	Websocket    *websocket.Conn
 	SendToPlayer  chan *ClientMsg
+	Quit          chan int
 }
 
 type PlayerMsg struct {
@@ -66,10 +67,21 @@ func init() {
 	go serve()
 }
 
-func playerAdd(p *Player) {
-	playerTable[p.Email] = p
+func playerAdd(newPlayer *Player) {
+	if p, ok := playerTable[newPlayer.Email]; ok {
+		log.Printf("server.playerAdd: sending quit to existing %s", p.Email)
+		p.Quit <- 1
+	}
+	
+	// notice this immediately unregisters the previous player
+	playerTable[newPlayer.Email] = newPlayer
 }
 
-func playerDel(p *Player) {
-	delete(playerTable, p.Email)
+func playerDel(oldPlayer *Player) {
+	log.Printf("server.playerDel: %s %s", oldPlayer.Email, oldPlayer.Sid)
+	
+	if p, ok := playerTable[oldPlayer.Email]; ok && p.Sid == oldPlayer.Sid {
+		// do not unregister wrong player
+		delete(playerTable, oldPlayer.Email)
+	}
 }

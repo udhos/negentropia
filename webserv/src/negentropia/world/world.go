@@ -59,24 +59,34 @@ func auth(ws *websocket.Conn) *server.Player {
 		return nil
 	}
 	
-	return &server.Player{sid, session.ProfileEmail, ws, make(chan *server.ClientMsg)}
+	return &server.Player{sid, session.ProfileEmail, ws, make(chan *server.ClientMsg), make(chan int)}
 }
 
 func sender(p *server.Player) {
 	
-	for msg := range p.SendToPlayer {
-		err := websocket.JSON.Send(p.Websocket, msg)
-		if err != nil {
-			log.Printf("sender: %s %s: failure: %s", p.Sid, p.Email, err)
-			break
+	LOOP:
+	for {
+		select {
+			case <- p.Quit:
+				log.Printf("sender: %s %s: quit request", p.Sid, p.Email)
+				break LOOP
+			case msg := <- p.SendToPlayer: 
+				err := websocket.JSON.Send(p.Websocket, msg)
+				if err != nil {
+					log.Printf("sender: %s %s: failure: %s", p.Sid, p.Email, err)
+					break LOOP
+				}
 		}
 		//log.Printf("sender: %s %s: %q", p.Sid, p.Email, msg)
 	}
-	
-	p.Websocket.Close()
+
+	log.Printf("sender: %s %s: exiting", p.Sid, p.Email)
+
+	p.Websocket.Close()	
 }
 
 func receiver(p *server.Player) {
+
 	for {
 		msg := new(server.ClientMsg)
 		err := websocket.JSON.Receive(p.Websocket, msg)
@@ -103,7 +113,7 @@ func dispatch(ws *websocket.Conn) {
 	websocket.JSON.Send(ws, server.ClientMsg{server.CM_CODE_INFO, "welcome " + newPlayer.Email})
 	
 	server.PlayerAddCh <- newPlayer
-	defer func() { server.PlayerDelCh <- newPlayer }()
+	defer func() { server.PlayerDelCh <- newPlayer  }()
 	
 	go sender(newPlayer)
 	receiver(newPlayer)
