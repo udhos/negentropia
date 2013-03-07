@@ -10,13 +10,6 @@
 
 <script type="text/javascript">
 
-// Global variables
-var neg = {
-	debugLostContext: true,
-	debugWebGL: true,
-	wsUri: {{.Websocket}}
-};
-
 function start() {
 	var prefix = "negentropia home javascript start(): ";
 	console.log(prefix + "starting");
@@ -34,6 +27,8 @@ window.addEventListener("load", start, false);
 {{ end }}
 
 {{ define "content" }}
+
+<span hidden id="wsUri">{{.Websocket}}</span>
 
 <div class="centerbox">
 <h1>Welcome to Negentropia</h1>

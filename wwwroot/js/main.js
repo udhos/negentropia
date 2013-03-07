@@ -1,4 +1,9 @@
 
+// Global variables
+var neg = {
+	debugLostContext: true,
+	debugWebGL:       true
+};
 function main() {
 	var sid = docCookies.getItem("sid");
 	var statusElem = document.getElementById("ws_status");	
@@ -26,7 +31,9 @@ function main() {
 		return;
 	}
 	
-	initWebSocket(neg.wsUri, statusElem, sid);
+	var wsUri = document.getElementById("wsUri");
+	
+	initWebSocket(wsUri.innerText, statusElem, sid);
 }
 
 function initGL(canvas) {
