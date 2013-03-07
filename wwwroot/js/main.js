@@ -4,6 +4,8 @@ var neg = {
 	debugLostContext: true,
 	debugWebGL:       true
 };
+var gl = null;
+
 function main() {
 	var sid = docCookies.getItem("sid");
 	var statusElem = document.getElementById("ws_status");	
@@ -21,9 +23,8 @@ function main() {
 		neg.canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(neg.canvas);
 	}
 
-	initGL(neg.canvas);
-	
-	if (neg.gl) {
+	gl = initGL(neg.canvas);
+	if (gl) {
 		console.log("WebGL: initialized");
 	}
 	else {
@@ -37,14 +38,16 @@ function main() {
 }
 
 function initGL(canvas) {
-	neg.gl = WebGLUtils.setupWebGL(canvas);
-	if (!neg.gl) {
+	var ctx = WebGLUtils.setupWebGL(canvas);
+	if (!ctx) {
 		console.log("initGL: failure");
-		return;
+		return null;
 	}
 		
 	if (neg.debugWebGL) {
 		// DEBUG-only wrapper context -- performance PENALTY!
-		neg.gl = WebGLDebugUtils.makeDebugContext(neg.gl);
+		ctx = WebGLDebugUtils.makeDebugContext(ctx);
 	}
+	
+	return ctx;
 }
