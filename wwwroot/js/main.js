@@ -6,7 +6,7 @@ var neg = {
 };
 var gl = null;
 
-function main() {
+function boot() {
 	var sid = docCookies.getItem("sid");
 	var statusElem = document.getElementById("ws_status");	
 	
@@ -35,6 +35,26 @@ function main() {
 	var wsUri = document.getElementById("wsUri");
 	
 	initWebSocket(wsUri.innerText, statusElem, sid);
+}
+
+function loop() {
+	console.log("loop: FIXME WRITEME");
+}
+
+function play() {
+	boot();
+	
+	if (!gl) {
+		return;
+	}
+	
+	loop();
+}
+
+function main() {
+	play();
+	
+	console.log("main: exit: NOT REACHED"); // prevented by drawing loop
 }
 
 function initGL(canvas) {
