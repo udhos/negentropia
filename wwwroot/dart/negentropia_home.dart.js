@@ -7810,34 +7810,28 @@ $.Cookie_getCookie = function($name) {
 };
 
 $.initGL = function(canvas) {
-  var gl, t1, t2;
+  var gl;
   $.Primitives_printString("WebGL: initializing");
   gl = canvas.getContext3d$0();
   if (!(gl == null)) {
     $.Primitives_printString("WebGL: initialized");
     return gl;
   }
-  for (t1 = $.CONSTANT1.get$iterator(["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"]); t1.moveNext$0() === true;) {
-    t2 = t1.get$current();
-    gl = canvas.getContext$1(t2);
-    $.Primitives_printString("WebGL: trying context: " + $.S(t2));
-    if (!(gl == null)) {
-      $.Primitives_printString("WebGL: initialized context: " + $.S(t2));
-      return gl;
-    }
-  }
   $.Primitives_printString("WebGL: initialization failure");
   return;
 };
 
-$.main = function() {
+$.boot = function() {
   var canvas, canvasbox, p, a, sid;
   canvas = $.CanvasElement_CanvasElement(null, null);
   canvas.set$id("main_canvas");
+  canvas.set$width(780);
+  canvas.set$height(500);
   canvasbox = document.query$1("#canvasbox");
   canvasbox.append$1(canvas);
-  $.Primitives_printString("canvas '" + $.S(canvas.get$id()) + "' created");
-  if ($.initGL(canvas) == null) {
+  $.Primitives_printString("canvas '" + $.S(canvas.get$id()) + "' created: width=" + $.S(canvas.get$width()) + " height=" + $.S(canvas.get$height()));
+  $.gl = $.initGL(canvas);
+  if ($.gl == null) {
     canvas.remove$0();
     p = document.$$dom_createElement$1("p");
     p.set$text("WebGL is not supported by this browser.");
@@ -7852,6 +7846,12 @@ $.main = function() {
   sid = $.Cookie_getCookie("sid");
   $.Primitives_printString("session id sid=" + $.S(sid));
   $.initWebSocket(document.query$1("#wsUri").get$text(), sid, 1, document.query$1("#ws_status"));
+};
+
+$.main = function() {
+  $.boot();
+  if ($.gl == null)
+    return;
 };
 
 $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
@@ -7941,6 +7941,7 @@ $.lazyPort = null;
 $.ReceivePortImpl__nextFreeId = 1;
 $.Primitives_hashCodeSeed = 0;
 $._getTypeNameOf = null;
+$.gl = null;
 $.w = null;
 $.$$and = function(receiver, a0) {
   return $.getInterceptor$JSNumber(receiver).$and(receiver, a0);
@@ -8207,7 +8208,7 @@ $.$defineNativeClass("HTMLBodyElement", {
   }
 });
 
-$.$defineNativeClass("HTMLCanvasElement", {"": "height<,width<",
+$.$defineNativeClass("HTMLCanvasElement", {"": "height=,width=",
   getContext$2: function(contextId, attrs) {
     var t1 = $ === attrs;
     if (t1)
@@ -8215,9 +8216,6 @@ $.$defineNativeClass("HTMLCanvasElement", {"": "height<,width<",
     if (!t1)
       return this.getContext(contextId, $.convertDartToNative_Dictionary(attrs));
     return this.getContext(contextId);
-  },
-  getContext$1: function(contextId) {
-    return this.getContext$2(contextId, $);
   },
   getContext3d$6$alpha$antialias$depth$premultipliedAlpha$preserveDrawingBuffer$stencil: function(alpha, antialias, depth, premultipliedAlpha, preserveDrawingBuffer, stencil) {
     var options, context;
@@ -8247,11 +8245,17 @@ $.$defineNativeClass("CSSStyleDeclaration", {"": "length>",
   set$backgroundColor: function(value) {
     this.setProperty$3("background-color", value, "");
   },
+  get$height: function() {
+    return this.getPropertyValue$1("height");
+  },
   set$height: function(value) {
     this.setProperty$3("height", value, "");
   },
   get$position: function() {
     return this.getPropertyValue$1("position");
+  },
+  get$width: function() {
+    return this.getPropertyValue$1("width");
   },
   set$width: function(value) {
     this.setProperty$3("width", value, "");
@@ -8319,7 +8323,7 @@ $.$defineNativeClass("Element", {"": "$$dom_children:children~,id=,$$dom_lastEle
   }
 });
 
-$.$defineNativeClass("HTMLEmbedElement", {"": "height<,width<"});
+$.$defineNativeClass("HTMLEmbedElement", {"": "height=,width="});
 
 $.$defineNativeClass("EventException", {
   toString$0: function() {
@@ -8596,15 +8600,15 @@ $.$defineNativeClass("XMLHttpRequestException", {
 
 $.$defineNativeClass("XMLHttpRequestProgressEvent", {"": "position>"});
 
-$.$defineNativeClass("HTMLIFrameElement", {"": "height<,width<"});
+$.$defineNativeClass("HTMLIFrameElement", {"": "height=,width="});
 
-$.$defineNativeClass("HTMLImageElement", {"": "height<,width<",
+$.$defineNativeClass("HTMLImageElement", {"": "height=,width=",
   complete$1: function(arg0) {
     return this.complete.call$1(arg0);
   }
 });
 
-$.$defineNativeClass("HTMLInputElement", {"": "height<,pattern>,width<",
+$.$defineNativeClass("HTMLInputElement", {"": "height=,pattern>,width=",
   $isElement: function() {
     return true;
   },
@@ -8979,7 +8983,7 @@ $.$defineNativeClass("NodeList", {
   }
 });
 
-$.$defineNativeClass("HTMLObjectElement", {"": "data>,height<,width<"});
+$.$defineNativeClass("HTMLObjectElement", {"": "data>,height=,width="});
 
 $.$defineNativeClass("ProcessingInstruction", {"": "data>"});
 
@@ -9353,7 +9357,7 @@ $.$defineNativeClass("Uint8ClampedArray", {
   }
 });
 
-$.$defineNativeClass("HTMLVideoElement", {"": "height<,width<"});
+$.$defineNativeClass("HTMLVideoElement", {"": "height=,width="});
 
 $.$defineNativeClass("WebSocket", {
   $$dom_addEventListener$3: function(type, listener, useCapture) {
@@ -9491,37 +9495,49 @@ $.$defineNativeClass("WebKitTransitionEvent", {
   }
 });
 
-$.$defineNativeClass("SVGFEBlendElement", {"": "result>"});
+$.$defineNativeClass("SVGFEBlendElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEColorMatrixElement", {"": "result>"});
+$.$defineNativeClass("SVGFEColorMatrixElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEComponentTransferElement", {"": "result>"});
+$.$defineNativeClass("SVGFEComponentTransferElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFECompositeElement", {"": "result>"});
+$.$defineNativeClass("SVGFECompositeElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEConvolveMatrixElement", {"": "result>"});
+$.$defineNativeClass("SVGFEConvolveMatrixElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEDiffuseLightingElement", {"": "result>"});
+$.$defineNativeClass("SVGFEDiffuseLightingElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEDisplacementMapElement", {"": "result>"});
+$.$defineNativeClass("SVGFEDisplacementMapElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEFloodElement", {"": "result>"});
+$.$defineNativeClass("SVGFEFloodElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEGaussianBlurElement", {"": "result>"});
+$.$defineNativeClass("SVGFEGaussianBlurElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEImageElement", {"": "result>"});
+$.$defineNativeClass("SVGFEImageElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEMergeElement", {"": "result>"});
+$.$defineNativeClass("SVGFEMergeElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEMorphologyElement", {"": "result>"});
+$.$defineNativeClass("SVGFEMorphologyElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFEOffsetElement", {"": "result>"});
+$.$defineNativeClass("SVGFEOffsetElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFESpecularLightingElement", {"": "result>"});
+$.$defineNativeClass("SVGFESpecularLightingElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFETileElement", {"": "result>"});
+$.$defineNativeClass("SVGFETileElement", {"": "height>,result>,width>"});
 
-$.$defineNativeClass("SVGFETurbulenceElement", {"": "result>"});
+$.$defineNativeClass("SVGFETurbulenceElement", {"": "height>,result>,width>"});
+
+$.$defineNativeClass("SVGFilterElement", {"": "height>,width>"});
+
+$.$defineNativeClass("SVGForeignObjectElement", {"": "height>,width>"});
+
+$.$defineNativeClass("SVGImageElement", {"": "height>,width>"});
+
+$.$defineNativeClass("SVGMaskElement", {"": "height>,width>"});
+
+$.$defineNativeClass("SVGPatternElement", {"": "height>,width>"});
+
+$.$defineNativeClass("SVGRectElement", {"": "height>,width>"});
 
 $.$defineNativeClass("SVGElement", {
   get$children: function() {
@@ -9544,9 +9560,13 @@ $.$defineNativeClass("SVGException", {
   }
 });
 
-$.$defineNativeClass("SVGFEDropShadowElement", {"": "result>"});
+$.$defineNativeClass("SVGSVGElement", {"": "height>,width>"});
 
-// 74 dynamic classes.
+$.$defineNativeClass("SVGUseElement", {"": "height>,width>"});
+
+$.$defineNativeClass("SVGFEDropShadowElement", {"": "height>,result>,width>"});
+
+// 82 dynamic classes.
 // 209 classes
 // 18 !leaf
 (function() {

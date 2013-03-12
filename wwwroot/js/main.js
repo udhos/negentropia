@@ -177,7 +177,7 @@ function initContext() {
 	backfaceCulling(gl, neg.cullBackface);
 }
 
-function play() {
+function main() {
 	boot();
 	
 	if (!gl) {
@@ -191,12 +191,6 @@ function play() {
 	}
 	
 	loop();
-}
-
-function main() {
-	play();
-	
-	console.log("main: exit: NOT REACHED"); // prevented by drawing loop
 }
 
 function initGL(canvas) {

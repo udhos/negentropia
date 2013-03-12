@@ -3,6 +3,9 @@ import 'dart:html';
 import 'cookies/cookies.dart';
 import 'ws.dart';
 
+// Global vars
+WebGLRenderingContext gl;
+
 WebGLRenderingContext initGL(CanvasElement canvas) {
   print("WebGL: initializing");
 
@@ -14,6 +17,7 @@ WebGLRenderingContext initGL(CanvasElement canvas) {
     return gl;
   }
 
+  /*
   var names = ["webgl", "experimental-webgl", "webkit-3d", "moz-webgl"];  
   
   for (var n in names) {
@@ -24,23 +28,25 @@ WebGLRenderingContext initGL(CanvasElement canvas) {
       return gl;
     }
   }
+  */
 
   print("WebGL: initialization failure");
   
   return null;
 }
 
-void main() {
-  
+void boot() {
   CanvasElement canvas = new CanvasElement();
   assert(canvas != null);
   canvas.id = "main_canvas";
+  canvas.width = 780;
+  canvas.height = 500;
   var canvasbox = query("#canvasbox");
   assert(canvasbox != null);  
   canvasbox.append(canvas);  
-  print("canvas '${canvas.id}' created");
+  print("canvas '${canvas.id}' created: width=${canvas.width} height=${canvas.height}");
   
-  WebGLRenderingContext gl = initGL(canvas);
+  gl = initGL(canvas);
   if (gl == null) {
     canvas.remove();
     var p = new ParagraphElement();
@@ -65,4 +71,28 @@ void main() {
   assert(statusElem != null);  
 
   initWebSocket(wsUri, sid, 1, statusElem);
+}
+
+void initContext() {
+  // load shaders
+  
+  // init buffers
+  
+  // clear color, depth test, backface culling
+}
+
+void loop() {
+  // drawing loop
+}
+
+void main() {
+  boot();
+  
+  if (gl == null) {
+    return;
+  }
+  
+  initContext();
+  
+  loop();
 }
