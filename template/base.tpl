@@ -3,7 +3,6 @@
     <head>
 		<link rel="stylesheet" type="text/css" href="/negentropia.css">
         <title>{{ template "title" . }}</title>
-		{{ template "script" . }}
     </head>
     <body>
 		<div class="bar">
@@ -25,5 +24,7 @@
         <footer id="footer">
 			Copyright (c) 2013 Negentropia Team
         </footer>
+		
+		{{ template "script" . }}
     </body>
 </html>
