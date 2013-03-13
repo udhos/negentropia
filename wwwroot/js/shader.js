@@ -74,7 +74,7 @@ function tryLinkProgram() {
 }
 
 function processVertexShader(data) {
-	console.log(neg.prog.fsFile + ": vertex shader: [" + data + "]");
+	console.log(neg.prog.vsFile + ": vertex shader: [" + data + "]");
 	if (data == null) {
 		shaderAlert("vertex shader: FATAL ERROR: could not load");
 		return;
