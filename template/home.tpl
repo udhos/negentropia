@@ -6,6 +6,7 @@
 <script type="text/javascript" src="/js/lib/webgl-utils.js"></script>
 <script type="text/javascript" src="/js/lib/webgl-debug.js"></script>
 <script type="text/javascript" src="/js/lib/game-shim.js"></script>
+<script type="text/javascript" src="/js/lib/Stats.js"></script>
 
 <script type="text/javascript" src="/js/main.js"></script>
 <script type="text/javascript" src="/js/ws.js"></script>
@@ -39,8 +40,9 @@ window.addEventListener("load", start, false);
 <div id="ws_status"></div>
 </div>
 
-<div id="canvasbox">
-</div>
+<div id="canvasbox"></div>
+
+<div id="framerate"></div>
 
 <div id="toggle">switch to <a href="{{.HomeDartPath}}">dart</a></div>
 

@@ -10,6 +10,27 @@ var neg = {
 var gl = null;
 var websocket = null;
 
+	// Stats.js
+function initStats() {
+	neg.stats = new Stats();
+
+	neg.stats.setMode(0); // 0: fps, 1: ms
+
+	//neg.stats.domElement.style.position = 'inherit';
+		
+	var framerate = document.getElementById("framerate");
+	if (framerate.appendChild) {
+	
+		// remove all existing node children
+	    while (framerate.childNodes.length > 0) {
+			framerate.removeChild(framerate.firstChild);       
+		}
+			
+		// attach child
+		framerate.appendChild(neg.stats.domElement);
+	}
+}
+	
 function boot() {
 	var sid = docCookies.getItem("sid");
 	var statusElem = document.getElementById("ws_status");	
@@ -31,6 +52,8 @@ function boot() {
 		// DEBUG wrapper context
 		neg.canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(neg.canvas);
 	}
+	
+	initStats();
 
 	gl = initGL(neg.canvas);
 	if (gl) {
@@ -73,6 +96,7 @@ function render() {
 }
 
 function loop() {
+	neg.stats.update();         // update framerate statistics
 
 	if (neg.drawOnce) {
 		console.log("loop: drawOnce ON: will render only one frame")
