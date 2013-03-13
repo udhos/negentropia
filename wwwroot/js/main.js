@@ -3,7 +3,7 @@
 var neg = {
 	debugLostContext: true,
 	debugWebGL:       true,
-	drawOnce:         true,
+	drawOnce:         false,
 	cullBackface:     true,
 	fieldOfViewY:     45
 };
@@ -135,6 +135,11 @@ function initSquare() {
 
 function drawSquare() {
 
+	if (!('aVertexPosition' in neg.prog)) {
+		// shader program is not loaded yet
+		return;
+	}
+
 	var square = neg.square;
 	var aVertexPosition = neg.prog.aVertexPosition;
 
@@ -157,16 +162,8 @@ function initBuffers() {
 
 function initContext() {
 
-	/*
-		Load program shaders
-	*/
-	console.log("shader program: loading");
-	neg.prog = loadProgram(gl, "shader-vs", "shader-fs");
-	if (!neg.prog) {
-		console.log("shader program: failure");
-		return;
-	}
-	console.log("shader program: loaded");
+	// Async request for shader program
+	fetchProgramFromURL("/shader/min_vs.txt", "/shader/min_fs.txt");
 	
 	initBuffers();
 	
@@ -185,10 +182,6 @@ function main() {
 	}
 
 	initContext();
-	
-	if (!neg.prog) {
-		return;
-	}
 	
 	loop();
 }

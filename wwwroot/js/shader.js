@@ -4,69 +4,99 @@ function shaderAlert(msg) {
 	alert(msg);
 }
 
-    function loadShaderFromDOM(gl, id) {
-        var shaderScript = document.getElementById(id);
-        if (!shaderScript) {
-            return null;
-        }
+function compileShader(gl, shaderString, shaderType) {
+	var shader = gl.createShader(shaderType);
+    gl.shaderSource(shader, shaderString);
+    gl.compileShader(shader);
 
-        var str = "";
-        var k = shaderScript.firstChild;
-        while (k) {
-            if (k.nodeType == 3) { // 3 corresponds to TEXT_NODE
-                str += k.textContent;
-            }
-            k = k.nextSibling;
-        }
-
-        var shader;
-        if (shaderScript.type == "x-shader/x-fragment") {
-            shader = gl.createShader(gl.FRAGMENT_SHADER);
-        } else if (shaderScript.type == "x-shader/x-vertex") {
-            shader = gl.createShader(gl.VERTEX_SHADER);
-        } else {
-            return null;
-        }
-
-        gl.shaderSource(shader, str);
-        gl.compileShader(shader);
-
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS) && !gl.isContextLost()) {
-            shaderAlert("Error compiling shader: " + gl.getShaderInfoLog(shader));
-			gl.deleteShader(shader);
-            return null;
-        }
-
-        return shader;
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS) && !gl.isContextLost()) {
+        shaderAlert("Error compiling shader: " + gl.getShaderInfoLog(shader));
+		gl.deleteShader(shader);
+        return null;
     }
-
-
-	// prog = loadProgram(gl, "shader-vs", "shader-fs")
-    function loadProgram(gl, vs, fs) {
 	
-		// load shaders
-        var vertexShader = loadShaderFromDOM(gl, vs);
-        var fragmentShader = loadShaderFromDOM(gl, fs);
-		
-		var prog = {};
+	return shader;
+}
 
-		// link program
-        var shaderProgram = gl.createProgram();
-        gl.attachShader(shaderProgram, vertexShader);
-        gl.attachShader(shaderProgram, fragmentShader);
-        gl.linkProgram(shaderProgram);
+function linkProg(prog, gl, vertexShader, fragmentShader) {
 
-        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS) && !gl.isContextLost()) {
-            shaderAlert("Error linking program: " + gl.getProgramInfoLog(shaderProgram));
-			return null;
-        }
+	// link program
+    var shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
 
-		// use program
-		prog.shaderProgram = shaderProgram;
-        gl.useProgram(prog.shaderProgram);
-
-		// save vertex attribute location
-        prog.aVertexPosition = gl.getAttribLocation(prog.shaderProgram, "aVertexPosition");
-				
-		return prog;
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS) && !gl.isContextLost()) {
+        shaderAlert("Error linking program: " + gl.getProgramInfoLog(shaderProgram));
+		return;
     }
+
+	// save shader program
+	prog.shaderProgram = shaderProgram;
+
+	// use program
+    gl.useProgram(prog.shaderProgram);
+
+	// save vertex attribute location
+    prog.aVertexPosition = gl.getAttribLocation(prog.shaderProgram, "aVertexPosition");
+}
+		
+function fetchFile(url, process) {
+	var client = new XMLHttpRequest();
+	
+	client.processData = process;
+	
+	client.onreadystatechange = onFetchHandler;
+	client.open("GET", url);
+	client.send();
+}
+
+function onFetchHandler() {
+	if (this.readyState == this.DONE) {
+		if (this.status == 200 && this.responseText != null) {
+		this.processData(this.responseText);
+		return;
+	}
+    this.processData(null);
+  }
+}
+
+function tryLinkProgram() {
+	var prog = neg.prog;
+	
+	if (prog.vertexShader && prog.fragmentShader) {
+		console.log("shader program: linking");
+		linkProg(prog, gl, prog.vertexShader, prog.fragmentShader);
+		if ('shaderProgram' in prog) {
+			console.log("shader program: ready");
+		}
+	}
+}
+
+function processVertexShader(data) {
+	console.log(neg.prog.fsFile + ": vertex shader: [" + data + "]");
+	if (data == null) {
+		shaderAlert("vertex shader: FATAL ERROR: could not load");
+		return;
+	}
+	neg.prog.vertexShader = compileShader(gl, data, gl.VERTEX_SHADER);
+	tryLinkProgram();
+}
+
+function processFragmentShader(data) {
+	console.log(neg.prog.fsFile + ": fragment shader: [" + data + "]");
+	if (data == null) {
+		shaderAlert("fragment shader: FATAL ERROR: could not load");
+		return;
+	}
+	neg.prog.fragmentShader = compileShader(gl, data, gl.FRAGMENT_SHADER);
+	tryLinkProgram();
+}
+
+function fetchProgramFromURL(vs, fs) {
+	neg.prog = {};
+	neg.prog.vsFile = vs;
+	neg.prog.fsFile = fs;
+	fetchFile(vs, processVertexShader);
+	fetchFile(fs, processFragmentShader);
+}
