@@ -1,9 +1,10 @@
 {{ define "title" }}Negentropia{{ end }}
+
 {{ define "script" }}
 
 {{if .Account}}
     <script type="application/dart" src="/dart/negentropia_home.dart"></script>
-    <script src="/dart/dart.js"></script>
+    <script src="/dart/packages/browser/dart.js"></script>
 {{end}}
 	
 {{ end }}

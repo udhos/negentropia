@@ -33,6 +33,8 @@
 !wwwroot
 !wwwroot/dart
 !wwwroot/dart/cookies
+!wwwroot/dart/packages
+!wwwroot/dart/packages/browser
 !wwwroot/hello
 !wwwroot/js
 !wwwroot/js/lib
