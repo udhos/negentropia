@@ -9,6 +9,48 @@ class Program {
   
   Program._load(WebGLRenderingContext gl, String vertexShaderURL, fragmentShaderURL) {
     print("Program._load: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
+    
+    String vertShaderSrc, fragShaderSrc;
+    
+    void tryCompileShaders() {
+      if (vertShaderSrc == null || fragShaderSrc == null) {
+        return;
+      }
+      
+      print("shaders: available to compile");      
+      
+      WebGLShader vs = gl.createShader(WebGLRenderingContext.VERTEX_SHADER);
+      gl.shaderSource(vs, vertShaderSrc);
+      gl.compileShader(vs);
+      if (!gl.getShaderParameter(vs, WebGLRenderingContext.COMPILE_STATUS) && !gl.isContextLost()) { 
+        print(gl.getShaderInfoLog(vs));
+        return;
+      }
+      
+      WebGLShader fs = gl.createShader(WebGLRenderingContext.FRAGMENT_SHADER);
+      gl.shaderSource(fs, fragShaderSrc);
+      gl.compileShader(fs);
+      if (!gl.getShaderParameter(fs, WebGLRenderingContext.COMPILE_STATUS) && !gl.isContextLost()) { 
+        print(gl.getShaderInfoLog(fs));
+        return;
+      }
+
+      WebGLProgram p = gl.createProgram();
+      gl.attachShader(p, vs);
+      gl.attachShader(p, fs);
+      gl.linkProgram(p);
+      if (!gl.getProgramParameter(p, WebGLRenderingContext.LINK_STATUS) && !gl.isContextLost()) { 
+        print(gl.getProgramInfoLog(p));
+      }
+      
+      gl.useProgram(p);
+      
+      this.aVertexPosition = gl.getAttribLocation(p, "aVertexPosition");    
+      
+      print("shader program: ready");
+      
+      this.program = p;
+    }
         
     var requestVert = new HttpRequest();
     requestVert.open("GET", vertexShaderURL);
@@ -19,6 +61,8 @@ class Program {
         return;
       }
       print("vertexShader: loaded: [$response]");
+      vertShaderSrc = response;
+      tryCompileShaders();
     });
     requestVert.onError.listen((e) {
       print("vertexShader: error: [$e]");
@@ -34,13 +78,13 @@ class Program {
         return;
       }
       print("fragmentShader: loaded: [$response]");
+      fragShaderSrc = response;
+      tryCompileShaders();      
     });
     requestFrag.onError.listen((e) {
       print("fragmentShader: error: [$e]");
     });
     requestFrag.send();
-
-    //aVertexPosition = gl.getAttribLocation(program, "aVertexPosition");    
   }
   
   factory Program(WebGLRenderingContext gl, String vertexShader, fragmentShader) {
