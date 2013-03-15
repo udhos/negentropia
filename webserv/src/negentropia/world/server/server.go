@@ -11,8 +11,9 @@ import (
 const (
 	CM_CODE_FATAL = 0
 	CM_CODE_INFO  = 1
-	CM_CODE_AUTH  = 2
-	CM_CODE_ECHO  = 3
+	CM_CODE_AUTH  = 2 // client->server: let me in
+	CM_CODE_ECHO  = 3 // client->server: please echo this
+	CM_CODE_KILL  = 4 // server->client: do not attempt reconnect on same session
 )
 
 type ClientMsg struct {

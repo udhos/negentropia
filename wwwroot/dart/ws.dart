@@ -6,12 +6,19 @@ import 'dart:json';
 
 const CM_CODE_FATAL = 0;
 const CM_CODE_INFO  = 1;
-const CM_CODE_AUTH  = 2;
-const CM_CODE_ECHO  = 3;
+const CM_CODE_AUTH  = 2; // client->server: let me in
+const CM_CODE_ECHO  = 3; // client->server: please echo this
+const CM_CODE_KILL  = 4; // server->client: do not attempt reconnect on same session
 
+/*
 WebSocket w;
+StreamSubscription<Event> subOpen;
+StreamSubscription<Event> subClose;
+StreamSubscription<Event> subError;
+StreamSubscription<Event> subMessage;
+*/
 
-void doSend(String msg) {
+void doSend(WebSocket w, String msg) {
   print("websocket: sending: [${msg}]");
   w.send(msg);
 }
@@ -19,8 +26,6 @@ void doSend(String msg) {
 void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
   
   status.text = "opening $wsUri";
-  
-  var fail = false;
   
   if (retrySeconds < 1) {
     retrySeconds = 1;    
@@ -31,9 +36,14 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
   
   print("websocket: opening: ${wsUri} (retry=${retrySeconds})");
   
-  w = new WebSocket(wsUri);
-  
-  w.onOpen.listen((e) {
+  WebSocket w = new WebSocket(wsUri);
+
+  StreamSubscription<Event> subOpen;
+  StreamSubscription<Event> subClose;
+  StreamSubscription<Event> subError;
+  StreamSubscription<Event> subMessage;
+
+  subOpen = w.onOpen.listen((e) {
     status.text = "connected to $wsUri";   
     print("websocket: CONNECTED");
 
@@ -43,29 +53,34 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
     
     String jsonMsg = stringify(msg);
     
-    doSend(jsonMsg);
+    doSend(w, jsonMsg);
   });
   
-  w.onClose.listen((e) {
+  bool reconnectScheduled = false;
+  
+  void scheduleReconnect() {
+    if (reconnectScheduled) {
+      return;
+    }
+    
+    print("websocket: retrying in $retrySeconds seconds");
+    new Timer(new Duration(seconds: retrySeconds), () => initWebSocket(wsUri, sid, 2 * retrySeconds, status));
+      
+    reconnectScheduled = true;
+  }
+  
+  subClose = w.onClose.listen((e) {
     status.text = "disconnected from $wsUri";    
     print("websocket: DISCONNECTED");
-    if (!fail) {
-      print("websocket: retrying in $retrySeconds seconds");
-      new Timer(1000 * retrySeconds, (Timer t) => initWebSocket(wsUri, sid, 2 * retrySeconds, status));
-    }
-    fail = true;
+    scheduleReconnect();
   });
   
-  w.onError.listen((e) {
+  subError = w.onError.listen((e) {
     print("websocket: error: [${e.data}]");
-    if (!fail) {
-      print("websocket: retrying in $retrySeconds seconds");
-      new Timer(1000 * retrySeconds, (Timer t) => initWebSocket(wsUri, sid, 2 * retrySeconds, status));
-    }
-    fail = true;
+    scheduleReconnect();
   });
   
-  w.onMessage.listen((MessageEvent e) {
+  subMessage = w.onMessage.listen((MessageEvent e) {
     print('websocket: received: [${e.data}]');
     
     Map msg = parse(e.data);
@@ -75,7 +90,26 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
       var m = new Map();
       m["Code"] = CM_CODE_ECHO;
       m["Data"] = "hi there";
-      doSend(stringify(m));
+      doSend(w, stringify(m));
+      return;
+    }
+    
+    if (msg["Code"] == CM_CODE_KILL) {
+      
+      String killInfo = msg["Data"];
+      String m = "server killed our session: $killInfo";
+
+      print(m);
+      status.text = m;
+
+      subOpen.cancel();
+      subClose.cancel();
+      subMessage.cancel();
+      subError.cancel();
+      w.close();
+      w = null;
+      
+      return;
     }
     
   });

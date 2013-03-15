@@ -69,10 +69,16 @@ func sender(p *server.Player) {
 		select {
 			case <- p.Quit:
 				log.Printf("sender: %s %s: quit request", p.Sid, p.Email)
+				
+				// destroys the session -- otherwise a rogue client could reconnect
+				store.Del(p.Sid)
+	
+				// tells the client the session is destroyed -- otherwise a sane client would hopelessy retry
+				websocket.JSON.Send(p.Websocket, server.ClientMsg{server.CM_CODE_KILL, "session destroyed due to newer login"})
+
 				break LOOP
 			case msg := <- p.SendToPlayer: 
-				err := websocket.JSON.Send(p.Websocket, msg)
-				if err != nil {
+				if err := websocket.JSON.Send(p.Websocket, msg); err != nil {
 					log.Printf("sender: %s %s: failure: %s", p.Sid, p.Email, err)
 					break LOOP
 				}
@@ -81,7 +87,7 @@ func sender(p *server.Player) {
 	}
 
 	log.Printf("sender: %s %s: exiting", p.Sid, p.Email)
-
+	
 	p.Websocket.Close()	
 }
 

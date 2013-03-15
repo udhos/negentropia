@@ -2,6 +2,7 @@ import 'dart:html';
 
 import 'cookies/cookies.dart';
 import 'ws.dart';
+import 'shader.dart';
 
 // Global vars
 WebGLRenderingContext gl;
@@ -75,6 +76,8 @@ void boot() {
 
 void initContext() {
   // load shaders
+  Program prog = new Program(gl, "/shader/min_vs.txt", "/shader/min_fs.txt");
+  assert(prog != null);
   
   // init buffers
   
