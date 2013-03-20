@@ -10,7 +10,9 @@
 
 <script type="text/javascript" src="/js/main.js"></script>
 <script type="text/javascript" src="/js/ws.js"></script>
+<script type="text/javascript" src="/js/fetch.js"></script>
 <script type="text/javascript" src="/js/shader.js"></script>
+<script type="text/javascript" src="/js/buffer.js"></script>
 
 <script type="text/javascript">
 

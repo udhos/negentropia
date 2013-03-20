@@ -3,6 +3,7 @@ import 'dart:html';
 import 'cookies/cookies.dart';
 import 'ws.dart';
 import 'shader.dart';
+import 'buffer.dart';
 
 // Global vars
 WebGLRenderingContext gl;
@@ -74,18 +75,24 @@ void boot() {
   initWebSocket(wsUri, sid, 1, statusElem);
 }
 
+void initBuffers() {
+  fetchSquare("/mesh/square.json");
+}
+
 void initContext() {
   // load shaders
   Program prog = new Program(gl, "/shader/min_vs.txt", "/shader/min_fs.txt");
   assert(prog != null);
   
   // init buffers
+  initBuffers();
   
   // clear color, depth test, backface culling
 }
 
 void loop() {
   // drawing loop
+  print("FIXME: draw square on render loop");
 }
 
 void main() {

@@ -120,47 +120,15 @@ function backfaceCulling(gl, enable) {
 	}
 }
 
-function initSquare() {
-
-	console.log("square: init buffers");
-
-	var square = {};
-	neg.square = square;
-	
-	var size = 0.5;
-
-	square.vertCoord = [
-		size, size, 0.0,
-		-size, size, 0.0,
-		-size, -size, 0.0,
-		size, -size, 0.0,
-	];
-	
-	square.vertInd = [
-		0, 1, 2,
-		0, 2, 3,
-	];
-	
-	square.vertexPositionBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, square.vertexPositionBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(square.vertCoord), gl.STATIC_DRAW);
-    square.vertexPositionBufferItemSize = 3; // coord x,y,z
-	
-	square.vertexIndexBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, square.vertexIndexBuffer);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(square.vertInd), gl.STATIC_DRAW);
-	square.vertexIndexBufferItemSize = 2; // size of Uint16Array
-	
-	gl.bindBuffer(gl.ARRAY_BUFFER, null);
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-	
-	console.log("square: init buffers: done");
-}
-
 function drawSquare() {
 
 	if (!('aVertexPosition' in neg.prog)) {
 		// shader program is not loaded yet
+		return;
+	}
+
+	if (!('square' in neg)) {
+		// square buffers are not loaded yet
 		return;
 	}
 
@@ -181,7 +149,7 @@ function drawSquare() {
 }
 
 function initBuffers() {
-	initSquare();
+	fetchSquare("/mesh/square.json");
 }
 
 function initContext() {

@@ -13,6 +13,7 @@
 !*.css
 !*.dart
 !*.yaml
+!*.json
 !negentropia
 !negentropia/lib
 !negentropia/texture
@@ -39,3 +40,4 @@
 !wwwroot/js
 !wwwroot/js/lib
 !wwwroot/shader
+!wwwroot/mesh

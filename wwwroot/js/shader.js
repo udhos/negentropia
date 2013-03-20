@@ -41,26 +41,6 @@ function linkProg(prog, gl, vertexShader, fragmentShader) {
     prog.aVertexPosition = gl.getAttribLocation(prog.shaderProgram, "aVertexPosition");
 }
 		
-function fetchFile(url, process) {
-	var client = new XMLHttpRequest();
-	
-	client.processData = process;
-	
-	client.onreadystatechange = onFetchHandler;
-	client.open("GET", url);
-	client.send();
-}
-
-function onFetchHandler() {
-	if (this.readyState == this.DONE) {
-		if (this.status == 200 && this.responseText != null) {
-		this.processData(this.responseText);
-		return;
-	}
-    this.processData(null);
-  }
-}
-
 function tryLinkProgram() {
 	var prog = neg.prog;
 	
@@ -73,23 +53,23 @@ function tryLinkProgram() {
 	}
 }
 
-function processVertexShader(data) {
-	console.log(neg.prog.vsFile + ": vertex shader: [" + data + "]");
-	if (data == null) {
+function processVertexShader(opaque, response) {
+	console.log(neg.prog.vsFile + ": vertex shader: [" + response + "]");
+	if (response == null) {
 		shaderAlert("vertex shader: FATAL ERROR: could not load");
 		return;
 	}
-	neg.prog.vertexShader = compileShader(gl, data, gl.VERTEX_SHADER);
+	neg.prog.vertexShader = compileShader(gl, response, gl.VERTEX_SHADER);
 	tryLinkProgram();
 }
 
-function processFragmentShader(data) {
-	console.log(neg.prog.fsFile + ": fragment shader: [" + data + "]");
-	if (data == null) {
+function processFragmentShader(opaque, response) {
+	console.log(neg.prog.fsFile + ": fragment shader: [" + response + "]");
+	if (response == null) {
 		shaderAlert("fragment shader: FATAL ERROR: could not load");
 		return;
 	}
-	neg.prog.fragmentShader = compileShader(gl, data, gl.FRAGMENT_SHADER);
+	neg.prog.fragmentShader = compileShader(gl, response, gl.FRAGMENT_SHADER);
 	tryLinkProgram();
 }
 
@@ -97,6 +77,6 @@ function fetchProgramFromURL(vs, fs) {
 	neg.prog = {};
 	neg.prog.vsFile = vs;
 	neg.prog.fsFile = fs;
-	fetchFile(vs, processVertexShader);
-	fetchFile(fs, processFragmentShader);
+	fetchFile(vs, processVertexShader, null);
+	fetchFile(fs, processFragmentShader, null);
 }
