@@ -6,6 +6,7 @@ class Program {
   
   WebGLProgram program;
   int aVertexPosition;
+  bool ready = false;
   
   Program._load(WebGLRenderingContext gl, String vertexShaderURL, fragmentShaderURL) {
     print("Program._load: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
@@ -45,7 +46,8 @@ class Program {
       
       gl.useProgram(p);
       
-      this.aVertexPosition = gl.getAttribLocation(p, "aVertexPosition");    
+      this.aVertexPosition = gl.getAttribLocation(p, "aVertexPosition");
+      this.ready = true;
       
       print("shader program: ready");
       

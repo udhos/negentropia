@@ -74,23 +74,23 @@ function animate() {
 
 function render() {
 
-        gl.viewport(0, 0, neg.canvas.width, neg.canvas.height); // define viewport size
-		gl.depthRange(0.0, 1.0); // default
+    gl.viewport(0, 0, neg.canvas.width, neg.canvas.height); // define viewport size
+	gl.depthRange(0.0, 1.0); // default
 		
-		// http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
+	// http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
 
-		// set perspective matrix
-		// field of view y: 45 degrees
-		// width to height ratio
-		// view from 1.0 to 1000.0 distance units
-		//
-		// tan(45/2) = (h/2) / near
-		// h = 2 * tan(45/2) * near
-		// h = 2 * 0.414 * 1.0
-		// h = 0.828
-		//
-        //mat4.perspective(neg.fieldOfViewY, neg.canvas.width / neg.canvas.height, 1.0, 1000.0, neg.pMatrix);
+	// set perspective matrix
+	// field of view y: 45 degrees
+	// width to height ratio
+	// view from 1.0 to 1000.0 distance units
+	//
+	// tan(45/2) = (h/2) / near
+	// h = 2 * tan(45/2) * near
+	// h = 2 * 0.414 * 1.0
+	// h = 0.828
+	//
+    //mat4.perspective(neg.fieldOfViewY, neg.canvas.width / neg.canvas.height, 1.0, 1000.0, neg.pMatrix);
 
 	drawSquare();
 }
