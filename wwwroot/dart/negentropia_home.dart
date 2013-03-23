@@ -1,5 +1,7 @@
 import 'dart:html';
 
+import 'package:stats/stats.dart';
+
 import 'cookies/cookies.dart';
 import 'ws.dart';
 import 'shader.dart';
@@ -9,7 +11,13 @@ int requestId;
 CanvasElement canvas;
 Program shaderProgram;
 Model squareModel;
-bool drawOnce = false;
+
+// >0  : render at max rate then stop
+// <=0 : periodic rendering
+//int fullRateFrames = 30000;
+int fullRateFrames = 0; // periodic rendering
+
+Stats stats = null;
 
 WebGLRenderingContext initGL(CanvasElement canvas) {
   print("WebGL: initializing");
@@ -25,6 +33,13 @@ WebGLRenderingContext initGL(CanvasElement canvas) {
   print("WebGL: initialization failure");
   
   return null;
+}
+
+void initStats() {
+  DivElement div = query("#framerate");
+  assert(div != null);
+  stats = new Stats();
+  div.children.add(stats.container);
 }
 
 WebGLRenderingContext boot() {
@@ -63,6 +78,8 @@ WebGLRenderingContext boot() {
   assert(statusElem != null);  
 
   initWebSocket(wsUri, sid, 1, statusElem);
+  
+  initStats();
   
   return gl;
 }
@@ -146,20 +163,39 @@ void drawSquare(WebGLRenderingContext gl) {
 }
 
 void loop(WebGLRenderingContext gl) {
-  // FIXME update framerate statistics
-
-  if (drawOnce) {
-    print("loop: drawOnce ON: will render only one frame");
-  }
-  else {
-    requestId = window.requestAnimationFrame((num time) { loop(gl); });
-    if (requestId == 0) {
-      print("loop: could not obtain requestId from requestAnimationFrame");
-    }
-  }
   
+  if (fullRateFrames > 0) {
+    
+    print("loop: firing $fullRateFrames frames at full rate");
+    
+    var before = new DateTime.now();
+        
+    for (int i = 0; i < fullRateFrames; ++i) {
+      stats.begin();      
+      animate();    // update state
+      render(gl);   // draw
+      stats.end();      
+    };
+
+    var after = new DateTime.now();
+    var duration = after.difference(before);
+    var rate = fullRateFrames / duration.inSeconds;
+    
+    print("loop: duration = $duration framerate = $rate fps");
+
+    return;
+  }
+
+  stats.begin();      
+
+  requestId = window.requestAnimationFrame((num time) { loop(gl); });
+  if (requestId == 0) {
+    print("loop: could not obtain requestId from requestAnimationFrame");
+  }
+
   animate();    // update state
   render(gl);   // draw
+  stats.end();
 }
 
 void main() {

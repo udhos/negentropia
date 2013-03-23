@@ -1,4 +1,5 @@
 name: negentropia_home
 description: Negentropia home in Dart
 dependencies:
+  stats: any
   browser: any

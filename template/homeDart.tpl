@@ -19,8 +19,9 @@
 <div id="ws_status"></div>
 </div>
 
-<div id="canvasbox">
-</div>
+<div id="canvasbox"></div>
+
+<div id="framerate"></div>
 
 <div id="toggle">return to <a href="{{.HomePath}}">javascript</a></div>
 
