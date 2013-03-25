@@ -1,11 +1,12 @@
 
 // Global variables
 var neg = {
-	debugLostContext: true,
-	debugWebGL:       true,
-	drawOnce:         false,
-	cullBackface:     true,
-	fieldOfViewY:     45
+	debugLostContext:    true,
+	debugWebGL:          true,
+	drawOnce:            false,
+	cullBackface:        true,
+	fieldOfViewY:        45,
+	ongoingProgramLoads: []
 };
 var gl = null;
 var websocket = null;
@@ -122,18 +123,19 @@ function backfaceCulling(gl, enable) {
 
 function drawSquare() {
 
-	if (!('aVertexPosition' in neg.prog)) {
-		// shader program is not loaded yet
+	var progSquare = neg.programSquare;
+	if (!('aVertexPosition' in progSquare)) {
+		// square shader program is not loaded yet
 		return;
 	}
+	var aVertexPosition = progSquare.aVertexPosition;
 
 	if (!('square' in neg)) {
 		// square buffers are not loaded yet
 		return;
 	}
-
 	var square = neg.square;
-	var aVertexPosition = neg.prog.aVertexPosition;
+
 
     gl.bindBuffer(gl.ARRAY_BUFFER, square.vertexPositionBuffer);
    	gl.vertexAttribPointer(aVertexPosition, square.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
@@ -152,10 +154,20 @@ function initBuffers() {
 	fetchSquare("/mesh/square.json");
 }
 
+function squareProgramLoaded(prog) {
+	if ('shaderProgram' in prog) {
+		console.log("main.js: square shader program: ready");
+		neg.programSquare = prog;
+	}
+	else {
+		console.log("main.js: square shader program: failure");	
+	}
+}
+
 function initContext() {
 
 	// Async request for shader program
-	fetchProgramFromURL("/shader/min_vs.txt", "/shader/min_fs.txt");
+	fetchProgramFromURL("/shader/min_vs.txt", "/shader/min_fs.txt", squareProgramLoaded);
 	
 	initBuffers();
 	

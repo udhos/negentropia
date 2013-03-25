@@ -13,9 +13,11 @@ function fetchFile(url, handler, opaque) {
 function onFetchHandler() {
 	if (this.readyState == this.DONE) {
 		if (this.status == 200 && this.responseText != null) {
-		this.processHandler(this.processOpaque, this.responseText);
-		return;
+			// fetch ok
+			this.processHandler(this.processOpaque, this.responseText);
+			return;
+		}
+		// fetch failure
+		this.processHandler(this.processOpaque, null);
 	}
-    this.processHandler(this.processOpaque, null);
-  }
 }

@@ -41,42 +41,73 @@ function linkProg(prog, gl, vertexShader, fragmentShader) {
     prog.aVertexPosition = gl.getAttribLocation(prog.shaderProgram, "aVertexPosition");
 }
 		
-function tryLinkProgram() {
-	var prog = neg.prog;
+function tryLinkProgram(prog) {
 	
-	if (prog.vertexShader && prog.fragmentShader) {
-		console.log("shader program: linking");
-		linkProg(prog, gl, prog.vertexShader, prog.fragmentShader);
-		if ('shaderProgram' in prog) {
-			console.log("shader program: ready");
-		}
+	if (!prog.vertexShader || !prog.fragmentShader) {
+		// not ready
+		return;
 	}
+	
+	console.log("shader program: linking");
+	linkProg(prog, gl, prog.vertexShader, prog.fragmentShader);
+
+	// remove from ongoing loads
+	shaderOngoingStop(prog);
 }
 
 function processVertexShader(opaque, response) {
-	console.log(neg.prog.vsFile + ": vertex shader: [" + response + "]");
+	var prog = opaque;
+
+	console.log(prog.vsFile + ": vertex shader: [" + response + "]");
 	if (response == null) {
 		shaderAlert("vertex shader: FATAL ERROR: could not load");
+		shaderOngoingStop(prog);
 		return;
 	}
-	neg.prog.vertexShader = compileShader(gl, response, gl.VERTEX_SHADER);
-	tryLinkProgram();
+	prog.vertexShader = compileShader(gl, response, gl.VERTEX_SHADER);
+	tryLinkProgram(prog);
 }
 
 function processFragmentShader(opaque, response) {
-	console.log(neg.prog.fsFile + ": fragment shader: [" + response + "]");
+	var prog = opaque;
+	
+	console.log(prog.fsFile + ": fragment shader: [" + response + "]");
 	if (response == null) {
 		shaderAlert("fragment shader: FATAL ERROR: could not load");
+		shaderOngoingStop(prog);
 		return;
 	}
-	neg.prog.fragmentShader = compileShader(gl, response, gl.FRAGMENT_SHADER);
-	tryLinkProgram();
+	prog.fragmentShader = compileShader(gl, response, gl.FRAGMENT_SHADER);
+	tryLinkProgram(prog);
 }
 
-function fetchProgramFromURL(vs, fs) {
-	neg.prog = {};
-	neg.prog.vsFile = vs;
-	neg.prog.fsFile = fs;
-	fetchFile(vs, processVertexShader, null);
-	fetchFile(fs, processFragmentShader, null);
+function shaderOngoingStart(prog) {
+	neg.ongoingProgramLoads.push(prog);
+}
+
+function shaderOngoingStop(prog) {
+	if ('shaderProgram' in prog) {
+		console.log("shader.js: shader program: ready");
+	}
+	else {
+		console.log("shader.js: shader program: failure");	
+	}
+
+	neg.ongoingProgramLoads.splice(neg.ongoingProgramLoads.indexOf(prog), 1);
+	
+	// callback
+	prog.callbackOnDone(prog);	
+}
+
+function fetchProgramFromURL(vs, fs, callbackOnDone) {
+	var prog = {};
+	prog.vsFile = vs;
+	prog.fsFile = fs;
+	prog.callbackOnDone = callbackOnDone;
+	
+	// append to ongoing loads
+	shaderOngoingStart(prog);
+	
+	fetchFile(vs, processVertexShader, prog);
+	fetchFile(fs, processFragmentShader, prog);
 }
