@@ -6,12 +6,12 @@ var neg = {
 	drawOnce:            false,
 	cullBackface:        true,
 	fieldOfViewY:        45,
-	ongoingProgramLoads: []
+	ongoingImageLoads:   []
 };
 var gl = null;
 var websocket = null;
 
-	// Stats.js
+// Stats.js
 function initStats() {
 	neg.stats = new Stats();
 
@@ -55,6 +55,8 @@ function boot() {
 	}
 	
 	initStats();
+	
+	initDebugLostContext(neg.canvas);
 
 	gl = initGL(neg.canvas);
 	if (gl) {
@@ -123,19 +125,17 @@ function backfaceCulling(gl, enable) {
 
 function drawSquare() {
 
-	var progSquare = neg.programSquare;
-	if (!('aVertexPosition' in progSquare)) {
+	if (!('programSquare' in neg)) {
 		// square shader program is not loaded yet
 		return;
 	}
-	var aVertexPosition = progSquare.aVertexPosition;
+	var aVertexPosition = neg.programSquare.aVertexPosition;
 
 	if (!('square' in neg)) {
 		// square buffers are not loaded yet
 		return;
 	}
 	var square = neg.square;
-
 
     gl.bindBuffer(gl.ARRAY_BUFFER, square.vertexPositionBuffer);
    	gl.vertexAttribPointer(aVertexPosition, square.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
@@ -176,6 +176,8 @@ function initContext() {
 	gl.depthFunc(gl.LESS);				// gl.LESS is default depth test
 		
 	backfaceCulling(gl, neg.cullBackface);
+	
+	loop();
 }
 
 function main() {
@@ -185,9 +187,7 @@ function main() {
 		return;
 	}
 
-	initContext();
-	
-	loop();
+	initContext(); // calls loop()
 }
 
 function initGL(canvas) {

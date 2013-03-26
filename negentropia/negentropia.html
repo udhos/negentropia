@@ -1433,7 +1433,7 @@ function debug_webgl(event) {
 	// We set a global variable to avoid querying the DOM tree inside the render loop
 	neg.debugWebGL = document.getElementById('debug_webgl').checked;
 
-	stop() // stop everything
+	stop(); // stop everything
 	start(false, false); // restart everything
 }
 

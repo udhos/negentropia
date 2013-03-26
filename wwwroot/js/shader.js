@@ -82,7 +82,7 @@ function processFragmentShader(opaque, response) {
 }
 
 function shaderOngoingStart(prog) {
-	neg.ongoingProgramLoads.push(prog);
+	//neg.ongoingProgramLoads.push(prog);
 }
 
 function shaderOngoingStop(prog) {
@@ -93,7 +93,7 @@ function shaderOngoingStop(prog) {
 		console.log("shader.js: shader program: failure");	
 	}
 
-	neg.ongoingProgramLoads.splice(neg.ongoingProgramLoads.indexOf(prog), 1);
+	//neg.ongoingProgramLoads.splice(neg.ongoingProgramLoads.indexOf(prog), 1);
 	
 	// callback
 	prog.callbackOnDone(prog);	
@@ -104,6 +104,8 @@ function fetchProgramFromURL(vs, fs, callbackOnDone) {
 	prog.vsFile = vs;
 	prog.fsFile = fs;
 	prog.callbackOnDone = callbackOnDone;
+	
+	//neg.ongoingProgramLoads = [];
 	
 	// append to ongoing loads
 	shaderOngoingStart(prog);

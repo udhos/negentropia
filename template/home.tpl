@@ -13,6 +13,7 @@
 <script type="text/javascript" src="/js/fetch.js"></script>
 <script type="text/javascript" src="/js/shader.js"></script>
 <script type="text/javascript" src="/js/buffer.js"></script>
+<script type="text/javascript" src="/js/lost_context.js"></script>
 
 <script type="text/javascript">
 
@@ -43,8 +44,8 @@ window.addEventListener("load", start, false);
 </div>
 
 <div id="canvasbox"></div>
-
 <div id="framerate"></div>
+<div id="control"></div>
 
 <div id="toggle">switch to <a href="{{.HomeDartPath}}">dart</a></div>
 
