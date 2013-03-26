@@ -17,8 +17,6 @@ Model squareModel;
 //int fullRateFrames = 30000;
 int fullRateFrames = 0; // periodic rendering
 
-Stats stats = null;
-
 WebGLRenderingContext initGL(CanvasElement canvas) {
   print("WebGL: initializing");
 
@@ -34,6 +32,14 @@ WebGLRenderingContext initGL(CanvasElement canvas) {
   
   return null;
 }
+
+/*
+	https://github.com/jwill/stats.dart
+	https://github.com/toji/dart-render-stats
+	https://github.com/Dartist/stats.dart
+*/
+
+Stats stats = null;
 
 void initStats() {
   DivElement div = query("#framerate");
@@ -111,6 +117,7 @@ void initContext(WebGLRenderingContext gl) {
 }
 
 void animate() {
+    // TODO: FIXME: WRITEME: update state
 }
 
 void render(WebGLRenderingContext gl) {
@@ -195,6 +202,7 @@ void loop(WebGLRenderingContext gl) {
 
   animate();    // update state
   render(gl);   // draw
+  
   stats.end();
 }
 
