@@ -63,7 +63,7 @@ WebGLRenderingContext boot() {
   if (gl == null) {
     canvas.remove();
     var p = new ParagraphElement();
-    p.text = 'WebGL is not supported by this browser.';
+    p.text = 'WebGL is currently not available on this system.';
     canvasbox.append(p);
     var a = new AnchorElement();
     a.href = 'http://get.webgl.org/';
@@ -113,7 +113,9 @@ void initContext(WebGLRenderingContext gl) {
   // enable backface culling
   gl.frontFace(WebGLRenderingContext.CCW);
   gl.cullFace(WebGLRenderingContext.BACK);
-  gl.enable(WebGLRenderingContext.CULL_FACE);    
+  gl.enable(WebGLRenderingContext.CULL_FACE);
+  
+  loop(gl); // render loop
 }
 
 void animate() {
@@ -214,7 +216,5 @@ void main() {
     return;
   }
   
-  initContext(gl);
-  
-  loop(gl);
+  initContext(gl); // calls loop(gl)
 }

@@ -7622,7 +7622,7 @@ $.boot = function() {
   if (gl == null) {
     $.remove$0$ax($.canvas);
     p = $.$$dom_createElement$1$x(document, "p");
-    $.getInterceptor$x(p).textContent = "WebGL is not supported by this browser.";
+    $.getInterceptor$x(p).textContent = "WebGL is currently not available on this system.";
     t1.append$1(canvasbox, p);
     a = $.AnchorElement_AnchorElement(null);
     t2 = $.getInterceptor$x(a);
@@ -7655,6 +7655,7 @@ $.initContext = function(gl) {
   t1.frontFace$1(gl, 2305);
   t1.cullFace$1(gl, 1029);
   t1.enable$1(gl, 2884);
+  $.loop(gl);
 };
 
 $.render = function(gl) {
@@ -7719,7 +7720,6 @@ $.main = function() {
     return;
   }
   $.initContext(gl);
-  $.loop(gl);
 };
 
 $.Program$_load = function(gl, vertexShaderURL, fragmentShaderURL) {

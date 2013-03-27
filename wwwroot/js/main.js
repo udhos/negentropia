@@ -73,6 +73,7 @@ function boot() {
 }
 
 function animate() {
+    // TODO: FIXME: WRITEME: update state
 }
 
 function render() {
@@ -129,12 +130,13 @@ function drawSquare() {
 		// square shader program is not loaded yet
 		return;
 	}
-	var aVertexPosition = neg.programSquare.aVertexPosition;
 
 	if (!('square' in neg)) {
 		// square buffers are not loaded yet
 		return;
 	}
+
+	var aVertexPosition = neg.programSquare.aVertexPosition;
 	var square = neg.square;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, square.vertexPositionBuffer);
@@ -177,7 +179,7 @@ function initContext() {
 		
 	backfaceCulling(gl, neg.cullBackface);
 	
-	loop();
+	loop(); // render loop
 }
 
 function main() {
