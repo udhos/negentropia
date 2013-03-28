@@ -53,11 +53,7 @@ function boot() {
 		// DEBUG wrapper context
 		neg.canvas = WebGLDebugUtils.makeLostContextSimulatingCanvas(neg.canvas);
 	}
-	
-	initStats();
-	
-	initDebugLostContext(neg.canvas);
-
+		
 	gl = initGL(neg.canvas);
 	if (gl) {
 		console.log("WebGL: initialized");
@@ -66,10 +62,16 @@ function boot() {
 		console.log("WebGL: initialization failure");
 		return;
 	}
+
+	if (neg.debugLostContext) {
+		initDebugLostContext(neg.canvas);
+	}
 	
 	var wsUri = document.getElementById("wsUri");
 	
 	initWebSocket(wsUri.innerHTML, statusElem, sid);
+	
+	initStats();
 }
 
 function animate() {

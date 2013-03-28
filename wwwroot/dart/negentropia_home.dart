@@ -6,11 +6,20 @@ import 'cookies/cookies.dart';
 import 'ws.dart';
 import 'shader.dart';
 import 'buffer.dart';
+import 'lost_context.dart';
+
+/*
+class Conf {
+  bool autoRestore = true; 
+}
+Conf cfg = new Conf();
+*/
 
 int requestId;
 CanvasElement canvas;
 Program shaderProgram;
 Model squareModel;
+bool debugLostContext = true;
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -71,6 +80,11 @@ WebGLRenderingContext boot() {
     canvasbox.append(a);
     canvasbox.style.backgroundColor = 'lightblue';    
     return null;
+  }
+  
+  if (debugLostContext) {
+    //initDebugLostContext(canvas, cfg);
+    initDebugLostContext(canvas);
   }
   
   var sid = Cookie.getCookie("sid");

@@ -57,10 +57,6 @@ function toggleAutoRestore(canvas, autoRestoreCheck) {
 }
 
 function initDebugLostContext(canvas) {
-
-	if (!neg.debugLostContext) {
-		return;
-	}
 		
 	var control = document.getElementById("control");
 	if (!control.appendChild) {
@@ -75,7 +71,7 @@ function initDebugLostContext(canvas) {
 	autoRestoreCheck.checked = true;
     autoRestoreCheck.onclick = function() { toggleAutoRestore(canvas, autoRestoreCheck); };
 	var label = document.createElement('label')
-	label.htmlFor = "autoRestore";
+	label.htmlFor = autoRestoreCheck.id;
 	label.appendChild(document.createTextNode('auto restore'));
 	control.appendChild(autoRestoreCheck);
 	control.appendChild(label);

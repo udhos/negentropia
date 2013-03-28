@@ -5138,6 +5138,18 @@ $$.Cookie__readCookie_anon = {"": "Closure;cookie_0",
   }
 };
 
+$$.initDebugLostContext_anon = {"": "Closure;",
+  call$1: function(e) {
+    $.Primitives_printString("lose context button: FIXME");
+  }
+};
+
+$$.initDebugLostContext_anon0 = {"": "Closure;",
+  call$1: function(e) {
+    $.Primitives_printString("restore context button: FIXME");
+  }
+};
+
 $$.initBuffers_anon = {"": "Closure;",
   call$1: function(square) {
     $.squareModel = square;
@@ -6646,7 +6658,7 @@ $.dynamicBind = function(obj, $name, methods, $arguments) {
   } else
     method = null;
   if (method == null)
-    method = $.lookupDynamicClass(hasOwnPropertyFunction, methods, $.getTypeNameOf($.CONSTANT14));
+    method = $.lookupDynamicClass(hasOwnPropertyFunction, methods, $.getTypeNameOf($.CONSTANT15));
   if (method == null)
     (function(){throw new TypeError($name + " is not a function");})();
   else {
@@ -6686,7 +6698,7 @@ $.dynamicFunction = function($name) {
   if (f != null && !!f.methods)
     return f.methods;
   methods = {};
-  dartMethod = Object.getPrototypeOf($.CONSTANT14)[$name];
+  dartMethod = Object.getPrototypeOf($.CONSTANT15)[$name];
   if (dartMethod != null)
     methods["Object"] = dartMethod;
   bind = function() {return $.dynamicBind.call$4(this, $name, methods, Array.prototype.slice.call(arguments));};
@@ -7156,6 +7168,19 @@ $.HttpRequest_HttpRequest = function() {
   return new XMLHttpRequest();
 };
 
+$.InputElement_InputElement = function(type) {
+  var e, exception;
+  e = $.$$dom_createElement$1$x(document, "input");
+  if (type != null)
+    try {
+      $.set$type$x(e, type);
+    } catch (exception) {
+      $.unwrapException(exception);
+    }
+
+  return e;
+};
+
 $._ChildNodeListLazy$ = function(_this) {
   return new $._ChildNodeListLazy(_this);
 };
@@ -7590,6 +7615,26 @@ $.Cookie_getCookie = function($name) {
   return;
 };
 
+$.initDebugLostContext = function(canvas) {
+  var control, loseContextButton, t1, t2, restoreContextButton, t3;
+  control = $.query$1$x(document, "#control");
+  loseContextButton = $.InputElement_InputElement(null);
+  t1 = $.getInterceptor$x(loseContextButton);
+  t1.set$type(loseContextButton, "button");
+  t1.set$value(loseContextButton, "lose context");
+  t1.get$onClick(loseContextButton).listen$1(new $.initDebugLostContext_anon());
+  t2 = $.getInterceptor$x(control);
+  t2.append$1(control, loseContextButton);
+  restoreContextButton = $.InputElement_InputElement(null);
+  t3 = $.getInterceptor$x(restoreContextButton);
+  t3.set$type(restoreContextButton, "button");
+  t3.set$value(restoreContextButton, "restore context");
+  t3.get$onClick(restoreContextButton).listen$1(new $.initDebugLostContext_anon0());
+  t2.append$1(control, restoreContextButton);
+  $.Primitives_printString("FIXME: initDebugLostContext: trap webglcontextlost");
+  $.Primitives_printString("FIXME: initDebugLostContext: trap webglcontextrestored");
+};
+
 $.initGL = function(canvas) {
   var gl;
   $.Primitives_printString("WebGL: initializing");
@@ -7632,6 +7677,8 @@ $.boot = function() {
     $.set$backgroundColor$x(canvasbox.style, "lightblue");
     return;
   }
+  if ($.debugLostContext === true)
+    $.initDebugLostContext($.canvas);
   sid = $.Cookie_getCookie("sid");
   $.Primitives_printString("session id sid=" + $.S(sid));
   $.initWebSocket($.query$1$x(document, "#wsUri").textContent, sid, 1, $.query$1$x(document, "#ws_status"));
@@ -7828,7 +7875,7 @@ $.CONSTANT6 = Isolate.makeConstantList([]);
 $.CONSTANT10 = new $.EventStreamProvider("mousedown");
 $.CONSTANT = new $.NullThrownError();
 $.JSDouble_methods = $.JSDouble.prototype;
-$.CONSTANT14 = new $.Object();
+$.CONSTANT15 = new $.Object();
 $.CONSTANT12 = new $.EventStreamProvider("close");
 $.CONSTANT5 = new $._LinkedHashTableHeadMarker();
 $.JSNull_methods = $.JSNull.prototype;
@@ -7841,6 +7888,7 @@ $.CONSTANT9 = new $.EventStreamProvider("progress");
 $.CONSTANT7 = new $.CloseToken();
 $.CONSTANT11 = new $.EventStreamProvider("message");
 $.JSInt_methods = $.JSInt.prototype;
+$.CONSTANT14 = new $.EventStreamProvider("click");
 $.CONSTANT13 = new $.EventStreamProvider("open");
 $.JSArray_methods = $.JSArray.prototype;
 $.CONSTANT2 = new $.Duration(0);
@@ -7854,6 +7902,7 @@ $.requestId = null;
 $.canvas = null;
 $.shaderProgram = null;
 $.squareModel = null;
+$.debugLostContext = true;
 $.fullRateFrames = 0;
 $.stats = null;
 $.$$dom_addEventListener$3$x = function(receiver, a0, a1, a2) {
@@ -8068,6 +8117,9 @@ $.set$id$x = function(receiver, value) {
 };
 $.set$text$x = function(receiver, value) {
   return $.getInterceptor$x(receiver).set$text(receiver, value);
+};
+$.set$type$x = function(receiver, value) {
+  return $.getInterceptor$x(receiver).set$type(receiver, value);
 };
 $.set$width$x = function(receiver, value) {
   return $.getInterceptor$x(receiver).set$width(receiver, value);
@@ -8320,7 +8372,7 @@ $.$defineNativeClass("AbstractWorker", {
   }
 });
 
-$.$defineNativeClass("HTMLAnchorElement", {"": "href}",
+$.$defineNativeClass("HTMLAnchorElement", {"": "href},type}",
   toString$0: function(receiver) {
     return receiver.toString();
   }
@@ -8386,6 +8438,8 @@ $.$defineNativeClass("HTMLBodyElement", {
     return $.CONSTANT8.forTarget$1(receiver);
   }
 });
+
+$.$defineNativeClass("HTMLButtonElement", {"": "type},value}"});
 
 $.$defineNativeClass("HTMLCanvasElement", {"": "height%,width%",
   getContext$2: function(receiver, contextId, attrs) {
@@ -8520,6 +8574,9 @@ $.$defineNativeClass("Document", {
   },
   query$1: function(receiver, selectors) {
     return receiver.querySelector(selectors);
+  },
+  get$onClick: function(receiver) {
+    return $.CONSTANT14.forTarget$1(receiver);
   },
   get$onError: function(receiver) {
     return $.CONSTANT3.forTarget$1(receiver);
@@ -8697,6 +8754,8 @@ $.$defineNativeClass("Selection", {
   }
 });
 
+$.$defineNativeClass("DOMSettableTokenList", {"": "value}"});
+
 $.$defineNativeClass("DOMStringList", {
   get$length: function(receiver) {
     return receiver.length;
@@ -8783,6 +8842,9 @@ $.$defineNativeClass("Element", {"": "$$dom_children:children=,id%,style=",
     } else
       return Object.prototype.get$children.call(this, receiver);
   },
+  get$onClick: function(receiver) {
+    return $.CONSTANT14.forTarget$1(receiver);
+  },
   get$onError: function(receiver) {
     if (Object.getPrototypeOf(this).hasOwnProperty("get$onError")) {
       return $.CONSTANT3.forTarget$1(receiver);
@@ -8806,7 +8868,7 @@ $.$defineNativeClass("Element", {"": "$$dom_children:children=,id%,style=",
   }
 });
 
-$.$defineNativeClass("HTMLEmbedElement", {"": "height%,width%"});
+$.$defineNativeClass("HTMLEmbedElement", {"": "height%,type},width%"});
 
 $.$defineNativeClass("Entry", {
   _remove$2: function(receiver, successCallback, errorCallback) {
@@ -9359,7 +9421,7 @@ $.$defineNativeClass("ImageData", {"": "data=,height=,width=",
 
 $.$defineNativeClass("HTMLImageElement", {"": "height%,width%"});
 
-$.$defineNativeClass("HTMLInputElement", {"": "height%,width%",
+$.$defineNativeClass("HTMLInputElement", {"": "height%,type},value},width%",
   $isElement: function() {
     return true;
   },
@@ -9587,7 +9649,9 @@ $.$defineNativeClass("Int8Array", {
   }
 });
 
-$.$defineNativeClass("HTMLLinkElement", {"": "href}"});
+$.$defineNativeClass("HTMLLIElement", {"": "type},value}"});
+
+$.$defineNativeClass("HTMLLinkElement", {"": "href},type}"});
 
 $.$defineNativeClass("Location", {"": "href}",
   toString$0: function(receiver) {
@@ -9669,6 +9733,8 @@ $.$defineNativeClass("MessagePort", {
     return receiver.removeEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
   }
 });
+
+$.$defineNativeClass("HTMLMeterElement", {"": "value}"});
 
 $.$defineNativeClass("Node", {"": "text:textContent}",
   get$nodes: function(receiver) {
@@ -9787,14 +9853,29 @@ $.$defineNativeClass("Notification", {
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
   },
+  get$onClick: function(receiver) {
+    return $.CONSTANT14.forTarget$1(receiver);
+  },
   get$onError: function(receiver) {
     return $.CONSTANT3.forTarget$1(receiver);
   }
 });
 
-$.$defineNativeClass("HTMLObjectElement", {"": "data=,height%,width%"});
+$.$defineNativeClass("HTMLOListElement", {"": "type}"});
+
+$.$defineNativeClass("HTMLObjectElement", {"": "data=,height%,type},width%"});
+
+$.$defineNativeClass("HTMLOptionElement", {"": "value}"});
+
+$.$defineNativeClass("HTMLOutputElement", {"": "value}"});
+
+$.$defineNativeClass("HTMLParamElement", {"": "value}"});
 
 $.$defineNativeClass("ProcessingInstruction", {"": "data="});
+
+$.$defineNativeClass("HTMLProgressElement", {"": "value}"});
+
+$.$defineNativeClass("RadioNodeList", {"": "value}"});
 
 $.$defineNativeClass("Range", {
   toString$0: function(receiver) {
@@ -9841,9 +9922,13 @@ $.$defineNativeClass("RTCPeerConnection", {
   }
 });
 
+$.$defineNativeClass("RTCSessionDescription", {"": "type}"});
+
 $.$defineNativeClass("RTCStatsReport", {"": "id="});
 
 $.$defineNativeClass("Screen", {"": "height=,width="});
+
+$.$defineNativeClass("HTMLScriptElement", {"": "type}"});
 
 $.$defineNativeClass("ScriptProfileNode", {
   children$0: function(receiver) {
@@ -9854,7 +9939,7 @@ $.$defineNativeClass("ScriptProfileNode", {
   }
 });
 
-$.$defineNativeClass("HTMLSelectElement", {"": "length="});
+$.$defineNativeClass("HTMLSelectElement", {"": "length=,value}"});
 
 $.$defineNativeClass("SourceBufferList", {
   get$length: function(receiver) {
@@ -9934,6 +10019,8 @@ $.$defineNativeClass("SourceBufferList", {
     return null;
   }
 });
+
+$.$defineNativeClass("HTMLSourceElement", {"": "type}"});
 
 $.$defineNativeClass("SpeechGrammarList", {
   get$length: function(receiver) {
@@ -10069,6 +10156,10 @@ $.$defineNativeClass("Storage", {
     return function () { return [$.String, $.String]; };
   }
 });
+
+$.$defineNativeClass("HTMLStyleElement", {"": "type}"});
+
+$.$defineNativeClass("HTMLTextAreaElement", {"": "value}"});
 
 $.$defineNativeClass("TextEvent", {"": "data="});
 
@@ -10813,6 +10904,9 @@ $.$defineNativeClass("DOMWindow", {
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type,$.convertDartClosureToJS(listener, 1),useCapture);
+  },
+  get$onClick: function(receiver) {
+    return $.CONSTANT14.forTarget$1(receiver);
   },
   get$onError: function(receiver) {
     return $.CONSTANT3.forTarget$1(receiver);
@@ -11728,7 +11822,12 @@ $.$defineNativeClass("IDBTransaction", {"": "error=",
   }
 });
 
+$.$defineNativeClass("SVGAngle", {"": "value}"});
+
 $.$defineNativeClass("SVGElementInstance", {
+  get$onClick: function(receiver) {
+    return $.CONSTANT14.forTarget$1(receiver);
+  },
   get$onError: function(receiver) {
     return $.CONSTANT3.forTarget$1(receiver);
   },
@@ -11774,6 +11873,8 @@ $.$defineNativeClass("SVGFilterElement", {"": "height=,width="});
 $.$defineNativeClass("SVGForeignObjectElement", {"": "height=,width="});
 
 $.$defineNativeClass("SVGImageElement", {"": "height=,width="});
+
+$.$defineNativeClass("SVGLength", {"": "value}"});
 
 $.$defineNativeClass("SVGLengthList", {
   $index: function(receiver, index) {
@@ -11852,6 +11953,8 @@ $.$defineNativeClass("SVGLengthList", {
 });
 
 $.$defineNativeClass("SVGMaskElement", {"": "height=,width="});
+
+$.$defineNativeClass("SVGNumber", {"": "value}"});
 
 $.$defineNativeClass("SVGNumberList", {
   $index: function(receiver, index) {
@@ -12011,6 +12114,8 @@ $.$defineNativeClass("SVGRect", {"": "height%,width%"});
 
 $.$defineNativeClass("SVGRectElement", {"": "height=,width="});
 
+$.$defineNativeClass("SVGScriptElement", {"": "type}"});
+
 $.$defineNativeClass("SVGStringList", {
   $index: function(receiver, index) {
     return this.getItem$1(receiver, index);
@@ -12086,6 +12191,8 @@ $.$defineNativeClass("SVGStringList", {
     return null;
   }
 });
+
+$.$defineNativeClass("SVGStyleElement", {"": "type}"});
 
 $.$defineNativeClass("SVGElement", {
   get$children: function(receiver) {
@@ -12272,6 +12379,12 @@ $.$defineNativeClass("SVGFEDropShadowElement", {"": "height=,width="});
 
 $.$defineNativeClass("AudioBuffer", {"": "length="});
 
+$.$defineNativeClass("AudioParam", {"": "value}"});
+
+$.$defineNativeClass("BiquadFilterNode", {"": "type}"});
+
+$.$defineNativeClass("OscillatorNode", {"": "type}"});
+
 $.$defineNativeClass("SQLResultSetRowList", {
   get$length: function(receiver) {
     return receiver.length;
@@ -12348,12 +12461,12 @@ $.$defineNativeClass("SQLResultSetRowList", {
   }
 });
 
-// 167 dynamic classes.
-// 348 classes
-// 33 !leaf
+// 190 dynamic classes.
+// 356 classes
+// 34 !leaf
 (function() {
   var v0_Uint8Array = "Uint8Array|Uint8ClampedArray", v1_MediaElement = "HTMLAudioElement|HTMLMediaElement|HTMLVideoElement", v2_SvgElement = "SVGAElement|SVGAltGlyphDefElement|SVGAltGlyphElement|SVGAltGlyphItemElement|SVGAnimateColorElement|SVGAnimateElement|SVGAnimateMotionElement|SVGAnimateTransformElement|SVGAnimationElement|SVGCircleElement|SVGClipPathElement|SVGComponentTransferFunctionElement|SVGCursorElement|SVGDefsElement|SVGDescElement|SVGElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFEComponentTransferElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDiffuseLightingElement|SVGFEDisplacementMapElement|SVGFEDistantLightElement|SVGFEDropShadowElement|SVGFEFloodElement|SVGFEFuncAElement|SVGFEFuncBElement|SVGFEFuncGElement|SVGFEFuncRElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMergeNodeElement|SVGFEMorphologyElement|SVGFEOffsetElement|SVGFEPointLightElement|SVGFESpecularLightingElement|SVGFESpotLightElement|SVGFETileElement|SVGFETurbulenceElement|SVGFilterElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGForeignObjectElement|SVGGElement|SVGGlyphElement|SVGGlyphRefElement|SVGGradientElement|SVGHKernElement|SVGImageElement|SVGLineElement|SVGLinearGradientElement|SVGMPathElement|SVGMarkerElement|SVGMaskElement|SVGMetadataElement|SVGMissingGlyphElement|SVGPathElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRadialGradientElement|SVGRectElement|SVGSVGElement|SVGScriptElement|SVGSetElement|SVGStopElement|SVGStyleElement|SVGStyledElement|SVGSwitchElement|SVGSymbolElement|SVGTRefElement|SVGTSpanElement|SVGTextContentElement|SVGTextElement|SVGTextPathElement|SVGTextPositioningElement|SVGTitleElement|SVGUseElement|SVGVKernElement|SVGViewElement", v3_Element = [v1_MediaElement, v2_SvgElement, "Element|HTMLAnchorElement|HTMLAppletElement|HTMLAreaElement|HTMLBRElement|HTMLBaseElement|HTMLBaseFontElement|HTMLBodyElement|HTMLButtonElement|HTMLCanvasElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDirectoryElement|HTMLDivElement|HTMLElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFontElement|HTMLFormElement|HTMLFrameElement|HTMLFrameSetElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLabelElement|HTMLLegendElement|HTMLLinkElement|HTMLMapElement|HTMLMarqueeElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLSelectElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement"].join("|"), v4_CharacterData = "CDATASection|CharacterData|Comment|Text", v5_Document = "Document|HTMLDocument|SVGDocument", v6_DocumentFragment = "DocumentFragment|ShadowRoot", v7_Node = [v3_Element, v4_CharacterData, v5_Document, v6_DocumentFragment, "Attr|DocumentType|EntityReference|Node|Notation|ProcessingInstruction"].join("|"), v8_AbstractWorker = "AbstractWorker|SharedWorker|Worker", v9_WorkerContext = "DedicatedWorkerContext|SharedWorkerContext|WorkerContext", v10_MediaStream = "LocalMediaStream|MediaStream", v11_Request = "IDBOpenDBRequest|IDBRequest";
-  $.dynamicSetMetadata([["AbstractWorker", v8_AbstractWorker], ["Uint8Array", v0_Uint8Array], ["ArrayBufferView", [v0_Uint8Array, "ArrayBufferView|DataView|Float32Array|Float64Array|Int16Array|Int32Array|Int8Array|Uint16Array|Uint32Array"].join("|")], ["Blob", "Blob|File"], ["CharacterData", v4_CharacterData], ["Document", v5_Document], ["DocumentFragment", v6_DocumentFragment], ["DOMTokenList", "DOMSettableTokenList|DOMTokenList"], ["HTMLMediaElement", v1_MediaElement], ["SVGElement", v2_SvgElement], ["Element", v3_Element], ["Entry", "DirectoryEntry|Entry|FileEntry"], ["EntrySync", "DirectoryEntrySync|EntrySync|FileEntrySync"], ["Event", "AudioProcessingEvent|BeforeLoadEvent|CloseEvent|CompositionEvent|CustomEvent|DeviceMotionEvent|DeviceOrientationEvent|ErrorEvent|Event|FocusEvent|HashChangeEvent|IDBVersionChangeEvent|KeyboardEvent|MediaKeyEvent|MediaStreamEvent|MediaStreamTrackEvent|MessageEvent|MouseEvent|MutationEvent|OfflineAudioCompletionEvent|OverflowEvent|PageTransitionEvent|PopStateEvent|ProgressEvent|RTCDTMFToneChangeEvent|RTCDataChannelEvent|RTCIceCandidateEvent|SVGZoomEvent|SpeechInputEvent|SpeechRecognitionError|SpeechRecognitionEvent|StorageEvent|TextEvent|TouchEvent|TrackEvent|TransitionEvent|UIEvent|WebGLContextEvent|WebKitAnimationEvent|WebKitTransitionEvent|WheelEvent|XMLHttpRequestProgressEvent"], ["Node", v7_Node], ["WorkerContext", v9_WorkerContext], ["MediaStream", v10_MediaStream], ["IDBRequest", v11_Request], ["EventTarget", [v7_Node, v8_AbstractWorker, v9_WorkerContext, v10_MediaStream, v11_Request, "AudioContext|BatteryManager|DOMApplicationCache|DOMWindow|EventSource|EventTarget|FileReader|FileWriter|IDBDatabase|IDBTransaction|MediaController|MediaSource|MediaStreamTrack|MessagePort|Notification|OfflineAudioContext|Performance|RTCDTMFSender|RTCDataChannel|RTCPeerConnection|SVGElementInstance|SourceBufferList|SpeechRecognition|TextTrack|TextTrackCue|TextTrackList|WebKitNamedFlow|WebSocket|XMLHttpRequest|XMLHttpRequestUpload"].join("|")], ["HTMLCollection", "HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection"], ["NodeList", "NodeList|RadioNodeList"], ["CSSValueList", "CSSValueList|WebKitCSSFilterValue|WebKitCSSMixFunctionValue|WebKitCSSTransformValue"]]);
+  $.dynamicSetMetadata([["AbstractWorker", v8_AbstractWorker], ["Uint8Array", v0_Uint8Array], ["ArrayBufferView", [v0_Uint8Array, "ArrayBufferView|DataView|Float32Array|Float64Array|Int16Array|Int32Array|Int8Array|Uint16Array|Uint32Array"].join("|")], ["Blob", "Blob|File"], ["CharacterData", v4_CharacterData], ["Document", v5_Document], ["DocumentFragment", v6_DocumentFragment], ["DOMTokenList", "DOMSettableTokenList|DOMTokenList"], ["HTMLMediaElement", v1_MediaElement], ["SVGElement", v2_SvgElement], ["Element", v3_Element], ["Entry", "DirectoryEntry|Entry|FileEntry"], ["EntrySync", "DirectoryEntrySync|EntrySync|FileEntrySync"], ["Event", "AudioProcessingEvent|BeforeLoadEvent|CloseEvent|CompositionEvent|CustomEvent|DeviceMotionEvent|DeviceOrientationEvent|ErrorEvent|Event|FocusEvent|HashChangeEvent|IDBVersionChangeEvent|KeyboardEvent|MediaKeyEvent|MediaStreamEvent|MediaStreamTrackEvent|MessageEvent|MouseEvent|MutationEvent|OfflineAudioCompletionEvent|OverflowEvent|PageTransitionEvent|PopStateEvent|ProgressEvent|RTCDTMFToneChangeEvent|RTCDataChannelEvent|RTCIceCandidateEvent|SVGZoomEvent|SpeechInputEvent|SpeechRecognitionError|SpeechRecognitionEvent|StorageEvent|TextEvent|TouchEvent|TrackEvent|TransitionEvent|UIEvent|WebGLContextEvent|WebKitAnimationEvent|WebKitTransitionEvent|WheelEvent|XMLHttpRequestProgressEvent"], ["Node", v7_Node], ["WorkerContext", v9_WorkerContext], ["MediaStream", v10_MediaStream], ["IDBRequest", v11_Request], ["EventTarget", [v7_Node, v8_AbstractWorker, v9_WorkerContext, v10_MediaStream, v11_Request, "AudioContext|BatteryManager|DOMApplicationCache|DOMWindow|EventSource|EventTarget|FileReader|FileWriter|IDBDatabase|IDBTransaction|MediaController|MediaSource|MediaStreamTrack|MessagePort|Notification|OfflineAudioContext|Performance|RTCDTMFSender|RTCDataChannel|RTCPeerConnection|SVGElementInstance|SourceBufferList|SpeechRecognition|TextTrack|TextTrackCue|TextTrackList|WebKitNamedFlow|WebSocket|XMLHttpRequest|XMLHttpRequestUpload"].join("|")], ["HTMLCollection", "HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection"], ["NodeList", "NodeList|RadioNodeList"], ["CSSValueList", "CSSValueList|WebKitCSSFilterValue|WebKitCSSMixFunctionValue|WebKitCSSTransformValue"], ["AudioParam", "AudioGain|AudioParam"]]);
 })();
 
 $.main.call$0 = $.main;

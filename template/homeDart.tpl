@@ -20,8 +20,8 @@
 </div>
 
 <div id="canvasbox"></div>
-
 <div id="framerate"></div>
+<div id="control"></div>
 
 <div id="toggle">return to <a href="{{.HomePath}}">javascript</a></div>
 
