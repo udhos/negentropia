@@ -6,7 +6,8 @@ var neg = {
 	drawOnce:            false,
 	cullBackface:        true,
 	fieldOfViewY:        45,
-	ongoingImageLoads:   []
+	ongoingImageLoads:   [],
+	programList:         []
 };
 var gl = null;
 var websocket = null;
@@ -79,9 +80,6 @@ function animate() {
 }
 
 function render() {
-
-    gl.viewport(0, 0, neg.canvas.width, neg.canvas.height); // define viewport size
-	gl.depthRange(0.0, 1.0); // default
 		
 	// http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
@@ -96,9 +94,15 @@ function render() {
 	// h = 2 * 0.414 * 1.0
 	// h = 0.828
 	//
-    //mat4.perspective(neg.fieldOfViewY, neg.canvas.width / neg.canvas.height, 1.0, 1000.0, neg.pMatrix);
+	// neg.canvasAspect = neg.canvas.width / neg.canvas.height;
+	//
+    //mat4.perspective(neg.fieldOfViewY, neg.canvasAspect, 1.0, 1000.0, neg.pMatrix);
 
 	drawSquare();
+	
+	for (var p in neg.programList) {
+		p.drawModels();
+	}
 }
 
 function loop() {
@@ -175,9 +179,19 @@ function initContext() {
 	
 	initBuffers();
 	
+	var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min_fs.txt");
+	var squareModel2 = squareProgram2.addModel("/mesh/square2.json");
+	var squareInstance2 = squareModel2.addInstance("square2");
+	neg.programList.push(squareProgram2);
+		
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color
     gl.enable(gl.DEPTH_TEST);			// perform depth testing
 	gl.depthFunc(gl.LESS);				// gl.LESS is default depth test
+	gl.depthRange(0.0, 1.0);            // default
+	
+	// define viewport size
+    gl.viewport(0, 0, neg.canvas.width, neg.canvas.height);
+	neg.canvasAspect = neg.canvas.width / neg.canvas.height; // save aspect for render loop mat4.perspective
 		
 	backfaceCulling(gl, neg.cullBackface);
 	
