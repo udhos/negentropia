@@ -101,7 +101,7 @@ function render() {
 	drawSquare();
 	
 	for (var p in neg.programList) {
-		p.drawModels();
+		neg.programList[p].drawModels();
 	}
 }
 
@@ -141,6 +141,8 @@ function drawSquare() {
 		// square buffers are not loaded yet
 		return;
 	}
+	
+	gl.useProgram(neg.programSquare.shaderProgram);
 
 	var aVertexPosition = neg.programSquare.aVertexPosition;
 	var square = neg.square;
@@ -150,8 +152,9 @@ function drawSquare() {
     gl.enableVertexAttribArray(aVertexPosition);
 	
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, square.vertexIndexBuffer);
-
 	gl.drawElements(gl.TRIANGLES, square.vertInd.length, gl.UNSIGNED_SHORT, 0 * square.vertexIndexBufferItemSize);
+
+    gl.disableVertexAttribArray(aVertexPosition);
 
 	// clean up
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -165,6 +168,10 @@ function initBuffers() {
 function squareProgramLoaded(prog) {
 	if ('shaderProgram' in prog) {
 		console.log("main.js: square shader program: ready");
+
+		// save vertex attribute location
+		prog.aVertexPosition = gl.getAttribLocation(prog.shaderProgram, "aVertexPosition");
+
 		neg.programSquare = prog;
 	}
 	else {
@@ -179,10 +186,13 @@ function initContext() {
 	
 	initBuffers();
 	
-	var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min_fs.txt");
-	var squareModel2 = squareProgram2.addModel("/mesh/square2.json");
-	var squareInstance2 = squareModel2.addInstance("square2");
+	var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
 	neg.programList.push(squareProgram2);
+	var squareModel2 = new Model("m2", squareProgram2, "/mesh/square2.json");
+	squareModel2.init();
+	squareProgram2.addModel(squareModel2);
+	var squareInstance2 = new Instance(squareModel2, "square2");
+	squareModel2.addInstance(squareInstance2);
 		
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color
     gl.enable(gl.DEPTH_TEST);			// perform depth testing

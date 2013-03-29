@@ -33,12 +33,6 @@ function linkProg(prog, gl, vertexShader, fragmentShader) {
 
 	// save shader program
 	prog.shaderProgram = shaderProgram;
-
-	// use program
-    gl.useProgram(prog.shaderProgram);
-
-	// save vertex attribute location
-    prog.aVertexPosition = gl.getAttribLocation(prog.shaderProgram, "aVertexPosition");
 }
 		
 function tryLinkProgram(prog) {
@@ -51,7 +45,6 @@ function tryLinkProgram(prog) {
 	console.log("shader program: linking");
 	linkProg(prog, gl, prog.vertexShader, prog.fragmentShader);
 
-	// remove from ongoing loads
 	shaderOngoingStop(prog);
 }
 
@@ -82,7 +75,6 @@ function processFragmentShader(opaque, response) {
 }
 
 function shaderOngoingStart(prog) {
-	//neg.ongoingProgramLoads.push(prog);
 }
 
 function shaderOngoingStop(prog) {
@@ -107,7 +99,6 @@ function fetchProgramFromURL(vs, fs, callbackOnDone) {
 	
 	//neg.ongoingProgramLoads = [];
 	
-	// append to ongoing loads
 	shaderOngoingStart(prog);
 	
 	fetchFile(vs, processVertexShader, prog);
