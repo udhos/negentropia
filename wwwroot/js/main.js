@@ -188,10 +188,9 @@ function initContext() {
 	
 	var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
 	neg.programList.push(squareProgram2);
-	var squareModel2 = new Model("m2", squareProgram2, "/mesh/square2.json");
-	squareModel2.init();
+	var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
 	squareProgram2.addModel(squareModel2);
-	var squareInstance2 = new Instance(squareModel2, "square2");
+	var squareInstance2 = new Instance(squareModel2);
 	squareModel2.addInstance(squareInstance2);
 		
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color

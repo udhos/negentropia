@@ -48,48 +48,22 @@ Program.prototype.drawModels = function() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 	
-    gl.disableVertexAttribArray(this.aVertexPosition);
+    //gl.disableVertexAttribArray(this.aVertexPosition); // needed ??
 }
 
-function Model(nam, program, URL) {
-	console.log("new model '" + name + "': URL=" + URL);
-	this.name = nam;
+function Model(program, URL) {
 	this.program = program;
 	this.URL = URL;
 	this.instanceList = [];
-}
-
-Model.prototype.init = function() {	
+	
 	// Async request for buffer data (mesh)
 	var m = this;
-	fetchBufferData(this.URL, function (buf) { modelBufferDataLoaded(m, buf); } );
+	fetchBufferData(this.URL, function (buf) { modelBufferDataLoaded(m, buf); } );	
 }
 
 function modelBufferDataLoaded(model, buf) {
-	if (buf == null) {
-		console.log(model + ": model '" + model.name + "': buffer data load failure");
-		return;
-	}
-	
-	console.log(model + ": model '" + model.name + "': buffer data loaded");
 	model.buffer = buf;
-	
-	console.log(model + ": model '" + model.name + "': buffer: " + model.buffer);
 }
-
-/*
-Model.prototype.bufferDataLoaded = function(buffer) {
-	if (buffer == null) {
-		console.log("model '" + this.name + "': buffer data load failure");
-		return;
-	}
-	
-	console.log("model '" + this.name + "': buffer data loaded");
-	this.buffer = buffer;
-	
-	console.log("model '" + this.name + "': buffer: " + this.buffer);
-}
-*/
 
 Model.prototype.addInstance = function(i) {
 	this.instanceList.push(i);
@@ -101,10 +75,8 @@ Model.prototype.drawInstances = function() {
 	}
 }
 
-function Instance(model, name) {
-	console.log("new instance: name=" + name);
+function Instance(model) {
 	this.model = model;
-	this.name = name;
 }
 
 Instance.prototype.draw = function(program) {
