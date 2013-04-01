@@ -20,6 +20,7 @@ CanvasElement canvas;
 Program shaderProgram;
 Model squareModel;
 bool debugLostContext = true;
+List<Program> programList = new List<Program>();
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -156,6 +157,8 @@ void render(WebGLRenderingContext gl) {
   //mat4.perspective(neg.fieldOfViewY, neg.canvas.width / neg.canvas.height, 1.0, 1000.0, neg.pMatrix);
   
   drawSquare(gl);
+  
+  programList.forEach((Program p) => p.drawModels());
 }
 
 void drawSquare(WebGLRenderingContext gl) {

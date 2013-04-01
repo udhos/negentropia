@@ -2,11 +2,15 @@ library shader;
 
 import 'dart:html';
 
+import 'buffer.dart';
+
 class Program {
   
   WebGLProgram program;
   int aVertexPosition;
   bool ready = false;
+  
+  List<Model> modelList = new List<Model>();  
   
   Program._load(WebGLRenderingContext gl, String vertexShaderURL, fragmentShaderURL) {
     print("Program._load: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
@@ -91,6 +95,12 @@ class Program {
   
   factory Program(WebGLRenderingContext gl, String vertexShader, fragmentShader) {
     return new Program._load(gl, vertexShader, fragmentShader);
+  }
+  
+  void drawModels() {
+    // FIXME WRITEME
+    
+    modelList.forEach((Model m) => m.drawInstances());
   }
 }
 

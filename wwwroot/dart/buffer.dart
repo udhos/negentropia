@@ -4,7 +4,16 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:json';
 
+class Instance {
+  void draw() {
+    // FIXME WRITEME    
+  }
+}
+
 class Model {
+  
+  List<Instance> instanceList = new List<Instance>();
+  
   WebGLBuffer vertexPositionBuffer;
   WebGLBuffer vertexIndexBuffer;
   int vertexPositionBufferItemSize;
@@ -30,6 +39,13 @@ class Model {
     gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, null);
   }
+ 
+  void drawInstances() {
+    // FIXME WRITEME
+        
+    instanceList.forEach((Instance i) => i.draw());
+  }  
+  
 }
 
 void fetchSquare(WebGLRenderingContext gl, String jsonUrl, void deliverSquare(Model)) {
