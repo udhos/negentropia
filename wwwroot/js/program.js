@@ -4,7 +4,7 @@ function Program(vertexShaderURL, fragmentShaderURL) {
 	
 	// Async request for shader program
 	var p = this;
-	fetchProgramFromURL("/shader/min_vs.txt", "/shader/min2_fs.txt", function (prog) { shaderProgramLoaded(p, prog); });
+	fetchProgramFromURL(vertexShaderURL, fragmentShaderURL, function (prog) { shaderProgramLoaded(p, prog); });
 }
 
 function shaderProgramLoaded(p, prog) {

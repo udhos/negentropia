@@ -44,6 +44,7 @@ function processBufferData(opaque, response) {
 	opaque.onDone(buf);
 }
 
+/*
 function fetchSquare(squareFile) {
 	delete neg.square;
 	var opaque = {
@@ -78,4 +79,4 @@ function processSquareBuffers(opaque, response) {
 	
 	console.log(opaque.filename + ": square buffers ready");
 }
-
+*/

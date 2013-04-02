@@ -98,7 +98,7 @@ function render() {
 	//
     //mat4.perspective(neg.fieldOfViewY, neg.canvasAspect, 1.0, 1000.0, neg.pMatrix);
 
-	drawSquare();
+	//drawSquare();
 	
 	for (var p in neg.programList) {
 		neg.programList[p].drawModels();
@@ -130,6 +130,7 @@ function backfaceCulling(gl, enable) {
 	}
 }
 
+/*
 function drawSquare() {
 
 	if (!('programSquare' in neg)) {
@@ -160,11 +161,15 @@ function drawSquare() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);				
 }
+*/
 
+/*
 function initBuffers() {
 	fetchSquare("/mesh/square.json");
 }
+*/
 
+/*
 function squareProgramLoaded(prog) {
 	if ('shaderProgram' in prog) {
 		console.log("main.js: square shader program: ready");
@@ -178,13 +183,23 @@ function squareProgramLoaded(prog) {
 		console.log("main.js: square shader program: failure");	
 	}
 }
+*/
 
 function initContext() {
 
 	// Async request for shader program
-	fetchProgramFromURL("/shader/min_vs.txt", "/shader/min_fs.txt", squareProgramLoaded);
+	//fetchProgramFromURL("/shader/min_vs.txt", "/shader/min_fs.txt", squareProgramLoaded);
 	
-	initBuffers();
+	//initBuffers();
+	
+	neg.programList = []; // drop existing programs
+
+	var squareProgram = new Program("/shader/min_vs.txt", "/shader/min_fs.txt");
+	neg.programList.push(squareProgram);
+	var squareModel = new Model(squareProgram, "/mesh/square.json");
+	squareProgram.addModel(squareModel);
+	var squareInstance = new Instance(squareModel);
+	squareModel.addInstance(squareInstance);
 	
 	var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
 	neg.programList.push(squareProgram2);
