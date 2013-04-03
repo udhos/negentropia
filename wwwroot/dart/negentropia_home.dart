@@ -17,6 +17,7 @@ Conf cfg = new Conf();
 
 int requestId;
 CanvasElement canvas;
+num canvasAspect;
 Program shaderProgram;
 Model squareModel;
 bool debugLostContext = true;
@@ -105,25 +106,46 @@ WebGLRenderingContext boot() {
   return gl;
 }
 
-void initBuffers(WebGLRenderingContext gl) {
+void initBuffers(WebGLRenderingContext gl, Program prog) {
   print("initBuffers: square model: fetching");
-  fetchSquare(gl, "/mesh/square.json", (Model square) {
+  fetchSquare(gl, prog, "/mesh/square.json", (Model square) {
     squareModel = square;
     print("initBuffers: square model: done");
   });
 }
 
 void initContext(WebGLRenderingContext gl) {
+  /*
   // load shaders
   shaderProgram = new Program(gl, "/shader/min_vs.txt", "/shader/min_fs.txt");
   assert(shaderProgram != null);
   
   // init buffers
-  initBuffers(gl);
-    
+  initBuffers(gl, shaderProgram);
+  */
+
+  Program squareProgram = new Program(gl, "/shader/min_vs.txt", "/shader/min_fs.txt");
+  programList.add(squareProgram);
+  Model squareModel = new Model.fromURL(gl, squareProgram, "/mesh/square.json");
+  squareProgram.addModel(squareModel);
+  Instance squareInstance = new Instance(squareModel);
+  squareModel.addInstance(squareInstance);
+
+  Program squareProgram2 = new Program(gl, "/shader/min_vs.txt", "/shader/min2_fs.txt");
+  programList.add(squareProgram2);
+  Model squareModel2 = new Model.fromURL(gl, squareProgram2, "/mesh/square2.json");
+  squareProgram2.addModel(squareModel2);
+  Instance squareInstance2 = new Instance(squareModel2);
+  squareModel2.addInstance(squareInstance2);
+  
   gl.clearColor(0.5, 0.5, 0.5, 1.0);            // clear color
   gl.enable(WebGLRenderingContext.DEPTH_TEST);  // enable depth testing
   gl.depthFunc(WebGLRenderingContext.LESS);     // gl.LESS is default depth test
+  gl.depthRange(0.0, 1.0);                      // default
+  
+  // define viewport size
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  canvasAspect = canvas.width / canvas.height; // save aspect for render loop mat4.perspective
 
   // enable backface culling
   gl.frontFace(WebGLRenderingContext.CCW);
@@ -138,8 +160,6 @@ void animate() {
 }
 
 void render(WebGLRenderingContext gl) {
-  gl.viewport(0, 0, canvas.width, canvas.height); // define viewport size
-  gl.depthRange(0.0, 1.0); // default
   
   // http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
   gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
@@ -156,7 +176,7 @@ void render(WebGLRenderingContext gl) {
   //
   //mat4.perspective(neg.fieldOfViewY, neg.canvas.width / neg.canvas.height, 1.0, 1000.0, neg.pMatrix);
   
-  drawSquare(gl);
+  //drawSquare(gl);
   
   programList.forEach((Program p) => p.drawModels());
 }
@@ -173,6 +193,8 @@ void drawSquare(WebGLRenderingContext gl) {
     return;
   }
 
+  gl.useProgram(shaderProgram.program);
+  
   int aVertexPosition = shaderProgram.aVertexPosition;
 
   gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, squareModel.vertexPositionBuffer);

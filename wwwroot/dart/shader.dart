@@ -9,6 +9,7 @@ class Program {
   WebGLProgram program;
   int aVertexPosition;
   bool ready = false;
+  WebGLRenderingContext gl;
   
   List<Model> modelList = new List<Model>();  
   
@@ -48,14 +49,13 @@ class Program {
         print(gl.getProgramInfoLog(p));
       }
       
-      gl.useProgram(p);
-      
       this.aVertexPosition = gl.getAttribLocation(p, "aVertexPosition");
       this.ready = true;
       
       print("shader program: ready");
       
       this.program = p;
+      this.gl = gl;
     }
         
     var requestVert = new HttpRequest();
@@ -97,10 +97,23 @@ class Program {
     return new Program._load(gl, vertexShader, fragmentShader);
   }
   
+  void addModel(Model m) {
+    this.modelList.add(m);
+  }
+  
   void drawModels() {
     // FIXME WRITEME
     
+    gl.useProgram(program);
+    gl.enableVertexAttribArray(aVertexPosition);
+    
     modelList.forEach((Model m) => m.drawInstances());
+
+    // clean up
+    gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, null);
+    gl.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, null);
+    
+    //gl.disableVertexAttribArray(aVertexPosition); // needed ??
   }
 }
 

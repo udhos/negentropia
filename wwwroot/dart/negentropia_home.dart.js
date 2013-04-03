@@ -1257,6 +1257,8 @@ $$.JSNumber = {"": "Object;",
     return receiver - other;
   },
   $div: function(receiver, other) {
+    if (!(typeof other === "number"))
+      throw $.$$throw($.ArgumentError$(other));
     return receiver / other;
   },
   $mul: function(receiver, other) {
@@ -1669,12 +1671,12 @@ $$._FutureImpl = {"": "Object;_state@,_resultOrListeners<",
   _asListener$0: function() {
     return $._FutureListenerWrapper$(this);
   },
+  _FutureImpl$immediateError$2: function(error, stackTrace) {
+    this._setError$1(typeof error === "object" && error !== null && !!error.$isAsyncError ? error : $.AsyncError$(error, stackTrace));
+  },
   _FutureImpl$immediate$1: function(value) {
     this._state = 1;
     this._resultOrListeners = value;
-  },
-  _FutureImpl$immediateError$2: function(error, stackTrace) {
-    this._setError$1(typeof error === "object" && error !== null && !!error.$isAsyncError ? error : $.AsyncError$(error, stackTrace));
   },
   $is_FutureImpl: true,
   $isFuture: true
@@ -2133,13 +2135,13 @@ $$._HashTable = {"": "Object;",
     if (offset < 0 || offset >= t1.length)
       throw $.ioore(offset);
     key = t1[offset];
-    if (key !== $.CONSTANT2)
+    if (key !== $.CONSTANT1)
       return key;
     return;
   },
   _key$1$bailout: function(state0, offset, t1) {
     var key = $.$index$asx(t1, offset);
-    if (key !== $.CONSTANT2)
+    if (key !== $.CONSTANT1)
       return key;
     return;
   },
@@ -2171,7 +2173,7 @@ $$._HashTable = {"": "Object;",
     return (previousIndex + probeCount & t1) >>> 0;
   },
   _isFree$1: function(marker) {
-    return marker == null || marker === $.CONSTANT1;
+    return marker == null || marker === $.CONSTANT0;
   },
   _probeForAdd$2: function(hashCode, object) {
     var entrySize, index, t1, firstTombstone, probeCount, offset, entry;
@@ -2180,14 +2182,14 @@ $$._HashTable = {"": "Object;",
     for (t1 = null == object, firstTombstone = -1, probeCount = 0; true;) {
       offset = index * entrySize;
       entry = $.$index$asx(this._table, offset);
-      if (entry === $.CONSTANT1) {
+      if (entry === $.CONSTANT0) {
         if (firstTombstone < 0)
           firstTombstone = offset;
       } else if (entry == null) {
         if (firstTombstone < 0)
           return offset;
         return firstTombstone;
-      } else if (($.CONSTANT2 === entry ? t1 : $.$eq(entry, object)) === true)
+      } else if (($.CONSTANT1 === entry ? t1 : $.$eq(entry, object)) === true)
         return offset;
       ++probeCount;
       index = this._nextProbe$3(index, probeCount, this._capacity);
@@ -2202,8 +2204,8 @@ $$._HashTable = {"": "Object;",
       entry = $.$index$asx(this._table, offset);
       if (entry == null)
         return -1;
-      else if ($.CONSTANT1 !== entry)
-        if (($.CONSTANT2 === entry ? t1 : $.$eq(entry, object)) === true)
+      else if ($.CONSTANT0 !== entry)
+        if (($.CONSTANT1 === entry ? t1 : $.$eq(entry, object)) === true)
           return offset;
       ++probeCount;
       index = this._nextProbe$3(index, probeCount, this._capacity);
@@ -2272,7 +2274,7 @@ $$._HashTable = {"": "Object;",
       if (i < 0)
         throw $.ioore(i);
       object = oldTable[i];
-      if (!(object == null || object === $.CONSTANT1))
+      if (!(object == null || object === $.CONSTANT0))
         this._copyEntry$3(oldTable, i, this._put$1(object));
     }
   },
@@ -2280,7 +2282,7 @@ $$._HashTable = {"": "Object;",
     var t1, i, object;
     for (t1 = $.getInterceptor$asx(oldTable), i = 0; i < t1.get$length(oldTable); i += this.get$_entrySize()) {
       object = t1.$index(oldTable, i);
-      if (!(object == null || object === $.CONSTANT1))
+      if (!(object == null || object === $.CONSTANT0))
         this._copyEntry$3(oldTable, i, this._put$1(object));
     }
   },
@@ -2302,12 +2304,12 @@ $$._HashTable = {"": "Object;",
     oldEntry = t1[offset];
     if (oldEntry == null)
       this._entryCount = this._entryCount + 1;
-    else if (oldEntry === $.CONSTANT1)
+    else if (oldEntry === $.CONSTANT0)
       this._deletedCount = this._deletedCount - 1;
     else
       return offset;
     if (key == null)
-      key = $.CONSTANT2;
+      key = $.CONSTANT1;
     t1 = this._table;
     if (typeof t1 !== "object" || t1 === null || (t1.constructor !== Array || !!t1.immutable$list) && !t1.$isJavaScriptIndexingBehavior())
       return this._put$1$bailout(2, key, t1, offset);
@@ -2327,12 +2329,12 @@ $$._HashTable = {"": "Object;",
         oldEntry = $.$index$asx(t1, offset);
         if (oldEntry == null)
           this._entryCount = this._entryCount + 1;
-        else if (oldEntry === $.CONSTANT1)
+        else if (oldEntry === $.CONSTANT0)
           this._deletedCount = this._deletedCount - 1;
         else
           return offset;
         if (key == null)
-          key = $.CONSTANT2;
+          key = $.CONSTANT1;
         t1 = this._table;
       case 2:
         var oldEntry;
@@ -2357,7 +2359,7 @@ $$._HashTable = {"": "Object;",
   },
   _deleteEntry$1: function(offset) {
     var key, t1;
-    key = $.CONSTANT1;
+    key = $.CONSTANT0;
     t1 = this._table;
     if (typeof t1 !== "object" || t1 === null || (t1.constructor !== Array || !!t1.immutable$list) && !t1.$isJavaScriptIndexingBehavior())
       return this._deleteEntry$1$bailout(1, offset, t1, key);
@@ -2490,7 +2492,7 @@ $$._HashTableKeyIterable = {"": "_HashTableIterable;_hashTable",
     return $._HashTableKeyIterator$(this._hashTable);
   },
   _valueAt$2: function(offset, key) {
-    if (key === $.CONSTANT2)
+    if (key === $.CONSTANT1)
       return;
     return key;
   },
@@ -2499,7 +2501,7 @@ $$._HashTableKeyIterable = {"": "_HashTableIterable;_hashTable",
 
 $$._HashTableKeyIterator = {"": "_HashTableIterator;_hashTable,_modificationCount,_offset,_liblib1$_current",
   _valueAt$2: function(offset, key) {
-    if (key === $.CONSTANT2)
+    if (key === $.CONSTANT1)
       return;
     return key;
   }
@@ -2702,7 +2704,7 @@ $$._LinkedHashTable = {"": "_HashTable;",
     t1 = result.length;
     if (0 >= t1)
       throw $.ioore(0);
-    result[0] = $.CONSTANT3;
+    result[0] = $.CONSTANT2;
     if (1 >= t1)
       throw $.ioore(1);
     result[1] = 0;
@@ -2806,7 +2808,7 @@ $$._LinkedHashTable = {"": "_HashTable;",
     if (offset < 0 || offset >= t1.length)
       throw $.ioore(offset);
     oldEntry = t1[offset];
-    if (oldEntry === $.CONSTANT1)
+    if (oldEntry === $.CONSTANT0)
       this._deletedCount = this._deletedCount - 1;
     else if (oldEntry == null)
       this._entryCount = this._entryCount + 1;
@@ -2814,7 +2816,7 @@ $$._LinkedHashTable = {"": "_HashTable;",
       return offset;
     this._recordModification$0();
     if (key == null)
-      key = $.CONSTANT2;
+      key = $.CONSTANT1;
     t1 = this._table;
     if (typeof t1 !== "object" || t1 === null || (t1.constructor !== Array || !!t1.immutable$list) && !t1.$isJavaScriptIndexingBehavior())
       return this._put$1$bailout1(2, key, t1, offset);
@@ -2832,7 +2834,7 @@ $$._LinkedHashTable = {"": "_HashTable;",
       case 1:
         state0 = 0;
         oldEntry = $.$index$asx(t1, offset);
-        if (oldEntry === $.CONSTANT1)
+        if (oldEntry === $.CONSTANT0)
           this._deletedCount = this._deletedCount - 1;
         else if (oldEntry == null)
           this._entryCount = this._entryCount + 1;
@@ -2840,7 +2842,7 @@ $$._LinkedHashTable = {"": "_HashTable;",
           return offset;
         this._recordModification$0();
         if (key == null)
-          key = $.CONSTANT2;
+          key = $.CONSTANT1;
         t1 = this._table;
       case 2:
         var oldEntry;
@@ -2853,7 +2855,7 @@ $$._LinkedHashTable = {"": "_HashTable;",
   _deleteEntry$1: function(offset) {
     var key;
     this._unlink$1(offset);
-    key = $.CONSTANT1;
+    key = $.CONSTANT0;
     $.$indexSet$ax(this._table, offset, key);
     this._deletedCount = this._deletedCount + 1;
     this._recordModification$0();
@@ -3229,14 +3231,14 @@ $$.DateTime = {"": "Object;millisecondsSinceEpoch<,isUtc",
   get$millisecond: function() {
     return $.Primitives_getMilliseconds(this);
   },
-  DateTime$_now$0: function() {
-    $.Primitives_lazyAsJsDate(this);
-  },
   DateTime$fromMillisecondsSinceEpoch$2$isUtc: function(millisecondsSinceEpoch, isUtc) {
     if ($.abs$0$n(millisecondsSinceEpoch) > 8640000000000000)
       throw $.$$throw($.ArgumentError$(millisecondsSinceEpoch));
     if (isUtc == null)
       throw $.$$throw($.ArgumentError$(isUtc));
+  },
+  DateTime$_now$0: function() {
+    $.Primitives_lazyAsJsDate(this);
   },
   $isDateTime: true
 };
@@ -3702,17 +3704,7 @@ $$._FrozenElementList = {"": "Object;_nodeList",
     return $.get$length$asx(this._nodeList);
   },
   $index: function(_, index) {
-    var t1 = this._nodeList;
-    if (typeof t1 !== "string" && (typeof t1 !== "object" || t1 === null || t1.constructor !== Array && !t1.$isJavaScriptIndexingBehavior()))
-      return this.$$index$bailout(1, index, t1);
-    if (index !== (index | 0))
-      throw $.iae(index);
-    if (index < 0 || index >= t1.length)
-      throw $.ioore(index);
-    return t1[index];
-  },
-  $$index$bailout: function(state0, index, t1) {
-    return $.$index$asx(t1, index);
+    return $.$index$asx(this._nodeList, index);
   },
   $indexSet: function(_, index, value) {
     throw $.$$throw($.UnsupportedError$(""));
@@ -3953,17 +3945,7 @@ $$._ChildNodeListLazy = {"": "Object;_this",
     return $.get$length$asx(this._this.childNodes);
   },
   $index: function(_, index) {
-    var t1 = this._this.childNodes;
-    if (typeof t1 !== "string" && (typeof t1 !== "object" || t1 === null || t1.constructor !== Array && !t1.$isJavaScriptIndexingBehavior()))
-      return this.$$index$bailout(1, index, t1);
-    if (index !== (index | 0))
-      throw $.iae(index);
-    if (index < 0 || index >= t1.length)
-      throw $.ioore(index);
-    return t1[index];
-  },
-  $$index$bailout: function(state0, index, t1) {
-    return $.$index$asx(t1, index);
+    return $.$index$asx(this._this.childNodes, index);
   },
   $is_ChildNodeListLazy: true,
   $isList: function() {
@@ -5099,58 +5081,84 @@ $$._ListRangeIteratorImpl = {"": "Object;_source,_liblib3$_offset,_end",
   }
 };
 
-$$.Model = {"": "Object;instanceList,vertexPositionBuffer<,vertexIndexBuffer<,vertexPositionBufferItemSize<,vertexIndexBufferItemSize<,vertexIndexLength<",
-  drawInstances$0: function() {
-    $.JSArray_methods.forEach$1(this.instanceList, new $.Model_drawInstances_anon());
-  },
-  Model$3: function(gl, vertCoord, vertInd) {
+$$.Instance = {"": "Object;model",
+  draw$0: function() {
+    var t1, gl, t2, t3;
+    t1 = this.model;
+    gl = t1.program.gl;
+    t2 = $.getInterceptor$x(gl);
+    t2.bindBuffer$2(gl, 34962, t1.vertexPositionBuffer);
+    t2.vertexAttribPointer$6(gl, t1.program.aVertexPosition, t1.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t2.bindBuffer$2(gl, 34963, t1.vertexIndexBuffer);
+    t3 = t1.vertexIndexLength;
+    t1 = t1.vertexIndexBufferItemSize;
+    if (typeof t1 !== "number")
+      throw $.iae(t1);
+    t2.drawElements$4(gl, 4, t3, 5123, 0 * t1);
+  }
+};
+
+$$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program?",
+  _createBuffers$3: function(gl, vertCoord, vertInd) {
     var t1 = $.getInterceptor$x(gl);
     this.vertexPositionBuffer = t1.createBuffer$0(gl);
     t1.bindBuffer$2(gl, 34962, this.vertexPositionBuffer);
-    t1.bufferData$3(gl, 34962, $.Float32Array_Float32Array$fromList(vertCoord), 35044);
+    t1.bufferData$3(gl, 34962, new Float32Array(vertCoord), 35044);
     this.vertexPositionBufferItemSize = 3;
     this.vertexIndexBuffer = t1.createBuffer$0(gl);
     t1.bindBuffer$2(gl, 34963, this.vertexIndexBuffer);
-    t1.bufferData$3(gl, 34963, $.Uint16Array_Uint16Array$fromList(vertInd), 35044);
+    t1.bufferData$3(gl, 34963, new Uint16Array(vertInd), 35044);
     this.vertexIndexBufferItemSize = 2;
     this.vertexIndexLength = $.get$length$asx(vertInd);
-    $.print("Model: vertex index length: " + $.S(this.vertexIndexLength));
+    $.Primitives_printString("Model: vertex index length: " + $.S(this.vertexIndexLength));
     t1.bindBuffer$2(gl, 34962, null);
     t1.bindBuffer$2(gl, 34963, null);
+  },
+  addInstance$1: function(i) {
+    this.instanceList.push(i);
+  },
+  drawInstances$0: function() {
+    $.JSArray_methods.forEach$1(this.instanceList, new $.Model_drawInstances_anon());
+  },
+  Model$fromURL$3: function(gl, prog, URL) {
+    var t1, t2;
+    this.program = prog;
+    t1 = new $.handleResponse(this, gl, URL);
+    t2 = new $.handleError(URL);
+    $.HttpRequest_getString(URL, null, null).then$1(t1).catchError$1(t2);
+  }
+};
+
+$$.handleResponse = {"": "Closure;this_0,gl_1,URL_2",
+  call$1: function(response) {
+    var m, e, exception, t1, vertCoord, vertInd;
+    $.Primitives_printString("Model.fromURL: fetched JSON from URL: " + this.URL_2 + ": [" + $.S(response) + "]");
+    m = null;
+    try {
+      m = $.parse(response, null);
+    } catch (exception) {
+      t1 = $.unwrapException(exception);
+      e = t1;
+      $.Primitives_printString("Model.fromURL: failure parsing square JSON: " + $.S(e));
+      return;
+    }
+
+    $.Primitives_printString("Model.fromURL: JSON parsed: [" + $.S(m) + "]");
+    vertCoord = $.$index$asx(m, "vertCoord");
+    vertInd = $.$index$asx(m, "vertInd");
+    this.this_0._createBuffers$3(this.gl_1, vertCoord, vertInd);
+  }
+};
+
+$$.handleError = {"": "Closure;URL_3",
+  call$1: function(err) {
+    $.Primitives_printString("Model.fromURL: failure fetching square JSON from URL: " + this.URL_3 + ": " + $.S(err));
   }
 };
 
 $$.Model_drawInstances_anon = {"": "Closure;",
   call$1: function(i) {
     return i.draw$0();
-  }
-};
-
-$$.fetchSquare_handleResponse = {"": "Closure;gl_0,jsonUrl_1,deliverSquare_2",
-  call$1: function(response) {
-    var square, e, exception, t1, vertCoord, vertInd, squareModel;
-    $.Primitives_printString("fetched square JSON from URL: " + this.jsonUrl_1 + ": [" + $.S(response) + "]");
-    square = null;
-    try {
-      square = $.parse(response, null);
-    } catch (exception) {
-      t1 = $.unwrapException(exception);
-      e = t1;
-      $.Primitives_printString("failure parsing square JSON: " + $.S(e));
-      return;
-    }
-
-    $.Primitives_printString("square JSON parsed: [" + $.S(square) + "]");
-    vertCoord = $.$index$asx(square, "vertCoord");
-    vertInd = $.$index$asx(square, "vertInd");
-    squareModel = $.Model$(this.gl_0, vertCoord, vertInd);
-    this.deliverSquare_2.call$1(squareModel);
-  }
-};
-
-$$.fetchSquare_handleError = {"": "Closure;jsonUrl_3",
-  call$1: function(err) {
-    $.Primitives_printString("failure fetching square JSON from URL: " + this.jsonUrl_3 + ": " + $.S(err));
   }
 };
 
@@ -5179,13 +5187,6 @@ $$.initDebugLostContext_anon0 = {"": "Closure;",
   }
 };
 
-$$.initBuffers_anon = {"": "Closure;",
-  call$1: function(square) {
-    $.squareModel = square;
-    $.Primitives_printString("initBuffers: square model: done");
-  }
-};
-
 $$.render_anon = {"": "Closure;",
   call$1: function(p) {
     return p.drawModels$0();
@@ -5198,9 +5199,16 @@ $$.loop_anon = {"": "Closure;gl_0",
   }
 };
 
-$$.Program = {"": "Object;program?,aVertexPosition@,ready@,modelList",
+$$.Program = {"": "Object;program?,aVertexPosition?,ready?,gl?,modelList",
+  addModel$1: function(m) {
+    this.modelList.push(m);
+  },
   drawModels$0: function() {
+    $.useProgram$1$x(this.gl, this.program);
+    $.enableVertexAttribArray$1$x(this.gl, this.aVertexPosition);
     $.JSArray_methods.forEach$1(this.modelList, new $.Program_drawModels_anon());
+    $.bindBuffer$2$x(this.gl, 34962, null);
+    $.bindBuffer$2$x(this.gl, 34963, null);
   },
   Program$_load$3: function(gl, vertexShaderURL, fragmentShaderURL, box_0) {
     var t1, requestVert, t2, requestFrag;
@@ -5252,13 +5260,13 @@ $$.tryCompileShaders = {"": "Closure;box_0,this_1,gl_2",
     t3.linkProgram$1(t2, p);
     if (t3.getProgramParameter$2(t2, p, 35714) !== true && t3.isContextLost$0(t2) !== true)
       $.Primitives_printString($.toString$0(t3.getProgramInfoLog$1(t2, p)));
-    t3.useProgram$1(t2, p);
     t1 = t3.getAttribLocation$2(t2, p, "aVertexPosition");
-    t2 = this.this_1;
-    t2.set$aVertexPosition(t1);
-    t2.set$ready(true);
+    t3 = this.this_1;
+    t3.set$aVertexPosition(t1);
+    t3.set$ready(true);
     $.Primitives_printString("shader program: ready");
-    t2.set$program(p);
+    t3.set$program(p);
+    t3.set$gl(t2);
   }
 };
 
@@ -6859,7 +6867,7 @@ $._FutureImpl__FutureImpl$wait = function(futures) {
     t4.catchError$1(t2).then$1(new $._FutureImpl__FutureImpl$wait_anon(t1, pos));
   }
   if ($.$eq(t1.remaining_2, 0))
-    return $._FutureImpl$immediate($.CONSTANT4);
+    return $._FutureImpl$immediate($.CONSTANT3);
   t1.values_1 = $.List_List(t1.remaining_2, null);
   t1.completer_0 = $._CompleterImpl$();
   return t1.completer_0.future;
@@ -6891,7 +6899,7 @@ $.Timer_Timer = function(duration, callback) {
 $.Timer_run = function(callback) {
   $.add$1$ax($.get$Timer__runCallbacks(), callback);
   if ($.$eq($.get$length$asx($.get$Timer__runCallbacks()), 1) === true)
-    $.Timer_Timer($.CONSTANT0, new $.Timer_run_anon());
+    $.Timer_Timer($.CONSTANT4, new $.Timer_run_anon());
 };
 
 $.IterableMixinWorkaround_setRangeList = function(list, start, $length, from, startFrom) {
@@ -7177,10 +7185,6 @@ $._FrozenElementListIterator$ = function(_list) {
   return new $._FrozenElementListIterator(_list, -1, null);
 };
 
-$.Float32Array_Float32Array$fromList = function(list) {
-  return new Float32Array(list);
-};
-
 $.HttpRequest_getString = function(url, onProgress, withCredentials) {
   return $.HttpRequest_request(url, null, onProgress, null, null, withCredentials).then$1(new $.HttpRequest_getString_anon());
 };
@@ -7227,10 +7231,6 @@ $.InputElement_InputElement = function(type) {
 
 $._ChildNodeListLazy$ = function(_this) {
   return new $._ChildNodeListLazy(_this);
-};
-
-$.Uint16Array_Uint16Array$fromList = function(list) {
-  return new Uint16Array(list);
 };
 
 $.WebSocket_WebSocket = function(url, protocol_OR_protocols) {
@@ -7633,19 +7633,16 @@ $._ListRangeIteratorImpl$ = function(_source, offset, _end) {
   return new $._ListRangeIteratorImpl(_source, offset - 1, _end);
 };
 
-$.Model$ = function(gl, vertCoord, vertInd) {
-  var t1 = $.List_List($, $.Instance);
-  $.setRuntimeTypeInfo(t1, [$.Instance]);
-  t1 = new $.Model(t1, null, null, null, null, null);
-  t1.Model$3(gl, vertCoord, vertInd);
-  return t1;
+$.Instance$ = function(model) {
+  return new $.Instance(model);
 };
 
-$.fetchSquare = function(gl, jsonUrl, deliverSquare) {
-  var t1, t2;
-  t1 = new $.fetchSquare_handleResponse(gl, jsonUrl, deliverSquare);
-  t2 = new $.fetchSquare_handleError(jsonUrl);
-  $.HttpRequest_getString(jsonUrl, null, null).then$1(t1).catchError$1(t2);
+$.Model$fromURL = function(gl, prog, URL) {
+  var t1 = $.List_List($, $.Instance);
+  $.setRuntimeTypeInfo(t1, [$.Instance]);
+  t1 = new $.Model(null, null, null, null, null, t1, null);
+  t1.Model$fromURL$3(gl, prog, URL);
+  return t1;
 };
 
 $.Cookie__readCookie = function() {
@@ -7732,19 +7729,25 @@ $.boot = function() {
   return gl;
 };
 
-$.initBuffers = function(gl) {
-  $.Primitives_printString("initBuffers: square model: fetching");
-  $.fetchSquare(gl, "/mesh/square.json", new $.initBuffers_anon());
-};
-
 $.initContext = function(gl) {
-  var t1;
-  $.shaderProgram = $.Program_Program(gl, "/shader/min_vs.txt", "/shader/min_fs.txt");
-  $.initBuffers(gl);
+  var squareProgram, squareModel, squareProgram2, squareModel2, t1;
+  squareProgram = $.Program_Program(gl, "/shader/min_vs.txt", "/shader/min_fs.txt");
+  $.add$1$ax($.get$programList(), squareProgram);
+  squareModel = $.Model$fromURL(gl, squareProgram, "/mesh/square.json");
+  squareProgram.addModel$1(squareModel);
+  squareModel.addInstance$1($.Instance$(squareModel));
+  squareProgram2 = $.Program_Program(gl, "/shader/min_vs.txt", "/shader/min2_fs.txt");
+  $.add$1$ax($.get$programList(), squareProgram2);
+  squareModel2 = $.Model$fromURL(gl, squareProgram2, "/mesh/square2.json");
+  squareProgram2.addModel$1(squareModel2);
+  squareModel2.addInstance$1($.Instance$(squareModel2));
   t1 = $.getInterceptor$x(gl);
   t1.clearColor$4(gl, 0.5, 0.5, 0.5, 1);
   t1.enable$1(gl, 2929);
   t1.depthFunc$1(gl, 513);
+  t1.depthRange$2(gl, 0, 1);
+  t1.viewport$4(gl, 0, 0, $.get$width$x($.canvas), $.get$height$x($.canvas));
+  $.canvasAspect = $.$div$n($.get$width$x($.canvas), $.get$height$x($.canvas));
   t1.frontFace$1(gl, 2305);
   t1.cullFace$1(gl, 1029);
   t1.enable$1(gl, 2884);
@@ -7752,36 +7755,8 @@ $.initContext = function(gl) {
 };
 
 $.render = function(gl) {
-  var t1 = $.getInterceptor$x(gl);
-  t1.viewport$4(gl, 0, 0, $.get$width$x($.canvas), $.get$height$x($.canvas));
-  t1.depthRange$2(gl, 0, 1);
-  t1.clear$1(gl, 16640);
-  $.drawSquare(gl);
+  $.clear$1$ax(gl, 16640);
   $.forEach$1$ax($.get$programList(), new $.render_anon());
-};
-
-$.drawSquare = function(gl) {
-  var t1, t2, aVertexPosition, t3, t4;
-  t1 = $.shaderProgram;
-  if (!t1.get$ready())
-    return;
-  t2 = $.squareModel;
-  if (t2 == null)
-    return;
-  aVertexPosition = t1.get$aVertexPosition();
-  t1 = $.getInterceptor$x(gl);
-  t1.bindBuffer$2(gl, 34962, t2.get$vertexPositionBuffer());
-  t1.vertexAttribPointer$6(gl, aVertexPosition, $.squareModel.get$vertexPositionBufferItemSize(), 5126, false, 0, 0);
-  t1.enableVertexAttribArray$1(gl, aVertexPosition);
-  t1.bindBuffer$2(gl, 34963, $.squareModel.get$vertexIndexBuffer());
-  t3 = $.squareModel;
-  t4 = t3.get$vertexIndexLength();
-  t3 = t3.get$vertexIndexBufferItemSize();
-  if (typeof t3 !== "number")
-    throw $.iae(t3);
-  t1.drawElements$4(gl, 4, t4, 5123, 0 * t3);
-  t1.bindBuffer$2(gl, 34962, null);
-  t1.bindBuffer$2(gl, 34963, null);
 };
 
 $.loop = function(gl) {
@@ -7821,7 +7796,7 @@ $.Program$_load = function(gl, vertexShaderURL, fragmentShaderURL) {
   t1 = {};
   t2 = $.List_List($, $.Model);
   $.setRuntimeTypeInfo(t2, [$.Model]);
-  t2 = new $.Program(null, null, false, t2);
+  t2 = new $.Program(null, null, false, null, t2);
   t2.Program$_load$3(gl, vertexShaderURL, fragmentShaderURL, t1);
   return t2;
 };
@@ -7913,7 +7888,6 @@ $.$int = {builtin$cls: "$int"};
 $.PathSeg = {builtin$cls: "PathSeg"};
 $.Element = {builtin$cls: "Element"};
 $._ManagerStub = {builtin$cls: "_ManagerStub"};
-$.Instance = {builtin$cls: "Instance"};
 $.Map = {builtin$cls: "Map"};
 $.String.$isString = true;
 Isolate.makeConstantList = function(list) {
@@ -7921,37 +7895,36 @@ Isolate.makeConstantList = function(list) {
   list.fixed$length = true;
   return list;
 };
-$.CONSTANT4 = Isolate.makeConstantList([]);
+$.CONSTANT3 = Isolate.makeConstantList([]);
 $.CONSTANT10 = new $.EventStreamProvider("mousedown");
 $.CONSTANT = new $.NullThrownError();
 $.JSDouble_methods = $.JSDouble.prototype;
 $.CONSTANT15 = new $.Object();
 $.CONSTANT12 = new $.EventStreamProvider("close");
-$.CONSTANT3 = new $._LinkedHashTableHeadMarker();
+$.CONSTANT2 = new $._LinkedHashTableHeadMarker();
 $.JSNull_methods = $.JSNull.prototype;
 $.JSNumber_methods = $.JSNumber.prototype;
-$.JSString_methods = $.JSString.prototype;
 $.CONSTANT6 = new $.EventStreamProvider("error");
-$.CONSTANT8 = new $.EventStreamProvider("load");
-$.CONSTANT7 = new $.EventStreamProvider("success");
-$.CONSTANT9 = new $.EventStreamProvider("progress");
+$.JSString_methods = $.JSString.prototype;
+$.CONSTANT7 = new $.EventStreamProvider("load");
+$.CONSTANT9 = new $.EventStreamProvider("success");
+$.CONSTANT8 = new $.EventStreamProvider("progress");
 $.CONSTANT5 = new $.CloseToken();
 $.CONSTANT11 = new $.EventStreamProvider("message");
 $.JSInt_methods = $.JSInt.prototype;
 $.CONSTANT14 = new $.EventStreamProvider("click");
 $.CONSTANT13 = new $.EventStreamProvider("open");
 $.JSArray_methods = $.JSArray.prototype;
-$.CONSTANT0 = new $.Duration(0);
-$.CONSTANT1 = new $._DeadEntry();
-$.CONSTANT2 = new $._NullKey();
+$.CONSTANT4 = new $.Duration(0);
+$.CONSTANT0 = new $._DeadEntry();
+$.CONSTANT1 = new $._NullKey();
 $.lazyPort = null;
 $.ReceivePortImpl__nextFreeId = 1;
 $.Primitives_hashCodeSeed = 0;
 $._getTypeNameOf = null;
 $.requestId = null;
 $.canvas = null;
-$.shaderProgram = null;
-$.squareModel = null;
+$.canvasAspect = null;
 $.debugLostContext = true;
 $.fullRateFrames = 0;
 $.stats = null;
@@ -8051,8 +8024,17 @@ $.addAll$1$ax = function(receiver, a0) {
 $.append$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).append$1(receiver, a0);
 };
+$.bindBuffer$2$x = function(receiver, a0, a1) {
+  return $.getInterceptor$x(receiver).bindBuffer$2(receiver, a0, a1);
+};
+$.clear$1$ax = function(receiver, a0) {
+  return $.getInterceptor$ax(receiver).clear$1(receiver, a0);
+};
 $.close$0$x = function(receiver) {
   return $.getInterceptor$x(receiver).close$0(receiver);
+};
+$.enableVertexAttribArray$1$x = function(receiver, a0) {
+  return $.getInterceptor$x(receiver).enableVertexAttribArray$1(receiver, a0);
 };
 $.end$0$x = function(receiver) {
   return $.getInterceptor$x(receiver).end$0(receiver);
@@ -8194,6 +8176,9 @@ $.toList$0$ax = function(receiver) {
 };
 $.toString$0 = function(receiver) {
   return $.getInterceptor(receiver).toString$0(receiver);
+};
+$.useProgram$1$x = function(receiver, a0) {
+  return $.getInterceptor$x(receiver).useProgram$1(receiver, a0);
 };
 $.write$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).write$1(receiver, a0);
@@ -8490,7 +8475,7 @@ $.$defineNativeClass("HTMLBodyElement", {
     return $.CONSTANT6.forTarget$1(receiver);
   },
   get$onLoad: function(receiver) {
-    return $.CONSTANT8.forTarget$1(receiver);
+    return $.CONSTANT7.forTarget$1(receiver);
   }
 });
 
@@ -8637,7 +8622,7 @@ $.$defineNativeClass("Document", {
     return $.CONSTANT6.forTarget$1(receiver);
   },
   get$onLoad: function(receiver) {
-    return $.CONSTANT8.forTarget$1(receiver);
+    return $.CONSTANT7.forTarget$1(receiver);
   }
 });
 
@@ -8908,7 +8893,7 @@ $.$defineNativeClass("Element", {"": "$$dom_children:children=,id%,style=",
   },
   get$onLoad: function(receiver) {
     if (Object.getPrototypeOf(this).hasOwnProperty("get$onLoad")) {
-      return $.CONSTANT8.forTarget$1(receiver);
+      return $.CONSTANT7.forTarget$1(receiver);
     } else
       return Object.prototype.get$onLoad.call(this, receiver);
   },
@@ -9086,7 +9071,7 @@ $.$defineNativeClass("FileReader", {"": "error=",
     return $.CONSTANT6.forTarget$1(receiver);
   },
   get$onLoad: function(receiver) {
-    return $.CONSTANT8.forTarget$1(receiver);
+    return $.CONSTANT7.forTarget$1(receiver);
   }
 });
 
@@ -9435,10 +9420,10 @@ $.$defineNativeClass("XMLHttpRequest", {"": "responseText=",
     return $.CONSTANT6.forTarget$1(receiver);
   },
   get$onLoad: function(receiver) {
-    return $.CONSTANT8.forTarget$1(receiver);
+    return $.CONSTANT7.forTarget$1(receiver);
   },
   get$onProgress: function(receiver) {
-    return $.CONSTANT9.forTarget$1(receiver);
+    return $.CONSTANT8.forTarget$1(receiver);
   }
 });
 
@@ -9459,7 +9444,7 @@ $.$defineNativeClass("XMLHttpRequestUpload", {
     return $.CONSTANT6.forTarget$1(receiver);
   },
   get$onLoad: function(receiver) {
-    return $.CONSTANT8.forTarget$1(receiver);
+    return $.CONSTANT7.forTarget$1(receiver);
   }
 });
 
@@ -10967,7 +10952,7 @@ $.$defineNativeClass("DOMWindow", {
     return $.CONSTANT6.forTarget$1(receiver);
   },
   get$onLoad: function(receiver) {
-    return $.CONSTANT8.forTarget$1(receiver);
+    return $.CONSTANT7.forTarget$1(receiver);
   }
 });
 
@@ -11861,7 +11846,7 @@ $.$defineNativeClass("IDBRequest", {"": "error=",
     return $.CONSTANT6.forTarget$1(receiver);
   },
   get$onSuccess: function(receiver) {
-    return $.CONSTANT7.forTarget$1(receiver);
+    return $.CONSTANT9.forTarget$1(receiver);
   }
 });
 
@@ -11887,7 +11872,7 @@ $.$defineNativeClass("SVGElementInstance", {
     return $.CONSTANT6.forTarget$1(receiver);
   },
   get$onLoad: function(receiver) {
-    return $.CONSTANT8.forTarget$1(receiver);
+    return $.CONSTANT7.forTarget$1(receiver);
   }
 });
 
@@ -12270,11 +12255,7 @@ $.$defineNativeClass("SVGException", {
   }
 });
 
-$.$defineNativeClass("SVGSVGElement", {"": "height=,width=",
-  viewport$4: function($receiver, arg0, arg1, arg2, arg3) {
-    return this.viewport.call$4(arg0, arg1, arg2, arg3);
-  }
-});
+$.$defineNativeClass("SVGSVGElement", {"": "height=,width="});
 
 $.$defineNativeClass("SVGTransformList", {
   $index: function(receiver, index) {
