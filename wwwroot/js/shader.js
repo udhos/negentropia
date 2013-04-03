@@ -4,7 +4,7 @@ function shaderAlert(msg) {
 	alert(msg);
 }
 
-function compileShader(gl, shaderString, shaderType) {
+function compileShader(gl, shaderURL, shaderString, shaderType) {
 	var shader = gl.createShader(shaderType);
     gl.shaderSource(shader, shaderString);
     gl.compileShader(shader);
@@ -14,6 +14,9 @@ function compileShader(gl, shaderString, shaderType) {
 		gl.deleteShader(shader);
         return null;
     }
+
+	neg.shaderCache[shaderURL] = shader;
+	console.log("shader: " + shaderURL + ": cached");
 	
 	return shader;
 }
@@ -30,7 +33,7 @@ function linkProg(prog, gl, vertexShader, fragmentShader) {
         shaderAlert("Error linking program: " + gl.getProgramInfoLog(shaderProgram));
 		return;
     }
-
+	
 	// save shader program
 	prog.shaderProgram = shaderProgram;
 }
@@ -57,7 +60,7 @@ function processVertexShader(opaque, response) {
 		shaderOngoingStop(prog);
 		return;
 	}
-	prog.vertexShader = compileShader(gl, response, gl.VERTEX_SHADER);
+	prog.vertexShader = compileShader(gl, prog.vsFile, response, gl.VERTEX_SHADER);
 	tryLinkProgram(prog);
 }
 
@@ -70,7 +73,7 @@ function processFragmentShader(opaque, response) {
 		shaderOngoingStop(prog);
 		return;
 	}
-	prog.fragmentShader = compileShader(gl, response, gl.FRAGMENT_SHADER);
+	prog.fragmentShader = compileShader(gl, prog.fsFile, response, gl.FRAGMENT_SHADER);
 	tryLinkProgram(prog);
 }
 
@@ -91,6 +94,32 @@ function shaderOngoingStop(prog) {
 	prog.callbackOnDone(prog);	
 }
 
+function fetchVertexShader(shaderURL, prog) {
+
+	if (shaderURL in neg.shaderCache) {
+		console.log("vertexShader: " + shaderURL + ": cache HIT");
+		prog.vertexShader = neg.shaderCache[shaderURL];
+		tryLinkProgram(prog);
+		return;
+	}
+
+	console.log("vertexShader: " + shaderURL + ": cache MISS");
+	fetchFile(shaderURL, processVertexShader, prog);
+}
+
+function fetchFragmentShader(shaderURL, prog) {
+
+	if (shaderURL in neg.shaderCache) {
+		console.log("fragmentShader: " + shaderURL + ": cache HIT");
+		prog.fragmentShader = neg.shaderCache[shaderURL];
+		tryLinkProgram(prog);
+		return;
+	}
+
+	console.log("fragmentShader: " + shaderURL + ": cache MISS");
+	fetchFile(shaderURL, processFragmentShader, prog);
+}
+
 function fetchProgramFromURL(vs, fs, callbackOnDone) {
 	var prog = {};
 	prog.vsFile = vs;
@@ -101,6 +130,6 @@ function fetchProgramFromURL(vs, fs, callbackOnDone) {
 	
 	shaderOngoingStart(prog);
 	
-	fetchFile(vs, processVertexShader, prog);
-	fetchFile(fs, processFragmentShader, prog);
+	fetchVertexShader(vs, prog);
+	fetchFragmentShader(fs, prog);
 }

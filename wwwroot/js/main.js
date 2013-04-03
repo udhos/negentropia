@@ -7,7 +7,8 @@ var neg = {
 	cullBackface:        true,
 	fieldOfViewY:        45,
 	ongoingImageLoads:   [],
-	programList:         []
+	programList:         [],
+	shaderCache:         {}
 };
 var gl = null;
 var websocket = null;
@@ -192,7 +193,8 @@ function initContext() {
 	
 	//initBuffers();
 	
-	neg.programList = []; // drop existing programs
+	neg.programList = []; // drop existing full programs
+	neg.shaderCache = {}; // drop existing compiled shaders
 
 	var squareProgram = new Program("/shader/min_vs.txt", "/shader/min_fs.txt");
 	neg.programList.push(squareProgram);
@@ -200,13 +202,16 @@ function initContext() {
 	squareProgram.addModel(squareModel);
 	var squareInstance = new Instance(squareModel);
 	squareModel.addInstance(squareInstance);
-	
-	var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
-	neg.programList.push(squareProgram2);
-	var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
-	squareProgram2.addModel(squareModel2);
-	var squareInstance2 = new Instance(squareModel2);
-	squareModel2.addInstance(squareInstance2);
+
+	// create 2nd program after 2 secs (time for the first program to populate the shader cache)
+	setTimeout(function() {
+		var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
+		neg.programList.push(squareProgram2);
+		var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
+		squareProgram2.addModel(squareModel2);
+		var squareInstance2 = new Instance(squareModel2);
+		squareModel2.addInstance(squareInstance2);
+	}, 2000);
 		
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color
     gl.enable(gl.DEPTH_TEST);			// perform depth testing
