@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'dart:async';
 
 import 'package:stats/stats.dart';
 
@@ -8,20 +9,13 @@ import 'shader.dart';
 import 'buffer.dart';
 import 'lost_context.dart';
 
-/*
-class Conf {
-  bool autoRestore = true; 
-}
-Conf cfg = new Conf();
-*/
-
 int requestId;
 CanvasElement canvas;
 num canvasAspect;
 Program shaderProgram;
-Model squareModel;
 bool debugLostContext = true;
 List<Program> programList = new List<Program>();
+Map<String,WebGLShader> shaderCache = new Map<String,WebGLShader>();
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -106,37 +100,27 @@ WebGLRenderingContext boot() {
   return gl;
 }
 
-void initBuffers(WebGLRenderingContext gl, Program prog) {
-  print("initBuffers: square model: fetching");
-  fetchSquare(gl, prog, "/mesh/square.json", (Model square) {
-    squareModel = square;
-    print("initBuffers: square model: done");
-  });
-}
-
 void initContext(WebGLRenderingContext gl) {
-  /*
-  // load shaders
-  shaderProgram = new Program(gl, "/shader/min_vs.txt", "/shader/min_fs.txt");
-  assert(shaderProgram != null);
-  
-  // init buffers
-  initBuffers(gl, shaderProgram);
-  */
 
-  Program squareProgram = new Program(gl, "/shader/min_vs.txt", "/shader/min_fs.txt");
+  programList = new List<Program>();           // drop existing programs 
+  shaderCache = new Map<String,WebGLShader>(); // drop existing compile shader cache
+
+  Program squareProgram = new Program(gl, shaderCache, "/shader/min_vs.txt", "/shader/min_fs.txt");
   programList.add(squareProgram);
   Model squareModel = new Model.fromURL(gl, squareProgram, "/mesh/square.json");
   squareProgram.addModel(squareModel);
   Instance squareInstance = new Instance(squareModel);
   squareModel.addInstance(squareInstance);
 
-  Program squareProgram2 = new Program(gl, "/shader/min_vs.txt", "/shader/min2_fs.txt");
-  programList.add(squareProgram2);
-  Model squareModel2 = new Model.fromURL(gl, squareProgram2, "/mesh/square2.json");
-  squareProgram2.addModel(squareModel2);
-  Instance squareInstance2 = new Instance(squareModel2);
-  squareModel2.addInstance(squareInstance2);
+  // execute after 2 secs, giving time to first program populate shadeCache
+  new Timer(new Duration(seconds:2), () {
+    Program squareProgram2 = new Program(gl, shaderCache, "/shader/min_vs.txt", "/shader/min2_fs.txt");
+    programList.add(squareProgram2);
+    Model squareModel2 = new Model.fromURL(gl, squareProgram2, "/mesh/square2.json");
+    squareProgram2.addModel(squareModel2);
+    Instance squareInstance2 = new Instance(squareModel2);
+    squareModel2.addInstance(squareInstance2);
+  });
   
   gl.clearColor(0.5, 0.5, 0.5, 1.0);            // clear color
   gl.enable(WebGLRenderingContext.DEPTH_TEST);  // enable depth testing
@@ -174,40 +158,10 @@ void render(WebGLRenderingContext gl) {
   // h = 2 * 0.414 * 1.0
   // h = 0.828
   //
-  //mat4.perspective(neg.fieldOfViewY, neg.canvas.width / neg.canvas.height, 1.0, 1000.0, neg.pMatrix);
-  
-  //drawSquare(gl);
-  
+  // aspect = canvas.width / canvas.height
+  //mat4.perspective(neg.fieldOfViewY, canvasAspect, 1.0, 1000.0, neg.pMatrix);
+    
   programList.forEach((Program p) => p.drawModels());
-}
-
-void drawSquare(WebGLRenderingContext gl) {
-
-  if (!shaderProgram.ready) {
-    // shader program is not loaded yet
-    return;
-  }
-
-  if (squareModel == null) {
-    // square buffers are not loaded yet
-    return;
-  }
-
-  gl.useProgram(shaderProgram.program);
-  
-  int aVertexPosition = shaderProgram.aVertexPosition;
-
-  gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, squareModel.vertexPositionBuffer);
-  gl.vertexAttribPointer(aVertexPosition, squareModel.vertexPositionBufferItemSize, WebGLRenderingContext.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(aVertexPosition);
-  
-  gl.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, squareModel.vertexIndexBuffer);
-
-  gl.drawElements(WebGLRenderingContext.TRIANGLES, squareModel.vertexIndexLength, WebGLRenderingContext.UNSIGNED_SHORT, 0 * squareModel.vertexIndexBufferItemSize);
-
-  // clean up
-  gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, null);
-  gl.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, null);       
 }
 
 void loop(WebGLRenderingContext gl) {

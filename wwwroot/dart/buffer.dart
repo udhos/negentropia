@@ -110,7 +110,6 @@ class Model {
     HttpRequest.getString(URL)
     .then(handleResponse)
     .catchError(handleError);
-
   }
   
   void addInstance(Instance i) {
@@ -122,37 +121,3 @@ class Model {
   }  
   
 }
-
-void fetchSquare(WebGLRenderingContext gl, Program prog, String jsonUrl, void deliverSquare(Model)) {
-  
-  void handleResponse(String response) {
-    print("fetched square JSON from URL: $jsonUrl: [$response]");
-    Map square;
-    try {
-      square = parse(response);
-    }
-    catch (e) {
-      print("failure parsing square JSON: $e");
-      return;
-    }
-    print("square JSON parsed: [$square]");
-    
-    List<num> vertCoord = square['vertCoord'];
-    List<int> vertInd = square['vertInd'];
-    
-    Model squareModel = new Model.fromLists(gl, prog, vertCoord, vertInd);
-    deliverSquare(squareModel); // callback
-  }
-  
-  void handleError(AsyncError err) {
-    print("failure fetching square JSON from URL: $jsonUrl: $err");
-  }
-  
-  // dart magic :-)
-  HttpRequest.getString(jsonUrl)
-    .then(handleResponse)
-    .catchError(handleError);
-}
-
-
-
