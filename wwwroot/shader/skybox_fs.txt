@@ -1,11 +1,10 @@
 precision mediump float; // required
 
-uniform samplerCube skybox;
-uniform mat4 viewDirectionProjectionInverse;
+uniform samplerCube uSkybox;
+uniform mat4 uView;
 varying vec4 vPosition;
 
 void main() {
-  vec4 t = (viewDirectionProjectionInverse * vPosition);
-  vec4 color = textureCube(skybox, normalize(t.xyz / t.w));
-  gl_FragColor = color * color * color;
+  vec4 t = uView * vPosition;
+  gl_FragColor = textureCube(uSkybox, normalize(t.xyz / t.w));
 }

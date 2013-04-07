@@ -212,7 +212,16 @@ function initContext() {
 		var squareInstance2 = new Instance(squareModel2);
 		squareModel2.addInstance(squareInstance2);
 	}, 2000);
-		
+
+	/*
+	var skyboxProgram = new SkyboxProgram("/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
+	neg.programList.push(skyboxProgram);
+	var skyboxModel = new Model(skyboxProgram, "/mesh/cube.json");
+	skyboxProgram.addModel(skyboxModel);
+	var skyboxInstance = new Instance(skyboxModel);
+	skyboxModel.addInstance(skyboxInstance);
+	*/
+	
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color
     gl.enable(gl.DEPTH_TEST);			// perform depth testing
 	gl.depthFunc(gl.LESS);				// gl.LESS is default depth test

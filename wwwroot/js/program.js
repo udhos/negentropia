@@ -3,7 +3,7 @@ function Program(vertexShaderURL, fragmentShaderURL) {
 	this.modelList = [];
 	
 	// Async request for shader program
-	var p = this;
+	var p = this; // don't put 'this' inside the closure below
 	fetchProgramFromURL(vertexShaderURL, fragmentShaderURL, function (prog) { shaderProgramLoaded(p, prog); });
 }
 
@@ -29,13 +29,6 @@ Program.prototype.addModel = function(m) {
 }
 
 Program.prototype.drawModels = function() {
-
-	/*
-	if (!('shaderProgram' in this)) {
-		// shader program not ready
-		return;
-	}
-	*/
 	
     gl.useProgram(this.shaderProgram);
     gl.enableVertexAttribArray(this.aVertexPosition);
@@ -51,17 +44,17 @@ Program.prototype.drawModels = function() {
     //gl.disableVertexAttribArray(this.aVertexPosition); // needed ??
 }
 
-function Model(program, URL) {
+function Model(program, URL, reverse) {
 	this.program = program;
 	this.URL = URL;
 	this.instanceList = [];
 	
 	// Async request for buffer data (mesh)
-	var m = this;
-	fetchBufferData(this.URL, function (buf) { modelBufferDataLoaded(m, buf); } );	
+	var m = this; // don't put 'this' inside the closure below
+	fetchBufferData(this.URL, function (buf) { modelBufferDataLoaded(m, buf); }, reverse);	
 }
 
-function modelBufferDataLoaded(model, buf) {
+function modelBufferDataLoaded(model, buf, reverse) {
 	model.buffer = buf;
 }
 
@@ -81,19 +74,7 @@ function Instance(model) {
 
 Instance.prototype.draw = function(program) {
 
-	//console.log("model: " + this.model);
-	//console.log("model buffer: " + this.model.buffer);
 	var buf = this.model.buffer;
-	//console.log("model buffer: " + buf);
-	
-	/*
-	console.log("buf.vertexPositionBuffer = " + buf.vertexPositionBuffer);
-	console.log("buf.vertexIndexBuffer = " + buf.vertexIndexBuffer);
-	console.log("buf.vertexIndexLength = " + buf.vertexIndexLength);
-	console.log("buf.vertexPositionBufferItemSize = " + buf.vertexPositionBufferItemSize);
-	console.log("buf.vertexIndexLength = " + buf.vertexIndexLength);
-	console.log("program.aVertexPosition = " + program.aVertexPosition);
-	*/
 	
     gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
    	gl.vertexAttribPointer(program.aVertexPosition, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
