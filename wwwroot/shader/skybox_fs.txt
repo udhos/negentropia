@@ -1,10 +1,8 @@
 precision mediump float; // required
 
 uniform samplerCube uSkybox;
-uniform mat4 uView;
 varying vec4 vPosition;
 
 void main() {
-  vec4 t = uView * vPosition;
-  gl_FragColor = textureCube(uSkybox, normalize(t.xyz / t.w));
+  gl_FragColor = textureCube(uSkybox, normalize(vPosition.xyz / vPosition.w));
 }

@@ -206,25 +206,36 @@ function initContext() {
 	// create 2nd program after 2 secs (time for the first program to populate the shader cache)
 	setTimeout(function() {
 		var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
-		neg.programList.push(squareProgram2);
+		neg.programList.push(squareProgram2);		
 		var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
 		squareProgram2.addModel(squareModel2);
 		var squareInstance2 = new Instance(squareModel2);
 		squareModel2.addInstance(squareInstance2);
 	}, 2000);
 
-	/*
+	var squareProgram3 = new Program("/shader/min_vs.txt", "/shader/min3_fs.txt");
+	neg.programList.push(squareProgram3);
+	var squareModel3 = new Model(squareProgram3, "/mesh/square3.json");
+	squareProgram3.addModel(squareModel3);
+	var squareInstance3 = new Instance(squareModel3);
+	squareModel3.addInstance(squareInstance3);
+
 	var skyboxProgram = new SkyboxProgram("/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
-	neg.programList.push(skyboxProgram);
-	var skyboxModel = new Model(skyboxProgram, "/mesh/cube.json");
+	//neg.programList.push(skyboxProgram);
+	var skyboxModel = new SkyboxModel(skyboxProgram, "/mesh/cube.json", true);
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, '/texture/space_up.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, '/texture/space_dn.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');	
 	skyboxProgram.addModel(skyboxModel);
-	var skyboxInstance = new Instance(skyboxModel);
+	var skyboxInstance = new SkyboxInstance(skyboxModel);
 	skyboxModel.addInstance(skyboxInstance);
-	*/
 	
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color
     gl.enable(gl.DEPTH_TEST);			// perform depth testing
-	gl.depthFunc(gl.LESS);				// gl.LESS is default depth test
+	//gl.depthFunc(gl.LESS);				// gl.LESS is default depth test
 	gl.depthRange(0.0, 1.0);            // default
 	
 	// define viewport size

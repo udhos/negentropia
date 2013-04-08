@@ -7,6 +7,7 @@
 <script type="text/javascript" src="/js/lib/webgl-debug.js"></script>
 <script type="text/javascript" src="/js/lib/game-shim.js"></script>
 <script type="text/javascript" src="/js/lib/Stats.js"></script>
+<script type="text/javascript" src="/js/lib/gl-matrix-1.3.7.min.js"></script>
 
 <script type="text/javascript" src="/js/main.js"></script>
 <script type="text/javascript" src="/js/ws.js"></script>
@@ -15,6 +16,8 @@
 <script type="text/javascript" src="/js/buffer.js"></script>
 <script type="text/javascript" src="/js/lost_context.js"></script>
 <script type="text/javascript" src="/js/program.js"></script>
+<script type="text/javascript" src="/js/skybox.js"></script>
+<script type="text/javascript" src="/js/cubemap.js"></script>
 
 <script type="text/javascript">
 
