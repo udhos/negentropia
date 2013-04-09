@@ -3,6 +3,7 @@ library buffer;
 import 'dart:html';
 import 'dart:async';
 import 'dart:json';
+import 'dart:web_gl';
 
 import 'shader.dart';
 
@@ -14,36 +15,36 @@ class Instance {
   
   void draw() {
     
-    WebGLRenderingContext gl = model.program.gl;
+    RenderingContext gl = model.program.gl;
     
-    gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
-    gl.vertexAttribPointer(model.program.aVertexPosition, model.vertexPositionBufferItemSize, WebGLRenderingContext.FLOAT, false, 0, 0);
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
+    gl.vertexAttribPointer(model.program.aVertexPosition, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
   
-    gl.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
-    gl.drawElements(WebGLRenderingContext.TRIANGLES, model.vertexIndexLength, WebGLRenderingContext.UNSIGNED_SHORT, 0 * model.vertexIndexBufferItemSize);
+    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
+    gl.drawElements(RenderingContext.TRIANGLES, model.vertexIndexLength, RenderingContext.UNSIGNED_SHORT, 0 * model.vertexIndexBufferItemSize);
   }
 }
 
 class Model {
     
-  WebGLBuffer vertexPositionBuffer;
-  WebGLBuffer vertexIndexBuffer;
+  Buffer vertexPositionBuffer;
+  Buffer vertexIndexBuffer;
   int vertexPositionBufferItemSize;
   int vertexIndexBufferItemSize;
   int vertexIndexLength;
 
   List<Instance> instanceList = new List<Instance>();
-  Program program;
+  ShaderProgram program; // parent program
   
-  void _createBuffers(WebGLRenderingContext gl, List<num> vertCoord, List<int> vertInd) {
+  void _createBuffers(RenderingContext gl, List<num> vertCoord, List<int> vertInd) {
     this.vertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, this.vertexPositionBuffer);
-    gl.bufferData(WebGLRenderingContext.ARRAY_BUFFER, new Float32Array.fromList(vertCoord), WebGLRenderingContext.STATIC_DRAW);
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, this.vertexPositionBuffer);
+    gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array.fromList(vertCoord), RenderingContext.STATIC_DRAW);
     this.vertexPositionBufferItemSize = 3; // coord x,y,z
     
     this.vertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
-    gl.bufferData(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16Array.fromList(vertInd), WebGLRenderingContext.STATIC_DRAW);
+    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
+    gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16Array.fromList(vertInd), RenderingContext.STATIC_DRAW);
     this.vertexIndexBufferItemSize = 2; // size of Uint16Array
     
     this.vertexIndexLength = vertInd.length;
@@ -51,16 +52,16 @@ class Model {
     print("Model: vertex index length: ${this.vertexIndexLength}");
     
     // clean-up
-    gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, null);
-    gl.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, null);
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
+    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
   }
   
-  Model.fromLists(WebGLRenderingContext gl, Program prog, List<num> vertCoord, List<int> vertInd) {
+  Model.fromLists(RenderingContext gl, ShaderProgram prog, List<num> vertCoord, List<int> vertInd) {
     this.program = prog;
     _createBuffers(gl, vertCoord, vertInd);
   }
   
-  Model.fromURL(WebGLRenderingContext gl, Program prog, String URL) {
+  Model.fromURL(RenderingContext gl, ShaderProgram prog, String URL) {
     this.program = prog;
 
     /*

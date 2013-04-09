@@ -1,27 +1,28 @@
 library shader;
 
 import 'dart:html';
+import 'dart:web_gl';
 
 import 'buffer.dart';
 
-class Program {
+class ShaderProgram {
   
-  WebGLProgram program;
+  Program program;
   int aVertexPosition;
-  WebGLRenderingContext gl;
+  RenderingContext gl;
   
   List<Model> modelList = new List<Model>();  
   
-  Program._load(WebGLRenderingContext this.gl, Map<String,WebGLShader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
+  ShaderProgram._load(RenderingContext this.gl, Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
     print("Program._load: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
     
     //String vertShaderSrc, fragShaderSrc;
     
-    WebGLShader compileShader(String shaderURL, String shaderSource, int shaderType) {
-      WebGLShader shader = gl.createShader(shaderType);
+    Shader compileShader(String shaderURL, String shaderSource, int shaderType) {
+      Shader shader = gl.createShader(shaderType);
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, WebGLRenderingContext.COMPILE_STATUS) && !gl.isContextLost()) { 
+      if (!gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS) && !gl.isContextLost()) { 
         print("compileShader: compilation FAILURE: " + shaderURL + ": " + gl.getShaderInfoLog(shader));
         return null;
       }
@@ -32,7 +33,7 @@ class Program {
       return shader;
     }
 
-    WebGLShader vertexShader, fragmentShader;
+    Shader vertexShader, fragmentShader;
 
     void tryLink() {
       if (vertexShader == null || fragmentShader == null) {
@@ -40,11 +41,11 @@ class Program {
         return;
       }
       
-      WebGLProgram p = gl.createProgram();
+      Program p = gl.createProgram();
       gl.attachShader(p, vertexShader);
       gl.attachShader(p, fragmentShader);
       gl.linkProgram(p);
-      if (!gl.getProgramParameter(p, WebGLRenderingContext.LINK_STATUS) && !gl.isContextLost()) { 
+      if (!gl.getProgramParameter(p, RenderingContext.LINK_STATUS) && !gl.isContextLost()) { 
         print(gl.getProgramInfoLog(p));
       }
       
@@ -64,7 +65,7 @@ class Program {
           return;
         }
         print("vertexShader: loaded: [$response]");
-        vertexShader = compileShader(vertexShaderURL, response, WebGLRenderingContext.VERTEX_SHADER);
+        vertexShader = compileShader(vertexShaderURL, response, RenderingContext.VERTEX_SHADER);
         tryLink();
       });
       requestVert.onError.listen((e) {
@@ -83,7 +84,7 @@ class Program {
           return;
         }
         print("fragmentShader: loaded: [$response]");
-        fragmentShader = compileShader(fragmentShaderURL, response, WebGLRenderingContext.FRAGMENT_SHADER);
+        fragmentShader = compileShader(fragmentShaderURL, response, RenderingContext.FRAGMENT_SHADER);
         tryLink();      
       });
       requestFrag.onError.listen((e) {
@@ -111,8 +112,8 @@ class Program {
   }
  
   
-  factory Program(WebGLRenderingContext gl, Map<String,WebGLShader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
-    return new Program._load(gl, shaderCache, vertexShaderURL, fragmentShaderURL);
+  factory ShaderProgram(RenderingContext gl, Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
+    return new ShaderProgram._load(gl, shaderCache, vertexShaderURL, fragmentShaderURL);
   }
   
   void addModel(Model m) {
@@ -127,8 +128,8 @@ class Program {
     modelList.forEach((Model m) => m.drawInstances());
 
     // clean up
-    gl.bindBuffer(WebGLRenderingContext.ARRAY_BUFFER, null);
-    gl.bindBuffer(WebGLRenderingContext.ELEMENT_ARRAY_BUFFER, null);
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
+    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
     
     //gl.disableVertexAttribArray(aVertexPosition); // needed ??
   }

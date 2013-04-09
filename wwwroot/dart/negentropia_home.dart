@@ -1,5 +1,6 @@
 import 'dart:html';
 import 'dart:async';
+import 'dart:web_gl';
 
 import 'package:stats/stats.dart';
 
@@ -12,20 +13,20 @@ import 'lost_context.dart';
 int requestId;
 CanvasElement canvas;
 num canvasAspect;
-Program shaderProgram;
+ShaderProgram shaderProgram;
 bool debugLostContext = true;
-List<Program> programList = new List<Program>();
-Map<String,WebGLShader> shaderCache = new Map<String,WebGLShader>();
+List<ShaderProgram> programList = new List<ShaderProgram>();
+Map<String,Shader> shaderCache = new Map<String,Shader>();
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
 //int fullRateFrames = 30000;
 int fullRateFrames = 0; // periodic rendering
 
-WebGLRenderingContext initGL(CanvasElement canvas) {
+RenderingContext initGL(CanvasElement canvas) {
   print("WebGL: initializing");
 
-  WebGLRenderingContext gl;
+  RenderingContext gl;
 
   gl = canvas.getContext3d();
   if (gl != null) {
@@ -53,7 +54,7 @@ void initStats() {
   div.children.add(stats.container);
 }
 
-WebGLRenderingContext boot() {
+RenderingContext boot() {
   canvas = new CanvasElement();
   assert(canvas != null);
   canvas.id = "main_canvas";
@@ -64,7 +65,7 @@ WebGLRenderingContext boot() {
   canvasbox.append(canvas);  
   print("canvas '${canvas.id}' created: width=${canvas.width} height=${canvas.height}");
   
-  WebGLRenderingContext gl = initGL(canvas);
+  RenderingContext gl = initGL(canvas);
   if (gl == null) {
     canvas.remove();
     var p = new ParagraphElement();
@@ -100,12 +101,12 @@ WebGLRenderingContext boot() {
   return gl;
 }
 
-void initContext(WebGLRenderingContext gl) {
+void initContext(RenderingContext gl) {
 
-  programList = new List<Program>();           // drop existing programs 
-  shaderCache = new Map<String,WebGLShader>(); // drop existing compile shader cache
+  programList = new List<ShaderProgram>();           // drop existing programs 
+  shaderCache = new Map<String,Shader>(); // drop existing compile shader cache
 
-  Program squareProgram = new Program(gl, shaderCache, "/shader/min_vs.txt", "/shader/min_fs.txt");
+  ShaderProgram squareProgram = new ShaderProgram(gl, shaderCache, "/shader/min_vs.txt", "/shader/min_fs.txt");
   programList.add(squareProgram);
   Model squareModel = new Model.fromURL(gl, squareProgram, "/mesh/square.json");
   squareProgram.addModel(squareModel);
@@ -114,7 +115,7 @@ void initContext(WebGLRenderingContext gl) {
 
   // execute after 2 secs, giving time to first program populate shadeCache
   new Timer(new Duration(seconds:2), () {
-    Program squareProgram2 = new Program(gl, shaderCache, "/shader/min_vs.txt", "/shader/min2_fs.txt");
+    ShaderProgram squareProgram2 = new ShaderProgram(gl, shaderCache, "/shader/min_vs.txt", "/shader/min2_fs.txt");
     programList.add(squareProgram2);
     Model squareModel2 = new Model.fromURL(gl, squareProgram2, "/mesh/square2.json");
     squareProgram2.addModel(squareModel2);
@@ -123,8 +124,8 @@ void initContext(WebGLRenderingContext gl) {
   });
   
   gl.clearColor(0.5, 0.5, 0.5, 1.0);            // clear color
-  gl.enable(WebGLRenderingContext.DEPTH_TEST);  // enable depth testing
-  gl.depthFunc(WebGLRenderingContext.LESS);     // gl.LESS is default depth test
+  gl.enable(RenderingContext.DEPTH_TEST);  // enable depth testing
+  gl.depthFunc(RenderingContext.LESS);     // gl.LESS is default depth test
   gl.depthRange(0.0, 1.0);                      // default
   
   // define viewport size
@@ -132,9 +133,9 @@ void initContext(WebGLRenderingContext gl) {
   canvasAspect = canvas.width / canvas.height; // save aspect for render loop mat4.perspective
 
   // enable backface culling
-  gl.frontFace(WebGLRenderingContext.CCW);
-  gl.cullFace(WebGLRenderingContext.BACK);
-  gl.enable(WebGLRenderingContext.CULL_FACE);
+  gl.frontFace(RenderingContext.CCW);
+  gl.cullFace(RenderingContext.BACK);
+  gl.enable(RenderingContext.CULL_FACE);
   
   loop(gl); // render loop
 }
@@ -143,10 +144,10 @@ void animate() {
     // TODO: FIXME: WRITEME: update state
 }
 
-void render(WebGLRenderingContext gl) {
+void render(RenderingContext gl) {
   
   // http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
-  gl.clear(WebGLRenderingContext.COLOR_BUFFER_BIT | WebGLRenderingContext.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
+  gl.clear(RenderingContext.COLOR_BUFFER_BIT | RenderingContext.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
   
   // set perspective matrix
   // field of view y: 45 degrees
@@ -161,10 +162,10 @@ void render(WebGLRenderingContext gl) {
   // aspect = canvas.width / canvas.height
   //mat4.perspective(neg.fieldOfViewY, canvasAspect, 1.0, 1000.0, neg.pMatrix);
     
-  programList.forEach((Program p) => p.drawModels());
+  programList.forEach((ShaderProgram p) => p.drawModels());
 }
 
-void loop(WebGLRenderingContext gl) {
+void loop(RenderingContext gl) {
   
   if (fullRateFrames > 0) {
     
@@ -202,7 +203,7 @@ void loop(WebGLRenderingContext gl) {
 }
 
 void main() {
-  WebGLRenderingContext gl = boot();
+  RenderingContext gl = boot();
   
   if (gl == null) {
     print("WebGL: not available");
