@@ -8,7 +8,13 @@ var neg = {
 	fieldOfViewY:        45,
 	ongoingImageLoads:   [],
 	programList:         [],
-	shaderCache:         {}
+	shaderCache:         {},
+	angleY:              0,
+	deltaY:              1,
+	eye:                 [0,0,0],
+    center:	             [0,0,1],
+	up:                  [0,1,0],
+	pMatrix:             mat4.create()
 };
 var gl = null;
 var websocket = null;
@@ -97,7 +103,7 @@ function render() {
 	//
 	// neg.canvasAspect = neg.canvas.width / neg.canvas.height;
 	//
-    //mat4.perspective(neg.fieldOfViewY, neg.canvasAspect, 1.0, 1000.0, neg.pMatrix);
+    mat4.perspective(neg.fieldOfViewY, neg.canvasAspect, 0.1, 1000.0, neg.pMatrix);
 
 	//drawSquare();
 	
@@ -221,8 +227,8 @@ function initContext() {
 	squareModel3.addInstance(squareInstance3);
 
 	var skyboxProgram = new SkyboxProgram("/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
-	//neg.programList.push(skyboxProgram);
-	var skyboxModel = new SkyboxModel(skyboxProgram, "/mesh/cube.json", true);
+	neg.programList.push(skyboxProgram);
+	var skyboxModel = new SkyboxModel(skyboxProgram, "/mesh/cube.json", true, .5);
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, '/texture/space_up.jpg');
@@ -235,7 +241,7 @@ function initContext() {
 	
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color
     gl.enable(gl.DEPTH_TEST);			// perform depth testing
-	//gl.depthFunc(gl.LESS);				// gl.LESS is default depth test
+	gl.depthFunc(gl.LESS);				// gl.LESS is default depth test
 	gl.depthRange(0.0, 1.0);            // default
 	
 	// define viewport size

@@ -4,11 +4,12 @@ function bufferAlert(msg) {
 	alert(msg);
 }
 
-function fetchBufferData(bufferURL, callbackOnDone, reverse) {
+function fetchBufferData(bufferURL, callbackOnDone, reverse, rescale) {
 	var opaque = {
 		URL: bufferURL,
 		onDone: callbackOnDone,
-		doReverse: reverse
+		doReverse: reverse,
+		doRescale: rescale
 	};
 	fetchFile(bufferURL, processBufferData, opaque);
 }
@@ -26,6 +27,12 @@ function processBufferData(opaque, response) {
 	if (opaque.doReverse) {
 		// reverse vertex indices
 		bufferData.vertInd = bufferData.vertInd.reverse();
+	}
+	
+	if (opaque.doRescale) {
+		for (var i in bufferData.vertCoord) {
+			bufferData.vertCoord[i] *= opaque.doRescale;
+		}
 	}
 	
 	var buf = {};

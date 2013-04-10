@@ -60,7 +60,7 @@ SkyboxProgram.prototype.drawModels = function() {
     //gl.disableVertexAttribArray(this.aVertexPosition); // needed ??
 }
 
-function SkyboxModel(program, URL, reverse) {
+function SkyboxModel(program, URL, reverse, rescale) {
 	this.program = program;
 	this.URL = URL;
 	this.instanceList = [];
@@ -72,7 +72,7 @@ function SkyboxModel(program, URL, reverse) {
 	
 	// Async request for buffer data (mesh)
 	var m = this; // don't put 'this' inside the closure below
-	fetchBufferData(this.URL, function (buf) { skyboxModelBufferDataLoaded(m, buf); }, reverse);	
+	fetchBufferData(this.URL, function (buf) { skyboxModelBufferDataLoaded(m, buf); }, reverse, rescale);	
 }
 
 function skyboxModelBufferDataLoaded(model, buf, reverse) {
@@ -101,7 +101,7 @@ SkyboxModel.prototype.addCubemapFace = function(face, URL) {
 
 function SkyboxInstance(model) {
 	this.model = model;
-	this.viewMatrix  = mat4.create();	
+	this.viewMatrix  = mat4.create();
 }
 
 SkyboxInstance.prototype.draw = function(program) {
@@ -109,8 +109,16 @@ SkyboxInstance.prototype.draw = function(program) {
 	var buf = this.model.buffer;
 
 	// view transform
-	mat4.identity(this.viewMatrix);
+	//mat4.identity(this.viewMatrix);
 	//mat4.lookAt([0,0,0], [0,0,-1], [0,1,0], this.viewMatrix);
+
+	neg.angleY += neg.deltaY;
+	neg.angleY %= 360;
+	var radY = neg.angleY * Math.PI / 180;
+	neg.center[0] = Math.sin(radY);
+	neg.center[2] = Math.cos(radY);
+	mat4.lookAt(neg.eye, neg.center, neg.up, this.viewMatrix);
+	mat4.multiply(this.viewMatrix, neg.pMatrix);
 	gl.uniformMatrix4fv(program.uView, false, this.viewMatrix);
 	
 	// vertex coord

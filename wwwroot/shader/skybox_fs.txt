@@ -4,5 +4,7 @@ uniform samplerCube uSkybox;
 varying vec4 vPosition;
 
 void main() {
-  gl_FragColor = textureCube(uSkybox, normalize(vPosition.xyz / vPosition.w));
+	//vec4 color = textureCube(uSkybox, normalize(vPosition.xyz / vPosition.w));
+	vec4 color = textureCube(uSkybox, vPosition.xyz / vPosition.w);
+	gl_FragColor = color;
 }
