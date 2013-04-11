@@ -112,11 +112,6 @@ SkyboxInstance.prototype.draw = function(program) {
 	//mat4.identity(this.viewMatrix);
 	//mat4.lookAt([0,0,0], [0,0,-1], [0,1,0], this.viewMatrix);
 
-	neg.angleY += neg.deltaY;
-	neg.angleY %= 360;
-	var radY = neg.angleY * Math.PI / 180;
-	neg.center[0] = Math.sin(radY);
-	neg.center[2] = Math.cos(radY);
 	mat4.lookAt(neg.eye, neg.center, neg.up, this.viewMatrix);
 	mat4.multiply(this.viewMatrix, neg.pMatrix);
 	gl.uniformMatrix4fv(program.uView, false, this.viewMatrix);

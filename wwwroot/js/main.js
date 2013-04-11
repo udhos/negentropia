@@ -1,5 +1,6 @@
 
 // Global variables
+var skyboxScale = 5000;
 var neg = {
 	debugLostContext:    true,
 	debugWebGL:          true,
@@ -11,10 +12,11 @@ var neg = {
 	shaderCache:         {},
 	angleY:              0,
 	deltaY:              1,
-	eye:                 [0,0,0],
-    center:	             [0,0,1],
+	eye:                 [0,0,10],
+    center:	             [0,0,0],
 	up:                  [0,1,0],
-	pMatrix:             mat4.create()
+	pMatrix:             mat4.create(),
+	farPlane:            1.5 * skyboxScale
 };
 var gl = null;
 var websocket = null;
@@ -83,7 +85,14 @@ function boot() {
 }
 
 function animate() {
-    // TODO: FIXME: WRITEME: update state
+
+	var camOrbitRadius = 10;
+	
+	neg.angleY += neg.deltaY;
+	neg.angleY %= 360;
+	var radY = neg.angleY * Math.PI / 180;
+	
+	neg.eye = [ camOrbitRadius * Math.sin(radY), 0, camOrbitRadius * Math.cos(radY) ];
 }
 
 function render() {
@@ -103,7 +112,7 @@ function render() {
 	//
 	// neg.canvasAspect = neg.canvas.width / neg.canvas.height;
 	//
-    mat4.perspective(neg.fieldOfViewY, neg.canvasAspect, 0.1, 1000.0, neg.pMatrix);
+    mat4.perspective(neg.fieldOfViewY, neg.canvasAspect, 1.0, neg.farPlane, neg.pMatrix);
 
 	//drawSquare();
 	
@@ -228,7 +237,7 @@ function initContext() {
 
 	var skyboxProgram = new SkyboxProgram("/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
 	neg.programList.push(skyboxProgram);
-	var skyboxModel = new SkyboxModel(skyboxProgram, "/mesh/cube.json", true, .5);
+	var skyboxModel = new SkyboxModel(skyboxProgram, "/mesh/cube.json", true, 0);
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, '/texture/space_up.jpg');
