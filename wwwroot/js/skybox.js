@@ -7,6 +7,20 @@ function SkyboxProgram(vertexShaderURL, fragmentShaderURL) {
 	fetchProgramFromURL(vertexShaderURL, fragmentShaderURL, function (prog) { skyboxShaderLoaded(p, prog); });
 }
 
+function skyboxGetAttr(p, attr) {
+	p[attr] = gl.getAttribLocation(p.shaderProgram, attr);
+	if (p[attr] < 0) {
+		console.log("skybox: failure querying attribute location: " + attr);
+	}
+}
+
+function skyboxGetUniform(p, uniform) {
+	p[uniform] = gl.getUniformLocation(p.shaderProgram, uniform);
+	if (p[uniform] < 0) {
+		console.log("skybox: failure querying uniform location: " + uniform);
+	}
+}
+
 function skyboxShaderLoaded(p, prog) {
 
 	if (!('shaderProgram' in prog)) {
@@ -17,21 +31,13 @@ function skyboxShaderLoaded(p, prog) {
 	console.log("skybox: shader program loaded");
 	p.shaderProgram = prog.shaderProgram;
 		
-	// save vertex attribute location
-	p.aPosition = gl.getAttribLocation(p.shaderProgram, "aPosition");
-	if (p.aPosition < 0) {
-		console.log("skybox: aPosition: failure querying attribute location");
-	}
+	// save attribute location
+	skyboxGetAttr(p, "a_Position");
 
-    p.uView = gl.getUniformLocation(p.shaderProgram, "uView");
-	if (p.uView == null) {
-		console.log("skybox: uView: failure querying uniform location");
-	}	
-	
-	p.uSkybox = gl.getUniformLocation(p.shaderProgram, "uSkybox");
-	if (p.uSkybox == null) {
-		console.log("skybox: uSkybox: failure querying uniform location");
-	}	
+	// save uniform location
+	skyboxGetUniform(p, "u_MV");
+	skyboxGetUniform(p, "u_P");
+	skyboxGetUniform(p, "u_Skybox");
 }
 
 SkyboxProgram.prototype.addModel = function(m) {
@@ -46,8 +52,10 @@ SkyboxProgram.prototype.drawModels = function() {
 	/*
 	var unit = 0;
 	gl.activeTexture(gl.TEXTURE0 + unit);
-	gl.uniform1i(this.uSkybox, unit);
+	gl.uniform1i(this.u_Skybox, unit);
 	*/
+
+	gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
 	
 	for (var m in this.modelList) {
 		this.modelList[m].drawInstances();
@@ -99,9 +107,10 @@ SkyboxModel.prototype.addCubemapFace = function(face, URL) {
 	loadCubemapFace(face, this.cubemapTexture, URL);
 }
 
-function SkyboxInstance(model) {
+function SkyboxInstance(model, center, scale) {
 	this.model = model;
-	this.viewMatrix  = mat4.create();
+	this.center = center;
+	this.scale = scale;
 }
 
 SkyboxInstance.prototype.draw = function(program) {
@@ -112,9 +121,19 @@ SkyboxInstance.prototype.draw = function(program) {
 	//mat4.identity(this.viewMatrix);
 	//mat4.lookAt([0,0,0], [0,0,-1], [0,1,0], this.viewMatrix);
 
-	mat4.lookAt(neg.eye, neg.center, neg.up, this.viewMatrix);
-	mat4.multiply(this.viewMatrix, neg.pMatrix);
-	gl.uniformMatrix4fv(program.uView, false, this.viewMatrix);
+	var MV = mat4.create(); // model-view
+
+	// 6/7. camera
+	mat4.lookAt(neg.eye, neg.center, neg.up, MV);
+	
+	/*
+	// 5. obj translate
+    mat4.translate(MV, this.center);
+		
+	// 1. obj scale
+	mat4.scale(MV, [this.scale, this.scale, this.scale]);
+	*/
+	gl.uniformMatrix4fv(program.u_MV, false, MV);
 	
 	// vertex coord
     gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
@@ -124,7 +143,7 @@ SkyboxInstance.prototype.draw = function(program) {
 	var unit = 0;
 	gl.activeTexture(gl.TEXTURE0 + unit);
 	gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.model.cubemapTexture);
-	gl.uniform1i(program.uSkybox, unit);
+	gl.uniform1i(program.u_Skybox, unit);
 	
 	// draw
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);

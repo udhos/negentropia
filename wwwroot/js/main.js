@@ -12,8 +12,8 @@ var neg = {
 	shaderCache:         {},
 	angleY:              0,
 	deltaY:              1,
-	eye:                 [0,0,10],
-    center:	             [0,0,0],
+	eye:                 [0,0,0],
+    center:	             [0,0,1],
 	up:                  [0,1,0],
 	pMatrix:             mat4.create(),
 	farPlane:            1.5 * skyboxScale
@@ -92,7 +92,8 @@ function animate() {
 	neg.angleY %= 360;
 	var radY = neg.angleY * Math.PI / 180;
 	
-	neg.eye = [ camOrbitRadius * Math.sin(radY), 0, camOrbitRadius * Math.cos(radY) ];
+	//neg.eye = [ camOrbitRadius * Math.sin(radY), 0, camOrbitRadius * Math.cos(radY) ];
+	neg.center = [ Math.sin(radY), 0, - Math.cos(radY) ];
 }
 
 function render() {
@@ -211,6 +212,7 @@ function initContext() {
 	neg.programList = []; // drop existing full programs
 	neg.shaderCache = {}; // drop existing compiled shaders
 
+	/*
 	var squareProgram = new Program("/shader/min_vs.txt", "/shader/min_fs.txt");
 	neg.programList.push(squareProgram);
 	var squareModel = new Model(squareProgram, "/mesh/square.json");
@@ -234,7 +236,8 @@ function initContext() {
 	squareProgram3.addModel(squareModel3);
 	var squareInstance3 = new Instance(squareModel3);
 	squareModel3.addInstance(squareInstance3);
-
+	*/
+	
 	var skyboxProgram = new SkyboxProgram("/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
 	neg.programList.push(skyboxProgram);
 	var skyboxModel = new SkyboxModel(skyboxProgram, "/mesh/cube.json", true, 0);
@@ -245,7 +248,8 @@ function initContext() {
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');	
 	skyboxProgram.addModel(skyboxModel);
-	var skyboxInstance = new SkyboxInstance(skyboxModel);
+	//var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], skyboxScale);
+	var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], 2000);
 	skyboxModel.addInstance(skyboxInstance);
 	
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color

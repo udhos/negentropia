@@ -1,9 +1,10 @@
-attribute vec3 aPosition;
-varying vec4 vPosition;
-uniform mat4 uView;
+attribute vec3 a_Position;
+varying vec4 v_Position;
+uniform mat4 u_P;  // projection
+uniform mat4 u_MV; // model-view
 
 void main() {
-  vec4 coord = uView * vec4(aPosition, 1.0);
-  vPosition = coord;
+  vec4 coord = u_P * u_MV * vec4(a_Position, 1.0);
+  v_Position = coord;
   gl_Position = coord;
 }
