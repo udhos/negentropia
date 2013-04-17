@@ -104,7 +104,7 @@ class Model {
       _createBuffers(gl, vertCoord, vertInd);
     }
     
-    void handleError(AsyncError err) {
+    void handleError(Object err) {
       print("Model.fromURL: failure fetching square JSON from URL: $URL: $err");
     }
 
