@@ -1,5 +1,5 @@
 precision mediump float; // required
 
 void main(void) {
-	gl_FragColor = vec4(0.95, 0.95, 0.95, 1.0); // white opaque
+	gl_FragColor = vec4(0.95, 0.95, .95, 1.0); // white opaque
 }

@@ -1,6 +1,5 @@
 
 // Global variables
-var skyboxScale = 5000;
 var neg = {
 	debugLostContext:    true,
 	debugWebGL:          true,
@@ -12,11 +11,10 @@ var neg = {
 	shaderCache:         {},
 	angleY:              0,
 	deltaY:              1,
-	eye:                 [0,0,0],
-    center:	             [0,0,1],
+	eye:                 [0,0,10],
+    center:	             [0,0,0],
 	up:                  [0,1,0],
 	pMatrix:             mat4.create(),
-	farPlane:            1.5 * skyboxScale
 };
 var gl = null;
 var websocket = null;
@@ -85,7 +83,7 @@ function boot() {
 }
 
 function animate() {
-
+	
 	var camOrbitRadius = 10;
 	
 	neg.angleY += neg.deltaY;
@@ -93,7 +91,10 @@ function animate() {
 	var radY = neg.angleY * Math.PI / 180;
 	
 	//neg.eye = [ camOrbitRadius * Math.sin(radY), 0, camOrbitRadius * Math.cos(radY) ];
-	neg.center = [ Math.sin(radY), 0, - Math.cos(radY) ];
+	//neg.center = [ 0, 0, 0 ];
+	
+	neg.eye = [ 0, 0, 0 ];
+	neg.center = [ Math.sin(radY), 0, -Math.cos(radY) ];
 }
 
 function render() {
@@ -113,7 +114,7 @@ function render() {
 	//
 	// neg.canvasAspect = neg.canvas.width / neg.canvas.height;
 	//
-    mat4.perspective(neg.fieldOfViewY, neg.canvasAspect, 1.0, neg.farPlane, neg.pMatrix);
+    mat4.perspective(neg.fieldOfViewY, neg.canvasAspect, 1, 1000, neg.pMatrix);
 
 	//drawSquare();
 	
@@ -147,72 +148,8 @@ function backfaceCulling(gl, enable) {
 	}
 }
 
-/*
-function drawSquare() {
-
-	if (!('programSquare' in neg)) {
-		// square shader program is not loaded yet
-		return;
-	}
-
-	if (!('square' in neg)) {
-		// square buffers are not loaded yet
-		return;
-	}
-	
-	gl.useProgram(neg.programSquare.shaderProgram);
-
-	var aVertexPosition = neg.programSquare.aVertexPosition;
-	var square = neg.square;
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, square.vertexPositionBuffer);
-   	gl.vertexAttribPointer(aVertexPosition, square.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(aVertexPosition);
-	
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, square.vertexIndexBuffer);
-	gl.drawElements(gl.TRIANGLES, square.vertInd.length, gl.UNSIGNED_SHORT, 0 * square.vertexIndexBufferItemSize);
-
-    gl.disableVertexAttribArray(aVertexPosition);
-
-	// clean up
-	gl.bindBuffer(gl.ARRAY_BUFFER, null);
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);				
-}
-*/
-
-/*
-function initBuffers() {
-	fetchSquare("/mesh/square.json");
-}
-*/
-
-/*
-function squareProgramLoaded(prog) {
-	if ('shaderProgram' in prog) {
-		console.log("main.js: square shader program: ready");
-
-		// save vertex attribute location
-		prog.aVertexPosition = gl.getAttribLocation(prog.shaderProgram, "aVertexPosition");
-
-		neg.programSquare = prog;
-	}
-	else {
-		console.log("main.js: square shader program: failure");	
-	}
-}
-*/
-
-function initContext() {
-
-	// Async request for shader program
-	//fetchProgramFromURL("/shader/min_vs.txt", "/shader/min_fs.txt", squareProgramLoaded);
-	
-	//initBuffers();
-	
-	neg.programList = []; // drop existing full programs
-	neg.shaderCache = {}; // drop existing compiled shaders
-
-	/*
+function initSquares() {
+	// white
 	var squareProgram = new Program("/shader/min_vs.txt", "/shader/min_fs.txt");
 	neg.programList.push(squareProgram);
 	var squareModel = new Model(squareProgram, "/mesh/square.json");
@@ -222,6 +159,7 @@ function initContext() {
 
 	// create 2nd program after 2 secs (time for the first program to populate the shader cache)
 	setTimeout(function() {
+		// blue
 		var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
 		neg.programList.push(squareProgram2);		
 		var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
@@ -230,14 +168,16 @@ function initContext() {
 		squareModel2.addInstance(squareInstance2);
 	}, 2000);
 
+	// red
 	var squareProgram3 = new Program("/shader/min_vs.txt", "/shader/min3_fs.txt");
 	neg.programList.push(squareProgram3);
 	var squareModel3 = new Model(squareProgram3, "/mesh/square3.json");
 	squareProgram3.addModel(squareModel3);
 	var squareInstance3 = new Instance(squareModel3);
 	squareModel3.addInstance(squareInstance3);
-	*/
-	
+}
+
+function initSkybox() {
 	var skyboxProgram = new SkyboxProgram("/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
 	neg.programList.push(skyboxProgram);
 	var skyboxModel = new SkyboxModel(skyboxProgram, "/mesh/cube.json", true, 0);
@@ -248,10 +188,18 @@ function initContext() {
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');	
 	skyboxProgram.addModel(skyboxModel);
-	//var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], skyboxScale);
-	var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], 2000);
+	var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], 0.5);
 	skyboxModel.addInstance(skyboxInstance);
+}
+
+function initContext() {
 	
+	neg.programList = []; // drop existing full programs
+	neg.shaderCache = {}; // drop existing compiled shaders
+
+	initSquares();
+	initSkybox();
+		
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color
     gl.enable(gl.DEPTH_TEST);			// perform depth testing
 	gl.depthFunc(gl.LESS);				// gl.LESS is default depth test
