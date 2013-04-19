@@ -1,10 +1,14 @@
 function Program(vertexShaderURL, fragmentShaderURL) {
 	console.log("new program: vsURL=" + vertexShaderURL + " fsURL=" + fragmentShaderURL);
 	this.modelList = [];
-	
+	this.vsURL = vertexShaderURL;
+	this.fsURL = fragmentShaderURL;
+}
+
+Program.prototype.fetch = function() {
 	// Async request for shader program
 	var p = this; // don't put 'this' inside the closure below
-	fetchProgramFromURL(vertexShaderURL, fragmentShaderURL, function (prog) { shaderProgramLoaded(p, prog); });
+	fetchProgramFromURL(this.vsURL, this.fsURL, function (prog) { shaderProgramLoaded(p, prog); });
 }
 
 function shaderProgramLoaded(p, prog) {

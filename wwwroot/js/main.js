@@ -146,33 +146,49 @@ function backfaceCulling(gl, enable) {
 	}
 }
 
-function initSquares() {
-	// white
+function initSquareWhite() {
 	var squareProgram = new Program("/shader/min_vs.txt", "/shader/min_fs.txt");
 	neg.programList.push(squareProgram);
 	var squareModel = new Model(squareProgram, "/mesh/square.json");
 	squareProgram.addModel(squareModel);
 	var squareInstance = new Instance(squareModel);
 	squareModel.addInstance(squareInstance);
+	return squareProgram;
+}
 
-	// create 2nd program after 2 secs (time for the first program to populate the shader cache)
-	setTimeout(function() {
-		// blue
-		var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
-		neg.programList.push(squareProgram2);		
-		var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
-		squareProgram2.addModel(squareModel2);
-		var squareInstance2 = new Instance(squareModel2);
-		squareModel2.addInstance(squareInstance2);
-	}, 2000);
+function initSquareBlue() {
+	var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
+	neg.programList.push(squareProgram2);		
+	var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
+	squareProgram2.addModel(squareModel2);
+	var squareInstance2 = new Instance(squareModel2);
+	squareModel2.addInstance(squareInstance2);
+	return squareProgram2;
+}
 
-	// red
+function initSquareRed() {
 	var squareProgram3 = new Program("/shader/min_vs.txt", "/shader/min3_fs.txt");
 	neg.programList.push(squareProgram3);
 	var squareModel3 = new Model(squareProgram3, "/mesh/square3.json");
 	squareProgram3.addModel(squareModel3);
 	var squareInstance3 = new Instance(squareModel3);
 	squareModel3.addInstance(squareInstance3);
+	return squareProgram3;
+}
+
+function initSquares() {
+	var whiteSquareProgram = initSquareWhite();
+	neg.programList.push(whiteSquareProgram);
+	whiteSquareProgram.fetch();
+	
+	// create 2nd program after 2 secs (time for the first program to populate the shader cache)
+	var blueSquareProgram = initSquareBlue();
+	neg.programList.push(blueSquareProgram);
+	setTimeout(function() { blueSquareProgram.fetch(); }, 2000);
+
+	var redSquareProgram = initSquareRed();
+	neg.programList.push(redSquareProgram);
+	redSquareProgram.fetch();
 }
 
 function initSkybox() {
@@ -186,7 +202,7 @@ function initSkybox() {
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');	
 	skyboxProgram.addModel(skyboxModel);
-	var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], 0.5);
+	var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], 0.1);
 	skyboxModel.addInstance(skyboxInstance);
 }
 

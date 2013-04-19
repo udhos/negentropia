@@ -125,6 +125,8 @@ SkyboxInstance.prototype.draw = function(program) {
 		
 	// 1. obj scale
 	mat4.scale(MV, [this.scale, this.scale, this.scale]);
+	
+	// send model-view matrix uniform
 	gl.uniformMatrix4fv(program.u_MV, false, MV);
 	
 	// vertex coord
