@@ -116,8 +116,6 @@ function render() {
 	//
     mat4.perspective(neg.fieldOfViewY, neg.canvasAspect, 1, 1000, neg.pMatrix);
 
-	//drawSquare();
-	
 	for (var p in neg.programList) {
 		neg.programList[p].drawModels();
 	}

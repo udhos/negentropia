@@ -48,11 +48,9 @@ SkyboxProgram.prototype.drawModels = function() {
     gl.useProgram(this.shaderProgram);
     gl.enableVertexAttribArray(this.aPosition);
 	
-	/*
 	var unit = 0;
 	gl.activeTexture(gl.TEXTURE0 + unit);
 	gl.uniform1i(this.u_Skybox, unit);
-	*/
 
 	// skybox does not use perspective projection
 	//gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
@@ -132,12 +130,6 @@ SkyboxInstance.prototype.draw = function(program) {
 	// vertex coord
     gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
    	gl.vertexAttribPointer(program.aVertexPosition, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
-
-	// cubemap sampler
-	var unit = 0;
-	gl.activeTexture(gl.TEXTURE0 + unit);
-	gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.model.cubemapTexture);
-	gl.uniform1i(program.u_Skybox, unit);
 	
 	// draw
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
