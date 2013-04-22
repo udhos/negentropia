@@ -1,7 +1,9 @@
 attribute vec3 a_Position;
-varying vec4 v_Position;
+uniform mat4 u_MV;         // model-view
+uniform mat4 u_P;          // projection
+varying vec4 v_objCoord;   // object-space
 
 void main() {
-  v_Position = vec4(a_Position, 1.0);
-  gl_Position = v_Position;
+  v_objCoord = vec4(a_Position, 1.0); // send obj-space coord to fragment shader
+  gl_Position = u_P * u_MV * v_objCoord;
 }

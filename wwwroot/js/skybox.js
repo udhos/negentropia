@@ -36,6 +36,7 @@ function skyboxShaderLoaded(p, prog) {
 
 	// save uniform location
 	skyboxGetUniform(p, "u_MV");
+	skyboxGetUniform(p, "u_P");	
 	skyboxGetUniform(p, "u_Skybox");
 }
 
@@ -53,7 +54,7 @@ SkyboxProgram.prototype.drawModels = function() {
 	gl.uniform1i(this.u_Skybox, unit);
 
 	// skybox does not use perspective projection
-	//gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
+	gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
 	
 	for (var m in this.modelList) {
 		this.modelList[m].drawInstances();
@@ -124,7 +125,8 @@ SkyboxInstance.prototype.draw = function(program) {
     mat4.translate(MV, this.center);
 		
 	// 1. obj scale
-	mat4.scale(MV, [this.scale, this.scale, this.scale]);
+	var s = this.scale * neg.scale;
+	mat4.scale(MV, [s, s, s]);
 	
 	// send model-view matrix uniform
 	gl.uniformMatrix4fv(program.u_MV, false, MV);

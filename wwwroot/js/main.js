@@ -4,17 +4,20 @@ var neg = {
 	debugLostContext:    true,
 	debugWebGL:          true,
 	drawOnce:            false,
-	cullBackface:        true,
+	cullBackface:        false,
 	fieldOfViewY:        45,
 	ongoingImageLoads:   [],
 	programList:         [],
 	shaderCache:         {},
+	pMatrix:             mat4.create(),
+	
+	// camera tests
 	angleY:              0,
 	deltaY:              1,
 	eye:                 [0,0,10],
     center:	             [0,0,0],
 	up:                  [0,1,0],
-	pMatrix:             mat4.create(),
+	scale:               1
 };
 var gl = null;
 var websocket = null;
@@ -90,11 +93,14 @@ function animate() {
 	neg.angleY %= 360;
 	var radY = neg.angleY * Math.PI / 180;
 	
-	//neg.eye = [ camOrbitRadius * Math.sin(radY), 0, camOrbitRadius * Math.cos(radY) ];
-	//neg.center = [ 0, 0, 0 ];
+	neg.eye = [ camOrbitRadius * Math.sin(radY), 0, camOrbitRadius * Math.cos(radY) ];
+	neg.center = [ 0, 0, 0 ];
 	
-	neg.eye = [ 0, 0, 0 ];
-	neg.center = [ Math.sin(radY), 0, -Math.cos(radY) ];
+	var S = 4;
+	neg.scale = S * Math.sin(radY) + S + 3;
+	
+	//neg.eye = [ 0, 0, 0 ];
+	//neg.center = [ Math.sin(radY), 0, -Math.cos(radY) ];
 }
 
 function render() {
@@ -202,7 +208,7 @@ function initSkybox() {
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
 	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');	
 	skyboxProgram.addModel(skyboxModel);
-	var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], 0.1);
+	var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], 1.0);
 	skyboxModel.addInstance(skyboxInstance);
 }
 
@@ -211,7 +217,7 @@ function initContext() {
 	neg.programList = []; // drop existing full programs
 	neg.shaderCache = {}; // drop existing compiled shaders
 
-	initSquares();
+	//initSquares();
 	initSkybox();
 		
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color
