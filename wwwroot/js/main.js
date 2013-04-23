@@ -212,12 +212,34 @@ function initSkybox() {
 	skyboxModel.addInstance(skyboxInstance);
 }
 
+function onObjDone(opaque, response) {
+
+	if (response == null) {
+		console.log("onObjDone: fetch FAILURE: " + opaque.URL);
+		return;
+	}
+
+	console.log("onObjDone: fetch done: " + opaque.URL);
+	
+	var airship = obj_loader.Mesh(response);
+	
+	console.log("onObjDone: parsing done: " + opaque.URL);
+}
+
+function initShips() {
+	var objURL = "/obj/airship.obj"; 
+	var opaque = { URL: objURL };
+	console.log("initShips: loading OBJ from: " + objURL);
+	fetchFile(objURL, onObjDone, opaque)
+}
+
 function initContext() {
 	
 	neg.programList = []; // drop existing full programs
 	neg.shaderCache = {}; // drop existing compiled shaders
 
 	//initSquares();
+	initShips();
 	initSkybox();
 		
    	gl.clearColor(0.5, 0.5, 0.5, 1.0);	// clear color

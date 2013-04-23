@@ -14,6 +14,8 @@
 !*.dart
 !*.yaml
 !*.json
+!*.obj
+!*.mtl
 !negentropia
 !negentropia/lib
 !negentropia/texture
@@ -42,3 +44,5 @@
 !wwwroot/shader
 !wwwroot/mesh
 !wwwroot/texture
+!wwwroot/obj
+!wwwroot/mtl

@@ -78,6 +78,7 @@ function processFragmentShader(opaque, response) {
 }
 
 function shaderOngoingStart(prog) {
+	// nothing to do
 }
 
 function shaderOngoingStop(prog) {

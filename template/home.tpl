@@ -8,6 +8,7 @@
 <script type="text/javascript" src="/js/lib/game-shim.js"></script>
 <script type="text/javascript" src="/js/lib/Stats.js"></script>
 <script type="text/javascript" src="/js/lib/gl-matrix-1.3.7.min.js"></script>
+<script type="text/javascript" src="/js/lib/webgl-obj-loader.js"></script>
 
 <script type="text/javascript" src="/js/main.js"></script>
 <script type="text/javascript" src="/js/ws.js"></script>
