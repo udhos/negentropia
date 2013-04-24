@@ -96,11 +96,12 @@ function animate() {
 	neg.eye = [ camOrbitRadius * Math.sin(radY), 0, camOrbitRadius * Math.cos(radY) ];
 	neg.center = [ 0, 0, 0 ];
 	
-	var S = 4;
-	neg.scale = S * Math.sin(radY) + S + 3;
-	
-	//neg.eye = [ 0, 0, 0 ];
-	//neg.center = [ Math.sin(radY), 0, -Math.cos(radY) ];
+	var S = 5;
+	neg.scale = S * Math.sin(radY) + S + 1;
+
+	for (var p in neg.programList) {
+		neg.programList[p].animate();
+	}
 }
 
 function render() {
@@ -153,7 +154,7 @@ function backfaceCulling(gl, enable) {
 }
 
 function initSquareWhite() {
-	var squareProgram = new Program("/shader/min_vs.txt", "/shader/min_fs.txt");
+	var squareProgram = new Program("/shader/clip_vs.txt", "/shader/clip_fs.txt");
 	neg.programList.push(squareProgram);
 	var squareModel = new Model(squareProgram, "/mesh/square.json");
 	squareProgram.addModel(squareModel);
@@ -163,7 +164,7 @@ function initSquareWhite() {
 }
 
 function initSquareBlue() {
-	var squareProgram2 = new Program("/shader/min_vs.txt", "/shader/min2_fs.txt");
+	var squareProgram2 = new Program("/shader/clip_vs.txt", "/shader/clip2_fs.txt");
 	neg.programList.push(squareProgram2);		
 	var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
 	squareProgram2.addModel(squareModel2);
@@ -173,7 +174,7 @@ function initSquareBlue() {
 }
 
 function initSquareRed() {
-	var squareProgram3 = new Program("/shader/min_vs.txt", "/shader/min3_fs.txt");
+	var squareProgram3 = new Program("/shader/clip_vs.txt", "/shader/clip3_fs.txt");
 	neg.programList.push(squareProgram3);
 	var squareModel3 = new Model(squareProgram3, "/mesh/square3.json");
 	squareProgram3.addModel(squareModel3);
@@ -220,15 +221,28 @@ function onObjDone(opaque, response) {
 	}
 
 	console.log("onObjDone: fetch done: " + opaque.URL);
+
+	//console.log("onObjDone: response = " + response);
 	
-	var airship = obj_loader.Mesh(response);
+	var airship = new obj_loader.Mesh(response);
 	
 	console.log("onObjDone: parsing done: " + opaque.URL);
+	
+	//console.log("onObjDone: airship = " + airship);
+		
+	var mod = new Model(opaque.program, null, false, airship);
+	opaque.program.addModel(mod);
+	var inst = new Instance(mod);
+	mod.addInstance(inst);
 }
 
 function initShips() {
+	var prog = new Program("/shader/simple_vs.txt", "/shader/simple_fs.txt");
+	neg.programList.push(prog);
+	prog.fetch();
+
 	var objURL = "/obj/airship.obj"; 
-	var opaque = { URL: objURL };
+	var opaque = { URL: objURL, program: prog };
 	console.log("initShips: loading OBJ from: " + objURL);
 	fetchFile(objURL, onObjDone, opaque)
 }
@@ -238,7 +252,7 @@ function initContext() {
 	neg.programList = []; // drop existing full programs
 	neg.shaderCache = {}; // drop existing compiled shaders
 
-	//initSquares();
+	initSquares();
 	initShips();
 	initSkybox();
 		

@@ -44,16 +44,22 @@ SkyboxProgram.prototype.addModel = function(m) {
 	this.modelList.push(m);
 }
 
+SkyboxProgram.prototype.animate = function() {
+	for (var m in this.modelList) {
+		this.modelList[m].animate();
+	}
+}
+
 SkyboxProgram.prototype.drawModels = function() {
 	
     gl.useProgram(this.shaderProgram);
-    gl.enableVertexAttribArray(this.aPosition);
+    gl.enableVertexAttribArray(this.a_Position);
 	
 	var unit = 0;
 	gl.activeTexture(gl.TEXTURE0 + unit);
 	gl.uniform1i(this.u_Skybox, unit);
 
-	// skybox does not use perspective projection
+	// perspective projection
 	gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
 	
 	for (var m in this.modelList) {
@@ -64,7 +70,7 @@ SkyboxProgram.prototype.drawModels = function() {
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 	
-    //gl.disableVertexAttribArray(this.aVertexPosition); // needed ??
+    //gl.disableVertexAttribArray(this.a_Position); // needed ??
 }
 
 function SkyboxModel(program, URL, reverse, rescale) {
@@ -90,6 +96,12 @@ SkyboxModel.prototype.addInstance = function(i) {
 	this.instanceList.push(i);
 }
 
+SkyboxModel.prototype.animate = function() {
+	for (var i in this.instanceList) {
+		this.instanceList[i].animate();
+	}
+}
+
 SkyboxModel.prototype.drawInstances = function() {
 
 	gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.cubemapTexture);
@@ -112,6 +124,10 @@ function SkyboxInstance(model, center, scale) {
 	this.scale = scale;
 }
 
+SkyboxInstance.prototype.animate = function() {
+	this.s = this.scale * neg.scale;
+}
+
 SkyboxInstance.prototype.draw = function(program) {
 
 	var buf = this.model.buffer;
@@ -125,7 +141,7 @@ SkyboxInstance.prototype.draw = function(program) {
     mat4.translate(MV, this.center);
 		
 	// 1. obj scale
-	var s = this.scale * neg.scale;
+	var s = this.s;
 	mat4.scale(MV, [s, s, s]);
 	
 	// send model-view matrix uniform
