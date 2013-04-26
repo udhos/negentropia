@@ -1,12 +1,15 @@
 import 'dart:html';
 import 'dart:async';
 import 'dart:web_gl';
+import 'dart:math';
 
 import 'package:stats/stats.dart';
+import 'package:vector_math/vector_math.dart';
 
 import 'cookies/cookies.dart';
 import 'ws.dart';
 import 'shader.dart';
+import 'skybox.dart';
 import 'buffer.dart';
 import 'lost_context.dart';
 
@@ -17,6 +20,8 @@ ShaderProgram shaderProgram;
 bool debugLostContext = true;
 List<ShaderProgram> programList = new List<ShaderProgram>();
 Map<String,Shader> shaderCache = new Map<String,Shader>();
+mat4 pMatrix = new mat4();
+num fieldOfViewYRadians = 45 * PI / 180;
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -101,27 +106,58 @@ RenderingContext boot() {
   return gl;
 }
 
-void initContext(RenderingContext gl) {
-
-  programList = new List<ShaderProgram>();           // drop existing programs 
-  shaderCache = new Map<String,Shader>(); // drop existing compile shader cache
-
-  ShaderProgram squareProgram = new ShaderProgram(gl, shaderCache, "/shader/min_vs.txt", "/shader/min_fs.txt");
+void initSquares(RenderingContext gl) {
+  ShaderProgram squareProgram = new ShaderProgram(gl);
   programList.add(squareProgram);
+  squareProgram.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip_fs.txt");
   Model squareModel = new Model.fromURL(gl, squareProgram, "/mesh/square.json");
   squareProgram.addModel(squareModel);
-  Instance squareInstance = new Instance(squareModel);
+  Instance squareInstance = new Instance(squareModel, [0, 0, 0], 1.0);
   squareModel.addInstance(squareInstance);
 
+  ShaderProgram squareProgram2 = new ShaderProgram(gl);
+  programList.add(squareProgram2);
   // execute after 2 secs, giving time to first program populate shadeCache
   new Timer(new Duration(seconds:2), () {
-    ShaderProgram squareProgram2 = new ShaderProgram(gl, shaderCache, "/shader/min_vs.txt", "/shader/min2_fs.txt");
-    programList.add(squareProgram2);
-    Model squareModel2 = new Model.fromURL(gl, squareProgram2, "/mesh/square2.json");
-    squareProgram2.addModel(squareModel2);
-    Instance squareInstance2 = new Instance(squareModel2);
-    squareModel2.addInstance(squareInstance2);
+    squareProgram2.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip2_fs.txt");
   });
+  Model squareModel2 = new Model.fromURL(gl, squareProgram2, "/mesh/square2.json");
+  squareProgram2.addModel(squareModel2);
+  Instance squareInstance2 = new Instance(squareModel2, [0, 0, 0], 1.0);
+  squareModel2.addInstance(squareInstance2);
+  
+  ShaderProgram squareProgram3 = new ShaderProgram(gl);
+  programList.add(squareProgram3);
+  squareProgram3.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
+  Model squareModel3 = new Model.fromURL(gl, squareProgram3, "/mesh/square3.json");
+  squareProgram3.addModel(squareModel3);
+  Instance squareInstance3 = new Instance(squareModel3, [0, 0, 0], 1.0);
+  squareModel3.addInstance(squareInstance3);  
+}
+
+void initSkybox(RenderingContext gl) {
+  SkyboxProgram skyboxProgram = new SkyboxProgram(gl);
+  programList.add(skyboxProgram);
+  skyboxProgram.fetch(shaderCache, "/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
+  SkyboxModel skyboxModel = new SkyboxModel.fromURL(gl, skyboxProgram, "/mesh/cube.json", true, 0);
+  skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
+  skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
+  skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y, '/texture/space_up.jpg');
+  skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y, '/texture/space_dn.jpg');
+  skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
+  skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');  
+  skyboxProgram.addModel(skyboxModel);
+  Instance skyboxInstance = new Instance(skyboxModel, [0, 0, 0], 1.0);
+  skyboxModel.addInstance(skyboxInstance);
+}
+
+void initContext(RenderingContext gl) {
+
+  programList = new List<ShaderProgram>(); // drop existing programs 
+  shaderCache = new Map<String,Shader>();  // drop existing compile shader cache
+
+  initSquares(gl);
+  initSkybox(gl);
   
   gl.clearColor(0.5, 0.5, 0.5, 1.0);            // clear color
   gl.enable(RenderingContext.DEPTH_TEST);  // enable depth testing
@@ -160,9 +196,9 @@ void render(RenderingContext gl) {
   // h = 0.828
   //
   // aspect = canvas.width / canvas.height
-  //mat4.perspective(neg.fieldOfViewY, canvasAspect, 1.0, 1000.0, neg.pMatrix);
+  setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, 1.0, 1000.0);
     
-  programList.forEach((ShaderProgram p) => p.drawModels());
+  programList.forEach((ShaderProgram p) => p.drawModels(pMatrix));
 }
 
 void loop(RenderingContext gl) {

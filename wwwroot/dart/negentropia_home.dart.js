@@ -2049,14 +2049,14 @@ $$._FutureImpl = {"": "Object;_state@,_resultOrListeners<",
   _asListener$0: function() {
     return $._FutureListenerWrapper$(this);
   },
+  _FutureImpl$immediate$1: function(value) {
+    this._state = 1;
+    this._resultOrListeners = value;
+  },
   _FutureImpl$immediateError$2: function(error, stackTrace) {
     if (stackTrace != null)
       $._attachStackTrace(error, stackTrace);
     this._setError$1(error);
-  },
-  _FutureImpl$immediate$1: function(value) {
-    this._state = 1;
-    this._resultOrListeners = value;
   },
   $is_FutureImpl: true,
   $isFuture: true
@@ -2382,6 +2382,9 @@ $$._ForwardingStream = {"": "Stream;",
       onDone = $._nullDoneHandler;
     return $._ForwardingStreamSubscription$(this, onData, onError, onDone, true === cancelOnError);
   },
+  listen$1: function(onData) {
+    return this.listen$4$cancelOnError$onDone$onError(onData, null, null, null);
+  },
   listen$3$onDone$onError: function(onData, onDone, onError) {
     return this.listen$4$cancelOnError$onDone$onError(onData, null, onDone, onError);
   },
@@ -2405,6 +2408,12 @@ $$._BaseStreamSubscription = {"": "Object;",
   },
   _onDone$0: function() {
     return this._onDone.call$0();
+  },
+  onError$1: function(_, handleError) {
+    this._onError = handleError == null ? $._nullErrorHandler : handleError;
+  },
+  get$onError: function(receiver) {
+    return new $.BoundClosure$i1(this, "onError$1", receiver);
   },
   _BaseStreamSubscription$3: function(_onData, _onError, _onDone) {
     if (this._onData == null)
@@ -3389,14 +3398,14 @@ $$.DateTime = {"": "Object;millisecondsSinceEpoch,isUtc",
   get$millisecond: function() {
     return $.Primitives_getMilliseconds(this);
   },
+  DateTime$_now$0: function() {
+    $.Primitives_lazyAsJsDate(this);
+  },
   DateTime$fromMillisecondsSinceEpoch$2$isUtc: function(millisecondsSinceEpoch, isUtc) {
     if ($.abs$0$n(millisecondsSinceEpoch) > 8640000000000000)
       throw $.wrapException($.ArgumentError$(millisecondsSinceEpoch));
     if (isUtc == null)
       throw $.wrapException($.ArgumentError$(isUtc));
-  },
-  DateTime$_now$0: function() {
-    $.Primitives_lazyAsJsDate(this);
   },
   $isDateTime: true
 };
@@ -4136,6 +4145,11 @@ $$._EventStreamSubscription = {"": "StreamSubscription;_pauseCount,_target,_even
   },
   get$_canceled: function() {
     return this._target == null;
+  },
+  onError$1: function(_, handleError) {
+  },
+  get$onError: function(receiver) {
+    return new $.BoundClosure$i1(this, "onError$1", receiver);
   },
   get$_paused: function() {
     return this._pauseCount > 0;
@@ -5256,7 +5270,7 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
   }
 };
 
-$$.Instance = {"": "Object;model",
+$$.Instance = {"": "Object;model,center,scale",
   draw$0: function() {
     var t1, gl, t2, t3;
     t1 = this.model;
@@ -5273,7 +5287,7 @@ $$.Instance = {"": "Object;model",
   }
 };
 
-$$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program?",
+$$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program@",
   _createBuffers$3: function(gl, vertCoord, vertInd) {
     var t1 = $.getInterceptor$x(gl);
     this.vertexPositionBuffer = t1.createBuffer$0(gl);
@@ -5295,9 +5309,8 @@ $$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBuf
   drawInstances$0: function() {
     $.JSArray_methods.forEach$1(this.instanceList, new $.Model_drawInstances_anon());
   },
-  Model$fromURL$3: function(gl, prog, URL) {
+  Model$fromURL$3: function(gl, program, URL) {
     var t1, t2;
-    this.program = prog;
     t1 = new $.handleResponse(this, gl, URL);
     t2 = new $.handleError(URL);
     $.HttpRequest_getString(URL, null, null).then$1(t1).catchError$1(t2);
@@ -5362,15 +5375,9 @@ $$.initDebugLostContext_anon0 = {"": "Closure;",
   }
 };
 
-$$.initContext_anon = {"": "Closure;gl_0",
+$$.initSquares_anon = {"": "Closure;squareProgram2_0",
   call$0: function() {
-    var t1, squareProgram2, squareModel2;
-    t1 = this.gl_0;
-    squareProgram2 = $.ShaderProgram$_load(t1, $.get$shaderCache(), "/shader/min_vs.txt", "/shader/min2_fs.txt");
-    $.add$1$ax($.get$programList(), squareProgram2);
-    squareModel2 = $.Model$fromURL(t1, squareProgram2, "/mesh/square2.json");
-    squareProgram2.addModel$1(squareModel2);
-    squareModel2.addInstance$1($.Instance$(squareModel2));
+    this.squareProgram2_0.fetch$3($.get$shaderCache(), "/shader/clip_vs.txt", "/shader/clip2_fs.txt");
   }
 };
 
@@ -5386,7 +5393,30 @@ $$.loop_anon = {"": "Closure;gl_0",
   }
 };
 
-$$.ShaderProgram = {"": "Object;program?,aVertexPosition?,gl<,modelList",
+$$.ShaderProgram = {"": "Object;program@,aVertexPosition?,gl<,modelList",
+  fetch$3: function(shaderCache, vertexShaderURL, fragmentShaderURL) {
+    var t1, t2, t3, t4;
+    t1 = {};
+    $.Primitives_printString("Program.fetch: vsUrl=" + vertexShaderURL + " fsURL=" + fragmentShaderURL);
+    t2 = new $.ShaderProgram_fetch_compileShader(this, shaderCache);
+    t1.vertexShader_0 = null;
+    t1.fragmentShader_1 = null;
+    t3 = new $.ShaderProgram_fetch_tryLink(t1, this);
+    t4 = new $.ShaderProgram_fetch_fetchVertexShader(t1, vertexShaderURL, t2, t3);
+    t2 = new $.ShaderProgram_fetch_fetchFragmentShader(t1, fragmentShaderURL, t2, t3);
+    t1.vertexShader_0 = $.$index$asx(shaderCache, vertexShaderURL);
+    if (t1.vertexShader_0 == null) {
+      $.Primitives_printString($.JSString_methods.$add($.JSString_methods.$add("vertexShader: ", vertexShaderURL), ": cache MISS"));
+      t4.call$0();
+    } else
+      $.Primitives_printString($.JSString_methods.$add($.JSString_methods.$add("vertexShader: ", vertexShaderURL), ": cache HIT"));
+    if (t1.fragmentShader_1 == null) {
+      $.Primitives_printString($.JSString_methods.$add($.JSString_methods.$add("fragmentShader: ", fragmentShaderURL), ": cache MISS"));
+      t2.call$0();
+    } else
+      $.Primitives_printString($.JSString_methods.$add($.JSString_methods.$add("fragmentShader: ", fragmentShaderURL), ": cache HIT"));
+    t3.call$0();
+  },
   addModel$1: function(m) {
     this.modelList.push(m);
   },
@@ -5399,32 +5429,10 @@ $$.ShaderProgram = {"": "Object;program?,aVertexPosition?,gl<,modelList",
     $.JSArray_methods.forEach$1(this.modelList, new $.ShaderProgram_drawModels_anon());
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
-  },
-  ShaderProgram$_load$4: function(gl, shaderCache, vertexShaderURL, fragmentShaderURL, box_0) {
-    var t1, t2, t3;
-    $.print("Program._load: vsUrl=" + vertexShaderURL + " fsURL=" + fragmentShaderURL);
-    t1 = new $.compileShader(this, shaderCache);
-    box_0.vertexShader_0 = null;
-    box_0.fragmentShader_1 = null;
-    t2 = new $.tryLink(box_0, this);
-    t3 = new $.fetchVertexShader(box_0, vertexShaderURL, t1, t2);
-    t1 = new $.fetchFragmentShader(box_0, fragmentShaderURL, t1, t2);
-    box_0.vertexShader_0 = shaderCache.$index(shaderCache, vertexShaderURL);
-    if (box_0.vertexShader_0 == null) {
-      $.print($.JSString_methods.$add($.JSString_methods.$add("vertexShader: ", vertexShaderURL), ": cache MISS"));
-      t3.call$0();
-    } else
-      $.print($.JSString_methods.$add($.JSString_methods.$add("vertexShader: ", vertexShaderURL), ": cache HIT"));
-    if (box_0.fragmentShader_1 == null) {
-      $.print($.JSString_methods.$add($.JSString_methods.$add("fragmentShader: ", fragmentShaderURL), ": cache MISS"));
-      t1.call$0();
-    } else
-      $.print($.JSString_methods.$add($.JSString_methods.$add("fragmentShader: ", fragmentShaderURL), ": cache HIT"));
-    t2.call$0();
   }
 };
 
-$$.compileShader = {"": "Closure;this_1,shaderCache_2",
+$$.ShaderProgram_fetch_compileShader = {"": "Closure;this_1,shaderCache_2",
   call$3: function(shaderURL, shaderSource, shaderType) {
     var t1, shader;
     t1 = this.this_1;
@@ -5442,7 +5450,7 @@ $$.compileShader = {"": "Closure;this_1,shaderCache_2",
   }
 };
 
-$$.tryLink = {"": "Closure;box_0,this_3",
+$$.ShaderProgram_fetch_tryLink = {"": "Closure;box_0,this_3",
   call$0: function() {
     var t1, t2, p;
     t1 = this.box_0;
@@ -5455,26 +5463,26 @@ $$.tryLink = {"": "Closure;box_0,this_3",
     $.linkProgram$1$x(t2.get$gl(), p);
     if ($.getProgramParameter$2$x(t2.get$gl(), p, 35714) !== true && $.isContextLost$0$x(t2.get$gl()) !== true)
       $.Primitives_printString($.toString$0($.getProgramInfoLog$1$x(t2.get$gl(), p)));
-    t2.set$aVertexPosition($.getAttribLocation$2$x(t2.get$gl(), p, "aVertexPosition"));
+    t2.set$aVertexPosition($.getAttribLocation$2$x(t2.get$gl(), p, "a_Position"));
     t2.set$program(p);
     $.Primitives_printString("shader program: ready");
   }
 };
 
-$$.fetchVertexShader = {"": "Closure;box_0,vertexShaderURL_4,compileShader_5,tryLink_6",
+$$.ShaderProgram_fetch_fetchVertexShader = {"": "Closure;box_0,vertexShaderURL_4,compileShader_5,tryLink_6",
   call$0: function() {
     var requestVert, t1, t2;
     requestVert = new XMLHttpRequest();
     t1 = this.vertexShaderURL_4;
     t2 = $.getInterceptor$x(requestVert);
     t2.open$2(requestVert, "GET", t1);
-    t2.get$onLoad(requestVert).listen$1(new $.fetchVertexShader_anon(this.box_0, t1, this.compileShader_5, this.tryLink_6, requestVert));
-    t2.get$onError(requestVert).listen$1(new $.fetchVertexShader_anon0());
+    t2.get$onLoad(requestVert).listen$1(new $.ShaderProgram_fetch_fetchVertexShader_anon(this.box_0, t1, this.compileShader_5, this.tryLink_6, requestVert));
+    t2.get$onError(requestVert).listen$1(new $.ShaderProgram_fetch_fetchVertexShader_anon0());
     requestVert.send();
   }
 };
 
-$$.fetchVertexShader_anon = {"": "Closure;box_0,vertexShaderURL_7,compileShader_8,tryLink_9,requestVert_10",
+$$.ShaderProgram_fetch_fetchVertexShader_anon = {"": "Closure;box_0,vertexShaderURL_7,compileShader_8,tryLink_9,requestVert_10",
   call$1: function(e) {
     var t1, response, vertexShader;
     t1 = this.requestVert_10;
@@ -5490,26 +5498,26 @@ $$.fetchVertexShader_anon = {"": "Closure;box_0,vertexShaderURL_7,compileShader_
   }
 };
 
-$$.fetchVertexShader_anon0 = {"": "Closure;",
+$$.ShaderProgram_fetch_fetchVertexShader_anon0 = {"": "Closure;",
   call$1: function(e) {
     $.Primitives_printString("vertexShader: error: [" + $.S(e) + "]");
   }
 };
 
-$$.fetchFragmentShader = {"": "Closure;box_0,fragmentShaderURL_11,compileShader_12,tryLink_13",
+$$.ShaderProgram_fetch_fetchFragmentShader = {"": "Closure;box_0,fragmentShaderURL_11,compileShader_12,tryLink_13",
   call$0: function() {
     var requestFrag, t1, t2;
     requestFrag = new XMLHttpRequest();
     t1 = this.fragmentShaderURL_11;
     t2 = $.getInterceptor$x(requestFrag);
     t2.open$2(requestFrag, "GET", t1);
-    t2.get$onLoad(requestFrag).listen$1(new $.fetchFragmentShader_anon(this.box_0, t1, this.compileShader_12, this.tryLink_13, requestFrag));
-    t2.get$onError(requestFrag).listen$1(new $.fetchFragmentShader_anon0());
+    t2.get$onLoad(requestFrag).listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_anon(this.box_0, t1, this.compileShader_12, this.tryLink_13, requestFrag));
+    t2.get$onError(requestFrag).listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_anon0());
     requestFrag.send();
   }
 };
 
-$$.fetchFragmentShader_anon = {"": "Closure;box_0,fragmentShaderURL_14,compileShader_15,tryLink_16,requestFrag_17",
+$$.ShaderProgram_fetch_fetchFragmentShader_anon = {"": "Closure;box_0,fragmentShaderURL_14,compileShader_15,tryLink_16,requestFrag_17",
   call$1: function(e) {
     var t1, response, fragmentShader;
     t1 = this.requestFrag_17;
@@ -5525,7 +5533,7 @@ $$.fetchFragmentShader_anon = {"": "Closure;box_0,fragmentShaderURL_14,compileSh
   }
 };
 
-$$.fetchFragmentShader_anon0 = {"": "Closure;",
+$$.ShaderProgram_fetch_fetchFragmentShader_anon0 = {"": "Closure;",
   call$1: function(e) {
     $.Primitives_printString("fragmentShader: error: [" + $.S(e) + "]");
   }
@@ -5534,6 +5542,47 @@ $$.fetchFragmentShader_anon0 = {"": "Closure;",
 $$.ShaderProgram_drawModels_anon = {"": "Closure;",
   call$1: function(m) {
     return m.drawInstances$0();
+  }
+};
+
+$$.SkyboxProgram = {"": "ShaderProgram;program,aVertexPosition,gl,modelList"};
+
+$$.SkyboxModel = {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program",
+  addCubemapFace$2: function(face, URL) {
+    var image, t1, t2, t3;
+    image = $.ImageElement_ImageElement(null, null, null);
+    t1 = new $.SkyboxModel_addCubemapFace_handleDone(this, face, URL, image);
+    t2 = new $.SkyboxModel_addCubemapFace_handleError(URL);
+    t3 = $.getInterceptor$x(image);
+    t3.get$onLoad(image).listen$1(t1);
+    t3.get$onError(image).listen$1(t2);
+    t3.set$src(image, URL);
+  },
+  SkyboxModel$fromURL$5: function(gl, prog, URL, reverse, rescale) {
+    this.cubemapTexture = $.createTexture$0$x(gl);
+  }
+};
+
+$$.SkyboxModel_addCubemapFace_handleDone = {"": "Closure;this_0,face_1,URL_2,image_3",
+  call$1: function(e) {
+    var t1, gl, t2;
+    $.Primitives_printString("addCubemapFace: handleDone: loaded image from URL: " + this.URL_2);
+    t1 = this.this_0;
+    gl = t1.get$program().get$gl();
+    t2 = $.getInterceptor$x(gl);
+    t2.bindTexture$2(gl, 34067, t1.get$cubemapTexture());
+    t2.texParameteri$3(gl, 34067, 10240, 9728);
+    t2.texParameteri$3(gl, 34067, 10241, 9728);
+    t2.texImage2D$6(gl, this.face_1, 0, 6408, 6408, 5121, this.image_3);
+    t2.texParameteri$3(gl, 34067, 10242, 33071);
+    t2.texParameteri$3(gl, 34067, 10243, 33071);
+    t2.bindTexture$2(gl, 34067, null);
+  }
+};
+
+$$.SkyboxModel_addCubemapFace_handleError = {"": "Closure;URL_4",
+  call$1: function(e) {
+    $.Primitives_printString("addCubemapFace: handleError: failure loading image from URL: " + this.URL_4 + ": " + $.S(e));
   }
 };
 
@@ -5782,6 +5831,9 @@ $$.AbstractWorker = {"": "EventTarget;",
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type, $.convertDartClosureToJS(listener, 1), useCapture);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
   }
 };
 
@@ -5799,6 +5851,9 @@ $$.ApplicationCache = {"": "EventTarget;",
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type, $.convertDartClosureToJS(listener, 1), useCapture);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
   }
 };
 
@@ -5824,7 +5879,14 @@ $$.BeforeLoadEvent = {"": "Event;"};
 
 $$.Blob = {"": "Interceptor;", $isBlob: true, $asBlob: null};
 
-$$.BodyElement = {"": "Element;"};
+$$.BodyElement = {"": "Element;",
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
+  },
+  get$onLoad: function(receiver) {
+    return $.EventStreamProvider_load.forTarget$1(receiver);
+  }
+};
 
 $$.ButtonElement = {"": "Element;type},value}"};
 
@@ -5847,7 +5909,9 @@ $$.CanvasElement = {"": "Element;height%,width%",
   },
   getContext3d$0: function($receiver) {
     return this.getContext3d$6$alpha$antialias$depth$premultipliedAlpha$preserveDrawingBuffer$stencil($receiver, true, true, true, true, false, false);
-  }
+  },
+  $isCanvasElement: true,
+  $asCanvasElement: null
 };
 
 $$.CanvasGradient = {"": "Interceptor;"};
@@ -5928,6 +5992,9 @@ $$.CssStyleDeclaration = {"": "Interceptor;length=",
   set$height: function(receiver, value) {
     this.setProperty$3(receiver, "height", value, "");
   },
+  set$src: function(receiver, value) {
+    this.setProperty$3(receiver, "src", value, "");
+  },
   get$width: function(receiver) {
     return this.getPropertyValue$1(receiver, "width");
   },
@@ -5994,6 +6061,12 @@ $$.Document = {"": "Node;",
   },
   get$onClick: function(receiver) {
     return $.EventStreamProvider_click.forTarget$1(receiver);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
+  },
+  get$onLoad: function(receiver) {
+    return $.EventStreamProvider_load.forTarget$1(receiver);
   }
 };
 
@@ -6287,6 +6360,12 @@ $$.Element = {"": "Node;$$dom_children:children=,id%,style=",
   get$onClick: function(receiver) {
     return $.EventStreamProvider_click.forTarget$1(receiver);
   },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
+  },
+  get$onLoad: function(receiver) {
+    return $.EventStreamProvider_load.forTarget$1(receiver);
+  },
   get$onMouseDown: function(receiver) {
     return $.EventStreamProvider_mousedown.forTarget$1(receiver);
   },
@@ -6294,7 +6373,7 @@ $$.Element = {"": "Node;$$dom_children:children=,id%,style=",
   $asElement: null
 };
 
-$$.EmbedElement = {"": "Element;height%,type},width%"};
+$$.EmbedElement = {"": "Element;height%,src},type},width%"};
 
 $$.EntityReference = {"": "Node;"};
 
@@ -6329,6 +6408,9 @@ $$.EventSource = {"": "EventTarget;",
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type, $.convertDartClosureToJS(listener, 1), useCapture);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
   }
 };
 
@@ -6442,6 +6524,12 @@ $$.FileReader = {"": "EventTarget;",
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type, $.convertDartClosureToJS(listener, 1), useCapture);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
+  },
+  get$onLoad: function(receiver) {
+    return $.EventStreamProvider_load.forTarget$1(receiver);
   }
 };
 
@@ -6456,6 +6544,9 @@ $$.FileWriter = {"": "EventTarget;length=",
   },
   write$1: function(receiver, data) {
     return receiver.write(data);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
   }
 };
 
@@ -6625,6 +6716,12 @@ $$.FontLoader = {"": "EventTarget;",
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type, $.convertDartClosureToJS(listener, 1), useCapture);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
+  },
+  get$onLoad: function(receiver) {
+    return $.EventStreamProvider_load.forTarget$1(receiver);
   }
 };
 
@@ -6858,16 +6955,22 @@ $$.HttpRequestUpload = {"": "EventTarget;",
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type, $.convertDartClosureToJS(listener, 1), useCapture);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
+  },
+  get$onLoad: function(receiver) {
+    return $.EventStreamProvider_load.forTarget$1(receiver);
   }
 };
 
-$$.IFrameElement = {"": "Element;height%,width%"};
+$$.IFrameElement = {"": "Element;height%,src},width%"};
 
 $$.ImageData = {"": "Interceptor;data=,height=,width=", $isImageData: true, $asImageData: null};
 
-$$.ImageElement = {"": "Element;height%,width%"};
+$$.ImageElement = {"": "Element;height%,src},width%", $isImageElement: true, $asImageElement: null};
 
-$$.InputElement = {"": "Element;height%,type},value},width%", $isElement: true, $asElement: null};
+$$.InputElement = {"": "Element;height%,src},type},value},width%", $isElement: true, $asElement: null};
 
 $$.Int16Array = {"": "ArrayBufferView;",
   get$length: function(receiver) {
@@ -7137,7 +7240,7 @@ $$.MediaController = {"": "EventTarget;",
   }
 };
 
-$$.MediaElement = {"": "Element;"};
+$$.MediaElement = {"": "Element;src}"};
 
 $$.MediaError = {"": "Interceptor;"};
 
@@ -7381,6 +7484,9 @@ $$.Notification = {"": "EventTarget;",
   },
   get$onClick: function(receiver) {
     return $.EventStreamProvider_click.forTarget$1(receiver);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
   }
 };
 
@@ -7459,6 +7565,9 @@ $$.RtcDataChannel = {"": "EventTarget;",
   },
   send$1: function(receiver, data) {
     return receiver.send(data);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
   }
 };
 
@@ -7496,7 +7605,7 @@ $$.RtcStatsResponse = {"": "Interceptor;"};
 
 $$.Screen = {"": "Interceptor;height=,width="};
 
-$$.ScriptElement = {"": "Element;type}"};
+$$.ScriptElement = {"": "Element;src},type}"};
 
 $$.ScriptProfile = {"": "Interceptor;"};
 
@@ -7604,11 +7713,11 @@ $$.SourceBufferList = {"": "EventTarget;",
   $asJavaScriptIndexingBehavior: null
 };
 
-$$.SourceElement = {"": "Element;type}"};
+$$.SourceElement = {"": "Element;src},type}"};
 
 $$.SpanElement = {"": "Element;"};
 
-$$.SpeechGrammar = {"": "Interceptor;"};
+$$.SpeechGrammar = {"": "Interceptor;src}"};
 
 $$.SpeechGrammarList = {"": "Interceptor;",
   get$length: function(receiver) {
@@ -7699,6 +7808,9 @@ $$.SpeechRecognition = {"": "EventTarget;",
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type, $.convertDartClosureToJS(listener, 1), useCapture);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
   }
 };
 
@@ -8049,7 +8161,7 @@ $$.TouchList = {"": "Interceptor;",
   $asJavaScriptIndexingBehavior: null
 };
 
-$$.TrackElement = {"": "Element;"};
+$$.TrackElement = {"": "Element;src}"};
 
 $$.TrackEvent = {"": "Event;"};
 
@@ -8380,7 +8492,7 @@ $$.Url = {"": "Interceptor;"};
 
 $$.ValidityState = {"": "Interceptor;"};
 
-$$.VideoElement = {"": "MediaElement;height%,width%"};
+$$.VideoElement = {"": "MediaElement;height%,width%", $isVideoElement: true, $asVideoElement: null};
 
 $$.WebKitCssFilterRule = {"": "CssRule;style="};
 
@@ -8451,6 +8563,12 @@ $$.Window = {"": "EventTarget;",
   },
   get$onClick: function(receiver) {
     return $.EventStreamProvider_click.forTarget$1(receiver);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
+  },
+  get$onLoad: function(receiver) {
+    return $.EventStreamProvider_load.forTarget$1(receiver);
   }
 };
 
@@ -9327,6 +9445,9 @@ $$.Database = {"": "EventTarget;",
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type, $.convertDartClosureToJS(listener, 1), useCapture);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
   }
 };
 
@@ -9397,6 +9518,9 @@ $$.Transaction = {"": "EventTarget;",
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener(type, $.convertDartClosureToJS(listener, 1), useCapture);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
   }
 };
 
@@ -9451,6 +9575,12 @@ $$.DescElement = {"": "StyledElement;"};
 $$.ElementInstance = {"": "EventTarget;",
   get$onClick: function(receiver) {
     return $.EventStreamProvider_click.forTarget$1(receiver);
+  },
+  get$onError: function(receiver) {
+    return $.EventStreamProvider_error.forTarget$1(receiver);
+  },
+  get$onLoad: function(receiver) {
+    return $.EventStreamProvider_load.forTarget$1(receiver);
   }
 };
 
@@ -10236,6 +10366,9 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
   bindBuffer$2: function(receiver, target, buffer) {
     return receiver.bindBuffer(target, buffer);
   },
+  bindTexture$2: function(receiver, target, texture) {
+    return receiver.bindTexture(target, texture);
+  },
   bufferData$3: function(receiver, target, data_OR_size, usage) {
     return receiver.bufferData(target, data_OR_size, usage);
   },
@@ -10256,6 +10389,9 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
   },
   createShader$1: function(receiver, type) {
     return receiver.createShader(type);
+  },
+  createTexture$0: function(receiver) {
+    return receiver.createTexture();
   },
   cullFace$1: function(receiver, mode) {
     return receiver.cullFace(mode);
@@ -10301,6 +10437,46 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
   },
   shaderSource$2: function(receiver, shader, string) {
     return receiver.shaderSource(shader, string);
+  },
+  texImage2D$9: function(receiver, target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video, format, type, pixels) {
+    var t1, t2, t3, t4;
+    t1 = $ === format;
+    if (t1)
+      format = null;
+    t2 = $ === type;
+    if (t2)
+      type = null;
+    t3 = $ === pixels;
+    if (t3)
+      pixels = null;
+    t4 = !t3;
+    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null && t4) {
+      receiver.texImage2D(target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video, format, type, pixels);
+      return;
+    }
+    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null && t1 && t2 && t3) {
+      receiver.texImage2D(target, level, internalformat, format_OR_width, height_OR_type, receiver._convertDartToNative_ImageData$1(border_OR_canvas_OR_image_OR_pixels_OR_video));
+      return;
+    }
+    if ((typeof border_OR_canvas_OR_image_OR_pixels_OR_video === "object" && border_OR_canvas_OR_image_OR_pixels_OR_video !== null && !!$.getInterceptor(border_OR_canvas_OR_image_OR_pixels_OR_video).$isImageElement || border_OR_canvas_OR_image_OR_pixels_OR_video == null) && t1 && t2 && t3) {
+      receiver.texImage2D(target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video);
+      return;
+    }
+    if ((typeof border_OR_canvas_OR_image_OR_pixels_OR_video === "object" && border_OR_canvas_OR_image_OR_pixels_OR_video !== null && !!$.getInterceptor(border_OR_canvas_OR_image_OR_pixels_OR_video).$isCanvasElement || border_OR_canvas_OR_image_OR_pixels_OR_video == null) && t1 && t2 && t3) {
+      receiver.texImage2D(target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video);
+      return;
+    }
+    if ((typeof border_OR_canvas_OR_image_OR_pixels_OR_video === "object" && border_OR_canvas_OR_image_OR_pixels_OR_video !== null && !!$.getInterceptor(border_OR_canvas_OR_image_OR_pixels_OR_video).$isVideoElement || border_OR_canvas_OR_image_OR_pixels_OR_video == null) && t1 && t2 && t3) {
+      receiver.texImage2D(target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video);
+      return;
+    }
+    throw $.wrapException($.ArgumentError$("Incorrect number or type of arguments"));
+  },
+  texImage2D$6: function($receiver, target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video) {
+    return this.texImage2D$9($receiver, target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video, $, $, $);
+  },
+  texParameteri$3: function(receiver, target, pname, param) {
+    return receiver.texParameteri(target, pname, param);
   },
   useProgram$1: function(receiver, program) {
     return receiver.useProgram(program);
@@ -10422,6 +10598,12 @@ $$.Closure = {"": "Object;",
 $$.BoundClosure$1 = {"": "Closure;self,target",
   call$1: function(p0) {
     return this.self[this.target](p0);
+  }
+};
+
+$$.BoundClosure$i1 = {"": "Closure;self,target,receiver",
+  call$1: function(p0) {
+    return this.self[this.target](this.receiver, p0);
   }
 };
 
@@ -12151,10 +12333,6 @@ $.Object$ = function() {
   return new $.Object();
 };
 
-$.print = function(object) {
-  $.Primitives_printString(object);
-};
-
 $.Stopwatch$ = function() {
   return new $.Stopwatch(null, null);
 };
@@ -12215,6 +12393,17 @@ $.HttpRequest_request = function(url, method, onProgress, responseType, sendData
   else
     xhr.send();
   return completer.future;
+};
+
+$.ImageElement_ImageElement = function(height, src, width) {
+  var e = document.createElement("img");
+  if (src != null)
+    $.set$src$x(e, src);
+  if (width != null)
+    $.set$width$x(e, width);
+  if (height != null)
+    $.set$height$x(e, height);
+  return e;
 };
 
 $.InputElement_InputElement = function(type) {
@@ -12616,15 +12805,15 @@ $.Utf8Decoder$ = function(utf8EncodedBytes, offset, $length, replacementCodepoin
   return new $.Utf8Decoder(t1.get$iterator(t1), replacementCodepoint, null);
 };
 
-$.Instance$ = function(model) {
-  return new $.Instance(model);
+$.Instance$ = function(model, center, scale) {
+  return new $.Instance(model, center, scale);
 };
 
-$.Model$fromURL = function(gl, prog, URL) {
+$.Model$fromURL = function(gl, program, URL) {
   var t1 = $.List_List($, $.Instance);
   $.setRuntimeTypeInfo(t1, [$.Instance]);
-  t1 = new $.Model(null, null, null, null, null, t1, null);
-  t1.Model$fromURL$3(gl, prog, URL);
+  t1 = new $.Model(null, null, null, null, null, t1, program);
+  t1.Model$fromURL$3(gl, program, URL);
   return t1;
 };
 
@@ -12707,23 +12896,57 @@ $.boot = function() {
   return gl;
 };
 
-$.initContext = function(gl) {
-  var t1, squareProgram, squareModel, t2, milliseconds;
-  t1 = $.List_List($, $.ShaderProgram);
-  $.setRuntimeTypeInfo(t1, [$.ShaderProgram]);
-  $.programList = t1;
-  $.shaderCache = $.HashMap$($.String, $.Shader);
-  squareProgram = $.ShaderProgram$_load(gl, $.get$shaderCache(), "/shader/min_vs.txt", "/shader/min_fs.txt");
+$.initSquares = function(gl) {
+  var squareProgram, squareModel, squareProgram2, t1, t2, milliseconds, squareModel2, squareProgram3, squareModel3;
+  squareProgram = $.ShaderProgram$(gl);
   $.add$1$ax($.get$programList(), squareProgram);
+  squareProgram.fetch$3($.get$shaderCache(), "/shader/clip_vs.txt", "/shader/clip_fs.txt");
   squareModel = $.Model$fromURL(gl, squareProgram, "/mesh/square.json");
   squareProgram.addModel$1(squareModel);
-  squareModel.addInstance$1($.Instance$(squareModel));
+  squareModel.addInstance$1($.Instance$(squareModel, [0, 0, 0], 1));
+  squareProgram2 = $.ShaderProgram$(gl);
+  $.add$1$ax($.get$programList(), squareProgram2);
   t1 = $.Duration$(0, 0, 0, 0, 0, 2);
-  t2 = new $.initContext_anon(gl);
+  t2 = new $.initSquares_anon(squareProgram2);
   milliseconds = t1.get$inMilliseconds();
   if (milliseconds < 0)
     milliseconds = 0;
   $.TimerImpl$(milliseconds, t2);
+  squareModel2 = $.Model$fromURL(gl, squareProgram2, "/mesh/square2.json");
+  squareProgram2.addModel$1(squareModel2);
+  squareModel2.addInstance$1($.Instance$(squareModel2, [0, 0, 0], 1));
+  squareProgram3 = $.ShaderProgram$(gl);
+  $.add$1$ax($.get$programList(), squareProgram3);
+  squareProgram3.fetch$3($.get$shaderCache(), "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
+  squareModel3 = $.Model$fromURL(gl, squareProgram3, "/mesh/square3.json");
+  squareProgram3.addModel$1(squareModel3);
+  squareModel3.addInstance$1($.Instance$(squareModel3, [0, 0, 0], 1));
+};
+
+$.initSkybox = function(gl) {
+  var skyboxProgram, skyboxModel;
+  skyboxProgram = $.SkyboxProgram$(gl);
+  $.add$1$ax($.get$programList(), skyboxProgram);
+  skyboxProgram.fetch$3($.get$shaderCache(), "/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
+  skyboxModel = $.SkyboxModel$fromURL(gl, skyboxProgram, "/mesh/cube.json", true, 0);
+  skyboxModel.addCubemapFace$2(34069, "/texture/space_rt.jpg");
+  skyboxModel.addCubemapFace$2(34070, "/texture/space_lf.jpg");
+  skyboxModel.addCubemapFace$2(34071, "/texture/space_up.jpg");
+  skyboxModel.addCubemapFace$2(34072, "/texture/space_dn.jpg");
+  skyboxModel.addCubemapFace$2(34073, "/texture/space_fr.jpg");
+  skyboxModel.addCubemapFace$2(34074, "/texture/space_bk.jpg");
+  skyboxProgram.addModel$1(skyboxModel);
+  skyboxModel.addInstance$1($.Instance$(skyboxModel, [0, 0, 0], 1));
+};
+
+$.initContext = function(gl) {
+  var t1, t2;
+  t1 = $.List_List($, $.ShaderProgram);
+  $.setRuntimeTypeInfo(t1, [$.ShaderProgram]);
+  $.programList = t1;
+  $.shaderCache = $.HashMap$($.String, $.Shader);
+  $.initSquares(gl);
+  $.initSkybox(gl);
   t1 = $.getInterceptor$x(gl);
   t1.clearColor$4(gl, 0.5, 0.5, 0.5, 1);
   t1.enable$1(gl, 2929);
@@ -12776,14 +12999,25 @@ $.main = function() {
   $.initContext(gl);
 };
 
-$.ShaderProgram$_load = function(gl, shaderCache, vertexShaderURL, fragmentShaderURL) {
-  var t1, t2;
-  t1 = {};
-  t2 = $.List_List($, $.Model);
-  $.setRuntimeTypeInfo(t2, [$.Model]);
-  t2 = new $.ShaderProgram(null, null, gl, t2);
-  t2.ShaderProgram$_load$4(gl, shaderCache, vertexShaderURL, fragmentShaderURL, t1);
-  return t2;
+$.ShaderProgram$ = function(gl) {
+  var t1 = $.List_List($, $.Model);
+  $.setRuntimeTypeInfo(t1, [$.Model]);
+  return new $.ShaderProgram(null, null, gl, t1);
+};
+
+$.SkyboxProgram$ = function(gl) {
+  var t1 = $.List_List($, $.Model);
+  $.setRuntimeTypeInfo(t1, [$.Model]);
+  return new $.SkyboxProgram(null, null, gl, t1);
+};
+
+$.SkyboxModel$fromURL = function(gl, prog, URL, reverse, rescale) {
+  var t1 = $.List_List($, $.Instance);
+  $.setRuntimeTypeInfo(t1, [$.Instance]);
+  t1 = new $.SkyboxModel(null, null, null, null, null, null, t1, prog);
+  t1.Model$fromURL$3(gl, prog, URL);
+  t1.SkyboxModel$fromURL$5(gl, prog, URL, reverse, rescale);
+  return t1;
 };
 
 $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
@@ -12999,6 +13233,9 @@ $.createProgram$0$x = function(receiver) {
 $.createShader$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).createShader$1(receiver, a0);
 };
+$.createTexture$0$x = function(receiver) {
+  return $.getInterceptor$x(receiver).createTexture$0(receiver);
+};
 $.elementAt$1$ax = function(receiver, a0) {
   return $.getInterceptor$ax(receiver).elementAt$1(receiver, a0);
 };
@@ -13133,6 +13370,9 @@ $.set$id$x = function(receiver, value) {
 };
 $.set$length$asx = function(receiver, value) {
   return $.getInterceptor$asx(receiver).set$length(receiver, value);
+};
+$.set$src$x = function(receiver, value) {
+  return $.getInterceptor$x(receiver).set$src(receiver, value);
 };
 $.set$text$x = function(receiver, value) {
   return $.getInterceptor$x(receiver).set$text(receiver, value);

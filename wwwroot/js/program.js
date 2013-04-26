@@ -59,12 +59,12 @@ Program.prototype.drawModels = function() {
     gl.useProgram(this.shaderProgram);
     gl.enableVertexAttribArray(this.a_Position);
 
+	// perspective projection
+	gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
+
 	for (var m in this.modelList) {
 		this.modelList[m].drawInstances();
 	}
-
-	// perspective projection
-	gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
 	
 	// clean up
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);

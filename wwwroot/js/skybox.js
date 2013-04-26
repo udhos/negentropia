@@ -79,9 +79,11 @@ function SkyboxModel(program, URL, reverse, rescale) {
 	this.instanceList = [];
 	
 	this.cubemapTexture = gl.createTexture();
+	/*
 	gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.cubemapTexture);
 	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	*/
 	
 	// Async request for buffer data (mesh)
 	var m = this; // don't put 'this' inside the closure below

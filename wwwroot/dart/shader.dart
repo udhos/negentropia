@@ -3,20 +3,22 @@ library shader;
 import 'dart:html';
 import 'dart:web_gl';
 
+import 'package:vector_math/vector_math.dart';
+
 import 'buffer.dart';
 
 class ShaderProgram {
   
   Program program;
-  int aVertexPosition;
+  int a_Position;
   RenderingContext gl;
   
   List<Model> modelList = new List<Model>();  
-  
-  ShaderProgram._load(RenderingContext this.gl, Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
-    print("Program._load: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
-    
-    //String vertShaderSrc, fragShaderSrc;
+ 
+  ShaderProgram(RenderingContext this.gl);
+
+  void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
+    print("Program.fetch: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
     
     Shader compileShader(String shaderURL, String shaderSource, int shaderType) {
       Shader shader = gl.createShader(shaderType);
@@ -49,7 +51,7 @@ class ShaderProgram {
         print(gl.getProgramInfoLog(p));
       }
       
-      this.aVertexPosition = gl.getAttribLocation(p, "aVertexPosition");
+      this.a_Position = gl.getAttribLocation(p, "a_Position");
       this.program = p;
       
       print("shader program: ready");      
@@ -101,6 +103,7 @@ class ShaderProgram {
     else {
       print("vertexShader: " + vertexShaderURL + ": cache HIT");      
     }
+    
     if (fragmentShader == null) {
       print("fragmentShader: " + fragmentShaderURL + ": cache MISS");
       fetchFragmentShader();
@@ -108,30 +111,26 @@ class ShaderProgram {
     else {
       print("fragmentShader: " + fragmentShaderURL + ": cache HIT");
     }
+    
     tryLink(); // needed when both vertexShader and fragmentShader are found in cache
   }
- 
-  
-  factory ShaderProgram(RenderingContext gl, Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
-    return new ShaderProgram._load(gl, shaderCache, vertexShaderURL, fragmentShaderURL);
-  }
-  
+   
   void addModel(Model m) {
     this.modelList.add(m);
   }
   
-  void drawModels() {
+  void drawModels(mat4 pMatrix) {
     
     gl.useProgram(program);
-    gl.enableVertexAttribArray(aVertexPosition);
-    
+    gl.enableVertexAttribArray(a_Position);
+
     modelList.forEach((Model m) => m.drawInstances());
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
     
-    //gl.disableVertexAttribArray(aVertexPosition); // needed ??
+    //gl.disableVertexAttribArray(a_Position); // needed ??
   }
 }
 

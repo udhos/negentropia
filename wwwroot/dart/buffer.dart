@@ -4,21 +4,24 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:json';
 import 'dart:web_gl';
+import 'dart:typeddata';
 
 import 'shader.dart';
 
 class Instance {
   
   Model model;
+  List<num> center;
+  num scale;
   
-  Instance(Model this.model);
+  Instance(Model this.model, List<num> this.center, num this.scale);
   
   void draw() {
     
     RenderingContext gl = model.program.gl;
     
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
-    gl.vertexAttribPointer(model.program.aVertexPosition, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(model.program.a_Position, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
   
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
     gl.drawElements(RenderingContext.TRIANGLES, model.vertexIndexLength, RenderingContext.UNSIGNED_SHORT, 0 * model.vertexIndexBufferItemSize);
@@ -56,13 +59,11 @@ class Model {
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
   }
   
-  Model.fromLists(RenderingContext gl, ShaderProgram prog, List<num> vertCoord, List<int> vertInd) {
-    this.program = prog;
+  Model.fromLists(RenderingContext gl, ShaderProgram this.program, List<num> vertCoord, List<int> vertInd) {
     _createBuffers(gl, vertCoord, vertInd);
   }
   
-  Model.fromURL(RenderingContext gl, ShaderProgram prog, String URL) {
-    this.program = prog;
+  Model.fromURL(RenderingContext gl, ShaderProgram this.program, String URL) {
 
     /*
     // load JSON from URL

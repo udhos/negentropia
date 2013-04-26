@@ -3,3 +3,5 @@ description: Negentropia home in Dart
 dependencies:
   stats: any
   browser: any
+  vector_math:
+    git: https://github.com/johnmccutchan/vector_math.git
