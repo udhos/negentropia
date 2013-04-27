@@ -6,12 +6,14 @@ import 'dart:web_gl';
 import 'package:vector_math/vector_math.dart';
 
 import 'buffer.dart';
+import 'camera.dart';
 
 class ShaderProgram {
   
   Program program;
-  int a_Position;
   RenderingContext gl;
+  int a_Position;
+  UniformLocation u_MV;
   
   List<Model> modelList = new List<Model>();  
  
@@ -52,6 +54,7 @@ class ShaderProgram {
       }
       
       this.a_Position = gl.getAttribLocation(p, "a_Position");
+      this.u_MV       = gl.getUniformLocation(p, "u_MV");
       this.program = p;
       
       print("shader program: ready");      
@@ -119,12 +122,12 @@ class ShaderProgram {
     this.modelList.add(m);
   }
   
-  void drawModels(mat4 pMatrix) {
+  void drawModels(Camera cam, mat4 pMatrix) {
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
 
-    modelList.forEach((Model m) => m.drawInstances());
+    modelList.forEach((Model m) => m.drawInstances(cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);

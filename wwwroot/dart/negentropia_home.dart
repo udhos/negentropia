@@ -13,6 +13,7 @@ import 'shader.dart';
 import 'skybox.dart';
 import 'buffer.dart';
 import 'lost_context.dart';
+import 'camera.dart';
 
 int requestId;
 CanvasElement canvas;
@@ -21,8 +22,9 @@ ShaderProgram shaderProgram;
 bool debugLostContext = true;
 List<ShaderProgram> programList = new List<ShaderProgram>();
 Map<String,Shader> shaderCache = new Map<String,Shader>();
-mat4 pMatrix = new mat4();
+mat4 pMatrix = new mat4.zero();
 num fieldOfViewYRadians = 45 * PI / 180;
+Camera cam = new Camera(new vec3(0.0,0.0,10.0), new vec3(0.0,0.0,-1.0), new vec3(0.0,1.0,0.0));
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -113,7 +115,7 @@ void initSquares(RenderingContext gl) {
   squareProgram.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip_fs.txt");
   Model squareModel = new Model.fromURL(gl, squareProgram, "/mesh/square.json");
   squareProgram.addModel(squareModel);
-  Instance squareInstance = new Instance(squareModel, [0, 0, 0], 1.0);
+  Instance squareInstance = new Instance(squareModel, new vec3(0.0, 0.0, 0.0), 1.0);
   squareModel.addInstance(squareInstance);
 
   ShaderProgram squareProgram2 = new ShaderProgram(gl);
@@ -124,7 +126,7 @@ void initSquares(RenderingContext gl) {
   });
   Model squareModel2 = new Model.fromURL(gl, squareProgram2, "/mesh/square2.json");
   squareProgram2.addModel(squareModel2);
-  Instance squareInstance2 = new Instance(squareModel2, [0, 0, 0], 1.0);
+  Instance squareInstance2 = new Instance(squareModel2, new vec3(0.0, 0.0, 0.0), 1.0);
   squareModel2.addInstance(squareInstance2);
   
   ShaderProgram squareProgram3 = new ShaderProgram(gl);
@@ -132,7 +134,7 @@ void initSquares(RenderingContext gl) {
   squareProgram3.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
   Model squareModel3 = new Model.fromURL(gl, squareProgram3, "/mesh/square3.json");
   squareProgram3.addModel(squareModel3);
-  Instance squareInstance3 = new Instance(squareModel3, [0, 0, 0], 1.0);
+  Instance squareInstance3 = new Instance(squareModel3, new vec3(0.0, 0.0, 0.0), 1.0);
   squareModel3.addInstance(squareInstance3);  
 }
 
@@ -148,7 +150,7 @@ void initSkybox(RenderingContext gl) {
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');  
   skyboxProgram.addModel(skyboxModel);
-  Instance skyboxInstance = new Instance(skyboxModel, [0, 0, 0], 1.0);
+  Instance skyboxInstance = new Instance(skyboxModel, new vec3(0.0, 0.0, 0.0), 1.0);
   skyboxModel.addInstance(skyboxInstance);
 }
 
@@ -218,7 +220,7 @@ void draw(RenderingContext gl) {
   // aspect = canvas.width / canvas.height
   setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, 1.0, 1000.0);
     
-  programList.forEach((ShaderProgram p) => p.drawModels(pMatrix));
+  programList.forEach((ShaderProgram p) => p.drawModels(cam, pMatrix));
 }
 
 /*
@@ -275,10 +277,10 @@ void main() {
   }
 
   GameLoopHtml gameLoop = new GameLoopHtml(canvas);
-  gameLoop.onUpdate((GameLoopHtml gameLoop) { 
-    update(gl);
+  gameLoop.onUpdate = ((GameLoopHtml gameLoop) { 
+    update();
   });
-  gameLoop.onRender((GameLoopHtml gameLoop) {
+  gameLoop.onRender = ((GameLoopHtml gameLoop) {
     render(gl);
   });
 

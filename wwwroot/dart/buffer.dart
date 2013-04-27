@@ -6,22 +6,36 @@ import 'dart:json';
 import 'dart:web_gl';
 import 'dart:typed_data';
 
+import 'package:vector_math/vector_math.dart';
+
 import 'shader.dart';
+import 'camera.dart';
 
 class Instance {
   
   Model model;
-  List<num> center;
-  num scale;
+  vec3 center;
+  double scale;
+  mat4 MV = new mat4.identity(); // model-view matrix
   
-  Instance(Model this.model, List<num> this.center, num this.scale);
+  Instance(Model this.model, vec3 this.center, double this.scale);
   
-  void draw() {
+  void draw(Camera cam) {
+            
+    setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
-    RenderingContext gl = model.program.gl;
+    MV.translate(center[0], center[1], center[2]);
     
+    MV.scale(scale, scale, scale);
+    
+    ShaderProgram prog = model.program;
+    RenderingContext gl = prog.gl;
+
+    // send model-view matrix uniform
+    gl.uniformMatrix4fv(prog.u_MV, false, MV);
+
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
-    gl.vertexAttribPointer(model.program.a_Position, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
   
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
     gl.drawElements(RenderingContext.TRIANGLES, model.vertexIndexLength, RenderingContext.UNSIGNED_SHORT, 0 * model.vertexIndexBufferItemSize);
@@ -118,8 +132,8 @@ class Model {
     this.instanceList.add(i);
   }
  
-  void drawInstances() {
-    this.instanceList.forEach((Instance i) => i.draw());
+  void drawInstances(Camera cam) {
+    this.instanceList.forEach((Instance i) => i.draw(cam));
   }  
   
 }

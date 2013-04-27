@@ -7,10 +7,10 @@ import 'package:vector_math/vector_math.dart';
 
 import 'shader.dart';
 import 'buffer.dart';
+import 'camera.dart';
 
 class SkyboxProgram extends ShaderProgram {
   
-  UniformLocation u_MV;
   UniformLocation u_P;
   UniformLocation u_Skybox;
   
@@ -20,19 +20,23 @@ class SkyboxProgram extends ShaderProgram {
   void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
     super.fetch(shaderCache, vertexShaderURL, fragmentShaderURL);
     
-    this.u_MV     = gl.getUniformLocation(this.program, "u_MV");
     this.u_P      = gl.getUniformLocation(this.program, "u_P");
     this.u_Skybox = gl.getUniformLocation(this.program, "u_Skybox");
   }
 
-  void drawModels(mat4 pMatrix) {
+  void drawModels(Camera cam, mat4 pMatrix) {
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
+    
+    int unit = 0;
+    gl.activeTexture(RenderingContext.TEXTURE0 + unit);
+    gl.uniform1i(this.u_Skybox, unit);
 
+    // send perspective projection matrix uniform
     gl.uniformMatrix4fv(this.u_P, false, pMatrix);
 
-    modelList.forEach((Model m) => m.drawInstances());
+    modelList.forEach((Model m) => m.drawInstances(cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -88,4 +92,11 @@ class SkyboxModel extends Model {
       ..src = URL;
   }
   
+  void drawInstances(Camera cam) {
+    gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
+
+    this.instanceList.forEach((Instance i) => i.draw(cam));
+    
+    gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, null);
+  }  
 }
