@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:stats/stats.dart';
 import 'package:vector_math/vector_math.dart';
+import 'package:game_loop/game_loop_html.dart';
 
 import 'cookies/cookies.dart';
 import 'ws.dart';
@@ -151,7 +152,7 @@ void initSkybox(RenderingContext gl) {
   skyboxModel.addInstance(skyboxInstance);
 }
 
-void initContext(RenderingContext gl) {
+void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
 
   programList = new List<ShaderProgram>(); // drop existing programs 
   shaderCache = new Map<String,Shader>();  // drop existing compile shader cache
@@ -173,14 +174,33 @@ void initContext(RenderingContext gl) {
   gl.cullFace(RenderingContext.BACK);
   gl.enable(RenderingContext.CULL_FACE);
   
-  loop(gl); // render loop
+  if (fullRateFrames > 0) {
+    print("firing $fullRateFrames frames at full rate");
+    
+    var before = new DateTime.now();
+        
+    for (int i = 0; i < fullRateFrames; ++i) {
+      stats.begin();      
+      draw(gl);   // draw
+      stats.end();      
+    };
+
+    var after = new DateTime.now();
+    var duration = after.difference(before);
+    var rate = fullRateFrames / duration.inSeconds;
+    
+    print("duration = $duration framerate = $rate fps");
+  }
+
+  //render(gl); // render loop
+  gameLoop.start();
 }
 
-void animate() {
+void update() {
     // TODO: FIXME: WRITEME: update state
 }
 
-void render(RenderingContext gl) {
+void draw(RenderingContext gl) {
   
   // http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
   gl.clear(RenderingContext.COLOR_BUFFER_BIT | RenderingContext.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
@@ -201,18 +221,19 @@ void render(RenderingContext gl) {
   programList.forEach((ShaderProgram p) => p.drawModels(pMatrix));
 }
 
-void loop(RenderingContext gl) {
+/*
+void render(RenderingContext gl) {
   
   if (fullRateFrames > 0) {
     
-    print("loop: firing $fullRateFrames frames at full rate");
+    print("render: firing $fullRateFrames frames at full rate");
     
     var before = new DateTime.now();
         
     for (int i = 0; i < fullRateFrames; ++i) {
       stats.begin();      
-      animate();    // update state
-      render(gl);   // draw
+      update();    // update state
+      draw(gl);   // draw
       stats.end();      
     };
 
@@ -220,21 +241,28 @@ void loop(RenderingContext gl) {
     var duration = after.difference(before);
     var rate = fullRateFrames / duration.inSeconds;
     
-    print("loop: duration = $duration framerate = $rate fps");
+    print("render: duration = $duration framerate = $rate fps");
 
     return;
   }
 
   stats.begin();      
 
-  requestId = window.requestAnimationFrame((num time) { loop(gl); });
+  requestId = window.requestAnimationFrame((num time) { render(gl); });
   if (requestId == 0) {
-    print("loop: could not obtain requestId from requestAnimationFrame");
+    print("render: could not obtain requestId from requestAnimationFrame");
   }
 
-  animate();    // update state
-  render(gl);   // draw
+  update();    // update state
+  draw(gl);   // draw
   
+  stats.end();
+}
+*/
+
+void render(RenderingContext gl) {
+  stats.begin();      
+  draw(gl);      // draw
   stats.end();
 }
 
@@ -245,6 +273,14 @@ void main() {
     print("WebGL: not available");
     return;
   }
-  
-  initContext(gl); // calls loop(gl)
+
+  GameLoopHtml gameLoop = new GameLoopHtml(canvas);
+  gameLoop.onUpdate((GameLoopHtml gameLoop) { 
+    update(gl);
+  });
+  gameLoop.onRender((GameLoopHtml gameLoop) {
+    render(gl);
+  });
+
+  initContext(gl, gameLoop);
 }

@@ -4,7 +4,7 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:json';
 import 'dart:web_gl';
-import 'dart:typeddata';
+import 'dart:typed_data';
 
 import 'shader.dart';
 
@@ -42,12 +42,12 @@ class Model {
   void _createBuffers(RenderingContext gl, List<num> vertCoord, List<int> vertInd) {
     this.vertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, this.vertexPositionBuffer);
-    gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32Array.fromList(vertCoord), RenderingContext.STATIC_DRAW);
+    gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
     this.vertexPositionBufferItemSize = 3; // coord x,y,z
     
     this.vertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
-    gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16Array.fromList(vertInd), RenderingContext.STATIC_DRAW);
+    gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(vertInd), RenderingContext.STATIC_DRAW);
     this.vertexIndexBufferItemSize = 2; // size of Uint16Array
     
     this.vertexIndexLength = vertInd.length;
