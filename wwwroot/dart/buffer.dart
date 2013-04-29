@@ -32,7 +32,9 @@ class Instance {
     RenderingContext gl = prog.gl;
 
     // send model-view matrix uniform
-    gl.uniformMatrix4fv(prog.u_MV, false, MV);
+    List<num> L = new List<num>(16); 
+    MV.copyIntoArray(L);
+    gl.uniformMatrix4fv(prog.u_MV, false, L);
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
     gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);

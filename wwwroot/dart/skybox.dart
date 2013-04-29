@@ -93,6 +93,9 @@ class SkyboxModel extends Model {
   }
   
   void drawInstances(Camera cam) {
+    
+    RenderingContext gl = program.gl;
+    
     gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
 
     this.instanceList.forEach((Instance i) => i.draw(cam));
