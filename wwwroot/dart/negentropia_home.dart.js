@@ -5068,7 +5068,7 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
 
 $$.Instance = {"": "Object;model,center,scale,MV",
   draw$1: function(cam) {
-    var t1, t2, t3, t4, t5, prog, gl, MV_tmp;
+    var t1, t2, t3, t4, t5, prog, gl;
     t1 = this.MV;
     $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
     t2 = this.center._storage;
@@ -5087,19 +5087,16 @@ $$.Instance = {"": "Object;model,center,scale,MV",
     t2 = this.model;
     prog = t2.program;
     gl = prog.gl;
-    MV_tmp = $.List_List(16, $.num);
-    $.setRuntimeTypeInfo(MV_tmp, [$.num]);
-    t1.copyIntoArray$1(MV_tmp);
-    t1 = $.getInterceptor$x(gl);
-    t1.uniformMatrix4fv$3(gl, prog.u_MV, false, MV_tmp);
-    t1.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
-    t1.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
-    t1.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
-    t5 = t2.vertexIndexLength;
+    t5 = $.getInterceptor$x(gl);
+    t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.get$storage());
+    t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
+    t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
+    t1 = t2.vertexIndexLength;
     t2 = t2.vertexIndexBufferItemSize;
     if (typeof t2 !== "number")
       throw $.iae(t2);
-    t1.drawElements$4(gl, 4, t5, 5123, 0 * t2);
+    t5.drawElements$4(gl, 4, t1, 5123, 0 * t2);
   }
 };
 
@@ -5244,15 +5241,12 @@ $$.ShaderProgram = {"": "Object;program@,gl<,a_Position?,u_MV?,u_P?,modelList",
     t3.call$0();
   },
   drawModels$2: function(cam, pMatrix) {
-    var t1, t2, pTmp;
+    var t1, t2;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
     t2.useProgram$1(t1, this.program);
     t2.enableVertexAttribArray$1(t1, this.a_Position);
-    pTmp = $.List_List(16, $.num);
-    $.setRuntimeTypeInfo(pTmp, [$.num]);
-    pMatrix.copyIntoArray$1(pTmp);
-    t2.uniformMatrix4fv$3(t1, this.u_P, false, pTmp);
+    t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.get$storage());
     $.JSArray_methods.forEach$1(this.modelList, new $.ShaderProgram_drawModels_anon(cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
@@ -5378,17 +5372,14 @@ $$.ShaderProgram_drawModels_anon = {"": "Closure;cam_0",
 
 $$.SkyboxProgram = {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,modelList",
   drawModels$2: function(cam, pMatrix) {
-    var t1, t2, pTmp;
+    var t1, t2;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
     t2.useProgram$1(t1, this.program);
     t2.enableVertexAttribArray$1(t1, this.a_Position);
     t2.activeTexture$1(t1, 33984);
     t2.uniform1i$2(t1, this.u_Skybox, 0);
-    pTmp = $.List_List(16, $.num);
-    $.setRuntimeTypeInfo(pTmp, [$.num]);
-    pMatrix.copyIntoArray$1(pTmp);
-    t2.uniformMatrix4fv$3(t1, this.u_P, false, pTmp);
+    t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.get$storage());
     $.JSArray_methods.forEach$1(this.modelList, new $.SkyboxProgram_drawModels_anon(cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
@@ -6271,6 +6262,9 @@ $$.Stats = {"": "Object;_timer,_ms,_msMin,_msMax,_fps,_fpsMin,_fpsMax,_frames,_m
 };
 
 $$.mat4 = {"": "Object;_storage<",
+  get$storage: function() {
+    return this._storage;
+  },
   toString$0: function(_) {
     return "[0] " + $.S(this.getRow$1(0)) + "\n[1] " + $.S(this.getRow$1(1)) + "\n[2] " + $.S(this.getRow$1(2)) + "\n[3] " + $.S(this.getRow$1(3)) + "\n";
   },
@@ -7544,96 +7538,6 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(15);
     t1[15] = t2 + t4[15];
     return this;
-  },
-  copyIntoArray$2: function(array, offset) {
-    var t1, t2, t3, t4;
-    t1 = offset + 15;
-    t2 = this._storage;
-    if (15 >= t2.length)
-      throw $.ioore(15);
-    t3 = t2[15];
-    t4 = array.length;
-    if (t1 < 0 || t1 >= t4)
-      throw $.ioore(t1);
-    array[t1] = t3;
-    t3 = offset + 14;
-    t1 = t2[14];
-    if (t3 < 0 || t3 >= t4)
-      throw $.ioore(t3);
-    array[t3] = t1;
-    t1 = offset + 13;
-    t3 = t2[13];
-    if (t1 < 0 || t1 >= t4)
-      throw $.ioore(t1);
-    array[t1] = t3;
-    t3 = offset + 12;
-    t1 = t2[12];
-    if (t3 < 0 || t3 >= t4)
-      throw $.ioore(t3);
-    array[t3] = t1;
-    t1 = offset + 11;
-    t3 = t2[11];
-    if (t1 < 0 || t1 >= t4)
-      throw $.ioore(t1);
-    array[t1] = t3;
-    t3 = offset + 10;
-    t1 = t2[10];
-    if (t3 < 0 || t3 >= t4)
-      throw $.ioore(t3);
-    array[t3] = t1;
-    t1 = offset + 9;
-    t3 = t2[9];
-    if (t1 < 0 || t1 >= t4)
-      throw $.ioore(t1);
-    array[t1] = t3;
-    t3 = offset + 8;
-    t1 = t2[8];
-    if (t3 < 0 || t3 >= t4)
-      throw $.ioore(t3);
-    array[t3] = t1;
-    t1 = offset + 7;
-    t3 = t2[7];
-    if (t1 < 0 || t1 >= t4)
-      throw $.ioore(t1);
-    array[t1] = t3;
-    t3 = offset + 6;
-    t1 = t2[6];
-    if (t3 < 0 || t3 >= t4)
-      throw $.ioore(t3);
-    array[t3] = t1;
-    t1 = offset + 5;
-    t3 = t2[5];
-    if (t1 < 0 || t1 >= t4)
-      throw $.ioore(t1);
-    array[t1] = t3;
-    t3 = offset + 4;
-    t1 = t2[4];
-    if (t3 < 0 || t3 >= t4)
-      throw $.ioore(t3);
-    array[t3] = t1;
-    t1 = offset + 3;
-    t3 = t2[3];
-    if (t1 < 0 || t1 >= t4)
-      throw $.ioore(t1);
-    array[t1] = t3;
-    t3 = offset + 2;
-    t1 = t2[2];
-    if (t3 < 0 || t3 >= t4)
-      throw $.ioore(t3);
-    array[t3] = t1;
-    t1 = offset + 1;
-    t3 = t2[1];
-    if (t1 < 0 || t1 >= t4)
-      throw $.ioore(t1);
-    array[t1] = t3;
-    t3 = offset + 0;
-    t2 = t2[0];
-    if (t3 < 0 || t3 >= t4)
-      throw $.ioore(t3);
-    array[t3] = t2;
-  },
-  copyIntoArray$1: function(array) {
-    return this.copyIntoArray$2(array, 0);
   },
   mat4$identity$0: function() {
     this.setIdentity$0();

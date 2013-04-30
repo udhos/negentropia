@@ -34,9 +34,12 @@ class SkyboxProgram extends ShaderProgram {
     gl.uniform1i(this.u_Skybox, unit);
 
     // send perspective projection matrix uniform
+    /*
     List<num> pTmp = new List<num>(16); 
     pMatrix.copyIntoArray(pTmp);   
     gl.uniformMatrix4fv(this.u_P, false, pTmp);
+    */
+    gl.uniformMatrix4fv(this.u_P, false, pMatrix.storage);
 
     modelList.forEach((Model m) => m.drawInstances(cam));
 

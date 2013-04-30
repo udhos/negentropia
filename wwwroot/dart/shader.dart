@@ -130,9 +130,12 @@ class ShaderProgram {
     gl.enableVertexAttribArray(a_Position);
 
     // send perspective projection matrix uniform
+    /*
     List<num> pTmp = new List<num>(16); 
     pMatrix.copyIntoArray(pTmp);   
     gl.uniformMatrix4fv(this.u_P, false, pTmp);
+    */
+    gl.uniformMatrix4fv(this.u_P, false, pMatrix.storage);
 
     modelList.forEach((Model m) => m.drawInstances(cam));
 
