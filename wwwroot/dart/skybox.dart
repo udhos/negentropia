@@ -11,7 +11,7 @@ import 'camera.dart';
 
 class SkyboxProgram extends ShaderProgram {
   
-  UniformLocation u_P;
+  //UniformLocation u_P;
   UniformLocation u_Skybox;
   
   SkyboxProgram(RenderingContext gl) : super(gl) {
@@ -20,7 +20,7 @@ class SkyboxProgram extends ShaderProgram {
   void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
     super.fetch(shaderCache, vertexShaderURL, fragmentShaderURL);
     
-    this.u_P      = gl.getUniformLocation(this.program, "u_P");
+    //this.u_P      = gl.getUniformLocation(this.program, "u_P");
     this.u_Skybox = gl.getUniformLocation(this.program, "u_Skybox");
   }
 
@@ -34,7 +34,9 @@ class SkyboxProgram extends ShaderProgram {
     gl.uniform1i(this.u_Skybox, unit);
 
     // send perspective projection matrix uniform
-    gl.uniformMatrix4fv(this.u_P, false, pMatrix);
+    List<num> pTmp = new List<num>(16); 
+    pMatrix.copyIntoArray(pTmp);   
+    gl.uniformMatrix4fv(this.u_P, false, pTmp);
 
     modelList.forEach((Model m) => m.drawInstances(cam));
 

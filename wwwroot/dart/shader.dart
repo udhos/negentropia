@@ -14,6 +14,7 @@ class ShaderProgram {
   RenderingContext gl;
   int a_Position;
   UniformLocation u_MV;
+  UniformLocation u_P;
   
   List<Model> modelList = new List<Model>();  
  
@@ -55,7 +56,8 @@ class ShaderProgram {
       
       this.a_Position = gl.getAttribLocation(p, "a_Position");
       this.u_MV       = gl.getUniformLocation(p, "u_MV");
-      this.program = p;
+      this.u_P        = gl.getUniformLocation(p, "u_P");
+      this.program    = p;
       
       print("shader program: ready");      
     }
@@ -126,6 +128,11 @@ class ShaderProgram {
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
+
+    // send perspective projection matrix uniform
+    List<num> pTmp = new List<num>(16); 
+    pMatrix.copyIntoArray(pTmp);   
+    gl.uniformMatrix4fv(this.u_P, false, pTmp);
 
     modelList.forEach((Model m) => m.drawInstances(cam));
 

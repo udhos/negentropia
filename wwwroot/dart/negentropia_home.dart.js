@@ -5068,7 +5068,7 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
 
 $$.Instance = {"": "Object;model,center,scale,MV",
   draw$1: function(cam) {
-    var t1, t2, t3, t4, t5, prog, gl, L;
+    var t1, t2, t3, t4, t5, prog, gl, MV_tmp;
     t1 = this.MV;
     $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
     t2 = this.center._storage;
@@ -5087,11 +5087,11 @@ $$.Instance = {"": "Object;model,center,scale,MV",
     t2 = this.model;
     prog = t2.program;
     gl = prog.gl;
-    L = $.List_List(16, $.num);
-    $.setRuntimeTypeInfo(L, [$.num]);
-    t1.copyIntoArray$1(L);
+    MV_tmp = $.List_List(16, $.num);
+    $.setRuntimeTypeInfo(MV_tmp, [$.num]);
+    t1.copyIntoArray$1(MV_tmp);
     t1 = $.getInterceptor$x(gl);
-    t1.uniformMatrix4fv$3(gl, prog.u_MV, false, L);
+    t1.uniformMatrix4fv$3(gl, prog.u_MV, false, MV_tmp);
     t1.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
     t1.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
     t1.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
@@ -5219,7 +5219,7 @@ $$.main_anon0 = {"": "Closure;gl_0",
   }
 };
 
-$$.ShaderProgram = {"": "Object;program@,gl<,a_Position?,u_MV?,modelList",
+$$.ShaderProgram = {"": "Object;program@,gl<,a_Position?,u_MV?,u_P?,modelList",
   fetch$3: function(shaderCache, vertexShaderURL, fragmentShaderURL) {
     var t1, t2, t3, t4;
     t1 = {};
@@ -5244,11 +5244,15 @@ $$.ShaderProgram = {"": "Object;program@,gl<,a_Position?,u_MV?,modelList",
     t3.call$0();
   },
   drawModels$2: function(cam, pMatrix) {
-    var t1, t2;
+    var t1, t2, pTmp;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
     t2.useProgram$1(t1, this.program);
     t2.enableVertexAttribArray$1(t1, this.a_Position);
+    pTmp = $.List_List(16, $.num);
+    $.setRuntimeTypeInfo(pTmp, [$.num]);
+    pMatrix.copyIntoArray$1(pTmp);
+    t2.uniformMatrix4fv$3(t1, this.u_P, false, pTmp);
     $.JSArray_methods.forEach$1(this.modelList, new $.ShaderProgram_drawModels_anon(cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
@@ -5288,6 +5292,7 @@ $$.ShaderProgram_fetch_tryLink = {"": "Closure;box_0,this_3",
       $.Primitives_printString($.toString$0($.getProgramInfoLog$1$x(t2.get$gl(), p)));
     t2.set$a_Position($.getAttribLocation$2$x(t2.get$gl(), p, "a_Position"));
     t2.set$u_MV($.getUniformLocation$2$x(t2.get$gl(), p, "u_MV"));
+    t2.set$u_P($.getUniformLocation$2$x(t2.get$gl(), p, "u_P"));
     t2.set$program(p);
     $.Primitives_printString("shader program: ready");
   }
@@ -5371,16 +5376,19 @@ $$.ShaderProgram_drawModels_anon = {"": "Closure;cam_0",
   }
 };
 
-$$.SkyboxProgram = {"": "ShaderProgram;u_P,u_Skybox,program,gl,a_Position,u_MV,modelList",
+$$.SkyboxProgram = {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,modelList",
   drawModels$2: function(cam, pMatrix) {
-    var t1, t2;
+    var t1, t2, pTmp;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
     t2.useProgram$1(t1, this.program);
     t2.enableVertexAttribArray$1(t1, this.a_Position);
     t2.activeTexture$1(t1, 33984);
     t2.uniform1i$2(t1, this.u_Skybox, 0);
-    t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix);
+    pTmp = $.List_List(16, $.num);
+    $.setRuntimeTypeInfo(pTmp, [$.num]);
+    pMatrix.copyIntoArray$1(pTmp);
+    t2.uniformMatrix4fv$3(t1, this.u_P, false, pTmp);
     $.JSArray_methods.forEach$1(this.modelList, new $.SkyboxProgram_drawModels_anon(cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
@@ -15296,14 +15304,11 @@ $.initSquares = function(gl) {
 };
 
 $.initSkybox = function(gl) {
-  var skyboxProgram, t1, t2, skyboxModel;
+  var skyboxProgram, skyboxModel;
   skyboxProgram = $.SkyboxProgram$(gl);
   $.get$programList().push(skyboxProgram);
   $.ShaderProgram.prototype.fetch$3.call(skyboxProgram, $.get$shaderCache(), "/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
-  t1 = skyboxProgram.gl;
-  t2 = $.getInterceptor$x(t1);
-  skyboxProgram.u_P = t2.getUniformLocation$2(t1, skyboxProgram.program, "u_P");
-  skyboxProgram.u_Skybox = t2.getUniformLocation$2(t1, skyboxProgram.program, "u_Skybox");
+  skyboxProgram.u_Skybox = $.getUniformLocation$2$x(skyboxProgram.gl, skyboxProgram.program, "u_Skybox");
   skyboxModel = $.SkyboxModel$fromURL(gl, skyboxProgram, "/mesh/cube.json", true, 0);
   skyboxModel.addCubemapFace$2(34069, "/texture/space_rt.jpg");
   skyboxModel.addCubemapFace$2(34070, "/texture/space_lf.jpg");
@@ -15376,13 +15381,13 @@ $.main = function() {
 $.ShaderProgram$ = function(gl) {
   var t1 = $.List_List($, $.Model);
   $.setRuntimeTypeInfo(t1, [$.Model]);
-  return new $.ShaderProgram(null, gl, null, null, t1);
+  return new $.ShaderProgram(null, gl, null, null, null, t1);
 };
 
 $.SkyboxProgram$ = function(gl) {
   var t1 = $.List_List($, $.Model);
   $.setRuntimeTypeInfo(t1, [$.Model]);
-  return new $.SkyboxProgram(null, null, null, gl, null, null, t1);
+  return new $.SkyboxProgram(null, null, gl, null, null, null, t1);
 };
 
 $.SkyboxModel$fromURL = function(gl, prog, URL, reverse, rescale) {
