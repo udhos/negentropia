@@ -198,10 +198,6 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   gameLoop.start();
 }
 
-void update() {
-    // TODO: FIXME: WRITEME: update state
-}
-
 void draw(RenderingContext gl) {
   
   // http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
@@ -268,6 +264,12 @@ void render(RenderingContext gl) {
   stats.end();
 }
 
+void update(GameLoopHtml gameLoop) {
+  // TODO: FIXME: WRITEME: update state
+  //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
+  programList.forEach((ShaderProgram p) => p.update(gameLoop.gameTime));
+}
+
 void main() {
   RenderingContext gl = boot();
   
@@ -278,7 +280,7 @@ void main() {
 
   GameLoopHtml gameLoop = new GameLoopHtml(canvas);
   gameLoop.onUpdate = ((GameLoopHtml gameLoop) { 
-    update();
+    update(gameLoop);
   });
   gameLoop.onRender = ((GameLoopHtml gameLoop) {
     render(gl);

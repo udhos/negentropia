@@ -145,6 +145,10 @@ class ShaderProgram {
     
     //gl.disableVertexAttribArray(a_Position); // needed ??
   }
+  
+  void update(double gameTime) {
+    modelList.forEach((Model m) => m.update(gameTime));    
+  }
 }
 
 
