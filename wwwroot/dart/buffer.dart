@@ -23,9 +23,10 @@ class Instance {
   Instance(Model this.model, vec3 this.center, double this.scale);
   
   void update(double gameTime) {
-    double angle = gameTime % 360; 
+    double degreesPerSec = 60;
+    double angle = (gameTime * degreesPerSec) % 360; 
     double rad = angle * math.PI / 180;
-    _size = 1 + 5 * math.sin(rad);
+    _size = 1 + 5 * math.sin(rad).abs();
   }
   
   void draw(Camera cam) {

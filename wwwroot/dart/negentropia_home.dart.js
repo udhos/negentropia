@@ -4749,8 +4749,8 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
 
 $$.Instance = {"": "Object;model,center,scale,_size,MV",
   update$1: function(_, gameTime) {
-    var rad = $.$mod$n(gameTime, 360) * 3.141592653589793 / 180;
-    this._size = 1 + 5 * Math.sin(rad);
+    var rad = $.$mod$n($.$mul$n(gameTime, 60), 360) * 3.141592653589793 / 180;
+    this._size = 1 + 5 * $.JSDouble_methods.abs$0(Math.sin(rad));
   },
   draw$1: function(cam) {
     var t1, t2, t3, t4, t5, s, prog, gl;
