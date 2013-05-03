@@ -6,27 +6,27 @@ import 'package:vector_math/vector_math.dart';
 import 'package:game_loop/game_loop_html.dart';
 
 class Camera {
-  final double degreesPerSec = 60.0;
+  final double degreesPerSec = 30.0;
   final double camOrbitRadius = 10.0;
   vec3 eye, center, up;
-  double angle;
+  double oldAngle, angle;
   
   Camera(this.eye, this.center, this.up);
   
   double get rad => _getRad(0.0);
   
   double _getRad(double interpolation) {
-    double deg = this.angle;
-    return deg * math.PI / 180.0;    
+    double deg = interpolation * angle + (1 - interpolation) * oldAngle;
+    double r = deg * math.PI / 180.0;
+    return r;
   }
   
   void update(GameLoopHtml gameLoop) {
-    this.angle = gameLoop.gameTime * this.degreesPerSec % 360.0;
+    oldAngle = angle;
+    angle = gameLoop.gameTime * this.degreesPerSec % 360.0;
   }
     
   void render(GameLoopHtml gameLoop) {
-    
-    // TODO FIXME: interpolation
     
     double r = _getRad(gameLoop.renderInterpolationFactor);
     

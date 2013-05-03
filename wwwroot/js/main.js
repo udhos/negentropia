@@ -88,8 +88,9 @@ function boot() {
 function animate() {
 	
 	var camOrbitRadius = 10;
+	var degreesPerSec  = 30;
 	
-	neg.angleY += neg.deltaY;
+	neg.angleY += neg.deltaY * degreesPerSec / 60;
 	neg.angleY %= 360;
 	var radY = neg.angleY * Math.PI / 180;
 	

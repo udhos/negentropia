@@ -4854,20 +4854,27 @@ $$.Model_update_anon = {"": "Closure;gameLoop_0",
   }
 };
 
-$$.Camera = {"": "Object;degreesPerSec,camOrbitRadius,eye,center,up,angle",
+$$.Camera = {"": "Object;degreesPerSec,camOrbitRadius,eye,center,up,oldAngle,angle",
   get$rad: function() {
     return this._getRad$1(0);
   },
   _getRad$1: function(interpolation) {
-    return $.$mul$n(this.angle, 3.141592653589793) / 180;
+    var t1, t2;
+    t1 = this.angle;
+    if (typeof t1 !== "number")
+      throw $.iae(t1);
+    t2 = this.oldAngle;
+    if (typeof t2 !== "number")
+      throw $.iae(t2);
+    return (interpolation * t1 + (1 - interpolation) * t2) * 3.141592653589793 / 180;
   },
   update$1: function(_, gameLoop) {
+    this.oldAngle = this.angle;
     this.angle = $.JSNumber_methods.$mod(gameLoop.get$gameTime() * this.degreesPerSec, 360);
   },
   render$1: function(gameLoop) {
     var r, t1, t2;
-    gameLoop.get$renderInterpolationFactor();
-    r = $.$mul$n(this.angle, 3.141592653589793) / 180;
+    r = this._getRad$1(gameLoop.get$renderInterpolationFactor());
     t1 = this.eye;
     t2 = this.camOrbitRadius;
     t1.$indexSet(t1, 0, t2 * Math.sin(r));
@@ -15051,7 +15058,7 @@ $.Model$fromURL = function(gl, program, URL) {
 };
 
 $.Camera$ = function(eye, center, up) {
-  return new $.Camera(60, 10, eye, center, up, null);
+  return new $.Camera(30, 10, eye, center, up, null, null);
 };
 
 $.Cookie__readCookie = function() {
@@ -15232,6 +15239,7 @@ $.draw = function(gl, gameLoop) {
 
 $.update = function(gameLoop) {
   var t1 = $.get$cam();
+  t1.oldAngle = t1.angle;
   t1.angle = $.JSNumber_methods.$mod(gameLoop.get$gameTime() * t1.degreesPerSec, 360);
   $.JSArray_methods.forEach$1($.get$programList(), new $.update_anon(gameLoop));
 };
