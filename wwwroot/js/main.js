@@ -96,8 +96,7 @@ function animate() {
 	neg.eye = [ camOrbitRadius * Math.sin(radY), 0, camOrbitRadius * Math.cos(radY) ];
 	neg.center = [ 0, 0, 0 ];
 	
-	var S = 5;
-	neg.scale = S * Math.sin(radY) + S + 1;
+	neg.scale = 10 * Math.abs(Math.sin(radY)) + 1;
 
 	for (var p in neg.programList) {
 		neg.programList[p].animate();

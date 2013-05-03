@@ -4,6 +4,7 @@ import 'dart:html';
 import 'dart:web_gl';
 
 import 'package:vector_math/vector_math.dart';
+import 'package:game_loop/game_loop_html.dart';
 
 import 'buffer.dart';
 import 'camera.dart';
@@ -124,7 +125,7 @@ class ShaderProgram {
     this.modelList.add(m);
   }
   
-  void drawModels(Camera cam, mat4 pMatrix) {
+  void drawModels(GameLoopHtml gameLoop, Camera cam, mat4 pMatrix) {
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
@@ -137,7 +138,7 @@ class ShaderProgram {
     */
     gl.uniformMatrix4fv(this.u_P, false, pMatrix.storage);
 
-    modelList.forEach((Model m) => m.drawInstances(cam));
+    modelList.forEach((Model m) => m.drawInstances(gameLoop, cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -146,8 +147,8 @@ class ShaderProgram {
     //gl.disableVertexAttribArray(a_Position); // needed ??
   }
   
-  void update(double gameTime) {
-    modelList.forEach((Model m) => m.update(gameTime));    
+  void update(GameLoopHtml gameLoop) {
+    modelList.forEach((Model m) => m.update(gameLoop));    
   }
 }
 

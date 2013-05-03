@@ -4747,44 +4747,41 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
   }
 };
 
-$$.Instance = {"": "Object;model,center,scale,_size,MV",
-  update$1: function(_, gameTime) {
-    var rad = $.$mod$n($.$mul$n(gameTime, 60), 360) * 3.141592653589793 / 180;
-    this._size = 1 + 5 * $.JSDouble_methods.abs$0(Math.sin(rad));
+$$.Instance = {"": "Object;model,center,scale,MV",
+  update$1: function(_, gameLoop) {
   },
-  draw$1: function(cam) {
-    var t1, t2, t3, t4, t5, s, prog, gl;
-    t1 = this.MV;
-    $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
-    t2 = this.center._storage;
-    t3 = t2.length;
-    if (0 >= t3)
+  draw$2: function(gameLoop, cam) {
+    var t1, t2, t3, t4, t5, t6, s, prog, gl;
+    t1 = cam.get$rad();
+    t1 = $.JSDouble_methods.abs$0(Math.sin(t1));
+    t2 = this.MV;
+    $.setViewMatrix(t2, cam.eye, cam.center, cam.up);
+    t3 = this.center._storage;
+    t4 = t3.length;
+    if (0 >= t4)
       throw $.ioore(0);
-    t4 = t2[0];
-    if (1 >= t3)
+    t5 = t3[0];
+    if (1 >= t4)
       throw $.ioore(1);
-    t5 = t2[1];
-    if (2 >= t3)
+    t6 = t3[1];
+    if (2 >= t4)
       throw $.ioore(2);
-    t1.translate$3(t1, t4, t5, t2[2]);
-    t2 = this._size;
-    if (typeof t2 !== "number")
-      throw $.iae(t2);
-    s = this.scale * t2;
-    t1.scale$3(t1, s, s, s);
-    t2 = this.model;
-    prog = t2.program;
+    t2.translate$3(t2, t5, t6, t3[2]);
+    s = this.scale * (10 * t1 + 1);
+    t2.scale$3(t2, s, s, s);
+    t1 = this.model;
+    prog = t1.program;
     gl = prog.gl;
-    t5 = $.getInterceptor$x(gl);
-    t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.get$storage());
-    t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
-    t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
-    t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
-    t1 = t2.vertexIndexLength;
-    t2 = t2.vertexIndexBufferItemSize;
-    if (typeof t2 !== "number")
-      throw $.iae(t2);
-    t5.drawElements$4(gl, 4, t1, 5123, 0 * t2);
+    t3 = $.getInterceptor$x(gl);
+    t3.uniformMatrix4fv$3(gl, prog.u_MV, false, t2.get$storage());
+    t3.bindBuffer$2(gl, 34962, t1.vertexPositionBuffer);
+    t3.vertexAttribPointer$6(gl, prog.a_Position, t1.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t3.bindBuffer$2(gl, 34963, t1.vertexIndexBuffer);
+    t2 = t1.vertexIndexLength;
+    t1 = t1.vertexIndexBufferItemSize;
+    if (typeof t1 !== "number")
+      throw $.iae(t1);
+    t3.drawElements$4(gl, 4, t2, 5123, 0 * t1);
   }
 };
 
@@ -4804,11 +4801,11 @@ $$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBuf
     t1.bindBuffer$2(gl, 34962, null);
     t1.bindBuffer$2(gl, 34963, null);
   },
-  drawInstances$1: function(cam) {
-    $.JSArray_methods.forEach$1(this.instanceList, new $.Model_drawInstances_anon(cam));
+  drawInstances$2: function(gameLoop, cam) {
+    $.JSArray_methods.forEach$1(this.instanceList, new $.Model_drawInstances_anon(gameLoop, cam));
   },
-  update$1: function(_, gameTime) {
-    $.JSArray_methods.forEach$1(this.instanceList, new $.Model_update_anon(gameTime));
+  update$1: function(_, gameLoop) {
+    $.JSArray_methods.forEach$1(this.instanceList, new $.Model_update_anon(gameLoop));
   },
   Model$fromURL$3: function(gl, program, URL) {
     var t1, t2;
@@ -4845,19 +4842,38 @@ $$.handleError = {"": "Closure;URL_3",
   }
 };
 
-$$.Model_drawInstances_anon = {"": "Closure;cam_0",
+$$.Model_drawInstances_anon = {"": "Closure;gameLoop_0,cam_1",
   call$1: function(i) {
-    return i.draw$1(this.cam_0);
+    return i.draw$2(this.gameLoop_0, this.cam_1);
   }
 };
 
-$$.Model_update_anon = {"": "Closure;gameTime_0",
+$$.Model_update_anon = {"": "Closure;gameLoop_0",
   call$1: function(i) {
-    return $.update$1$x(i, this.gameTime_0);
+    return $.update$1$x(i, this.gameLoop_0);
   }
 };
 
-$$.Camera = {"": "Object;eye,center,up"};
+$$.Camera = {"": "Object;degreesPerSec,camOrbitRadius,eye,center,up,angle",
+  get$rad: function() {
+    return this._getRad$1(0);
+  },
+  _getRad$1: function(interpolation) {
+    return $.$mul$n(this.angle, 3.141592653589793) / 180;
+  },
+  update$1: function(_, gameLoop) {
+    this.angle = $.JSNumber_methods.$mod(gameLoop.get$gameTime() * this.degreesPerSec, 360);
+  },
+  render$1: function(gameLoop) {
+    var r, t1, t2;
+    gameLoop.get$renderInterpolationFactor();
+    r = $.$mul$n(this.angle, 3.141592653589793) / 180;
+    t1 = this.eye;
+    t2 = this.camOrbitRadius;
+    t1.$indexSet(t1, 0, t2 * Math.sin(r));
+    t1.$indexSet(t1, 2, t2 * Math.cos(r));
+  }
+};
 
 $$.Cookie__readCookie_anon = {"": "Closure;cookie_0",
   call$1: function(t) {
@@ -4889,15 +4905,15 @@ $$.initSquares_anon = {"": "Closure;squareProgram2_0",
   }
 };
 
-$$.draw_anon = {"": "Closure;",
+$$.draw_anon = {"": "Closure;gameLoop_0",
   call$1: function(p) {
-    return p.drawModels$2($.get$cam(), $.get$pMatrix());
+    return p.drawModels$3(this.gameLoop_0, $.get$cam(), $.get$pMatrix());
   }
 };
 
 $$.update_anon = {"": "Closure;gameLoop_0",
   call$1: function(p) {
-    return $.update$1$x(p, this.gameLoop_0.get$gameTime());
+    return $.update$1$x(p, this.gameLoop_0);
   }
 };
 
@@ -4913,7 +4929,7 @@ $$.main_anon0 = {"": "Closure;gl_0",
     t1 = this.gl_0;
     t2 = $.stats._timer;
     t2.start$0(t2);
-    $.draw(t1);
+    $.draw(t1, gameLoop);
     t1 = $.stats;
     t1.end$0(t1);
   }
@@ -4943,19 +4959,19 @@ $$.ShaderProgram = {"": "Object;program@,gl<,a_Position?,u_MV?,u_P?,modelList",
       $.Primitives_printString($.JSString_methods.$add($.JSString_methods.$add("fragmentShader: ", fragmentShaderURL), ": cache HIT"));
     t3.call$0();
   },
-  drawModels$2: function(cam, pMatrix) {
+  drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
     t2.useProgram$1(t1, this.program);
     t2.enableVertexAttribArray$1(t1, this.a_Position);
     t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.get$storage());
-    $.JSArray_methods.forEach$1(this.modelList, new $.ShaderProgram_drawModels_anon(cam));
+    $.JSArray_methods.forEach$1(this.modelList, new $.ShaderProgram_drawModels_anon(gameLoop, cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
   },
-  update$1: function(_, gameTime) {
-    $.JSArray_methods.forEach$1(this.modelList, new $.ShaderProgram_update_anon(gameTime));
+  update$1: function(_, gameLoop) {
+    $.JSArray_methods.forEach$1(this.modelList, new $.ShaderProgram_update_anon(gameLoop));
   }
 };
 
@@ -5070,20 +5086,20 @@ $$.ShaderProgram_fetch_fetchFragmentShader_anon0 = {"": "Closure;",
   }
 };
 
-$$.ShaderProgram_drawModels_anon = {"": "Closure;cam_0",
+$$.ShaderProgram_drawModels_anon = {"": "Closure;gameLoop_0,cam_1",
   call$1: function(m) {
-    return m.drawInstances$1(this.cam_0);
+    return m.drawInstances$2(this.gameLoop_0, this.cam_1);
   }
 };
 
-$$.ShaderProgram_update_anon = {"": "Closure;gameTime_0",
+$$.ShaderProgram_update_anon = {"": "Closure;gameLoop_0",
   call$1: function(m) {
-    return $.update$1$x(m, this.gameTime_0);
+    return $.update$1$x(m, this.gameLoop_0);
   }
 };
 
 $$.SkyboxProgram = {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,modelList",
-  drawModels$2: function(cam, pMatrix) {
+  drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
@@ -5092,15 +5108,15 @@ $$.SkyboxProgram = {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,m
     t2.activeTexture$1(t1, 33984);
     t2.uniform1i$2(t1, this.u_Skybox, 0);
     t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.get$storage());
-    $.JSArray_methods.forEach$1(this.modelList, new $.SkyboxProgram_drawModels_anon(cam));
+    $.JSArray_methods.forEach$1(this.modelList, new $.SkyboxProgram_drawModels_anon(gameLoop, cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
   }
 };
 
-$$.SkyboxProgram_drawModels_anon = {"": "Closure;cam_0",
+$$.SkyboxProgram_drawModels_anon = {"": "Closure;gameLoop_0,cam_1",
   call$1: function(m) {
-    return m.drawInstances$1(this.cam_0);
+    return m.drawInstances$2(this.gameLoop_0, this.cam_1);
   }
 };
 
@@ -5116,12 +5132,12 @@ $$.SkyboxModel = {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuf
     t3.get$onError(image).listen$1(t2);
     t3.set$src(image, URL);
   },
-  drawInstances$1: function(cam) {
+  drawInstances$2: function(gameLoop, cam) {
     var gl, t1;
     gl = this.program.gl;
     t1 = $.getInterceptor$x(gl);
     t1.bindTexture$2(gl, 34067, this.cubemapTexture);
-    $.JSArray_methods.forEach$1(this.instanceList, new $.SkyboxModel_drawInstances_anon(cam));
+    $.JSArray_methods.forEach$1(this.instanceList, new $.SkyboxModel_drawInstances_anon(gameLoop, cam));
     t1.bindTexture$2(gl, 34067, null);
   },
   SkyboxModel$fromURL$5: function(gl, prog, URL, reverse, rescale) {
@@ -5152,9 +5168,9 @@ $$.SkyboxModel_addCubemapFace_handleError = {"": "Closure;URL_4",
   }
 };
 
-$$.SkyboxModel_drawInstances_anon = {"": "Closure;cam_0",
+$$.SkyboxModel_drawInstances_anon = {"": "Closure;gameLoop_0,cam_1",
   call$1: function(i) {
-    return i.draw$1(this.cam_0);
+    return i.draw$2(this.gameLoop_0, this.cam_1);
   }
 };
 
@@ -5372,6 +5388,9 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
   },
   get$gameTime: function() {
     return this._gameTime;
+  },
+  get$renderInterpolationFactor: function() {
+    return this._renderInterpolationFactor;
   },
   get$mouse: function() {
     return this._mouse;
@@ -15020,7 +15039,7 @@ $.Utf8Decoder$ = function(utf8EncodedBytes, offset, $length, replacementCodepoin
 };
 
 $.Instance$ = function(model, center, scale) {
-  return new $.Instance(model, center, scale, null, $.mat4$identity());
+  return new $.Instance(model, center, scale, $.mat4$identity());
 };
 
 $.Model$fromURL = function(gl, program, URL) {
@@ -15032,7 +15051,7 @@ $.Model$fromURL = function(gl, program, URL) {
 };
 
 $.Camera$ = function(eye, center, up) {
-  return new $.Camera(eye, center, up);
+  return new $.Camera(60, 10, eye, center, up, null);
 };
 
 $.Cookie__readCookie = function() {
@@ -15180,9 +15199,11 @@ $.initContext = function(gl, gameLoop) {
   t1.viewport$4(gl, 0, 0, $.get$width$x(t2), $.get$height$x(t2));
   t2 = $.canvas;
   $.canvasAspect = $.$div$n($.get$width$x(t2), $.get$height$x(t2));
-  t1.frontFace$1(gl, 2305);
-  t1.cullFace$1(gl, 1029);
-  t1.enable$1(gl, 2884);
+  if ($.backfaceCulling) {
+    t1.frontFace$1(gl, 2305);
+    t1.cullFace$1(gl, 1029);
+    t1.enable$1(gl, 2884);
+  }
   t1 = $.fullRateFrames;
   if (t1 > 0) {
     $.Primitives_printString("firing " + t1 + " frames at full rate");
@@ -15190,7 +15211,7 @@ $.initContext = function(gl, gameLoop) {
     for (i = 0; i < $.fullRateFrames; ++i) {
       t1 = $.stats._timer;
       t1.start$0(t1);
-      $.draw(gl);
+      $.draw(gl, gameLoop);
       t1 = $.stats;
       t1.end$0(t1);
     }
@@ -15202,13 +15223,16 @@ $.initContext = function(gl, gameLoop) {
   gameLoop.start$0(gameLoop);
 };
 
-$.draw = function(gl) {
+$.draw = function(gl, gameLoop) {
   $.clear$1$ax(gl, 16640);
   $.setPerspectiveMatrix($.get$pMatrix(), $.fieldOfViewYRadians, $.canvasAspect, 1, 1000);
-  $.JSArray_methods.forEach$1($.get$programList(), new $.draw_anon());
+  $.get$cam().render$1(gameLoop);
+  $.JSArray_methods.forEach$1($.get$programList(), new $.draw_anon(gameLoop));
 };
 
 $.update = function(gameLoop) {
+  var t1 = $.get$cam();
+  t1.angle = $.JSNumber_methods.$mod(gameLoop.get$gameTime() * t1.degreesPerSec, 360);
   $.JSArray_methods.forEach$1($.get$programList(), new $.update_anon(gameLoop));
 };
 
@@ -15611,6 +15635,7 @@ $.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webki
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
 $.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_success = new $.EventStreamProvider("success");
@@ -15619,18 +15644,17 @@ $.Duration_0 = new $.Duration(0);
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.C_NullThrownError = new $.NullThrownError();
 $.JSInt_methods = $.JSInt.prototype;
-$.EventStreamProvider_error = new $.EventStreamProvider("error");
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
+$.EventStreamProvider_error = new $.EventStreamProvider("error");
 $._WorkerStub_methods = $._WorkerStub.prototype;
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.JSArray_methods = $.JSArray.prototype;
 $.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.EventStreamProvider_click = new $.EventStreamProvider("click");
 $.C_CloseToken = new $.CloseToken();
 $.JSNumber_methods = $.JSNumber.prototype;
-$.JSString_methods = $.JSString.prototype;
 $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
+$.JSString_methods = $.JSString.prototype;
 $.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
 $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
 $.EventStreamProvider_touchend = new $.EventStreamProvider("touchend");
@@ -15648,6 +15672,7 @@ $.canvas = null;
 $.canvasAspect = null;
 $.debugLostContext = true;
 $.fieldOfViewYRadians = 0.7853981633974483;
+$.backfaceCulling = false;
 $.fullRateFrames = 0;
 $.stats = null;
 $.$$dom_addEventListener$3$x = function(receiver, a0, a1, a2) {

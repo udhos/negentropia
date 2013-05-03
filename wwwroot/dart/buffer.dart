@@ -8,6 +8,7 @@ import 'dart:typed_data';
 import 'dart:math' as math;
 
 import 'package:vector_math/vector_math.dart';
+import 'package:game_loop/game_loop_html.dart';
 
 import 'shader.dart';
 import 'camera.dart';
@@ -17,25 +18,29 @@ class Instance {
   Model model;
   vec3 center;
   double scale;
-  double _size;
+  //double _size;
   mat4 MV = new mat4.identity(); // model-view matrix
   
   Instance(Model this.model, vec3 this.center, double this.scale);
   
-  void update(double gameTime) {
-    double degreesPerSec = 60;
-    double angle = (gameTime * degreesPerSec) % 360; 
-    double rad = angle * math.PI / 180;
-    _size = 1 + 5 * math.sin(rad).abs();
+  void update(GameLoopHtml gameLoop) {
+    /*
+    double degreesPerSec = 60.0;
+    double angle = (gameLoop.gameTime * degreesPerSec) % 360.0; 
+    double rad = angle * math.PI / 180.0;
+    _size = 10 * math.sin(rad).abs() + 1;
+    */
   }
   
-  void draw(Camera cam) {
-            
+  void draw(GameLoopHtml gameLoop, Camera cam) {
+
+    double size = 10 * math.sin(cam.rad).abs() + 1;
+
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
     MV.translate(center[0], center[1], center[2]);
     
-    double s = scale * _size;
+    double s = scale * size;
     MV.scale(s, s, s);
     
     ShaderProgram prog = model.program;
@@ -147,12 +152,12 @@ class Model {
     this.instanceList.add(i);
   }
  
-  void drawInstances(Camera cam) {
-    this.instanceList.forEach((Instance i) => i.draw(cam));
+  void drawInstances(GameLoopHtml gameLoop, Camera cam) {
+    this.instanceList.forEach((Instance i) => i.draw(gameLoop, cam));
   }  
 
-  void update(double gameTime) {
-    this.instanceList.forEach((Instance i) => i.update(gameTime));
+  void update(GameLoopHtml gameLoop) {
+    this.instanceList.forEach((Instance i) => i.update(gameLoop));
   }  
 
 }

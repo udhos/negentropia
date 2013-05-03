@@ -1,7 +1,7 @@
 import 'dart:html';
 import 'dart:async';
 import 'dart:web_gl';
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:stats/stats.dart';
 import 'package:vector_math/vector_math.dart';
@@ -23,8 +23,9 @@ bool debugLostContext = true;
 List<ShaderProgram> programList = new List<ShaderProgram>();
 Map<String,Shader> shaderCache = new Map<String,Shader>();
 mat4 pMatrix = new mat4.zero();
-num fieldOfViewYRadians = 45 * PI / 180;
+num fieldOfViewYRadians = 45 * math.PI / 180;
 Camera cam = new Camera(new vec3(0.0,0.0,10.0), new vec3(0.0,0.0,-1.0), new vec3(0.0,1.0,0.0));
+bool backfaceCulling = false;
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -172,9 +173,11 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   canvasAspect = canvas.width / canvas.height; // save aspect for render loop mat4.perspective
 
   // enable backface culling
-  gl.frontFace(RenderingContext.CCW);
-  gl.cullFace(RenderingContext.BACK);
-  gl.enable(RenderingContext.CULL_FACE);
+  if (backfaceCulling) {
+    gl.frontFace(RenderingContext.CCW);
+    gl.cullFace(RenderingContext.BACK);
+    gl.enable(RenderingContext.CULL_FACE);
+  }
   
   if (fullRateFrames > 0) {
     print("firing $fullRateFrames frames at full rate");
@@ -183,7 +186,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
         
     for (int i = 0; i < fullRateFrames; ++i) {
       stats.begin();      
-      draw(gl);   // draw
+      draw(gl, gameLoop);
       stats.end();      
     };
 
@@ -198,7 +201,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   gameLoop.start();
 }
 
-void draw(RenderingContext gl) {
+void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   
   // http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
   gl.clear(RenderingContext.COLOR_BUFFER_BIT | RenderingContext.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
@@ -215,8 +218,10 @@ void draw(RenderingContext gl) {
   //
   // aspect = canvas.width / canvas.height
   setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, 1.0, 1000.0);
-    
-  programList.forEach((ShaderProgram p) => p.drawModels(cam, pMatrix));
+
+  cam.render(gameLoop);
+  
+  programList.forEach((ShaderProgram p) => p.drawModels(gameLoop, cam, pMatrix));
 }
 
 /*
@@ -258,16 +263,18 @@ void render(RenderingContext gl) {
 }
 */
 
-void render(RenderingContext gl) {
-  stats.begin();      
-  draw(gl);      // draw
+void render(RenderingContext gl, GameLoopHtml gameLoop) {
+  stats.begin();
+  draw(gl, gameLoop);
   stats.end();
 }
 
 void update(GameLoopHtml gameLoop) {
-  // TODO: FIXME: WRITEME: update state
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
-  programList.forEach((ShaderProgram p) => p.update(gameLoop.gameTime));
+
+  cam.update(gameLoop);
+    
+  programList.forEach((ShaderProgram p) => p.update(gameLoop));
 }
 
 void main() {
@@ -283,7 +290,7 @@ void main() {
     update(gameLoop);
   });
   gameLoop.onRender = ((GameLoopHtml gameLoop) {
-    render(gl);
+    render(gl, gameLoop);
   });
 
   initContext(gl, gameLoop);

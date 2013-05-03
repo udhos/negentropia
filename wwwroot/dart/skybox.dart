@@ -4,6 +4,7 @@ import 'dart:html';
 import 'dart:web_gl';
 
 import 'package:vector_math/vector_math.dart';
+import 'package:game_loop/game_loop_html.dart';
 
 import 'shader.dart';
 import 'buffer.dart';
@@ -24,7 +25,7 @@ class SkyboxProgram extends ShaderProgram {
     this.u_Skybox = gl.getUniformLocation(this.program, "u_Skybox");
   }
 
-  void drawModels(Camera cam, mat4 pMatrix) {
+  void drawModels(GameLoopHtml gameLoop, Camera cam, mat4 pMatrix) {
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
@@ -41,7 +42,7 @@ class SkyboxProgram extends ShaderProgram {
     */
     gl.uniformMatrix4fv(this.u_P, false, pMatrix.storage);
 
-    modelList.forEach((Model m) => m.drawInstances(cam));
+    modelList.forEach((Model m) => m.drawInstances(gameLoop, cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -97,13 +98,13 @@ class SkyboxModel extends Model {
       ..src = URL;
   }
   
-  void drawInstances(Camera cam) {
+  void drawInstances(GameLoopHtml gameLoop, Camera cam) {
     
     RenderingContext gl = program.gl;
     
     gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
 
-    this.instanceList.forEach((Instance i) => i.draw(cam));
+    this.instanceList.forEach((Instance i) => i.draw(gameLoop, cam));
     
     gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, null);
   }  
