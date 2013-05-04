@@ -114,7 +114,7 @@ void initSquares(RenderingContext gl) {
   ShaderProgram squareProgram = new ShaderProgram(gl);
   programList.add(squareProgram);
   squareProgram.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip_fs.txt");
-  Model squareModel = new Model.fromURL(gl, squareProgram, "/mesh/square.json");
+  Model squareModel = new Model.fromJson(gl, squareProgram, "/mesh/square.json");
   squareProgram.addModel(squareModel);
   Instance squareInstance = new Instance(squareModel, new vec3(0.0, 0.0, 0.0), 1.0);
   squareModel.addInstance(squareInstance);
@@ -125,7 +125,7 @@ void initSquares(RenderingContext gl) {
   new Timer(new Duration(seconds:2), () {
     squareProgram2.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip2_fs.txt");
   });
-  Model squareModel2 = new Model.fromURL(gl, squareProgram2, "/mesh/square2.json");
+  Model squareModel2 = new Model.fromJson(gl, squareProgram2, "/mesh/square2.json");
   squareProgram2.addModel(squareModel2);
   Instance squareInstance2 = new Instance(squareModel2, new vec3(0.0, 0.0, 0.0), 1.0);
   squareModel2.addInstance(squareInstance2);
@@ -133,7 +133,7 @@ void initSquares(RenderingContext gl) {
   ShaderProgram squareProgram3 = new ShaderProgram(gl);
   programList.add(squareProgram3);
   squareProgram3.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
-  Model squareModel3 = new Model.fromURL(gl, squareProgram3, "/mesh/square3.json");
+  Model squareModel3 = new Model.fromJson(gl, squareProgram3, "/mesh/square3.json");
   squareProgram3.addModel(squareModel3);
   Instance squareInstance3 = new Instance(squareModel3, new vec3(0.0, 0.0, 0.0), 1.0);
   squareModel3.addInstance(squareInstance3);  
@@ -143,7 +143,7 @@ void initSkybox(RenderingContext gl) {
   SkyboxProgram skyboxProgram = new SkyboxProgram(gl);
   programList.add(skyboxProgram);
   skyboxProgram.fetch(shaderCache, "/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
-  SkyboxModel skyboxModel = new SkyboxModel.fromURL(gl, skyboxProgram, "/mesh/cube.json", true, 0);
+  SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, skyboxProgram, "/mesh/cube.json", true, 0);
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y, '/texture/space_up.jpg');
@@ -151,8 +151,18 @@ void initSkybox(RenderingContext gl) {
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');  
   skyboxProgram.addModel(skyboxModel);
-  Instance skyboxInstance = new Instance(skyboxModel, new vec3(0.0, 0.0, 0.0), 1.0);
+  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new vec3(0.0, 0.0, 0.0), 1.0);
   skyboxModel.addInstance(skyboxInstance);
+}
+
+void initShips(RenderingContext gl) {
+  ShaderProgram prog = new ShaderProgram(gl);
+  programList.add(prog);
+  prog.fetch(shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
+  Model airshipModel = new Model.fromOBJ(gl, prog, "/obj/airship.obj");
+  prog.addModel(airshipModel);
+  Instance airshipInstance = new Instance(airshipModel, new vec3(0.0, 0.0, 0.0), 1.0);
+  airshipModel.addInstance(airshipInstance);
 }
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
@@ -161,6 +171,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   shaderCache = new Map<String,Shader>();  // drop existing compile shader cache
 
   initSquares(gl);
+  initShips(gl);
   initSkybox(gl);
   
   gl.clearColor(0.5, 0.5, 0.5, 1.0);            // clear color

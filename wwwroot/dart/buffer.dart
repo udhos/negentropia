@@ -12,13 +12,13 @@ import 'package:game_loop/game_loop_html.dart';
 
 import 'shader.dart';
 import 'camera.dart';
+import 'obj.dart';
 
 class Instance {
   
   Model model;
   vec3 center;
   double scale;
-  //double _size;
   mat4 MV = new mat4.identity(); // model-view matrix
   
   Instance(Model this.model, vec3 this.center, double this.scale);
@@ -34,24 +34,15 @@ class Instance {
   
   void draw(GameLoopHtml gameLoop, Camera cam) {
 
-    double size = 10 * math.sin(cam.rad).abs() + 1;
-
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
     MV.translate(center[0], center[1], center[2]);
     
-    double s = scale * size;
-    MV.scale(s, s, s);
+    MV.scale(scale, scale, scale);
     
     ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;
 
-    // send model-view matrix uniform
-    /*
-    List<num> MV_tmp = new List<num>(16); 
-    MV.copyIntoArray(MV_tmp);
-    gl.uniformMatrix4fv(prog.u_MV, false, MV_tmp);
-    */
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
@@ -97,7 +88,7 @@ class Model {
     _createBuffers(gl, vertCoord, vertInd);
   }
   
-  Model.fromURL(RenderingContext gl, ShaderProgram this.program, String URL) {
+  Model.fromJson(RenderingContext gl, ShaderProgram this.program, String URL) {
 
     /*
     // load JSON from URL
@@ -122,16 +113,16 @@ class Model {
     */
 
     void handleResponse(String response) {
-      print("Model.fromURL: fetched JSON from URL: $URL: [$response]");
+      print("Model.fromJson: fetched JSON from URL: $URL: [$response]");
       Map m;
       try {
         m = parse(response);
       }
       catch (e) {
-        print("Model.fromURL: failure parsing square JSON: $e");
+        print("Model.fromJson: failure parsing JSON: $e");
         return;
       }
-      print("Model.fromURL: JSON parsed: [$m]");
+      print("Model.fromJson: JSON parsed: [$m]");
       
       List<num> vertCoord = m['vertCoord'];
       List<int> vertInd = m['vertInd'];
@@ -140,14 +131,34 @@ class Model {
     }
     
     void handleError(Object err) {
-      print("Model.fromURL: failure fetching square JSON from URL: $URL: $err");
+      print("Model.fromURL: failure fetching JSON from URL: $URL: $err");
     }
 
     HttpRequest.getString(URL)
     .then(handleResponse)
     .catchError(handleError);
   }
-  
+
+  Model.fromOBJ(RenderingContext gl, ShaderProgram this.program, String URL) {
+    
+    void handleResponse(String response) {
+      //print("Model.fromOBJ: fetched OBJ from URL: $URL: [$response]");
+      print("Model.fromOBJ: fetched OBJ from URL: $URL");
+      
+      Obj obj = new Obj.fromString(URL, response);
+      
+      _createBuffers(gl, obj.vertCoord, obj.vertInd);
+    }
+    
+    void handleError(Object err) {
+      print("Model.fromOBJ: failure fetching OBJ from URL: $URL: $err");
+    }
+
+    HttpRequest.getString(URL)
+    .then(handleResponse)
+    .catchError(handleError);    
+  }
+
   void addInstance(Instance i) {
     this.instanceList.add(i);
   }

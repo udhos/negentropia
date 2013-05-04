@@ -36,6 +36,9 @@ $$.ListIterable = {"": "IterableBase;",
         throw $.wrapException($.ConcurrentModificationError$(this));
     }
   },
+  get$isEmpty: function(_) {
+    return $.$eq(this.get$length(this), 0);
+  },
   get$first: function(_) {
     if ($.$eq(this.get$length(this), 0) === true)
       throw $.wrapException($.StateError$("No elements"));
@@ -191,6 +194,10 @@ $$.MappedIterable = {"": "IterableBase;_iterable,_f",
     var t1 = this._iterable;
     return t1.get$length(t1);
   },
+  get$isEmpty: function(_) {
+    var t1 = this._iterable;
+    return t1.get$isEmpty(t1);
+  },
   get$first: function(_) {
     var t1 = this._iterable;
     return this._f$1(t1.get$first(t1));
@@ -312,6 +319,9 @@ $$.HashMapKeyIterable = {"": "IterableBase;_map",
   get$length: function(_) {
     return this._map._liblib0$_length;
   },
+  get$isEmpty: function(_) {
+    return this._map._liblib0$_length === 0;
+  },
   get$iterator: function(_) {
     var t1 = this._map;
     return $.HashMapKeyIterator$(t1, t1._computeKeys$0());
@@ -363,6 +373,9 @@ $$.LinkedHashMapCell = {"": "Object;_key<,_value@,_next@,_previous"};
 $$.LinkedHashMapKeyIterable = {"": "IterableBase;_map",
   get$length: function(_) {
     return this._map._liblib0$_length;
+  },
+  get$isEmpty: function(_) {
+    return this._map._liblib0$_length === 0;
   },
   get$iterator: function(_) {
     var t1 = this._map;
@@ -1704,6 +1717,12 @@ $$.JSString = {"": "String/Interceptor;",
   substring$1: function($receiver, startIndex) {
     return this.substring$2($receiver, startIndex, null);
   },
+  toLowerCase$0: function(receiver) {
+    return receiver.toLowerCase();
+  },
+  trim$0: function(receiver) {
+    return receiver.trim();
+  },
   indexOf$2: function(receiver, other, start) {
     if (typeof start !== "number" || Math.floor(start) !== start)
       throw $.wrapException($.ArgumentError$(start));
@@ -2154,6 +2173,16 @@ $$.Stream = {"": "Object;",
     this.listen$4$cancelOnError$onDone$onError(t2, true, new $.Stream_length_anon0(t1, future), t3);
     return future;
   },
+  get$isEmpty: function(_) {
+    var t1, future, t2, t3;
+    t1 = {};
+    future = $._FutureImpl$();
+    t1.subscription_0 = null;
+    t2 = new $.Stream_isEmpty_anon(t1, future);
+    t3 = future.get$_setError();
+    t1.subscription_0 = this.listen$4$cancelOnError$onDone$onError(t2, true, new $.Stream_isEmpty_anon0(future), t3);
+    return future;
+  },
   skip$1: function(_, count) {
     return $._SkipStream$(this, count);
   },
@@ -2202,6 +2231,20 @@ $$.Stream_length_anon = {"": "Closure;box_0",
 $$.Stream_length_anon0 = {"": "Closure;box_0,future_1",
   call$0: function() {
     this.future_1._setValue$1(this.box_0.count_0);
+  }
+};
+
+$$.Stream_isEmpty_anon = {"": "Closure;box_0,future_1",
+  call$1: function(_) {
+    var t1 = this.box_0.subscription_0;
+    t1.cancel$0(t1);
+    this.future_1._setValue$1(false);
+  }
+};
+
+$$.Stream_isEmpty_anon0 = {"": "Closure;future_2",
+  call$0: function() {
+    this.future_2._setValue$1(true);
   }
 };
 
@@ -2631,6 +2674,9 @@ $$.IterableBase = {"": "Object;",
       ++count;
     return count;
   },
+  get$isEmpty: function(_) {
+    return this.get$iterator(this).moveNext$0() !== true;
+  },
   skip$1: function(_, n) {
     return $.SkipIterable$(this, n, $.getRuntimeTypeArgument(this, this.$asIterableBase, 0));
   },
@@ -2747,6 +2793,9 @@ $$.LinkedHashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_first,_la
   get$length: function(_) {
     return this._liblib0$_length;
   },
+  get$isEmpty: function(_) {
+    return this._liblib0$_length === 0;
+  },
   toString$0: function(_) {
     var result = $.StringBuffer$("");
     $.ToString__emitPair(this, result, $.List_List($, null));
@@ -2806,6 +2855,9 @@ $$.ListMixin = {"": "Object;",
       if (t1.$eq($length, this.get$length(this)) !== true)
         throw $.wrapException($.ConcurrentModificationError$(this));
     }
+  },
+  get$isEmpty: function(_) {
+    return $.$eq(this.get$length(this), 0);
   },
   get$first: function(_) {
     if ($.$eq(this.get$length(this), 0) === true)
@@ -3416,7 +3468,7 @@ $$._ExceptionImplementation = {"": "Object;message",
 
 $$.FormatException = {"": "Object;message",
   toString$0: function(_) {
-    return "FormatException: " + this.message;
+    return "FormatException: " + $.S(this.message);
   },
   $isException: true
 };
@@ -3507,6 +3559,9 @@ $$.StringBuffer = {"": "Object;_contents",
   get$length: function(_) {
     return this._contents.length;
   },
+  get$isEmpty: function(_) {
+    return this.get$length(this) === 0;
+  },
   write$1: function(_, obj) {
     if (typeof obj !== "string")
       return this.write$1$bailout(1, obj);
@@ -3548,6 +3603,9 @@ $$.StringBuffer = {"": "Object;_contents",
 };
 
 $$._ChildrenElementList = {"": "ListBase;_element,_childElements",
+  get$isEmpty: function(_) {
+    return this._element.firstElementChild == null;
+  },
   get$length: function(_) {
     return this._childElements.length;
   },
@@ -4751,37 +4809,35 @@ $$.Instance = {"": "Object;model,center,scale,MV",
   update$1: function(_, gameLoop) {
   },
   draw$2: function(gameLoop, cam) {
-    var t1, t2, t3, t4, t5, t6, s, prog, gl;
-    t1 = cam.get$rad();
-    t1 = $.JSDouble_methods.abs$0(Math.sin(t1));
-    t2 = this.MV;
-    $.setViewMatrix(t2, cam.eye, cam.center, cam.up);
-    t3 = this.center._storage;
-    t4 = t3.length;
-    if (0 >= t4)
+    var t1, t2, t3, t4, t5, prog, gl;
+    t1 = this.MV;
+    $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
+    t2 = this.center._storage;
+    t3 = t2.length;
+    if (0 >= t3)
       throw $.ioore(0);
-    t5 = t3[0];
-    if (1 >= t4)
+    t4 = t2[0];
+    if (1 >= t3)
       throw $.ioore(1);
-    t6 = t3[1];
-    if (2 >= t4)
+    t5 = t2[1];
+    if (2 >= t3)
       throw $.ioore(2);
-    t2.translate$3(t2, t5, t6, t3[2]);
-    s = this.scale * (10 * t1 + 1);
-    t2.scale$3(t2, s, s, s);
-    t1 = this.model;
-    prog = t1.program;
+    t1.translate$3(t1, t4, t5, t2[2]);
+    t2 = this.scale;
+    t1.scale$3(t1, t2, t2, t2);
+    t2 = this.model;
+    prog = t2.program;
     gl = prog.gl;
-    t3 = $.getInterceptor$x(gl);
-    t3.uniformMatrix4fv$3(gl, prog.u_MV, false, t2.get$storage());
-    t3.bindBuffer$2(gl, 34962, t1.vertexPositionBuffer);
-    t3.vertexAttribPointer$6(gl, prog.a_Position, t1.vertexPositionBufferItemSize, 5126, false, 0, 0);
-    t3.bindBuffer$2(gl, 34963, t1.vertexIndexBuffer);
-    t2 = t1.vertexIndexLength;
-    t1 = t1.vertexIndexBufferItemSize;
-    if (typeof t1 !== "number")
-      throw $.iae(t1);
-    t3.drawElements$4(gl, 4, t2, 5123, 0 * t1);
+    t5 = $.getInterceptor$x(gl);
+    t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.get$storage());
+    t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
+    t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
+    t1 = t2.vertexIndexLength;
+    t2 = t2.vertexIndexBufferItemSize;
+    if (typeof t2 !== "number")
+      throw $.iae(t2);
+    t5.drawElements$4(gl, 4, t1, 5123, 0 * t2);
   }
 };
 
@@ -4807,7 +4863,13 @@ $$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBuf
   update$1: function(_, gameLoop) {
     $.JSArray_methods.forEach$1(this.instanceList, new $.Model_update_anon(gameLoop));
   },
-  Model$fromURL$3: function(gl, program, URL) {
+  Model$fromOBJ$3: function(gl, program, URL) {
+    var t1, t2;
+    t1 = new $.handleResponse0(this, gl, URL);
+    t2 = new $.handleError0(URL);
+    $.HttpRequest_getString(URL, null, null).then$1(t1).catchError$1(t2);
+  },
+  Model$fromJson$3: function(gl, program, URL) {
     var t1, t2;
     t1 = new $.handleResponse(this, gl, URL);
     t2 = new $.handleError(URL);
@@ -4818,18 +4880,18 @@ $$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBuf
 $$.handleResponse = {"": "Closure;this_0,gl_1,URL_2",
   call$1: function(response) {
     var m, e, exception, t1, vertCoord, vertInd;
-    $.Primitives_printString("Model.fromURL: fetched JSON from URL: " + this.URL_2 + ": [" + $.S(response) + "]");
+    $.Primitives_printString("Model.fromJson: fetched JSON from URL: " + this.URL_2 + ": [" + $.S(response) + "]");
     m = null;
     try {
       m = $.parse(response, null);
     } catch (exception) {
       t1 = $.unwrapException(exception);
       e = t1;
-      $.Primitives_printString("Model.fromURL: failure parsing square JSON: " + $.S(e));
+      $.Primitives_printString("Model.fromJson: failure parsing JSON: " + $.S(e));
       return;
     }
 
-    $.Primitives_printString("Model.fromURL: JSON parsed: [" + $.S(m) + "]");
+    $.Primitives_printString("Model.fromJson: JSON parsed: [" + $.S(m) + "]");
     vertCoord = $.$index$asx(m, "vertCoord");
     vertInd = $.$index$asx(m, "vertInd");
     this.this_0._createBuffers$3(this.gl_1, vertCoord, vertInd);
@@ -4838,7 +4900,23 @@ $$.handleResponse = {"": "Closure;this_0,gl_1,URL_2",
 
 $$.handleError = {"": "Closure;URL_3",
   call$1: function(err) {
-    $.Primitives_printString("Model.fromURL: failure fetching square JSON from URL: " + this.URL_3 + ": " + $.S(err));
+    $.Primitives_printString("Model.fromURL: failure fetching JSON from URL: " + this.URL_3 + ": " + $.S(err));
+  }
+};
+
+$$.handleResponse0 = {"": "Closure;this_0,gl_1,URL_2",
+  call$1: function(response) {
+    var t1, obj;
+    t1 = this.URL_2;
+    $.Primitives_printString("Model.fromOBJ: fetched OBJ from URL: " + t1);
+    obj = $.Obj$fromString(t1, response);
+    this.this_0._createBuffers$3(this.gl_1, obj.vertCoord, obj.vertInd);
+  }
+};
+
+$$.handleError0 = {"": "Closure;URL_3",
+  call$1: function(err) {
+    $.Primitives_printString("Model.fromOBJ: failure fetching OBJ from URL: " + this.URL_3 + ": " + $.S(err));
   }
 };
 
@@ -4856,7 +4934,7 @@ $$.Model_update_anon = {"": "Closure;gameLoop_0",
 
 $$.Camera = {"": "Object;degreesPerSec,camOrbitRadius,eye,center,up,oldAngle,angle",
   get$rad: function() {
-    return this._getRad$1(0);
+    return this._getRad$1(1);
   },
   _getRad$1: function(interpolation) {
     var t1, t2;
@@ -4939,6 +5017,90 @@ $$.main_anon0 = {"": "Closure;gl_0",
     $.draw(t1, gameLoop);
     t1 = $.stats;
     t1.end$0(t1);
+  }
+};
+
+$$.Obj = {"": "Object;vertCoord<,vertInd<",
+  Obj$fromString$2: function(url, str, box_0) {
+    var t1;
+    box_0.lineNum_0 = 0;
+    t1 = new $.parseLine(box_0, this, url);
+    $.JSArray_methods.forEach$1($.split$1$s(str, "\n"), new $.anon(t1));
+  }
+};
+
+$$.parseLine = {"": "Closure;box_0,this_1,url_2",
+  call$1: function(rawLine) {
+    var t1, line, v, t2, t3, f, i, vIndex, ti;
+    t1 = this.box_0;
+    t1.lineNum_0 = $.$add$ns(t1.lineNum_0, 1);
+    line = $.trim$0$s(rawLine);
+    if ($.JSString_methods.get$isEmpty(line))
+      return;
+    if (0 >= line.length)
+      throw $.ioore(0);
+    if (line[0] === "#")
+      return;
+    if ($.JSString_methods.startsWith$1(line, "v ")) {
+      v = line.split(" ");
+      t2 = v.length;
+      if (t2 !== 4) {
+        $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_0) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+        return;
+      }
+      t1 = this.this_1;
+      t3 = t1.get$vertCoord();
+      if (1 >= t2)
+        throw $.ioore(1);
+      t3.push($.Primitives_parseDouble(v[1], null));
+      t3 = t1.get$vertCoord();
+      if (2 >= v.length)
+        throw $.ioore(2);
+      t3.push($.Primitives_parseDouble(v[2], null));
+      t1 = t1.get$vertCoord();
+      if (3 >= v.length)
+        throw $.ioore(3);
+      t1.push($.Primitives_parseDouble(v[3], null));
+      return;
+    }
+    if ($.JSString_methods.startsWith$1(line, "vt "))
+      return;
+    if ($.JSString_methods.startsWith$1(line, "vn "))
+      return;
+    if ($.JSString_methods.startsWith$1(line, "f ")) {
+      f = line.split(" ");
+      t2 = f.length;
+      if (t2 !== 4) {
+        $.Primitives_printString("OBJ: wrong number of face indices (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_0) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+        return;
+      }
+      for (t1 = this.this_1, i = 1; i < f.length; ++i) {
+        v = $.split$1$s(f[i], "/");
+        if (0 >= v.length)
+          throw $.ioore(0);
+        vIndex = $.$sub$n($.Primitives_parseInt(v[0], null, null), 1);
+        t1.get$vertInd().push(vIndex);
+        if (v.length > 1) {
+          ti = v[1];
+          if (ti != null && $.get$isEmpty$asx(ti) !== true)
+            $.$sub$n($.Primitives_parseInt(ti, null, null), 1);
+        }
+        if (v.length > 2) {
+          t1.set$ni(v[2]);
+          t2 = t1.get$ni();
+          if (t2 != null && $.get$isEmpty$asx(t2) !== true)
+            $.$sub$n($.Primitives_parseInt(t1.get$ni(), null, null), 1);
+        }
+      }
+      return;
+    }
+    $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_0) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+  }
+};
+
+$$.anon = {"": "Closure;parseLine_3",
+  call$1: function(line) {
+    return this.parseLine_3.call$1(line);
   }
 };
 
@@ -5147,7 +5309,7 @@ $$.SkyboxModel = {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuf
     $.JSArray_methods.forEach$1(this.instanceList, new $.SkyboxModel_drawInstances_anon(gameLoop, cam));
     t1.bindTexture$2(gl, 34067, null);
   },
-  SkyboxModel$fromURL$5: function(gl, prog, URL, reverse, rescale) {
+  SkyboxModel$fromJson$5: function(gl, prog, URL, reverse, rescale) {
     this.cubemapTexture = $.createTexture$0$x(gl);
   }
 };
@@ -5178,6 +5340,42 @@ $$.SkyboxModel_addCubemapFace_handleError = {"": "Closure;URL_4",
 $$.SkyboxModel_drawInstances_anon = {"": "Closure;gameLoop_0,cam_1",
   call$1: function(i) {
     return i.draw$2(this.gameLoop_0, this.cam_1);
+  }
+};
+
+$$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
+  draw$2: function(gameLoop, cam) {
+    var t1, t2, t3, t4, t5, t6, s, prog, gl;
+    t1 = cam.get$rad();
+    t1 = $.JSDouble_methods.abs$0(Math.sin(t1));
+    t2 = this.MV;
+    $.setViewMatrix(t2, cam.eye, cam.center, cam.up);
+    t3 = this.center._storage;
+    t4 = t3.length;
+    if (0 >= t4)
+      throw $.ioore(0);
+    t5 = t3[0];
+    if (1 >= t4)
+      throw $.ioore(1);
+    t6 = t3[1];
+    if (2 >= t4)
+      throw $.ioore(2);
+    t2.translate$3(t2, t5, t6, t3[2]);
+    s = this.scale * (10 * t1 + 1);
+    t2.scale$3(t2, s, s, s);
+    t1 = this.model;
+    prog = t1.program;
+    gl = prog.gl;
+    t3 = $.getInterceptor$x(gl);
+    t3.uniformMatrix4fv$3(gl, prog.u_MV, false, t2.get$storage());
+    t3.bindBuffer$2(gl, 34962, t1.vertexPositionBuffer);
+    t3.vertexAttribPointer$6(gl, prog.a_Position, t1.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t3.bindBuffer$2(gl, 34963, t1.vertexIndexBuffer);
+    t2 = t1.vertexIndexLength;
+    t1 = t1.vertexIndexBufferItemSize;
+    if (typeof t1 !== "number")
+      throw $.iae(t1);
+    t3.drawElements$4(gl, 4, t2, 5123, 0 * t1);
   }
 };
 
@@ -8226,6 +8424,9 @@ $$.DomMimeTypeArray = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -8302,6 +8503,9 @@ $$.DomPluginArray = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -8381,6 +8585,9 @@ $$.DomStringList = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -8545,6 +8752,9 @@ $$.FileList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -8685,6 +8895,9 @@ $$.HtmlAllCollection = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -8753,6 +8966,9 @@ $$.HtmlCollection = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -9085,6 +9301,9 @@ $$.NodeList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -9305,6 +9524,9 @@ $$.SourceBufferList = {"": "EventTarget;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -9385,6 +9607,9 @@ $$.SpeechGrammarList = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -9486,6 +9711,9 @@ $$.Storage = {"": "Interceptor;",
   get$length: function(receiver) {
     return receiver.length;
   },
+  get$isEmpty: function(receiver) {
+    return receiver.key(0) == null;
+  },
   $isMap: true,
   $asMap: function () { return [$.JSString, $.JSString]; }
 };
@@ -9564,6 +9792,9 @@ $$.TextTrackCueList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -9632,6 +9863,9 @@ $$.TextTrackList = {"": "EventTarget;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -9722,6 +9956,9 @@ $$.TouchList = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -10047,6 +10284,9 @@ $$._ClientRectList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -10116,6 +10356,9 @@ $$._CssRuleList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -10184,6 +10427,9 @@ $$._CssValueList = {"": "_CSSValue;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -10256,6 +10502,9 @@ $$._EntryArray = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -10324,6 +10573,9 @@ $$._EntryArraySync = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -10396,6 +10648,9 @@ $$._GamepadList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -10464,6 +10719,9 @@ $$._NamedNodeMap = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -10534,6 +10792,9 @@ $$._SpeechInputResultList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -10603,6 +10864,9 @@ $$._SpeechRecognitionResultList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -10671,6 +10935,9 @@ $$._StyleSheetList = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -10966,6 +11233,9 @@ $$.LengthList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -11048,6 +11318,9 @@ $$.NumberList = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -11156,6 +11429,9 @@ $$.PathSegList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -11254,6 +11530,9 @@ $$.StringList = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -11371,6 +11650,9 @@ $$.TransformList = {"": "Interceptor;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -11449,6 +11731,9 @@ $$._ElementInstanceList = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -11573,6 +11858,9 @@ $$.Float32List = {"": "TypedData;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -11683,6 +11971,9 @@ $$.Float64List = {"": "TypedData;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -11795,6 +12086,9 @@ $$.Int16List = {"": "TypedData;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -11905,6 +12199,9 @@ $$.Int32List = {"": "TypedData;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -12017,6 +12314,9 @@ $$.Int8List = {"": "TypedData;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -12127,6 +12427,9 @@ $$.Uint16List = {"": "TypedData;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -12239,6 +12542,9 @@ $$.Uint32List = {"": "TypedData;",
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
+  },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
   },
@@ -12346,6 +12652,9 @@ $$.Uint8ClampedList = {"": "Uint8List;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -12457,6 +12766,9 @@ $$.Uint8List = {"": "TypedData;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -12781,6 +13093,9 @@ $$.SqlResultSetRowList = {"": "Interceptor;",
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
+  },
+  get$isEmpty: function(receiver) {
+    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     return $.SubListIterable$(receiver, n, null, null);
@@ -13419,6 +13734,83 @@ $.Primitives_printString = function(string) {
     return;
   }
   throw "Unable to print message: " + String(string);
+};
+
+$.Primitives__throwFormatException = function(string) {
+  throw $.wrapException($.FormatException$(string));
+};
+
+$.Primitives_parseInt = function(source, radix, handleError) {
+  var match, t1, maxCharCode, digitsPart, i;
+  if (handleError == null)
+    handleError = $.Primitives__throwFormatException;
+  if (typeof source !== "string")
+    $.throwExpression($.ArgumentError$(source));
+  match = /^\s*[+-]?((0x[a-f0-9]+)|(\d+)|([a-z0-9]+))\s*$/i.exec(source);
+  if (radix == null) {
+    if (match != null) {
+      t1 = match.length;
+      if (2 >= t1)
+        throw $.ioore(2);
+      if (match[2] != null)
+        return parseInt(source, 16);
+      if (3 >= t1)
+        throw $.ioore(3);
+      if (match[3] != null)
+        return parseInt(source, 10);
+      return handleError.call$1(source);
+    }
+    radix = 10;
+  } else {
+    throw $.wrapException($.ArgumentError$("Radix is not an integer"));
+    if ($.JSNull_methods.$lt(radix, 2) || $.JSNull_methods.$gt(radix, 36))
+      throw $.wrapException($.RangeError$("Radix " + $.S(radix) + " not in range 2..36"));
+    if (match != null) {
+      t1 = false;
+      if (t1)
+        return parseInt(source, 10);
+      if (!$.JSNull_methods.$lt(radix, 10)) {
+        if (3 >= match.length)
+          throw $.ioore(3);
+        t1 = match[3] == null;
+      } else
+        t1 = true;
+      if (t1) {
+        if ($.JSNull_methods.$le(radix, 10)) {
+          if (typeof radix !== "number")
+            throw $.iae(radix);
+          maxCharCode = 48 + radix - 1;
+        } else {
+          if (typeof radix !== "number")
+            throw $.iae(radix);
+          maxCharCode = 97 + radix - 10 - 1;
+        }
+        if (1 >= match.length)
+          throw $.ioore(1);
+        digitsPart = $.toLowerCase$0$s(match[1]);
+        for (i = 0; i < digitsPart.length; ++i)
+          if ($.JSString_methods.codeUnitAt$1(digitsPart, i) > maxCharCode)
+            return handleError.call$1(source);
+      }
+    }
+  }
+  if (match == null)
+    return handleError.call$1(source);
+  return parseInt(source, radix);
+};
+
+$.Primitives_parseDouble = function(source, handleError) {
+  var result;
+  if (typeof source !== "string")
+    $.throwExpression($.ArgumentError$(source));
+  if (handleError == null)
+    handleError = $.Primitives__throwFormatException;
+  if (!/^\s*(?:NaN|[+-]?(?:Infinity|(?:\.\d+|\d+(?:\.\d+)?)(?:[eE][+-]?\d+)?))\s*$/.test(source))
+    return handleError.call$1(source);
+  result = parseFloat(source);
+  if ($.JSNumber_methods.get$isNaN(result) && $.$eq(source, "NaN") !== true)
+    return handleError.call$1(source);
+  return result;
 };
 
 $.Primitives_objectTypeName = function(object) {
@@ -14473,6 +14865,10 @@ $.ArgumentError$ = function(message) {
   return new $.ArgumentError(message);
 };
 
+$.RangeError$ = function(message) {
+  return new $.RangeError(message);
+};
+
 $.RangeError$value = function(value) {
   return new $.RangeError("value " + $.S(value));
 };
@@ -15049,11 +15445,19 @@ $.Instance$ = function(model, center, scale) {
   return new $.Instance(model, center, scale, $.mat4$identity());
 };
 
-$.Model$fromURL = function(gl, program, URL) {
+$.Model$fromJson = function(gl, program, URL) {
   var t1 = $.List_List($, $.Instance);
   $.setRuntimeTypeInfo(t1, [$.Instance]);
   t1 = new $.Model(null, null, null, null, null, t1, program);
-  t1.Model$fromURL$3(gl, program, URL);
+  t1.Model$fromJson$3(gl, program, URL);
+  return t1;
+};
+
+$.Model$fromOBJ = function(gl, program, URL) {
+  var t1 = $.List_List($, $.Instance);
+  $.setRuntimeTypeInfo(t1, [$.Instance]);
+  t1 = new $.Model(null, null, null, null, null, t1, program);
+  t1.Model$fromOBJ$3(gl, program, URL);
   return t1;
 };
 
@@ -15150,7 +15554,7 @@ $.initSquares = function(gl) {
   squareProgram = $.ShaderProgram$(gl);
   $.get$programList().push(squareProgram);
   squareProgram.fetch$3($.get$shaderCache(), "/shader/clip_vs.txt", "/shader/clip_fs.txt");
-  squareModel = $.Model$fromURL(gl, squareProgram, "/mesh/square.json");
+  squareModel = $.Model$fromJson(gl, squareProgram, "/mesh/square.json");
   squareProgram.modelList.push(squareModel);
   squareModel.instanceList.push($.Instance$(squareModel, $.vec3$(0, 0, 0), 1));
   squareProgram2 = $.ShaderProgram$(gl);
@@ -15161,13 +15565,13 @@ $.initSquares = function(gl) {
   if (milliseconds < 0)
     milliseconds = 0;
   $.TimerImpl$(milliseconds, t2);
-  squareModel2 = $.Model$fromURL(gl, squareProgram2, "/mesh/square2.json");
+  squareModel2 = $.Model$fromJson(gl, squareProgram2, "/mesh/square2.json");
   squareProgram2.modelList.push(squareModel2);
   squareModel2.instanceList.push($.Instance$(squareModel2, $.vec3$(0, 0, 0), 1));
   squareProgram3 = $.ShaderProgram$(gl);
   $.get$programList().push(squareProgram3);
   squareProgram3.fetch$3($.get$shaderCache(), "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
-  squareModel3 = $.Model$fromURL(gl, squareProgram3, "/mesh/square3.json");
+  squareModel3 = $.Model$fromJson(gl, squareProgram3, "/mesh/square3.json");
   squareProgram3.modelList.push(squareModel3);
   squareModel3.instanceList.push($.Instance$(squareModel3, $.vec3$(0, 0, 0), 1));
 };
@@ -15178,7 +15582,7 @@ $.initSkybox = function(gl) {
   $.get$programList().push(skyboxProgram);
   $.ShaderProgram.prototype.fetch$3.call(skyboxProgram, $.get$shaderCache(), "/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
   skyboxProgram.u_Skybox = $.getUniformLocation$2$x(skyboxProgram.gl, skyboxProgram.program, "u_Skybox");
-  skyboxModel = $.SkyboxModel$fromURL(gl, skyboxProgram, "/mesh/cube.json", true, 0);
+  skyboxModel = $.SkyboxModel$fromJson(gl, skyboxProgram, "/mesh/cube.json", true, 0);
   skyboxModel.addCubemapFace$2(34069, "/texture/space_rt.jpg");
   skyboxModel.addCubemapFace$2(34070, "/texture/space_lf.jpg");
   skyboxModel.addCubemapFace$2(34071, "/texture/space_up.jpg");
@@ -15186,7 +15590,17 @@ $.initSkybox = function(gl) {
   skyboxModel.addCubemapFace$2(34073, "/texture/space_fr.jpg");
   skyboxModel.addCubemapFace$2(34074, "/texture/space_bk.jpg");
   skyboxProgram.modelList.push(skyboxModel);
-  skyboxModel.instanceList.push($.Instance$(skyboxModel, $.vec3$(0, 0, 0), 1));
+  skyboxModel.instanceList.push($.SkyboxInstance$(skyboxModel, $.vec3$(0, 0, 0), 1));
+};
+
+$.initShips = function(gl) {
+  var prog, airshipModel;
+  prog = $.ShaderProgram$(gl);
+  $.get$programList().push(prog);
+  prog.fetch$3($.get$shaderCache(), "/shader/simple_vs.txt", "/shader/simple_fs.txt");
+  airshipModel = $.Model$fromOBJ(gl, prog, "/obj/airship.obj");
+  prog.modelList.push(airshipModel);
+  airshipModel.instanceList.push($.Instance$(airshipModel, $.vec3$(0, 0, 0), 1));
 };
 
 $.initContext = function(gl, gameLoop) {
@@ -15196,6 +15610,7 @@ $.initContext = function(gl, gameLoop) {
   $.programList = t1;
   $.shaderCache = $.HashMap$($.JSString, $.Shader);
   $.initSquares(gl);
+  $.initShips(gl);
   $.initSkybox(gl);
   t1 = $.getInterceptor$x(gl);
   t1.clearColor$4(gl, 0.5, 0.5, 0.5, 1);
@@ -15257,6 +15672,18 @@ $.main = function() {
   $.initContext(gl, gameLoop);
 };
 
+$.Obj$fromString = function(url, str) {
+  var t1, t2, t3;
+  t1 = {};
+  t2 = $.List_List($, $.JSDouble);
+  $.setRuntimeTypeInfo(t2, [$.JSDouble]);
+  t3 = $.List_List($, $.JSInt);
+  $.setRuntimeTypeInfo(t3, [$.JSInt]);
+  t3 = new $.Obj(t2, t3);
+  t3.Obj$fromString$2(url, str, t1);
+  return t3;
+};
+
 $.ShaderProgram$ = function(gl) {
   var t1 = $.List_List($, $.Model);
   $.setRuntimeTypeInfo(t1, [$.Model]);
@@ -15269,13 +15696,17 @@ $.SkyboxProgram$ = function(gl) {
   return new $.SkyboxProgram(null, null, gl, null, null, null, t1);
 };
 
-$.SkyboxModel$fromURL = function(gl, prog, URL, reverse, rescale) {
+$.SkyboxModel$fromJson = function(gl, prog, URL, reverse, rescale) {
   var t1 = $.List_List($, $.Instance);
   $.setRuntimeTypeInfo(t1, [$.Instance]);
   t1 = new $.SkyboxModel(null, null, null, null, null, null, t1, prog);
-  t1.Model$fromURL$3(gl, prog, URL);
-  t1.SkyboxModel$fromURL$5(gl, prog, URL, reverse, rescale);
+  t1.Model$fromJson$3(gl, prog, URL);
+  t1.SkyboxModel$fromJson$5(gl, prog, URL, reverse, rescale);
   return t1;
+};
+
+$.SkyboxInstance$ = function(model, center, scale) {
+  return new $.SkyboxInstance(model, center, scale, $.mat4$identity());
 };
 
 $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
@@ -15597,6 +16028,8 @@ $.vec4$zero = function() {
 
 $.IsolateNatives__processWorkerMessage.call$2 = $.IsolateNatives__processWorkerMessage;
 $.IsolateNatives__processWorkerMessage.$name = "IsolateNatives__processWorkerMessage";
+$.Primitives__throwFormatException.call$1 = $.Primitives__throwFormatException;
+$.Primitives__throwFormatException.$name = "Primitives__throwFormatException";
 $.wrapException.call$1 = $.wrapException;
 $.wrapException.$name = "wrapException";
 $.DartError_toStringWrapper.call$0 = $.DartError_toStringWrapper;
@@ -15641,13 +16074,13 @@ $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.JSDouble_methods = $.JSDouble.prototype;
 $.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
 $.Window_methods = $.Window.prototype;
-$.EventStreamProvider_success = new $.EventStreamProvider("success");
 $.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
+$.EventStreamProvider_success = new $.EventStreamProvider("success");
 $.Duration_0 = new $.Duration(0);
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.C_NullThrownError = new $.NullThrownError();
@@ -15661,8 +16094,8 @@ $.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.EventStreamProvider_click = new $.EventStreamProvider("click");
 $.C_CloseToken = new $.CloseToken();
 $.JSNumber_methods = $.JSNumber.prototype;
-$.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 $.JSString_methods = $.JSString.prototype;
+$.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 $.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
 $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
 $.EventStreamProvider_touchend = new $.EventStreamProvider("touchend");
@@ -15823,6 +16256,9 @@ $.get$height$x = function(receiver) {
 $.get$id$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$id(receiver);
 };
+$.get$isEmpty$asx = function(receiver) {
+  return $.getInterceptor$asx(receiver).get$isEmpty(receiver);
+};
 $.get$iterator$ax = function(receiver) {
   return $.getInterceptor$ax(receiver).get$iterator(receiver);
 };
@@ -15970,8 +16406,14 @@ $.toList$0$ax = function(receiver) {
 $.toList$1$growable$ax = function(receiver, a0) {
   return $.getInterceptor$ax(receiver).toList$1$growable(receiver, a0);
 };
+$.toLowerCase$0$s = function(receiver) {
+  return $.getInterceptor$s(receiver).toLowerCase$0(receiver);
+};
 $.toString$0 = function(receiver) {
   return $.getInterceptor(receiver).toString$0(receiver);
+};
+$.trim$0$s = function(receiver) {
+  return $.getInterceptor$s(receiver).trim$0(receiver);
 };
 $.update$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).update$1(receiver, a0);

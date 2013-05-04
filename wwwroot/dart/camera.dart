@@ -13,10 +13,11 @@ class Camera {
   
   Camera(this.eye, this.center, this.up);
   
-  double get rad => _getRad(0.0);
+  double get rad => _getRad(1.0);
   
   double _getRad(double interpolation) {
     double deg = interpolation * angle + (1 - interpolation) * oldAngle;
+    //double deg = interpolation * (angle - oldAngle) + oldAngle;
     double r = deg * math.PI / 180.0;
     return r;
   }

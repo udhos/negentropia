@@ -2,6 +2,7 @@ library skybox;
 
 import 'dart:html';
 import 'dart:web_gl';
+import 'dart:math' as math;
 
 import 'package:vector_math/vector_math.dart';
 import 'package:game_loop/game_loop_html.dart';
@@ -57,7 +58,7 @@ class SkyboxModel extends Model {
   
   Texture cubemapTexture;
   
-  SkyboxModel.fromURL(RenderingContext gl, SkyboxProgram prog, String URL, bool reverse, num rescale) : super.fromURL(gl, prog, URL) {
+  SkyboxModel.fromJson(RenderingContext gl, SkyboxProgram prog, String URL, bool reverse, num rescale) : super.fromJson(gl, prog, URL) {
     cubemapTexture = gl.createTexture();
     
     /*
@@ -108,4 +109,38 @@ class SkyboxModel extends Model {
     
     gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, null);
   }  
+}
+
+class SkyboxInstance extends Instance {
+  
+  SkyboxInstance(Model model, vec3 center, double scale) : super(model, center, scale);
+    
+  void draw(GameLoopHtml gameLoop, Camera cam) {
+
+    double size = 10 * math.sin(cam.rad).abs() + 1;
+
+    setViewMatrix(MV, cam.eye, cam.center, cam.up);
+    
+    MV.translate(center[0], center[1], center[2]);
+    
+    double s = scale * size;
+    MV.scale(s, s, s);
+    
+    ShaderProgram prog = model.program;
+    RenderingContext gl = prog.gl;
+
+    // send model-view matrix uniform
+    /*
+    List<num> MV_tmp = new List<num>(16); 
+    MV.copyIntoArray(MV_tmp);
+    gl.uniformMatrix4fv(prog.u_MV, false, MV_tmp);
+    */
+    gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
+
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
+    gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
+  
+    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
+    gl.drawElements(RenderingContext.TRIANGLES, model.vertexIndexLength, RenderingContext.UNSIGNED_SHORT, 0 * model.vertexIndexBufferItemSize);
+  }
 }
