@@ -31,13 +31,15 @@
   uniform mat4 uMVMatrix;
   uniform mat4 uPMatrix;
 
+  varying vec4 vObjCoord; // skybox: send obj-space coord to fragment shader
   varying vec4 vPosition;
   varying vec4 vColor;
   varying vec2 vTextureCoord;
 
   void main(void) {
     //gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-    vPosition = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+	vObjCoord = vec4(aVertexPosition, 1.0); // skybox: send obj-space coord to fragment shader
+    vPosition = uPMatrix * uMVMatrix * vObjCoord;
     gl_Position = vPosition;
 	// We will combine color and texture in the fragment shader
 	// It may actually be faster to just assign both of these anyway
@@ -56,6 +58,7 @@
 	uniform vec4 uPickingColor;
 	uniform bool uOffscreen; // rendering offscreen for pointer picking
 
+    varying vec4 vObjCoord; // skybox: send obj-space coord to fragment shader
     varying vec4 vPosition;
     varying vec4 vColor;
 	varying vec2 vTextureCoord;
@@ -70,7 +73,7 @@
 		else {
 			vec4 texColor = texture2D(uSampler, vTextureCoord) * uTextureWeight; // weighted texture
 			vec4 vertColor = vColor * (1.0 - uTextureWeight);  // weighted color
-			vec4 cubeColor = textureCube(uCubeSampler, vPosition.xyz / vPosition.w);
+			vec4 cubeColor = textureCube(uCubeSampler, vObjCoord.xyz / vObjCoord.w);
 			gl_FragColor = uSkyboxWeight * cubeColor + (1.0 - uSkyboxWeight) * (texColor + vertColor);
 			//gl_FragColor = texColor + vertColor; // combine texture + color
 			//gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); // white opaque
@@ -986,7 +989,7 @@
 	function handleKeyDown(e) {
 		e = e || window.event;
 		
-		deltaAngle = 10 * Math.PI / 180.0; // 10 degrees
+		deltaAngle = 5 * Math.PI / 180.0; // 5 degrees
 
 		if (e.keyCode == '37') {
 			// left arrow
