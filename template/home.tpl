@@ -17,6 +17,7 @@
 <script type="text/javascript" src="/js/buffer.js"></script>
 <script type="text/javascript" src="/js/lost_context.js"></script>
 <script type="text/javascript" src="/js/program.js"></script>
+<script type="text/javascript" src="/js/tex_program.js"></script>
 <script type="text/javascript" src="/js/skybox.js"></script>
 <script type="text/javascript" src="/js/cubemap.js"></script>
 

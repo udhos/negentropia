@@ -1,60 +1,59 @@
-function Program(vertexShaderURL, fragmentShaderURL) {
-	console.log("new program: vsURL=" + vertexShaderURL + " fsURL=" + fragmentShaderURL);
+function TexProgram(vertexShaderURL, fragmentShaderURL) {
+	console.log("new tex program: vsURL=" + vertexShaderURL + " fsURL=" + fragmentShaderURL);
 	this.modelList = [];
 	this.vsURL = vertexShaderURL;
 	this.fsURL = fragmentShaderURL;
 }
 
-function getAttr(p, attr) {
+function texGetAttr(p, attr) {
 	p[attr] = gl.getAttribLocation(p.shaderProgram, attr);
 	if (p[attr] < 0) {
-		console.log("program: failure querying attribute location: " + attr);
+		console.log("tex program: failure querying attribute location: " + attr);
 	}
 }
 
-function getUniform(p, uniform) {
+function texGetUniform(p, uniform) {
 	p[uniform] = gl.getUniformLocation(p.shaderProgram, uniform);
 	if (p[uniform] < 0) {
-		console.log("program: failure querying uniform location: " + uniform);
+		console.log("tex program: failure querying uniform location: " + uniform);
 	}
 }
 
-
-Program.prototype.fetch = function() {
+TexProgram.prototype.fetch = function() {
 	// Async request for shader program
 	var p = this; // don't put 'this' inside the closure below
-	fetchProgramFromURL(this.vsURL, this.fsURL, function (prog) { shaderProgramLoaded(p, prog); });
+	fetchProgramFromURL(this.vsURL, this.fsURL, function (prog) { texShaderProgramLoaded(p, prog); });
 }
 
-function shaderProgramLoaded(p, prog) {
+function texShaderProgramLoaded(p, prog) {
 
 	if (!('shaderProgram' in prog)) {
-		console.log("program: shader program load failure");
+		console.log("tex program: shader program load failure");
 		return;
 	}
 
-	console.log("program: shader program loaded");
+	console.log("tex program: shader program loaded");
 	p.shaderProgram = prog.shaderProgram;
 		
 	// save attribute location
-	getAttr(p, "a_Position");
+	texGetAttr(p, "a_Position");
 
 	// save uniform location
-	getUniform(p, "u_MV");
-	getUniform(p, "u_P");	
+	texGetUniform(p, "u_MV");
+	texGetUniform(p, "u_P");	
 }
 
-Program.prototype.addModel = function(m) {
+TexProgram.prototype.addModel = function(m) {
 	this.modelList.push(m);
 }
 
-Program.prototype.animate = function() {
+TexProgram.prototype.animate = function() {
 	for (var m in this.modelList) {
 		this.modelList[m].animate();
 	}
 }
 
-Program.prototype.drawModels = function() {
+TexProgram.prototype.drawModels = function() {
 	
     gl.useProgram(this.shaderProgram);
     gl.enableVertexAttribArray(this.a_Position);
@@ -73,7 +72,7 @@ Program.prototype.drawModels = function() {
     //gl.disableVertexAttribArray(this.a_Position); // needed ??
 }
 
-function Model(program, URL, reverse, mesh) {
+function TexModel(program, URL, reverse, mesh) {
 	this.program = program;
 	this.URL = URL;
 	this.instanceList = [];
@@ -85,31 +84,31 @@ function Model(program, URL, reverse, mesh) {
 	
 	// Async request for buffer data (mesh)
 	var m = this; // don't put 'this' inside the closure below
-	fetchBufferData(this.URL, function (buf) { modelBufferDataLoaded(m, buf); }, reverse);	
+	fetchBufferData(this.URL, function (buf) { texModelBufferDataLoaded(m, buf); }, reverse);	
 }
 
-function modelBufferDataLoaded(model, buf, reverse) {
+function texModelBufferDataLoaded(model, buf, reverse) {
 	model.buffer = buf;
 }
 
-Model.prototype.addInstance = function(i) {
+TexModel.prototype.addInstance = function(i) {
 	this.instanceList.push(i);
 }
 
-Model.prototype.animate = function() {
+TexModel.prototype.animate = function() {
 	for (var i in this.instanceList) {
 		this.instanceList[i].animate();
 	}
 }
 
-Model.prototype.drawInstances = function() {
+TexModel.prototype.drawInstances = function() {
 	for (var i in this.instanceList) {
 		this.instanceList[i].draw(this.program);
 	}
 }
 
-function Instance(model, center) {
-	this.model  = model;
+function TexInstance(model, center) {
+	this.model = model;
 	if (center == null) {
 		this.center = [0.0, 0.0, 0.0];
 	}
@@ -118,10 +117,10 @@ function Instance(model, center) {
 	}
 }
 
-Instance.prototype.animate = function() {
+TexInstance.prototype.animate = function() {
 }
 
-Instance.prototype.draw = function(program) {
+TexInstance.prototype.draw = function(program) {
 
 	var buf = this.model.buffer;
 	

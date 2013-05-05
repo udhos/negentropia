@@ -14,7 +14,7 @@ var neg = {
 	// camera tests
 	angleY:              0,
 	deltaY:              1,
-	eye:                 [0,0,10],
+	eye:                 [0,0,15],
     center:	             [0,0,0],
 	up:                  [0,1,0],
 	scale:               1
@@ -87,7 +87,7 @@ function boot() {
 
 function animate() {
 	
-	var camOrbitRadius = 10;
+	var camOrbitRadius = 15;
 	var degreesPerSec  = 30;
 	
 	neg.angleY += neg.deltaY * degreesPerSec / 60;
@@ -97,7 +97,7 @@ function animate() {
 	neg.eye = [ camOrbitRadius * Math.sin(radY), 0, camOrbitRadius * Math.cos(radY) ];
 	neg.center = [ 0, 0, 0 ];
 	
-	neg.scale = 10 * Math.abs(Math.sin(radY)) + 1;
+	neg.scale = 15 * Math.abs(Math.sin(radY)) + 1;
 
 	for (var p in neg.programList) {
 		neg.programList[p].animate();
@@ -158,7 +158,7 @@ function initSquareWhite() {
 	neg.programList.push(squareProgram);
 	var squareModel = new Model(squareProgram, "/mesh/square.json");
 	squareProgram.addModel(squareModel);
-	var squareInstance = new Instance(squareModel);
+	var squareInstance = new Instance(squareModel, [0.0, 0.0, 0.0]);
 	squareModel.addInstance(squareInstance);
 	return squareProgram;
 }
@@ -168,7 +168,7 @@ function initSquareBlue() {
 	neg.programList.push(squareProgram2);		
 	var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
 	squareProgram2.addModel(squareModel2);
-	var squareInstance2 = new Instance(squareModel2);
+	var squareInstance2 = new Instance(squareModel2, [0.0, 0.0, 0.0]);
 	squareModel2.addInstance(squareInstance2);
 	return squareProgram2;
 }
@@ -221,30 +221,69 @@ function onObjDone(opaque, response) {
 	}
 
 	console.log("onObjDone: fetch done: " + opaque.URL);
-
-	//console.log("onObjDone: response = " + response);
 	
 	var airship = new obj_loader.Mesh(response);
 	
 	console.log("onObjDone: parsing done: " + opaque.URL);
-	
-	//console.log("onObjDone: airship = " + airship);
-		
+			
 	var mod = new Model(opaque.program, null, false, airship);
 	opaque.program.addModel(mod);
-	var inst = new Instance(mod);
+	var inst = new Instance(mod, opaque.center);
 	mod.addInstance(inst);
 }
 
-function initShips() {
+function onTexObjDone(opaque, response) {
+
+	if (response == null) {
+		console.log("onTexObjDone: fetch FAILURE: " + opaque.URL);
+		return;
+	}
+
+	console.log("onTexObjDone: fetch done: " + opaque.URL);
+	
+	var airship = new obj_loader.Mesh(response);
+	
+	console.log("onTexObjDone: parsing done: " + opaque.URL);
+			
+	var mod = new TexModel(opaque.program, null, false, airship);
+	opaque.program.addModel(mod);
+	var inst = new TexInstance(mod, opaque.center);
+	mod.addInstance(inst);
+}
+
+function initAirship() {
 	var prog = new Program("/shader/simple_vs.txt", "/shader/simple_fs.txt");
 	neg.programList.push(prog);
 	prog.fetch();
 
 	var objURL = "/obj/airship.obj"; 
-	var opaque = { URL: objURL, program: prog };
-	console.log("initShips: loading OBJ from: " + objURL);
+	var opaque = {
+		URL: objURL,
+		program: prog,
+		center: [-5.0, 0.0, 0.0]
+	};
+	console.log("initAirship: loading OBJ from: " + objURL);
 	fetchFile(objURL, onObjDone, opaque)
+}
+
+function initAirshipTex() {
+	var prog = new TexProgram("/shader/simple_vs.txt", "/shader/simple_fs.txt");
+	neg.programList.push(prog);
+	prog.fetch();
+
+	var objURL = "/obj/airship.obj"; 
+	var opaque = {
+		URL: objURL,
+		program: prog,
+		center: [5.0, 0.0, 0.0]
+	};
+	console.log("initAirshipTex: loading OBJ from: " + objURL);
+	fetchFile(objURL, onTexObjDone, opaque)
+}
+
+function initShips() {
+	initAirship();
+	initAirshipTex();
 }
 
 function initContext() {

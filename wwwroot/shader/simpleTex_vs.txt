@@ -1,0 +1,10 @@
+attribute vec3 a_Position;
+attribute vec2 a_TextureCoord;
+uniform mat4 u_MV;         // model-view
+uniform mat4 u_P;          // projection
+varying vec2 v_TextureCoord;
+
+void main() {
+  v_TextureCoord = a_TextureCoord;
+  gl_Position = u_P * u_MV * vec4(a_Position, 1.0);
+}

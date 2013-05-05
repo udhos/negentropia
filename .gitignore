@@ -16,6 +16,7 @@
 !*.json
 !*.obj
 !*.mtl
+!docs
 !negentropia
 !negentropia/lib
 !negentropia/texture
