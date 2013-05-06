@@ -41,6 +41,10 @@ function texCreateBuffers(vertCoord, textCoord, indices) {
 
 	buf.vertexIndexLength = indices.length;
 	
+	console.log("texCreateBuffers: vertCoord: " + vertCoord.length);
+	console.log("texCreateBuffers: textCoord: " + textCoord.length);
+	console.log("texCreateBuffers: indices: " + indices.length);
+	
 	buf.vertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertCoord), gl.STATIC_DRAW);
