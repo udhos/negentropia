@@ -37,10 +37,13 @@ function texShaderProgramLoaded(p, prog) {
 		
 	// save attribute location
 	texGetAttr(p, "a_Position");
+	texGetAttr(p, "a_TextureCoord");
 
 	// save uniform location
 	texGetUniform(p, "u_MV");
 	texGetUniform(p, "u_P");	
+	texGetUniform(p, "u_Sampler");	
+	texGetUniform(p, "u_Color");	
 }
 
 TexProgram.prototype.addModel = function(m) {
@@ -57,9 +60,13 @@ TexProgram.prototype.drawModels = function() {
 	
     gl.useProgram(this.shaderProgram);
     gl.enableVertexAttribArray(this.a_Position);
+	gl.enableVertexAttribArray(this.a_TextureCoord);
 
 	// perspective projection
 	gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
+	
+	// fallback solid color for textured objects
+	gl.uniform4fv(this.u_Color, [1.0, 1.0, 1.0, 1.0]);
 
 	for (var m in this.modelList) {
 		this.modelList[m].drawInstances();
@@ -68,6 +75,7 @@ TexProgram.prototype.drawModels = function() {
 	// clean up
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+	gl.bindTexture(gl.TEXTURE_2D, null);
 	
     //gl.disableVertexAttribArray(this.a_Position); // needed ??
 }
@@ -78,7 +86,7 @@ function TexModel(program, URL, reverse, mesh) {
 	this.instanceList = [];
 	
 	if (mesh !== undefined) {
-		this.buffer = createBuffers(mesh.vertices, mesh.indices);
+		this.buffer = texCreateBuffers(mesh.vertices, mesh.textures, mesh.indices);
 		return;
 	}
 	
@@ -102,6 +110,7 @@ TexModel.prototype.animate = function() {
 }
 
 TexModel.prototype.drawInstances = function() {
+
 	for (var i in this.instanceList) {
 		this.instanceList[i].draw(this.program);
 	}
@@ -141,7 +150,11 @@ TexInstance.prototype.draw = function(program) {
 	
 	// vertex coord
     gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
-   	gl.vertexAttribPointer(program.aVertexPosition, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
+   	gl.vertexAttribPointer(program.a_Position, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
+	
+	// texture coord
+	gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexTextureCoordBuffer);
+	gl.vertexAttribPointer(program.a_TextureCoord, buf.vertexTextureCoordBufferItemSize, gl.FLOAT, false, 0, 0);
 	
 	// draw
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);

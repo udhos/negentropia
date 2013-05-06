@@ -29,6 +29,33 @@ function createBuffers(vertCoord, indices) {
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 	buf.vertexIndexBufferItemSize = 2; // size of Uint16Array
 	
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+	
+	return buf;
+}
+
+function texCreateBuffers(vertCoord, textCoord, indices) {
+	var buf = {};
+
+	buf.vertexIndexLength = indices.length;
+	
+	buf.vertexPositionBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertCoord), gl.STATIC_DRAW);
+    buf.vertexPositionBufferItemSize = 3; // coord x,y,z
+	
+	buf.vertexTextureCoordBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexTextureCoordBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textCoord), gl.STATIC_DRAW);
+	this.vertexTextureCoordBufferItemSize = 2; // coord s,t
+	
+	buf.vertexIndexBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+	buf.vertexIndexBufferItemSize = 2; // size of Uint16Array
+	
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 	

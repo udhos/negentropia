@@ -3,7 +3,7 @@
 var neg = {
 	debugLostContext:    true,
 	debugWebGL:          true,
-	drawOnce:            false,
+	drawOnce:            true,
 	cullBackface:        false,
 	fieldOfViewY:        45,
 	ongoingImageLoads:   [],
@@ -267,7 +267,7 @@ function initAirship() {
 }
 
 function initAirshipTex() {
-	var prog = new TexProgram("/shader/simple_vs.txt", "/shader/simple_fs.txt");
+	var prog = new TexProgram("/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
 	neg.programList.push(prog);
 	prog.fetch();
 

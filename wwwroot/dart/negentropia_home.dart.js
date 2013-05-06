@@ -1584,9 +1584,6 @@ $$.JSNumber = {"": "num/Interceptor;",
   get$hashCode: function(receiver) {
     return receiver & 0x1FFFFFFF;
   },
-  $negate: function(receiver) {
-    return -receiver;
-  },
   $add: function(receiver, other) {
     if (typeof other !== "number")
       throw $.wrapException($.ArgumentError$(other));
@@ -4812,7 +4809,7 @@ $$.Instance = {"": "Object;model,center,scale,MV",
     var t1, t2, t3, t4, t5, prog, gl;
     t1 = this.MV;
     $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
-    t2 = this.center._storage;
+    t2 = this.center.storage;
     t3 = t2.length;
     if (0 >= t3)
       throw $.ioore(0);
@@ -4829,7 +4826,7 @@ $$.Instance = {"": "Object;model,center,scale,MV",
     prog = t2.program;
     gl = prog.gl;
     t5 = $.getInterceptor$x(gl);
-    t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.get$storage());
+    t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.storage);
     t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
     t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
     t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
@@ -5134,7 +5131,7 @@ $$.ShaderProgram = {"": "Object;program@,gl<,a_Position?,u_MV?,u_P?,modelList",
     t2 = $.getInterceptor$x(t1);
     t2.useProgram$1(t1, this.program);
     t2.enableVertexAttribArray$1(t1, this.a_Position);
-    t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.get$storage());
+    t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.storage);
     $.JSArray_methods.forEach$1(this.modelList, new $.ShaderProgram_drawModels_anon(gameLoop, cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
@@ -5276,7 +5273,7 @@ $$.SkyboxProgram = {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,m
     t2.enableVertexAttribArray$1(t1, this.a_Position);
     t2.activeTexture$1(t1, 33984);
     t2.uniform1i$2(t1, this.u_Skybox, 0);
-    t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.get$storage());
+    t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.storage);
     $.JSArray_methods.forEach$1(this.modelList, new $.SkyboxProgram_drawModels_anon(gameLoop, cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
@@ -5350,7 +5347,7 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
     t1 = $.JSDouble_methods.abs$0(Math.sin(t1));
     t2 = this.MV;
     $.setViewMatrix(t2, cam.eye, cam.center, cam.up);
-    t3 = this.center._storage;
+    t3 = this.center.storage;
     t4 = t3.length;
     if (0 >= t4)
       throw $.ioore(0);
@@ -5367,7 +5364,7 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
     prog = t1.program;
     gl = prog.gl;
     t3 = $.getInterceptor$x(gl);
-    t3.uniformMatrix4fv$3(gl, prog.u_MV, false, t2.get$storage());
+    t3.uniformMatrix4fv$3(gl, prog.u_MV, false, t2.storage);
     t3.bindBuffer$2(gl, 34962, t1.vertexPositionBuffer);
     t3.vertexAttribPointer$6(gl, prog.a_Position, t1.vertexPositionBufferItemSize, 5126, false, 0, 0);
     t3.bindBuffer$2(gl, 34963, t1.vertexIndexBuffer);
@@ -6199,10 +6196,7 @@ $$.Stats = {"": "Object;_timer,_ms,_msMin,_msMax,_fps,_fpsMin,_fpsMax,_frames,_m
   }
 };
 
-$$.mat4 = {"": "Object;_storage<",
-  get$storage: function() {
-    return this._storage;
-  },
+$$.mat4 = {"": "Object;storage<",
   toString$0: function(_) {
     return "[0] " + $.S(this.getRow$1(0)) + "\n[1] " + $.S(this.getRow$1(1)) + "\n[2] " + $.S(this.getRow$1(2)) + "\n[3] " + $.S(this.getRow$1(3)) + "\n";
   },
@@ -6210,13 +6204,13 @@ $$.mat4 = {"": "Object;_storage<",
     return 4;
   },
   $index: function(_, i) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (i >>> 0 !== i || i >= t1.length)
       throw $.ioore(i);
     return t1[i];
   },
   $indexSet: function(_, i, v) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (i >>> 0 !== i || i >= t1.length)
       throw $.ioore(i);
     t1[i] = v;
@@ -6224,8 +6218,8 @@ $$.mat4 = {"": "Object;_storage<",
   getRow$1: function(row) {
     var r, t1, t2, t3, t4, t5;
     r = $.vec4$zero();
-    t1 = r._storage;
-    t2 = this._storage;
+    t1 = r.storage;
+    t2 = this.storage;
     t3 = 0 + row;
     t4 = t2.length;
     if (t3 < 0 || t3 >= t4)
@@ -6261,8 +6255,8 @@ $$.mat4 = {"": "Object;_storage<",
   _mul_scale$1: function(arg) {
     var r, t1, t2, t3;
     r = $.mat4$zero();
-    t1 = r._storage;
-    t2 = this._storage;
+    t1 = r.storage;
+    t2 = this.storage;
     if (15 >= t2.length)
       throw $.ioore(15);
     t3 = t2[15];
@@ -6289,13 +6283,13 @@ $$.mat4 = {"": "Object;_storage<",
   _mul_matrix$1: function(arg) {
     var r, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13;
     r = $.mat4$zero();
-    t1 = r._storage;
-    t2 = this._storage;
+    t1 = r.storage;
+    t2 = this.storage;
     t3 = t2.length;
     if (0 >= t3)
       throw $.ioore(0);
     t4 = t2[0];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     t6 = t5.length;
     if (0 >= t6)
       throw $.ioore(0);
@@ -6323,7 +6317,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(0);
     t1[0] = t4 * t7 + t8 * t9 + t10 * t11 + t12 * t5;
     t5 = t2[0];
-    t12 = arg.get$_storage();
+    t12 = arg.get$storage();
     t11 = t12.length;
     if (4 >= t11)
       throw $.ioore(4);
@@ -6344,7 +6338,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(4);
     t1[4] = t5 * t10 + t9 * t8 + t7 * t4 + t13 * t12;
     t12 = t2[0];
-    t13 = arg.get$_storage();
+    t13 = arg.get$storage();
     t4 = t13.length;
     if (8 >= t4)
       throw $.ioore(8);
@@ -6365,7 +6359,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(8);
     t1[8] = t12 * t7 + t8 * t9 + t10 * t5 + t11 * t13;
     t13 = t2[0];
-    t11 = arg.get$_storage();
+    t11 = arg.get$storage();
     t5 = t11.length;
     if (12 >= t5)
       throw $.ioore(12);
@@ -6386,7 +6380,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(12);
     t1[12] = t13 * t10 + t9 * t8 + t7 * t12 + t4 * t11;
     t11 = t2[1];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     t12 = t4.length;
     if (0 >= t12)
       throw $.ioore(0);
@@ -6406,7 +6400,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(3);
     t1[1] = t11 * t7 + t8 * t9 + t10 * t13 + t5 * t4[3];
     t4 = t2[1];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     t13 = t5.length;
     if (4 >= t13)
       throw $.ioore(4);
@@ -6424,7 +6418,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(7);
     t1[5] = t4 * t10 + t9 * t8 + t7 * t11 + t12 * t5[7];
     t5 = t2[1];
-    t12 = arg.get$_storage();
+    t12 = arg.get$storage();
     t11 = t12.length;
     if (8 >= t11)
       throw $.ioore(8);
@@ -6442,7 +6436,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(11);
     t1[9] = t5 * t7 + t8 * t9 + t10 * t4 + t13 * t12[11];
     t12 = t2[1];
-    t13 = arg.get$_storage();
+    t13 = arg.get$storage();
     t4 = t13.length;
     if (12 >= t4)
       throw $.ioore(12);
@@ -6463,7 +6457,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(13);
     t1[13] = t12 * t10 + t9 * t8 + t7 * t5 + t11 * t13;
     t13 = t2[2];
-    t11 = arg.get$_storage();
+    t11 = arg.get$storage();
     t5 = t11.length;
     if (0 >= t5)
       throw $.ioore(0);
@@ -6483,7 +6477,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(3);
     t1[2] = t13 * t7 + t8 * t9 + t10 * t12 + t4 * t11[3];
     t11 = t2[2];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     t12 = t4.length;
     if (4 >= t12)
       throw $.ioore(4);
@@ -6501,7 +6495,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(7);
     t1[6] = t11 * t10 + t9 * t8 + t7 * t13 + t5 * t4[7];
     t4 = t2[2];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     t13 = t5.length;
     if (8 >= t13)
       throw $.ioore(8);
@@ -6519,7 +6513,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(11);
     t1[10] = t4 * t7 + t8 * t9 + t10 * t11 + t12 * t5[11];
     t5 = t2[2];
-    t12 = arg.get$_storage();
+    t12 = arg.get$storage();
     t11 = t12.length;
     if (12 >= t11)
       throw $.ioore(12);
@@ -6540,7 +6534,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(14);
     t1[14] = t5 * t10 + t9 * t8 + t7 * t4 + t13 * t12;
     t12 = t2[3];
-    t13 = arg.get$_storage();
+    t13 = arg.get$storage();
     t4 = t13.length;
     if (0 >= t4)
       throw $.ioore(0);
@@ -6560,7 +6554,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(3);
     t1[3] = t12 * t7 + t8 * t9 + t10 * t5 + t3 * t13[3];
     t13 = t2[3];
-    t3 = arg.get$_storage();
+    t3 = arg.get$storage();
     t5 = t3.length;
     if (4 >= t5)
       throw $.ioore(4);
@@ -6578,7 +6572,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(7);
     t1[7] = t13 * t10 + t9 * t8 + t7 * t12 + t4 * t3[7];
     t3 = t2[3];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     t12 = t4.length;
     if (8 >= t12)
       throw $.ioore(8);
@@ -6596,7 +6590,7 @@ $$.mat4 = {"": "Object;_storage<",
       throw $.ioore(11);
     t1[11] = t3 * t7 + t8 * t9 + t10 * t13 + t5 * t4[11];
     t4 = t2[3];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     t13 = t5.length;
     if (12 >= t13)
       throw $.ioore(12);
@@ -6621,13 +6615,13 @@ $$.mat4 = {"": "Object;_storage<",
   _mul_vector$1: function(arg) {
     var r, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
     r = $.vec4$zero();
-    t1 = r._storage;
-    t2 = this._storage;
+    t1 = r.storage;
+    t2 = this.storage;
     t3 = t2.length;
     if (3 >= t3)
       throw $.ioore(3);
     t4 = t2[3];
-    t5 = arg._storage;
+    t5 = arg.storage;
     t6 = t5.length;
     if (0 >= t6)
       throw $.ioore(0);
@@ -6661,13 +6655,13 @@ $$.mat4 = {"": "Object;_storage<",
   _mul_vector3$1: function(arg) {
     var r, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12;
     r = $.vec3$zero();
-    t1 = r._storage;
-    t2 = this._storage;
+    t1 = r.storage;
+    t2 = this.storage;
     t3 = t2.length;
     if (0 >= t3)
       throw $.ioore(0);
     t4 = t2[0];
-    t5 = arg._storage;
+    t5 = arg.storage;
     t6 = t5.length;
     if (0 >= t6)
       throw $.ioore(0);
@@ -6731,13 +6725,13 @@ $$.mat4 = {"": "Object;_storage<",
   $add: function(_, arg) {
     var r, t1, t2, t3, t4, t5, t6;
     r = $.mat4$zero();
-    t1 = r._storage;
-    t2 = this._storage;
+    t1 = r.storage;
+    t2 = this.storage;
     t3 = t2.length;
     if (0 >= t3)
       throw $.ioore(0);
     t4 = t2[0];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (0 >= t5.length)
       throw $.ioore(0);
     t5 = t5[0];
@@ -6748,7 +6742,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (1 >= t3)
       throw $.ioore(1);
     t5 = t2[1];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (1 >= t4.length)
       throw $.ioore(1);
     t4 = t4[1];
@@ -6758,7 +6752,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (2 >= t3)
       throw $.ioore(2);
     t4 = t2[2];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (2 >= t5.length)
       throw $.ioore(2);
     t5 = t5[2];
@@ -6768,7 +6762,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (3 >= t3)
       throw $.ioore(3);
     t5 = t2[3];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (3 >= t4.length)
       throw $.ioore(3);
     t4 = t4[3];
@@ -6778,7 +6772,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (4 >= t3)
       throw $.ioore(4);
     t4 = t2[4];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (4 >= t5.length)
       throw $.ioore(4);
     t5 = t5[4];
@@ -6788,7 +6782,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (5 >= t3)
       throw $.ioore(5);
     t5 = t2[5];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (5 >= t4.length)
       throw $.ioore(5);
     t4 = t4[5];
@@ -6798,7 +6792,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (6 >= t3)
       throw $.ioore(6);
     t4 = t2[6];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (6 >= t5.length)
       throw $.ioore(6);
     t5 = t5[6];
@@ -6808,7 +6802,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (7 >= t3)
       throw $.ioore(7);
     t5 = t2[7];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (7 >= t4.length)
       throw $.ioore(7);
     t4 = t4[7];
@@ -6818,7 +6812,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (8 >= t3)
       throw $.ioore(8);
     t4 = t2[8];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (8 >= t5.length)
       throw $.ioore(8);
     t5 = t5[8];
@@ -6828,7 +6822,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (9 >= t3)
       throw $.ioore(9);
     t5 = t2[9];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (9 >= t4.length)
       throw $.ioore(9);
     t4 = t4[9];
@@ -6838,7 +6832,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (10 >= t3)
       throw $.ioore(10);
     t4 = t2[10];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (10 >= t5.length)
       throw $.ioore(10);
     t5 = t5[10];
@@ -6848,7 +6842,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (11 >= t3)
       throw $.ioore(11);
     t5 = t2[11];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (11 >= t4.length)
       throw $.ioore(11);
     t4 = t4[11];
@@ -6858,7 +6852,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (12 >= t3)
       throw $.ioore(12);
     t4 = t2[12];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (12 >= t5.length)
       throw $.ioore(12);
     t5 = t5[12];
@@ -6868,7 +6862,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (13 >= t3)
       throw $.ioore(13);
     t5 = t2[13];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (13 >= t4.length)
       throw $.ioore(13);
     t4 = t4[13];
@@ -6878,7 +6872,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (14 >= t3)
       throw $.ioore(14);
     t4 = t2[14];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (14 >= t5.length)
       throw $.ioore(14);
     t5 = t5[14];
@@ -6888,7 +6882,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (15 >= t3)
       throw $.ioore(15);
     t2 = t2[15];
-    t3 = arg.get$_storage();
+    t3 = arg.get$storage();
     if (15 >= t3.length)
       throw $.ioore(15);
     t3 = t3[15];
@@ -6900,13 +6894,13 @@ $$.mat4 = {"": "Object;_storage<",
   $sub: function(_, arg) {
     var r, t1, t2, t3, t4, t5, t6;
     r = $.mat4$zero();
-    t1 = r._storage;
-    t2 = this._storage;
+    t1 = r.storage;
+    t2 = this.storage;
     t3 = t2.length;
     if (0 >= t3)
       throw $.ioore(0);
     t4 = t2[0];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (0 >= t5.length)
       throw $.ioore(0);
     t5 = t5[0];
@@ -6917,7 +6911,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (1 >= t3)
       throw $.ioore(1);
     t5 = t2[1];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (1 >= t4.length)
       throw $.ioore(1);
     t4 = t4[1];
@@ -6927,7 +6921,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (2 >= t3)
       throw $.ioore(2);
     t4 = t2[2];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (2 >= t5.length)
       throw $.ioore(2);
     t5 = t5[2];
@@ -6937,7 +6931,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (3 >= t3)
       throw $.ioore(3);
     t5 = t2[3];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (3 >= t4.length)
       throw $.ioore(3);
     t4 = t4[3];
@@ -6947,7 +6941,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (4 >= t3)
       throw $.ioore(4);
     t4 = t2[4];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (4 >= t5.length)
       throw $.ioore(4);
     t5 = t5[4];
@@ -6957,7 +6951,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (5 >= t3)
       throw $.ioore(5);
     t5 = t2[5];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (5 >= t4.length)
       throw $.ioore(5);
     t4 = t4[5];
@@ -6967,7 +6961,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (6 >= t3)
       throw $.ioore(6);
     t4 = t2[6];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (6 >= t5.length)
       throw $.ioore(6);
     t5 = t5[6];
@@ -6977,7 +6971,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (7 >= t3)
       throw $.ioore(7);
     t5 = t2[7];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (7 >= t4.length)
       throw $.ioore(7);
     t4 = t4[7];
@@ -6987,7 +6981,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (8 >= t3)
       throw $.ioore(8);
     t4 = t2[8];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (8 >= t5.length)
       throw $.ioore(8);
     t5 = t5[8];
@@ -6997,7 +6991,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (9 >= t3)
       throw $.ioore(9);
     t5 = t2[9];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (9 >= t4.length)
       throw $.ioore(9);
     t4 = t4[9];
@@ -7007,7 +7001,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (10 >= t3)
       throw $.ioore(10);
     t4 = t2[10];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (10 >= t5.length)
       throw $.ioore(10);
     t5 = t5[10];
@@ -7017,7 +7011,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (11 >= t3)
       throw $.ioore(11);
     t5 = t2[11];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (11 >= t4.length)
       throw $.ioore(11);
     t4 = t4[11];
@@ -7027,7 +7021,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (12 >= t3)
       throw $.ioore(12);
     t4 = t2[12];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (12 >= t5.length)
       throw $.ioore(12);
     t5 = t5[12];
@@ -7037,7 +7031,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (13 >= t3)
       throw $.ioore(13);
     t5 = t2[13];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (13 >= t4.length)
       throw $.ioore(13);
     t4 = t4[13];
@@ -7047,7 +7041,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (14 >= t3)
       throw $.ioore(14);
     t4 = t2[14];
-    t5 = arg.get$_storage();
+    t5 = arg.get$storage();
     if (14 >= t5.length)
       throw $.ioore(14);
     t5 = t5[14];
@@ -7057,7 +7051,7 @@ $$.mat4 = {"": "Object;_storage<",
     if (15 >= t3)
       throw $.ioore(15);
     t2 = t2[15];
-    t3 = arg.get$_storage();
+    t3 = arg.get$storage();
     if (15 >= t3.length)
       throw $.ioore(15);
     t3 = t3[15];
@@ -7079,7 +7073,7 @@ $$.mat4 = {"": "Object;_storage<",
       ty = y;
       tx = x;
     }
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7136,7 +7130,7 @@ $$.mat4 = {"": "Object;_storage<",
       sz = $.JSNumber_methods.toDouble$0(z);
       sx = x;
     }
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7197,27 +7191,9 @@ $$.mat4 = {"": "Object;_storage<",
     t1[15] = t1[15] * sw;
     return this;
   },
-  $negate: function(_) {
-    var r, t1;
-    r = $.mat4$zero();
-    t1 = this._storage;
-    if (0 >= t1.length)
-      throw $.ioore(0);
-    r.$indexSet(r, 0, -t1[0]);
-    if (1 >= t1.length)
-      throw $.ioore(1);
-    r.$indexSet(r, 1, -t1[1]);
-    if (2 >= t1.length)
-      throw $.ioore(2);
-    r.$indexSet(r, 2, -t1[2]);
-    if (3 >= t1.length)
-      throw $.ioore(3);
-    r.$indexSet(r, 3, -t1[3]);
-    return r;
-  },
   setZero$0: function() {
     var t1, t2;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7271,7 +7247,7 @@ $$.mat4 = {"": "Object;_storage<",
   },
   setIdentity$0: function() {
     var t1, t2;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7325,7 +7301,7 @@ $$.mat4 = {"": "Object;_storage<",
   },
   transpose$0: function() {
     var t1, t2, temp;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (4 >= t2)
       throw $.ioore(4);
@@ -7359,117 +7335,117 @@ $$.mat4 = {"": "Object;_storage<",
   },
   add$1: function(_, o) {
     var t1, t2, t3, t4;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
     t3 = t1[0];
-    t4 = o.get$_storage();
+    t4 = o.get$storage();
     if (0 >= t4.length)
       throw $.ioore(0);
     t1[0] = t3 + t4[0];
     if (1 >= t2)
       throw $.ioore(1);
     t4 = t1[1];
-    t3 = o.get$_storage();
+    t3 = o.get$storage();
     if (1 >= t3.length)
       throw $.ioore(1);
     t1[1] = t4 + t3[1];
     if (2 >= t2)
       throw $.ioore(2);
     t3 = t1[2];
-    t4 = o.get$_storage();
+    t4 = o.get$storage();
     if (2 >= t4.length)
       throw $.ioore(2);
     t1[2] = t3 + t4[2];
     if (3 >= t2)
       throw $.ioore(3);
     t4 = t1[3];
-    t3 = o.get$_storage();
+    t3 = o.get$storage();
     if (3 >= t3.length)
       throw $.ioore(3);
     t1[3] = t4 + t3[3];
     if (4 >= t2)
       throw $.ioore(4);
     t3 = t1[4];
-    t4 = o.get$_storage();
+    t4 = o.get$storage();
     if (4 >= t4.length)
       throw $.ioore(4);
     t1[4] = t3 + t4[4];
     if (5 >= t2)
       throw $.ioore(5);
     t4 = t1[5];
-    t3 = o.get$_storage();
+    t3 = o.get$storage();
     if (5 >= t3.length)
       throw $.ioore(5);
     t1[5] = t4 + t3[5];
     if (6 >= t2)
       throw $.ioore(6);
     t3 = t1[6];
-    t4 = o.get$_storage();
+    t4 = o.get$storage();
     if (6 >= t4.length)
       throw $.ioore(6);
     t1[6] = t3 + t4[6];
     if (7 >= t2)
       throw $.ioore(7);
     t4 = t1[7];
-    t3 = o.get$_storage();
+    t3 = o.get$storage();
     if (7 >= t3.length)
       throw $.ioore(7);
     t1[7] = t4 + t3[7];
     if (8 >= t2)
       throw $.ioore(8);
     t3 = t1[8];
-    t4 = o.get$_storage();
+    t4 = o.get$storage();
     if (8 >= t4.length)
       throw $.ioore(8);
     t1[8] = t3 + t4[8];
     if (9 >= t2)
       throw $.ioore(9);
     t4 = t1[9];
-    t3 = o.get$_storage();
+    t3 = o.get$storage();
     if (9 >= t3.length)
       throw $.ioore(9);
     t1[9] = t4 + t3[9];
     if (10 >= t2)
       throw $.ioore(10);
     t3 = t1[10];
-    t4 = o.get$_storage();
+    t4 = o.get$storage();
     if (10 >= t4.length)
       throw $.ioore(10);
     t1[10] = t3 + t4[10];
     if (11 >= t2)
       throw $.ioore(11);
     t4 = t1[11];
-    t3 = o.get$_storage();
+    t3 = o.get$storage();
     if (11 >= t3.length)
       throw $.ioore(11);
     t1[11] = t4 + t3[11];
     if (12 >= t2)
       throw $.ioore(12);
     t3 = t1[12];
-    t4 = o.get$_storage();
+    t4 = o.get$storage();
     if (12 >= t4.length)
       throw $.ioore(12);
     t1[12] = t3 + t4[12];
     if (13 >= t2)
       throw $.ioore(13);
     t4 = t1[13];
-    t3 = o.get$_storage();
+    t3 = o.get$storage();
     if (13 >= t3.length)
       throw $.ioore(13);
     t1[13] = t4 + t3[13];
     if (14 >= t2)
       throw $.ioore(14);
     t3 = t1[14];
-    t4 = o.get$_storage();
+    t4 = o.get$storage();
     if (14 >= t4.length)
       throw $.ioore(14);
     t1[14] = t3 + t4[14];
     if (15 >= t2)
       throw $.ioore(15);
     t2 = t1[15];
-    t4 = o.get$_storage();
+    t4 = o.get$storage();
     if (15 >= t4.length)
       throw $.ioore(15);
     t1[15] = t2 + t4[15];
@@ -7480,169 +7456,10 @@ $$.mat4 = {"": "Object;_storage<",
   }
 };
 
-$$.vec2 = {"": "Object;_storage<",
-  setValues$2: function(x_, y_) {
-    var t1, t2;
-    t1 = this._storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t1[0] = x_;
-    if (1 >= t2)
-      throw $.ioore(1);
-    t1[1] = y_;
-    return this;
-  },
-  toString$0: function(_) {
-    var t1, t2;
-    t1 = this._storage;
-    if (0 >= t1.length)
-      throw $.ioore(0);
-    t2 = "[" + $.S(t1[0]) + ",";
-    if (1 >= t1.length)
-      throw $.ioore(1);
-    return t2 + $.S(t1[1]) + "]";
-  },
-  $negate: function(_) {
-    var t1, t2, t3;
-    t1 = this._storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t3 = t1[0];
-    if (1 >= t2)
-      throw $.ioore(1);
-    return $.vec2$(-t3, -t1[1]);
-  },
-  $sub: function(_, other) {
-    var t1, t2, t3, t4, t5, t6;
-    t1 = this._storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t3 = t1[0];
-    t4 = other.get$_storage();
-    t5 = t4.length;
-    if (0 >= t5)
-      throw $.ioore(0);
-    t6 = t4[0];
-    if (1 >= t2)
-      throw $.ioore(1);
-    t1 = t1[1];
-    if (1 >= t5)
-      throw $.ioore(1);
-    return $.vec2$(t3 - t6, t1 - t4[1]);
-  },
-  $add: function(_, other) {
-    var t1, t2, t3, t4, t5, t6;
-    t1 = this._storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t3 = t1[0];
-    t4 = other.get$_storage();
-    t5 = t4.length;
-    if (0 >= t5)
-      throw $.ioore(0);
-    t6 = t4[0];
-    if (1 >= t2)
-      throw $.ioore(1);
-    t1 = t1[1];
-    if (1 >= t5)
-      throw $.ioore(1);
-    return $.vec2$(t3 + t6, t1 + t4[1]);
-  },
-  $div: function(_, scale) {
-    var o, t1, t2, t3;
-    if (typeof scale !== "number")
-      throw $.iae(scale);
-    o = 1 / scale;
-    t1 = this._storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t3 = t1[0];
-    if (1 >= t2)
-      throw $.ioore(1);
-    return $.vec2$(t3 * o, t1[1] * o);
-  },
-  $mul: function(_, scale) {
-    var t1, t2, t3;
-    t1 = this._storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t3 = t1[0];
-    if (1 >= t2)
-      throw $.ioore(1);
-    return $.vec2$(t3 * scale, t1[1] * scale);
-  },
-  $index: function(_, i) {
-    var t1 = this._storage;
-    if (i >>> 0 !== i || i >= t1.length)
-      throw $.ioore(i);
-    return t1[i];
-  },
-  $indexSet: function(_, i, v) {
-    var t1 = this._storage;
-    if (i >>> 0 !== i || i >= t1.length)
-      throw $.ioore(i);
-    t1[i] = v;
-  },
-  get$length: function(_) {
-    var t1, t2, t3;
-    t1 = this._storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t3 = t1[0];
-    if (1 >= t2)
-      throw $.ioore(1);
-    t1 = t1[1];
-    return $.sqrt(t3 * t3 + t1 * t1);
-  },
-  add$1: function(_, arg) {
-    var t1, t2, t3, t4;
-    t1 = this._storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t3 = t1[0];
-    t4 = arg.get$_storage();
-    if (0 >= t4.length)
-      throw $.ioore(0);
-    t1[0] = t3 + t4[0];
-    if (1 >= t2)
-      throw $.ioore(1);
-    t2 = t1[1];
-    t4 = arg.get$_storage();
-    if (1 >= t4.length)
-      throw $.ioore(1);
-    t1[1] = t2 + t4[1];
-    return this;
-  },
-  get$x: function(_) {
-    var t1 = this._storage;
-    if (0 >= t1.length)
-      throw $.ioore(0);
-    return t1[0];
-  },
-  get$y: function(_) {
-    var t1 = this._storage;
-    if (1 >= t1.length)
-      throw $.ioore(1);
-    return t1[1];
-  },
-  vec2$2: function(x_, y_) {
-    this.setValues$2(x_, y_);
-  },
-  $isvec2: true
-};
-
-$$.vec3 = {"": "Object;_storage<",
+$$.vec3 = {"": "Object;storage<",
   setValues$3: function(x_, y_, z_) {
     var t1, t2;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7657,7 +7474,7 @@ $$.vec3 = {"": "Object;_storage<",
   },
   toString$0: function(_) {
     var t1, t2;
-    t1 = this._storage;
+    t1 = this.storage;
     if (0 >= t1.length)
       throw $.ioore(0);
     t2 = "[" + $.S(t1[0]) + ",";
@@ -7670,7 +7487,7 @@ $$.vec3 = {"": "Object;_storage<",
   },
   $negate: function(_) {
     var t1, t2, t3, t4;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7684,12 +7501,12 @@ $$.vec3 = {"": "Object;_storage<",
   },
   $sub: function(_, other) {
     var t1, t2, t3, t4, t5, t6, t7, t8;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
     t3 = t1[0];
-    t4 = other.get$_storage();
+    t4 = other.get$storage();
     t5 = t4.length;
     if (0 >= t5)
       throw $.ioore(0);
@@ -7709,12 +7526,12 @@ $$.vec3 = {"": "Object;_storage<",
   },
   $add: function(_, other) {
     var t1, t2, t3, t4, t5, t6, t7, t8;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
     t3 = t1[0];
-    t4 = other.get$_storage();
+    t4 = other.get$storage();
     t5 = t4.length;
     if (0 >= t5)
       throw $.ioore(0);
@@ -7737,7 +7554,7 @@ $$.vec3 = {"": "Object;_storage<",
     if (typeof scale !== "number")
       throw $.iae(scale);
     o = 1 / scale;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7751,7 +7568,7 @@ $$.vec3 = {"": "Object;_storage<",
   },
   $mul: function(_, scale) {
     var t1, t2, t3, t4;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7764,20 +7581,20 @@ $$.vec3 = {"": "Object;_storage<",
     return $.vec3$(t3 * scale, t4 * scale, t1[2] * scale);
   },
   $index: function(_, i) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (i >>> 0 !== i || i >= t1.length)
       throw $.ioore(i);
     return t1[i];
   },
   $indexSet: function(_, i, v) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (i >>> 0 !== i || i >= t1.length)
       throw $.ioore(i);
     t1[i] = v;
   },
   get$length: function(_) {
     var t1, t2, t3, t4;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7796,7 +7613,7 @@ $$.vec3 = {"": "Object;_storage<",
     if (l === 0)
       return this;
     l = 1 / l;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7811,7 +7628,7 @@ $$.vec3 = {"": "Object;_storage<",
   },
   cross$1: function(other) {
     var t1, t2, _x, _y, _z, ox, oy, oz;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7822,7 +7639,7 @@ $$.vec3 = {"": "Object;_storage<",
     if (2 >= t2)
       throw $.ioore(2);
     _z = t1[2];
-    t1 = other._storage;
+    t1 = other.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -7837,45 +7654,45 @@ $$.vec3 = {"": "Object;_storage<",
   },
   add$1: function(_, arg) {
     var t1, t2, t3, t4;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
     t3 = t1[0];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (0 >= t4.length)
       throw $.ioore(0);
     t1[0] = t3 + t4[0];
     if (1 >= t2)
       throw $.ioore(1);
     t4 = t1[1];
-    t3 = arg.get$_storage();
+    t3 = arg.get$storage();
     if (1 >= t3.length)
       throw $.ioore(1);
     t1[1] = t4 + t3[1];
     if (2 >= t2)
       throw $.ioore(2);
     t2 = t1[2];
-    t3 = arg.get$_storage();
+    t3 = arg.get$storage();
     if (2 >= t3.length)
       throw $.ioore(2);
     t1[2] = t2 + t3[2];
     return this;
   },
   get$x: function(_) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (0 >= t1.length)
       throw $.ioore(0);
     return t1[0];
   },
   get$y: function(_) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (1 >= t1.length)
       throw $.ioore(1);
     return t1[1];
   },
   get$z: function(_) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (2 >= t1.length)
       throw $.ioore(2);
     return t1[2];
@@ -7886,9 +7703,9 @@ $$.vec3 = {"": "Object;_storage<",
   $isvec3: true
 };
 
-$$.vec4 = {"": "Object;_storage<",
+$$.vec4 = {"": "Object;storage<",
   setValues$4: function(x_, y_, z_, w_) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (3 >= t1.length)
       throw $.ioore(3);
     t1[3] = w_;
@@ -7899,7 +7716,7 @@ $$.vec4 = {"": "Object;_storage<",
   },
   toString$0: function(_) {
     var t1, t2;
-    t1 = this._storage;
+    t1 = this.storage;
     if (0 >= t1.length)
       throw $.ioore(0);
     t2 = $.S(t1[0]) + ",";
@@ -7913,31 +7730,14 @@ $$.vec4 = {"": "Object;_storage<",
       throw $.ioore(3);
     return t2 + $.S(t1[3]);
   },
-  $negate: function(_) {
-    var t1, t2, t3, t4, t5;
-    t1 = this._storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t3 = t1[0];
-    if (1 >= t2)
-      throw $.ioore(1);
-    t4 = t1[1];
-    if (2 >= t2)
-      throw $.ioore(2);
-    t5 = t1[2];
-    if (3 >= t2)
-      throw $.ioore(3);
-    return $.vec4$(-t3, -t4, -t5, -t1[3]);
-  },
   $sub: function(_, other) {
     var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
     t3 = t1[0];
-    t4 = other.get$_storage();
+    t4 = other.get$storage();
     t5 = t4.length;
     if (0 >= t5)
       throw $.ioore(0);
@@ -7963,12 +7763,12 @@ $$.vec4 = {"": "Object;_storage<",
   },
   $add: function(_, other) {
     var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
     t3 = t1[0];
-    t4 = other.get$_storage();
+    t4 = other.get$storage();
     t5 = t4.length;
     if (0 >= t5)
       throw $.ioore(0);
@@ -7997,7 +7797,7 @@ $$.vec4 = {"": "Object;_storage<",
     if (typeof scale !== "number")
       throw $.iae(scale);
     o = 1 / scale;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -8014,7 +7814,7 @@ $$.vec4 = {"": "Object;_storage<",
   },
   $mul: function(_, scale) {
     var t1, t2, t3, t4, t5;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -8030,20 +7830,20 @@ $$.vec4 = {"": "Object;_storage<",
     return $.vec4$(t3 * scale, t4 * scale, t5 * scale, t1[3] * scale);
   },
   $index: function(_, i) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (i >>> 0 !== i || i >= t1.length)
       throw $.ioore(i);
     return t1[i];
   },
   $indexSet: function(_, i, v) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (i >>> 0 !== i || i >= t1.length)
       throw $.ioore(i);
     t1[i] = v;
   },
   get$length: function(_) {
     var t1, t2, t3, t4, t5;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
@@ -8061,58 +7861,58 @@ $$.vec4 = {"": "Object;_storage<",
   },
   add$1: function(_, arg) {
     var t1, t2, t3, t4;
-    t1 = this._storage;
+    t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
       throw $.ioore(0);
     t3 = t1[0];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (0 >= t4.length)
       throw $.ioore(0);
     t1[0] = t3 + t4[0];
     if (1 >= t2)
       throw $.ioore(1);
     t4 = t1[1];
-    t3 = arg.get$_storage();
+    t3 = arg.get$storage();
     if (1 >= t3.length)
       throw $.ioore(1);
     t1[1] = t4 + t3[1];
     if (2 >= t2)
       throw $.ioore(2);
     t3 = t1[2];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (2 >= t4.length)
       throw $.ioore(2);
     t1[2] = t3 + t4[2];
     if (3 >= t2)
       throw $.ioore(3);
     t2 = t1[3];
-    t4 = arg.get$_storage();
+    t4 = arg.get$storage();
     if (3 >= t4.length)
       throw $.ioore(3);
     t1[3] = t2 + t4[3];
     return this;
   },
   get$x: function(_) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (0 >= t1.length)
       throw $.ioore(0);
     return t1[0];
   },
   get$y: function(_) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (1 >= t1.length)
       throw $.ioore(1);
     return t1[1];
   },
   get$z: function(_) {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (2 >= t1.length)
       throw $.ioore(2);
     return t1[2];
   },
   get$w: function() {
-    var t1 = this._storage;
+    var t1 = this.storage;
     if (3 >= t1.length)
       throw $.ioore(3);
     return t1[3];
@@ -15843,7 +15643,7 @@ $.setViewMatrix = function(viewMatrix, cameraPosition, cameraFocusPosition, upDi
   y = z.cross$1(x);
   y.normalize$0(y);
   viewMatrix.setZero$0();
-  t1 = viewMatrix._storage;
+  t1 = viewMatrix.storage;
   if (15 >= t1.length)
     throw $.ioore(15);
   t1[15] = 1;
@@ -15901,26 +15701,26 @@ $.setViewMatrix = function(viewMatrix, cameraPosition, cameraFocusPosition, upDi
 };
 
 $.setPerspectiveMatrix = function(perspectiveMatrix, fovYRadians, aspectRatio, zNear, zFar) {
-  var height, t1, width;
-  height = $.$mul$n($.tan($.JSNumber_methods.toDouble$0(fovYRadians) * 0.5, null), $.JSInt_methods.toDouble$0(zNear));
-  t1 = $.getInterceptor$n(height);
-  width = t1.$mul(height, $.toDouble$0$n(aspectRatio));
-  $.setFrustumMatrix(perspectiveMatrix, $.$negate$n(width), width, t1.$negate(height), height, zNear, zFar);
+  var t1, height, width;
+  t1 = $.JSNumber_methods.toDouble$0(fovYRadians) * 0.5;
+  height = Math.tan(t1) * $.JSInt_methods.toDouble$0(zNear);
+  width = height * $.toDouble$0$n(aspectRatio);
+  $.setFrustumMatrix(perspectiveMatrix, -width, width, -height, height, zNear, zFar);
 };
 
 $.setFrustumMatrix = function(perspectiveMatrix, left, right, bottom, $top, near, far) {
   var two_near, right_minus_left, top_minus_bottom, far_minus_near, t1, t2;
-  left = $.toDouble$0$n(left);
-  right = $.toDouble$0$n(right);
-  bottom = $.toDouble$0$n(bottom);
-  $top = $.toDouble$0$n($top);
+  left = $.JSDouble_methods.toDouble$0(left);
+  right = $.JSDouble_methods.toDouble$0(right);
+  bottom = $.JSDouble_methods.toDouble$0(bottom);
+  $top = $.JSDouble_methods.toDouble$0($top);
   near = $.JSInt_methods.toDouble$0(near);
   far = $.JSInt_methods.toDouble$0(far);
   two_near = 2 * near;
   right_minus_left = right - left;
   top_minus_bottom = $top - bottom;
   far_minus_near = far - near;
-  t1 = perspectiveMatrix.setZero$0()._storage;
+  t1 = perspectiveMatrix.setZero$0().storage;
   t2 = t1.length;
   if (0 >= t2)
     throw $.ioore(0);
@@ -15943,67 +15743,6 @@ $.setFrustumMatrix = function(perspectiveMatrix, left, right, bottom, $top, near
   if (14 >= t2)
     throw $.ioore(14);
   t1[14] = -(two_near * far) / far_minus_near;
-};
-
-$.tan = function(arg, out) {
-  var t1, x, y, z, w;
-  if (typeof arg === "number")
-    return Math.tan(arg);
-  if (typeof arg === "object" && arg !== null && !!$.getInterceptor(arg).$isvec2) {
-    t1 = $.JSNumber_methods.get$x(arg);
-    x = Math.tan(t1);
-    t1 = $.JSNumber_methods.get$y(arg);
-    y = Math.tan(t1);
-    if (out == null)
-      out = $.vec2$(x, y);
-    else {
-      $.$indexSet$ax(out.get$storage(), 0, x);
-      $.$indexSet$ax(out.get$storage(), 1, y);
-    }
-    return out;
-  }
-  if (typeof arg === "object" && arg !== null && !!$.getInterceptor(arg).$isvec3) {
-    t1 = $.JSNumber_methods.get$x(arg);
-    x = Math.tan(t1);
-    t1 = $.JSNumber_methods.get$y(arg);
-    y = Math.tan(t1);
-    t1 = $.JSNumber_methods.get$z(arg);
-    z = Math.tan(t1);
-    if (out == null)
-      out = $.vec3$(x, y, z);
-    else {
-      $.$indexSet$ax(out.get$storage(), 0, x);
-      $.$indexSet$ax(out.get$storage(), 1, y);
-      $.$indexSet$ax(out.get$storage(), 2, z);
-    }
-    return out;
-  }
-  if (typeof arg === "object" && arg !== null && !!$.getInterceptor(arg).$isvec4) {
-    t1 = $.JSNumber_methods.get$x(arg);
-    x = Math.tan(t1);
-    t1 = $.JSNumber_methods.get$y(arg);
-    y = Math.tan(t1);
-    t1 = $.JSNumber_methods.get$z(arg);
-    z = Math.tan(t1);
-    t1 = arg.get$w();
-    w = Math.tan(t1);
-    if (out == null)
-      out = $.vec4$(x, y, z, w);
-    else {
-      $.$indexSet$ax(out.get$storage(), 0, x);
-      $.$indexSet$ax(out.get$storage(), 1, y);
-      $.$indexSet$ax(out.get$storage(), 2, z);
-      $.$indexSet$ax(out.get$storage(), 3, w);
-    }
-    return out;
-  }
-  throw $.wrapException($.ArgumentError$(arg));
-};
-
-$.vec2$ = function(x_, y_) {
-  var t1 = new $.vec2($.Float32List_Float32List(2));
-  t1.vec2$2(x_, y_);
-  return t1;
 };
 
 $.vec3$ = function(x_, y_, z_) {
@@ -16079,8 +15818,8 @@ $.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
 $.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
 $.Window_methods = $.Window.prototype;
-$.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
 $.EventStreamProvider_success = new $.EventStreamProvider("success");
+$.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
 $.Duration_0 = new $.Duration(0);
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.C_NullThrownError = new $.NullThrownError();
@@ -16185,11 +15924,6 @@ $.$mul$n = function(receiver, a0) {
   if (typeof receiver == "number" && typeof a0 == "number")
     return receiver * a0;
   return $.getInterceptor$n(receiver).$mul(receiver, a0);
-};
-$.$negate$n = function(receiver) {
-  if (typeof receiver == "number")
-    return -receiver;
-  return $.getInterceptor$n(receiver).$negate(receiver);
 };
 $.$shl$n = function(receiver, a0) {
   return $.getInterceptor$n(receiver).$shl(receiver, a0);

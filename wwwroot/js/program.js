@@ -142,7 +142,7 @@ Instance.prototype.draw = function(program) {
 	
 	// vertex coord
     gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
-   	gl.vertexAttribPointer(program.aVertexPosition, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
+   	gl.vertexAttribPointer(program.a_Position, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
 	
 	// draw
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
