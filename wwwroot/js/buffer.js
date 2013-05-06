@@ -51,7 +51,7 @@ function texCreateBuffers(vertCoord, textCoord, indices) {
     buf.vertexPositionBufferItemSize = 3; // coord x,y,z
 	
 	buf.vertexTextureCoordBuffer = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexTextureCoordBuffer);
+	gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexTextureCoordBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textCoord), gl.STATIC_DRAW);
 	this.vertexTextureCoordBufferItemSize = 2; // coord s,t
 	

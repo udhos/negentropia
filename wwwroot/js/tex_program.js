@@ -148,6 +148,12 @@ TexInstance.prototype.draw = function(program) {
 	// send model-view matrix uniform
 	gl.uniformMatrix4fv(program.u_MV, false, MV);
 	
+	// set texture sampler
+	var unit = 0;
+	gl.activeTexture(gl.TEXTURE0 + unit);
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.uniform1i(program.u_Sampler, unit);
+	
 	// vertex coord
     gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
    	gl.vertexAttribPointer(program.a_Position, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
