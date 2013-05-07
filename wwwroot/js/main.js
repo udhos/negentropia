@@ -3,7 +3,7 @@
 var neg = {
 	debugLostContext:    true,
 	debugWebGL:          true,
-	drawOnce:            true,
+	drawOnce:            false,
 	cullBackface:        false,
 	fieldOfViewY:        45,
 	ongoingImageLoads:   [],
@@ -232,6 +232,21 @@ function onObjDone(opaque, response) {
 	mod.addInstance(inst);
 }
 
+function initAirship() {
+	var prog = new Program("/shader/simple_vs.txt", "/shader/simple_fs.txt");
+	neg.programList.push(prog);
+	prog.fetch();
+
+	var objURL = "/obj/airship.obj";
+	var opaque = {
+		URL: objURL,
+		program: prog,
+		center: [-5.0, 0.0, 0.0]
+	};
+	console.log("initAirship: loading OBJ from: " + objURL);
+	fetchFile(objURL, onObjDone, opaque)
+}
+
 function onTexObjDone(opaque, response) {
 
 	if (response == null) {
@@ -247,23 +262,16 @@ function onTexObjDone(opaque, response) {
 			
 	var mod = new TexModel(opaque.program, null, false, airship);
 	opaque.program.addModel(mod);
+	
+	console.log("onTexObjDone: mod.buffer.vertexPositionBufferItemSize = " + mod.buffer.vertexPositionBufferItemSize);
+	console.log("onTexObjDone: mod.buffer.vertexTextureCoordBuffer = " + mod.buffer.vertexTextureCoordBuffer);
+	console.log("onTexObjDone: mod.buffer.vertexIndexBuffer = " + mod.buffer.vertexIndexBuffer);
+	
+	var tex = new Texture(neg.textureTable, 0, airship.indices.length, opaque.textureURL);
+	mod.addTexture(tex);
+	
 	var inst = new TexInstance(mod, opaque.center);
 	mod.addInstance(inst);
-}
-
-function initAirship() {
-	var prog = new Program("/shader/simple_vs.txt", "/shader/simple_fs.txt");
-	neg.programList.push(prog);
-	prog.fetch();
-
-	var objURL = "/obj/airship.obj"; 
-	var opaque = {
-		URL: objURL,
-		program: prog,
-		center: [-5.0, 0.0, 0.0]
-	};
-	console.log("initAirship: loading OBJ from: " + objURL);
-	fetchFile(objURL, onObjDone, opaque)
 }
 
 function initAirshipTex() {
@@ -272,8 +280,10 @@ function initAirshipTex() {
 	prog.fetch();
 
 	var objURL = "/obj/airship.obj"; 
+	var texURL = "/texture/airship_all_diffuse.jpg";
 	var opaque = {
 		URL: objURL,
+		textureURL: texURL,
 		program: prog,
 		center: [5.0, 0.0, 0.0]
 	};
@@ -283,13 +293,14 @@ function initAirshipTex() {
 
 function initShips() {
 	initAirship();
-	initAirshipTex();
+	//initAirshipTex();
 }
 
 function initContext() {
 	
-	neg.programList = []; // drop existing full programs
-	neg.shaderCache = {}; // drop existing compiled shaders
+	neg.programList  = []; // drop existing full programs
+	neg.shaderCache  = {}; // drop existing compiled shaders
+	neg.textureTable = {}; // drop existing textures
 
 	initSquares();
 	initShips();

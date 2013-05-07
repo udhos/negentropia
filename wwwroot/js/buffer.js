@@ -14,6 +14,16 @@ function fetchBufferData(bufferURL, callbackOnDone, reverse, rescale) {
 	fetchFile(bufferURL, processBufferData, opaque);
 }
 
+function texFetchBufferData(bufferURL, callbackOnDone, reverse, rescale) {
+	var opaque = {
+		URL: bufferURL,
+		onDone: callbackOnDone,
+		doReverse: reverse,
+		doRescale: rescale
+	};
+	fetchFile(bufferURL, texProcessBufferData, opaque);
+}
+
 function createBuffers(vertCoord, indices) {
 	var buf = {};
 
@@ -28,7 +38,6 @@ function createBuffers(vertCoord, indices) {
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
 	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
 	buf.vertexIndexBufferItemSize = 2; // size of Uint16Array
-	
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
@@ -62,7 +71,7 @@ function texCreateBuffers(vertCoord, textCoord, indices) {
 	
 	gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-	
+		
 	return buf;
 }
 
@@ -88,6 +97,34 @@ function processBufferData(opaque, response) {
 	}
 	
 	var buf = createBuffers(bufferData.vertCoord, bufferData.vertInd);
+	
+	console.log("buffer data: " + opaque.URL + ": ready: vertexIndexLength=" + buf.vertexIndexLength);
+	
+	opaque.onDone(buf);
+}
+
+function texProcessBufferData(opaque, response) {
+	console.log("buffer data: " + opaque.URL + ": [" + response + "]");
+	if (response == null) {
+		bufferAlert("buffer data: FATAL ERROR: could not load from URL: " + opaque.URL);
+		opaque.onDone(null);
+		return;
+	}
+	var bufferData = JSON.parse(response);
+	console.log("buffer data: " + opaque.URL + ": json parsed");
+	
+	if (opaque.doReverse) {
+		// reverse vertex indices
+		bufferData.vertInd = bufferData.vertInd.reverse();
+	}
+	
+	if (opaque.doRescale) {
+		for (var i in bufferData.vertCoord) {
+			bufferData.vertCoord[i] *= opaque.doRescale;
+		}
+	}
+	
+	var buf = texCreateBuffers(bufferData.vertCoord, bufferData.textCoord, bufferData.vertInd);
 	
 	console.log("buffer data: " + opaque.URL + ": ready: vertexIndexLength=" + buf.vertexIndexLength);
 	

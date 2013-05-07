@@ -5016,7 +5016,7 @@ $$.Obj = {"": "Object;vertCoord<,vertInd<",
 
 $$.parseLine = {"": "Closure;box_0,this_1,url_2",
   call$1: function(rawLine) {
-    var t1, line, v, t2, t3, f, i, vIndex, ti;
+    var t1, line, v, t2, t3, f, i, vIndex, ti, ni;
     t1 = this.box_0;
     t1.lineNum_0 = $.$add$ns(t1.lineNum_0, 1);
     line = $.trim$0$s(rawLine);
@@ -5071,10 +5071,9 @@ $$.parseLine = {"": "Closure;box_0,this_1,url_2",
             $.$sub$n($.Primitives_parseInt(ti, null, null), 1);
         }
         if (v.length > 2) {
-          t1.set$ni(v[2]);
-          t2 = t1.get$ni();
-          if (t2 != null && $.get$isEmpty$asx(t2) !== true)
-            $.$sub$n($.Primitives_parseInt(t1.get$ni(), null, null), 1);
+          ni = v[2];
+          if (ni != null && $.get$isEmpty$asx(ni) !== true)
+            $.$sub$n($.Primitives_parseInt(ni, null, null), 1);
         }
       }
       return;

@@ -84,19 +84,29 @@ function TexModel(program, URL, reverse, mesh) {
 	this.program = program;
 	this.URL = URL;
 	this.instanceList = [];
+	this.textureList = [];
 	
 	if (mesh !== undefined) {
 		this.buffer = texCreateBuffers(mesh.vertices, mesh.textures, mesh.indices);
+		
+		console.log("TexModel: this.buffer.vertexPositionBufferItemSize = " + this.buffer.vertexPositionBufferItemSize);
+		console.log("TexModel: this.buffer.vertexTextureCoordBuffer = " + this.buffer.vertexTextureCoordBuffer);
+		console.log("TexModel: this.buffer.vertexIndexBuffer = " + this.buffer.vertexIndexBuffer);
+
 		return;
 	}
 	
 	// Async request for buffer data (mesh)
 	var m = this; // don't put 'this' inside the closure below
-	fetchBufferData(this.URL, function (buf) { texModelBufferDataLoaded(m, buf); }, reverse);	
+	texFetchBufferData(this.URL, function (buf) { texModelBufferDataLoaded(m, buf); }, reverse);	
 }
 
-function texModelBufferDataLoaded(model, buf, reverse) {
+function texModelBufferDataLoaded(model, buf) {
 	model.buffer = buf;
+
+	console.log("texModelBufferDataLoaded: model.buffer.vertexPositionBufferItemSize = " + model.buffer.vertexPositionBufferItemSize);
+	console.log("texModelBufferDataLoaded: model.buffer.vertexTextureCoordBuffer = " + model.buffer.vertexTextureCoordBuffer);
+	console.log("texModelBufferDataLoaded: model.buffer.vertexIndexBuffer = " + model.buffer.vertexIndexBuffer);
 }
 
 TexModel.prototype.addInstance = function(i) {
@@ -111,9 +121,44 @@ TexModel.prototype.animate = function() {
 
 TexModel.prototype.drawInstances = function() {
 
+	var buf = this.buffer;
+	var program = this.program;
+
+	// vertex coord
+	gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
+	gl.vertexAttribPointer(program.a_Position, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
+	
+	// texture coord
+	gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexTextureCoordBuffer);
+	gl.vertexAttribPointer(program.a_TextureCoord, buf.vertexTextureCoordBufferItemSize, gl.FLOAT, false, 0, 0);
+		
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
+
 	for (var i in this.instanceList) {
-		this.instanceList[i].draw(this.program);
+		this.instanceList[i].draw(program);
 	}
+}
+
+TexModel.prototype.addTexture = function(texture) {
+	this.textureList.push(texture);
+}
+
+function textureLoadDone(textureTable, textureName, texture) {
+	textureTable[textureName] = texture;
+	
+	console.log("textureLoadDone: " + textureName);
+}
+
+function Texture(textureTable, indexOffset, indexNumber, textureName) {
+	this.indexOffset = indexOffset;
+	this.indexNumber = indexNumber;
+	this.textureName = textureName;
+	
+	if (textureName in textureTable) {
+		return;
+	}
+		
+	loadTexture(textureTable, this.textureName, textureLoadDone);
 }
 
 function TexInstance(model, center) {
@@ -147,22 +192,32 @@ TexInstance.prototype.draw = function(program) {
 	
 	// send model-view matrix uniform
 	gl.uniformMatrix4fv(program.u_MV, false, MV);
+
+	var texList = this.model.textureList;
+	for (var i in texList) {
+		var tex = texList[i];
+		var texture = neg.textureTable[tex.textureName];
 	
-	// set texture sampler
-	var unit = 0;
-	gl.activeTexture(gl.TEXTURE0 + unit);
-	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.uniform1i(program.u_Sampler, unit);
+		// set texture sampler
+		var unit = 0;
+		gl.activeTexture(gl.TEXTURE0 + unit);
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.uniform1i(program.u_Sampler, unit);
 	
-	// vertex coord
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
-   	gl.vertexAttribPointer(program.a_Position, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
+		/*
+		// vertex coord
+		gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
+		gl.vertexAttribPointer(program.a_Position, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
 	
-	// texture coord
-	gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexTextureCoordBuffer);
-	gl.vertexAttribPointer(program.a_TextureCoord, buf.vertexTextureCoordBufferItemSize, gl.FLOAT, false, 0, 0);
+		// texture coord
+		gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexTextureCoordBuffer);
+		gl.vertexAttribPointer(program.a_TextureCoord, buf.vertexTextureCoordBufferItemSize, gl.FLOAT, false, 0, 0);
+		*/
 	
-	// draw
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
-	gl.drawElements(gl.TRIANGLES, buf.vertexIndexLength, gl.UNSIGNED_SHORT, 0 * buf.vertexIndexBufferItemSize);
+		// draw
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
+		//gl.drawElements(gl.TRIANGLES, buf.vertexIndexLength, gl.UNSIGNED_SHORT, 0 * buf.vertexIndexBufferItemSize);
+		gl.drawElements(gl.TRIANGLES, tex.indexNumber, gl.UNSIGNED_SHORT, tex.indexOffset * buf.vertexIndexBufferItemSize);
+	}
 }
+

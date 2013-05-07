@@ -67,7 +67,7 @@ class Obj {
             }
           }
           if (v.length > 2) {
-            ni = v[2];
+            String ni = v[2];
             if (ni != null && !ni.isEmpty) {
               int nIndex = int.parse(ni) - 1;
             }

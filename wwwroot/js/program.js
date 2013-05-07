@@ -88,7 +88,7 @@ function Model(program, URL, reverse, mesh) {
 	fetchBufferData(this.URL, function (buf) { modelBufferDataLoaded(m, buf); }, reverse);	
 }
 
-function modelBufferDataLoaded(model, buf, reverse) {
+function modelBufferDataLoaded(model, buf) {
 	model.buffer = buf;
 }
 

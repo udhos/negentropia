@@ -20,6 +20,7 @@
 <script type="text/javascript" src="/js/tex_program.js"></script>
 <script type="text/javascript" src="/js/skybox.js"></script>
 <script type="text/javascript" src="/js/cubemap.js"></script>
+<script type="text/javascript" src="/js/texture.js"></script>
 
 <script type="text/javascript">
 
