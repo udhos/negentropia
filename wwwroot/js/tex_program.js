@@ -66,7 +66,8 @@ TexProgram.prototype.drawModels = function() {
 	gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
 	
 	// fallback solid color for textured objects
-	gl.uniform4fv(this.u_Color, [1.0, 1.0, 1.0, 1.0]);
+	var white = [1.0, 1.0, 1.0, 1.0]; // neutral color in multiplication
+	gl.uniform4fv(this.u_Color, white);
 
 	for (var m in this.modelList) {
 		this.modelList[m].drawInstances();
@@ -154,7 +155,10 @@ function Texture(textureTable, indexOffset, indexNumber, textureName) {
 	this.indexNumber = indexNumber;
 	this.textureName = textureName;
 	
+	console.log("new Texture: " + textureName);
+	
 	if (textureName in textureTable) {
+		console.log("textureTable HIT: " + textureTable);
 		return;
 	}
 		
@@ -199,7 +203,7 @@ TexInstance.prototype.draw = function(program) {
 		var texture = neg.textureTable[tex.textureName];
 	
 		// set texture sampler
-		var unit = 0;
+		var unit = 1;
 		gl.activeTexture(gl.TEXTURE0 + unit);
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.uniform1i(program.u_Sampler, unit);
@@ -215,7 +219,7 @@ TexInstance.prototype.draw = function(program) {
 		*/
 	
 		// draw
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
+		//gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
 		//gl.drawElements(gl.TRIANGLES, buf.vertexIndexLength, gl.UNSIGNED_SHORT, 0 * buf.vertexIndexBufferItemSize);
 		gl.drawElements(gl.TRIANGLES, tex.indexNumber, gl.UNSIGNED_SHORT, tex.indexOffset * buf.vertexIndexBufferItemSize);
 	}

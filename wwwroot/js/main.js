@@ -293,7 +293,7 @@ function initAirshipTex() {
 
 function initShips() {
 	initAirship();
-	//initAirshipTex();
+	initAirshipTex();
 }
 
 function initContext() {

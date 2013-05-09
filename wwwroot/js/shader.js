@@ -54,7 +54,7 @@ function tryLinkProgram(prog) {
 function processVertexShader(opaque, response) {
 	var prog = opaque;
 
-	console.log(prog.vsFile + ": vertex shader: [" + response + "]");
+	//console.log(prog.vsFile + ": vertex shader: [" + response + "]");
 	if (response == null) {
 		shaderAlert("vertex shader: FATAL ERROR: could not load");
 		shaderOngoingStop(prog);
@@ -67,7 +67,7 @@ function processVertexShader(opaque, response) {
 function processFragmentShader(opaque, response) {
 	var prog = opaque;
 	
-	console.log(prog.fsFile + ": fragment shader: [" + response + "]");
+	//console.log(prog.fsFile + ": fragment shader: [" + response + "]");
 	if (response == null) {
 		shaderAlert("fragment shader: FATAL ERROR: could not load");
 		shaderOngoingStop(prog);

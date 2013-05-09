@@ -62,7 +62,7 @@ function texCreateBuffers(vertCoord, textCoord, indices) {
 	buf.vertexTextureCoordBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexTextureCoordBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textCoord), gl.STATIC_DRAW);
-	this.vertexTextureCoordBufferItemSize = 2; // coord s,t
+	buf.vertexTextureCoordBufferItemSize = 2; // coord s,t
 	
 	buf.vertexIndexBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
@@ -76,7 +76,7 @@ function texCreateBuffers(vertCoord, textCoord, indices) {
 }
 
 function processBufferData(opaque, response) {
-	console.log("buffer data: " + opaque.URL + ": [" + response + "]");
+	//console.log("buffer data: " + opaque.URL + ": [" + response + "]");
 	if (response == null) {
 		bufferAlert("buffer data: FATAL ERROR: could not load from URL: " + opaque.URL);
 		opaque.onDone(null);

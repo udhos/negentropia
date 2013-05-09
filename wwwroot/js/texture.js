@@ -60,7 +60,10 @@ function loadTexture(textureTable, textureName, onTextureLoad) {
 	console.log("loadTexture: " + textureName);
 	
 	var texture = gl.createTexture();
-	if (texture != null) {
-		loadImageForTexture(textureTable, textureName, onTextureLoad, texture);
+	if (texture == null) {
+		console.log("loadTexture: failure creating texture: " + textureName);
+		return;
 	}
+	
+	loadImageForTexture(textureTable, textureName, onTextureLoad, texture);
 }
