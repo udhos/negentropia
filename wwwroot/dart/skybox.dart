@@ -114,10 +114,12 @@ class SkyboxModel extends Model {
 class SkyboxInstance extends Instance {
   
   SkyboxInstance(Model model, vec3 center, double scale) : super(model, center, scale);
-    
+  
   void draw(GameLoopHtml gameLoop, Camera cam) {
+    
+    double r = cam.getRad(gameLoop.renderInterpolationFactor);
 
-    double size = 10 * math.sin(cam.rad).abs() + 1;
+    double size = 15 * math.sin(r).abs() + 1;
 
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     

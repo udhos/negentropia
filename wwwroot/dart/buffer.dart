@@ -24,12 +24,6 @@ class Instance {
   Instance(Model this.model, vec3 this.center, double this.scale);
   
   void update(GameLoopHtml gameLoop) {
-    /*
-    double degreesPerSec = 60.0;
-    double angle = (gameLoop.gameTime * degreesPerSec) % 360.0; 
-    double rad = angle * math.PI / 180.0;
-    _size = 10 * math.sin(rad).abs() + 1;
-    */
   }
   
   void draw(GameLoopHtml gameLoop, Camera cam) {
@@ -147,7 +141,7 @@ class Model {
       
       Obj obj = new Obj.fromString(URL, response);
       
-      _createBuffers(gl, obj.vertCoord, obj.vertInd);
+      _createBuffers(gl, obj.vertCoord, obj.indices);
     }
     
     void handleError(Object err) {

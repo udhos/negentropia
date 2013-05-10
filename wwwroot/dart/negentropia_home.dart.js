@@ -4897,7 +4897,7 @@ $$.handleResponse0 = {"": "Closure;this_0,gl_1,URL_2",
     t1 = this.URL_2;
     $.Primitives_printString("Model.fromOBJ: fetched OBJ from URL: " + t1);
     obj = $.Obj$fromString(t1, response);
-    this.this_0._createBuffers$3(this.gl_1, obj.vertCoord, obj.vertInd);
+    this.this_0._createBuffers$3(this.gl_1, obj.vertCoord, obj.indices);
   }
 };
 
@@ -4920,18 +4920,14 @@ $$.Model_update_anon = {"": "Closure;gameLoop_0",
 };
 
 $$.Camera = {"": "Object;degreesPerSec,camOrbitRadius,eye,center,up,oldAngle,angle",
-  get$rad: function() {
-    return this._getRad$1(1);
-  },
-  _getRad$1: function(interpolation) {
+  getRad$1: function(interpolation) {
     var t1, t2;
     t1 = this.angle;
-    if (typeof t1 !== "number")
-      throw $.iae(t1);
     t2 = this.oldAngle;
+    t1 = $.$sub$n(t1, t2);
     if (typeof t2 !== "number")
       throw $.iae(t2);
-    return (interpolation * t1 + (1 - interpolation) * t2) * 3.141592653589793 / 180;
+    return (interpolation * t1 + t2) * 3.141592653589793 / 180;
   },
   update$1: function(_, gameLoop) {
     this.oldAngle = this.angle;
@@ -4939,7 +4935,7 @@ $$.Camera = {"": "Object;degreesPerSec,camOrbitRadius,eye,center,up,oldAngle,ang
   },
   render$1: function(gameLoop) {
     var r, t1, t2;
-    r = this._getRad$1(gameLoop.get$renderInterpolationFactor());
+    r = this.getRad$1(gameLoop.get$renderInterpolationFactor());
     t1 = this.eye;
     t2 = this.camOrbitRadius;
     t1.$indexSet(t1, 0, t2 * Math.sin(r));
@@ -5007,18 +5003,28 @@ $$.main_anon0 = {"": "Closure;gl_0",
   }
 };
 
-$$.Obj = {"": "Object;vertCoord<,vertInd<",
+$$.Obj = {"": "Object;vertCoord<,textCoord<,indices<",
   Obj$fromString$2: function(url, str, box_0) {
-    box_0.lineNum_0 = 0;
-    $.JSArray_methods.forEach$1($.split$1$s(str, "\n"), new $.anon(new $.parseLine(box_0, this, url)));
+    var indexTable, _vertCoord, _textCoord;
+    indexTable = $.Map_Map($.JSString, $.JSInt);
+    _vertCoord = $.List_List($, $.JSDouble);
+    $.setRuntimeTypeInfo(_vertCoord, [$.JSDouble]);
+    _textCoord = $.List_List($, $.JSInt);
+    $.setRuntimeTypeInfo(_textCoord, [$.JSInt]);
+    box_0.indexCounter_0 = 0;
+    box_0.lineNum_1 = 0;
+    $.JSArray_methods.forEach$1($.split$1$s(str, "\n"), new $.anon(new $.parseLine(box_0, this, url, indexTable, _vertCoord, _textCoord)));
+    $.print("Obj.fromString: indices.length = " + this.indices.length);
+    $.print("Obj.fromString: vertCoord.length = " + this.vertCoord.length);
+    $.print("Obj.fromString: textCoord.length = " + this.textCoord.length);
   }
 };
 
-$$.parseLine = {"": "Closure;box_0,this_1,url_2",
+$$.parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoord_4,_textCoord_5",
   call$1: function(rawLine) {
-    var t1, line, v, t2, t3, f, i, vIndex, ti, ni;
+    var t1, line, v, t2, t, f, t3, t4, t5, i, ind, index, vIndex, vOffset, t6, t7, ti, tIndex, tOffset, ni;
     t1 = this.box_0;
-    t1.lineNum_0 = $.$add$ns(t1.lineNum_0, 1);
+    t1.lineNum_1 = $.$add$ns(t1.lineNum_1, 1);
     line = $.trim$0$s(rawLine);
     if ($.JSString_methods.get$isEmpty(line))
       return;
@@ -5030,61 +5036,112 @@ $$.parseLine = {"": "Closure;box_0,this_1,url_2",
       v = line.split(" ");
       t2 = v.length;
       if (t2 !== 4) {
-        $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_0) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+        $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
         return;
       }
-      t1 = this.this_1;
-      t3 = t1.get$vertCoord();
+      t1 = this._vertCoord_4;
       if (1 >= t2)
         throw $.ioore(1);
-      t3.push($.Primitives_parseDouble(v[1], null));
-      t3 = t1.get$vertCoord();
+      t1.push($.Primitives_parseDouble(v[1], null));
       if (2 >= v.length)
         throw $.ioore(2);
-      t3.push($.Primitives_parseDouble(v[2], null));
-      t1 = t1.get$vertCoord();
+      t1.push($.Primitives_parseDouble(v[2], null));
       if (3 >= v.length)
         throw $.ioore(3);
       t1.push($.Primitives_parseDouble(v[3], null));
       return;
     }
-    if ($.JSString_methods.startsWith$1(line, "vt "))
+    if ($.JSString_methods.startsWith$1(line, "vt ")) {
+      t = line.split(" ");
+      t2 = t.length;
+      if (t2 !== 3) {
+        $.Primitives_printString("OBJ: wrong number of texture coordinates (" + (t2 - 1) + " != 2) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+        return;
+      }
+      t1 = this._textCoord_5;
+      if (1 >= t2)
+        throw $.ioore(1);
+      t1.push($.Primitives_parseDouble(t[1], null));
+      if (2 >= t.length)
+        throw $.ioore(2);
+      t1.push($.Primitives_parseDouble(t[2], null));
       return;
+    }
     if ($.JSString_methods.startsWith$1(line, "vn "))
       return;
     if ($.JSString_methods.startsWith$1(line, "f ")) {
       f = line.split(" ");
       t2 = f.length;
       if (t2 !== 4) {
-        $.Primitives_printString("OBJ: wrong number of face indices (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_0) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+        $.Primitives_printString("OBJ: wrong number of face indices (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
         return;
       }
-      for (t1 = this.this_1, i = 1; i < f.length; ++i) {
-        v = $.split$1$s(f[i], "/");
+      for (t2 = this.this_1, t3 = this.indexTable_3, t4 = this._textCoord_5, t5 = this._vertCoord_4, i = 1; i < f.length; ++i) {
+        ind = f[i];
+        index = t3.$index(t3, ind);
+        if (index != null) {
+          t2.get$indices().push(index);
+          continue;
+        }
+        v = $.split$1$s(ind, "/");
         if (0 >= v.length)
           throw $.ioore(0);
         vIndex = $.$sub$n($.Primitives_parseInt(v[0], null, null), 1);
-        t1.get$vertInd().push(vIndex);
+        if (typeof vIndex !== "number")
+          throw $.iae(vIndex);
+        vOffset = 3 * vIndex;
+        t6 = t2.get$vertCoord();
+        t7 = vOffset + 0;
+        if (t7 >>> 0 !== t7 || t7 >= t5.length)
+          throw $.ioore(t7);
+        t6.push(t5[t7]);
+        t7 = t2.get$vertCoord();
+        t6 = vOffset + 1;
+        if (t6 >>> 0 !== t6 || t6 >= t5.length)
+          throw $.ioore(t6);
+        t7.push(t5[t6]);
+        t6 = t2.get$vertCoord();
+        t7 = vOffset + 2;
+        if (t7 >>> 0 !== t7 || t7 >= t5.length)
+          throw $.ioore(t7);
+        t6.push(t5[t7]);
         if (v.length > 1) {
           ti = v[1];
-          if (ti != null && $.get$isEmpty$asx(ti) !== true)
-            $.$sub$n($.Primitives_parseInt(ti, null, null), 1);
+          if (ti != null && $.get$isEmpty$asx(ti) !== true) {
+            tIndex = $.$sub$n($.Primitives_parseInt(ti, null, null), 1);
+            if (typeof tIndex !== "number")
+              throw $.iae(tIndex);
+            tOffset = 2 * tIndex;
+            t6 = t2.get$textCoord();
+            t7 = tOffset + 0;
+            if (t7 >>> 0 !== t7 || t7 >= t4.length)
+              throw $.ioore(t7);
+            t6.push(t4[t7]);
+            t7 = t2.get$textCoord();
+            t6 = tOffset + 1;
+            if (t6 >>> 0 !== t6 || t6 >= t4.length)
+              throw $.ioore(t6);
+            t7.push(t4[t6]);
+          }
         }
         if (v.length > 2) {
           ni = v[2];
           if (ni != null && $.get$isEmpty$asx(ni) !== true)
             $.$sub$n($.Primitives_parseInt(ni, null, null), 1);
         }
+        t2.get$indices().push(t1.indexCounter_0);
+        t3.$indexSet(t3, ind, t1.indexCounter_0);
+        t1.indexCounter_0 = $.$add$ns(t1.indexCounter_0, 1);
       }
       return;
     }
-    $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_0) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+    $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
   }
 };
 
-$$.anon = {"": "Closure;parseLine_3",
+$$.anon = {"": "Closure;parseLine_6",
   call$1: function(line) {
-    return this.parseLine_3.call$1(line);
+    return this.parseLine_6.call$1(line);
   }
 };
 
@@ -5325,9 +5382,9 @@ $$.SkyboxModel_drawInstances_anon = {"": "Closure;gameLoop_0,cam_1",
 
 $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
   draw$2: function(gameLoop, cam) {
-    var t1, t2, t3, t4, t5, t6, s, prog, gl;
-    t1 = cam.get$rad();
-    t1 = $.JSDouble_methods.abs$0(Math.sin(t1));
+    var r, t1, t2, t3, t4, t5, t6, s, prog, gl;
+    r = cam.getRad$1(gameLoop.get$renderInterpolationFactor());
+    t1 = $.JSDouble_methods.abs$0(Math.sin(r));
     t2 = this.MV;
     $.setViewMatrix(t2, cam.eye, cam.center, cam.up);
     t3 = this.center.storage;
@@ -5341,7 +5398,7 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
     if (2 >= t4)
       throw $.ioore(2);
     t2.translate$3(t2, t5, t6, t3[2]);
-    s = this.scale * (10 * t1 + 1);
+    s = this.scale * (15 * t1 + 1);
     t2.scale$3(t2, s, s, s);
     t1 = this.model;
     prog = t1.program;
@@ -14789,6 +14846,10 @@ $.Object$ = function() {
   return new $.Object();
 };
 
+$.print = function(object) {
+  $.Primitives_printString(object);
+};
+
 $.Stopwatch$ = function() {
   return new $.Stopwatch(null, null);
 };
@@ -15294,7 +15355,7 @@ $.Model$fromOBJ = function(gl, program, URL) {
 };
 
 $.Camera$ = function(eye, center, up) {
-  return new $.Camera(30, 10, eye, center, up, null, null);
+  return new $.Camera(30, 15, eye, center, up, null, null);
 };
 
 $.Cookie__readCookie = function() {
@@ -15422,14 +15483,24 @@ $.initSkybox = function(gl) {
   skyboxModel.instanceList.push($.SkyboxInstance$(skyboxModel, $.vec3$(0, 0, 0), 1));
 };
 
-$.initShips = function(gl) {
+$.initAirship = function(gl) {
   var prog, airshipModel;
   prog = $.ShaderProgram$(gl);
   $.get$programList().push(prog);
   prog.fetch$3($.get$shaderCache(), "/shader/simple_vs.txt", "/shader/simple_fs.txt");
   airshipModel = $.Model$fromOBJ(gl, prog, "/obj/airship.obj");
   prog.modelList.push(airshipModel);
-  airshipModel.instanceList.push($.Instance$(airshipModel, $.vec3$(0, 0, 0), 1));
+  airshipModel.instanceList.push($.Instance$(airshipModel, $.vec3$(-5, 0, 0), 1));
+};
+
+$.initAirshipTex = function(gl) {
+  var prog, airshipModel;
+  prog = $.ShaderProgram$(gl);
+  $.get$programList().push(prog);
+  prog.fetch$3($.get$shaderCache(), "/shader/simple_vs.txt", "/shader/simple_fs.txt");
+  airshipModel = $.Model$fromOBJ(gl, prog, "/obj/airship.obj");
+  prog.modelList.push(airshipModel);
+  airshipModel.instanceList.push($.Instance$(airshipModel, $.vec3$(5, 0, 0), 1));
 };
 
 $.initContext = function(gl, gameLoop) {
@@ -15439,7 +15510,8 @@ $.initContext = function(gl, gameLoop) {
   $.programList = t1;
   $.shaderCache = $.HashMap$($.JSString, $.Shader);
   $.initSquares(gl);
-  $.initShips(gl);
+  $.initAirship(gl);
+  $.initAirshipTex(gl);
   $.initSkybox(gl);
   t1 = $.getInterceptor$x(gl);
   t1.clearColor$4(gl, 0.5, 0.5, 0.5, 1);
@@ -15502,14 +15574,16 @@ $.main = function() {
 };
 
 $.Obj$fromString = function(url, str) {
-  var t1, t2;
+  var t1, t2, t3;
   t1 = $.List_List($, $.JSDouble);
   $.setRuntimeTypeInfo(t1, [$.JSDouble]);
   t2 = $.List_List($, $.JSInt);
   $.setRuntimeTypeInfo(t2, [$.JSInt]);
-  t2 = new $.Obj(t1, t2);
-  t2.Obj$fromString$2(url, str, {});
-  return t2;
+  t3 = $.List_List($, $.JSInt);
+  $.setRuntimeTypeInfo(t3, [$.JSInt]);
+  t3 = new $.Obj(t1, t2, t3);
+  t3.Obj$fromString$2(url, str, {});
+  return t3;
 };
 
 $.ShaderProgram$ = function(gl) {
@@ -15803,17 +15877,18 @@ Isolate.makeConstantList = function(list) {
 };
 $.List_empty = Isolate.makeConstantList([]);
 $.EventStreamProvider_message = new $.EventStreamProvider("message");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.EventStreamProvider_webkitfullscreenchange = new $.EventStreamProvider("webkitfullscreenchange");
 $.JSNull_methods = $.JSNull.prototype;
 $.NodeList_methods = $.NodeList.prototype;
-$.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.JSDouble_methods = $.JSDouble.prototype;
-$.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
+$.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
-$.EventStreamProvider_open = new $.EventStreamProvider("open");
+$.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
 $.JSArray_methods = $.JSArray.prototype;
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
+$.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_success = new $.EventStreamProvider("success");
@@ -15822,9 +15897,8 @@ $.Duration_0 = new $.Duration(0);
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.C_NullThrownError = new $.NullThrownError();
 $.JSInt_methods = $.JSInt.prototype;
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
-$.EventStreamProvider_error = new $.EventStreamProvider("error");
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
+$.EventStreamProvider_error = new $.EventStreamProvider("error");
 $._WorkerStub_methods = $._WorkerStub.prototype;
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.HtmlDocument_methods = $.HtmlDocument.prototype;
@@ -16288,7 +16362,7 @@ Isolate.$lazy($, "pMatrix", "pMatrix", "get$pMatrix", function() {
   return $.mat4$zero();
 });
 Isolate.$lazy($, "cam", "cam", "get$cam", function() {
-  return $.Camera$($.vec3$(0, 0, 10), $.vec3$(0, 0, -1), $.vec3$(0, 1, 0));
+  return $.Camera$($.vec3$(0, 0, 15), $.vec3$(0, 0, -1), $.vec3$(0, 1, 0));
 });
 Isolate.$lazy($, "_buttonIds", "Keyboard__buttonIds", "get$Keyboard__buttonIds", function() {
   return [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 16, 17, 18, 32, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 192, 13, 38, 40, 37, 39];

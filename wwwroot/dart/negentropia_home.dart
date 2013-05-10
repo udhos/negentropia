@@ -24,7 +24,7 @@ List<ShaderProgram> programList = new List<ShaderProgram>();
 Map<String,Shader> shaderCache = new Map<String,Shader>();
 mat4 pMatrix = new mat4.zero();
 num fieldOfViewYRadians = 45 * math.PI / 180;
-Camera cam = new Camera(new vec3(0.0,0.0,10.0), new vec3(0.0,0.0,-1.0), new vec3(0.0,1.0,0.0));
+Camera cam = new Camera(new vec3(0.0,0.0,15.0), new vec3(0.0,0.0,-1.0), new vec3(0.0,1.0,0.0));
 bool backfaceCulling = false;
 
 // >0  : render at max rate then stop
@@ -155,14 +155,29 @@ void initSkybox(RenderingContext gl) {
   skyboxModel.addInstance(skyboxInstance);
 }
 
-void initShips(RenderingContext gl) {
+void initAirship(RenderingContext gl) {
   ShaderProgram prog = new ShaderProgram(gl);
   programList.add(prog);
   prog.fetch(shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
   Model airshipModel = new Model.fromOBJ(gl, prog, "/obj/airship.obj");
   prog.addModel(airshipModel);
-  Instance airshipInstance = new Instance(airshipModel, new vec3(0.0, 0.0, 0.0), 1.0);
+  Instance airshipInstance = new Instance(airshipModel, new vec3(-5.0, 0.0, 0.0), 1.0);
+  airshipModel.addInstance(airshipInstance);  
+}
+
+void initAirshipTex(RenderingContext gl) {
+  ShaderProgram prog = new ShaderProgram(gl);
+  programList.add(prog);
+  prog.fetch(shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
+  Model airshipModel = new Model.fromOBJ(gl, prog, "/obj/airship.obj");
+  prog.addModel(airshipModel);
+  Instance airshipInstance = new Instance(airshipModel, new vec3(5.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
+}
+
+void initShips(RenderingContext gl) {
+  initAirship(gl);
+  initAirshipTex(gl);
 }
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
