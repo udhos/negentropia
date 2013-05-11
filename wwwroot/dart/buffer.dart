@@ -58,28 +58,31 @@ class Model {
   List<Instance> instanceList = new List<Instance>();
   ShaderProgram program; // parent program
   
-  void _createBuffers(RenderingContext gl, List<num> vertCoord, List<int> vertInd) {
-    this.vertexPositionBuffer = gl.createBuffer();
+  void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
+        
+    vertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, this.vertexPositionBuffer);
     gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
-    this.vertexPositionBufferItemSize = 3; // coord x,y,z
+    vertexPositionBufferItemSize = 3; // coord x,y,z
     
-    this.vertexIndexBuffer = gl.createBuffer();
+    vertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
-    gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(vertInd), RenderingContext.STATIC_DRAW);
-    this.vertexIndexBufferItemSize = 2; // size of Uint16Array
+    gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
+    vertexIndexBufferItemSize = 2; // size of Uint16Array
     
-    this.vertexIndexLength = vertInd.length;
+    vertexIndexLength = indices.length;
     
-    print("Model: vertex index length: ${this.vertexIndexLength}");
+    print("Model._createBuffers: vertex index length: $vertexIndexLength");
     
     // clean-up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
   }
   
+  Model();
+  
   Model.fromLists(RenderingContext gl, ShaderProgram this.program, List<num> vertCoord, List<int> vertInd) {
-    _createBuffers(gl, vertCoord, vertInd);
+    _createBuffers(gl, vertInd, vertCoord, null, null);
   }
   
   Model.fromJson(RenderingContext gl, ShaderProgram this.program, String URL) {
@@ -107,7 +110,7 @@ class Model {
     */
 
     void handleResponse(String response) {
-      print("Model.fromJson: fetched JSON from URL: $URL: [$response]");
+      //print("Model.fromJson: fetched JSON from URL: $URL: [$response]");
       Map m;
       try {
         m = parse(response);
@@ -116,16 +119,16 @@ class Model {
         print("Model.fromJson: failure parsing JSON: $e");
         return;
       }
-      print("Model.fromJson: JSON parsed: [$m]");
+      //print("Model.fromJson: JSON parsed: [$m]");
       
-      List<num> vertCoord = m['vertCoord'];
-      List<int> vertInd = m['vertInd'];
+      List<int> indices = m['vertInd'];
+      List<double> vertCoord = m['vertCoord'];
 
-      _createBuffers(gl, vertCoord, vertInd);
+      _createBuffers(gl, indices, vertCoord, null, null);
     }
     
     void handleError(Object err) {
-      print("Model.fromURL: failure fetching JSON from URL: $URL: $err");
+      print("Model.fromJson: failure fetching JSON from URL: $URL: $err");
     }
 
     HttpRequest.getString(URL)
@@ -134,16 +137,15 @@ class Model {
   }
 
   Model.fromOBJ(RenderingContext gl, ShaderProgram this.program, String URL) {
-    
+
     void handleResponse(String response) {
-      //print("Model.fromOBJ: fetched OBJ from URL: $URL: [$response]");
       print("Model.fromOBJ: fetched OBJ from URL: $URL");
       
       Obj obj = new Obj.fromString(URL, response);
       
-      _createBuffers(gl, obj.vertCoord, obj.indices);
+      _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
     }
-    
+
     void handleError(Object err) {
       print("Model.fromOBJ: failure fetching OBJ from URL: $URL: $err");
     }

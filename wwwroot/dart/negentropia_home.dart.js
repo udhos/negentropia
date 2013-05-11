@@ -4536,38 +4536,38 @@ $$._JsonStringifier_stringifyJsonValue_anon = {"": "Closure;box_0,this_1",
   }
 };
 
-$$._ListRange = {"": "IterableBase;_liblib5$_source,_liblib5$_offset,_liblib5$_length",
+$$._ListRange = {"": "IterableBase;_liblib6$_source,_liblib6$_offset,_liblib6$_length",
   get$iterator: function(_) {
     var t1, t2;
-    t1 = this._liblib5$_offset;
-    t2 = this._liblib5$_length;
+    t1 = this._liblib6$_offset;
+    t2 = this._liblib6$_length;
     if (typeof t2 !== "number")
       throw $.iae(t2);
-    return $._ListRangeIteratorImpl$(this._liblib5$_source, t1, t1 + t2);
+    return $._ListRangeIteratorImpl$(this._liblib6$_source, t1, t1 + t2);
   },
   get$length: function(_) {
-    return this._liblib5$_length;
+    return this._liblib6$_length;
   },
   _ListRange$3: function(source, offset, $length) {
     var t1, t2, t3;
-    t1 = this._liblib5$_offset;
-    if (t1 < 0 || t1 > this._liblib5$_source.length)
+    t1 = this._liblib6$_offset;
+    if (t1 < 0 || t1 > this._liblib6$_source.length)
       throw $.wrapException($.RangeError$value(t1));
-    t2 = this._liblib5$_length;
+    t2 = this._liblib6$_length;
     if (t2 != null && $.$lt$n(t2, 0))
       throw $.wrapException($.RangeError$value(t2));
     t3 = $.getInterceptor$ns(t2);
-    if (t3.$add(t2, t1) > this._liblib5$_source.length)
+    if (t3.$add(t2, t1) > this._liblib6$_source.length)
       throw $.wrapException($.RangeError$value(t3.$add(t2, t1)));
   },
   $asIterable: function() { return [null]; }
 };
 
-$$._ListRangeIteratorImpl = {"": "Object;_liblib5$_source,_liblib5$_offset,_liblib5$_end",
+$$._ListRangeIteratorImpl = {"": "Object;_liblib6$_source,_liblib6$_offset,_liblib6$_end",
   get$current: function() {
     var t1, t2;
-    t1 = this._liblib5$_source;
-    t2 = this._liblib5$_offset;
+    t1 = this._liblib6$_source;
+    t2 = this._liblib6$_offset;
     if (t2 !== (t2 | 0))
       return this.get$current$bailout(1, t1, t2);
     if (t2 < 0 || t2 >= t1.length)
@@ -4580,19 +4580,19 @@ $$._ListRangeIteratorImpl = {"": "Object;_liblib5$_source,_liblib5$_offset,_libl
     return t1[t2];
   },
   moveNext$0: function() {
-    var t1 = this._liblib5$_offset + 1;
-    this._liblib5$_offset = t1;
-    return t1 < this._liblib5$_end;
+    var t1 = this._liblib6$_offset + 1;
+    this._liblib6$_offset = t1;
+    return t1 < this._liblib6$_end;
   },
   get$remaining: function() {
-    return this._liblib5$_end - this._liblib5$_offset - 1;
+    return this._liblib6$_end - this._liblib6$_offset - 1;
   },
   skip$1: function(_, count) {
-    this._liblib5$_offset = this._liblib5$_offset + count;
+    this._liblib6$_offset = this._liblib6$_offset + count;
   }
 };
 
-$$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib5$_current",
+$$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6$_current",
   decodeRest$0: function() {
     var codepoints, t1, i, i0, t2, truncCodepoints;
     codepoints = $.List_List(this.utf8EncodedBytesIterator.get$remaining(), $.JSInt);
@@ -4614,28 +4614,28 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
     }
   },
   get$current: function() {
-    return this._liblib5$_current;
+    return this._liblib6$_current;
   },
   moveNext$0: function() {
     var t1, t2, t3, value, additionalBytes, j, nextValue, validSequence, nonOverlong, inRange;
-    this._liblib5$_current = null;
+    this._liblib6$_current = null;
     t1 = this.utf8EncodedBytesIterator;
-    t2 = t1._liblib5$_offset + 1;
-    t1._liblib5$_offset = t2;
-    t3 = t1._liblib5$_end;
+    t2 = t1._liblib6$_offset + 1;
+    t1._liblib6$_offset = t2;
+    t3 = t1._liblib6$_end;
     if (!(t2 < t3))
       return false;
     value = t1.get$current();
     if (typeof value !== "number")
       return this.moveNext$0$bailout(1, t1, value, t3);
     if (value < 0) {
-      this._liblib5$_current = this.replacementCodepoint;
+      this._liblib6$_current = this.replacementCodepoint;
       return true;
     } else if (value <= 127) {
-      this._liblib5$_current = value;
+      this._liblib6$_current = value;
       return true;
     } else if (value < 192) {
-      this._liblib5$_current = this.replacementCodepoint;
+      this._liblib6$_current = this.replacementCodepoint;
       return true;
     } else if (value < 224) {
       value -= 192;
@@ -4653,7 +4653,7 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
       if (value < 254)
         value -= 252;
       else {
-        this._liblib5$_current = this.replacementCodepoint;
+        this._liblib6$_current = this.replacementCodepoint;
         return true;
       }
       additionalBytes = 5;
@@ -4661,8 +4661,8 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
     j = 0;
     while (true) {
       if (j < additionalBytes) {
-        t2 = t1._liblib5$_offset + 1;
-        t1._liblib5$_offset = t2;
+        t2 = t1._liblib6$_offset + 1;
+        t1._liblib6$_offset = t2;
         t2 = t2 < t3;
       } else
         t2 = false;
@@ -4675,7 +4675,7 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
         value = (value << 6 | nextValue & 63) >>> 0;
       else {
         if (nextValue >= 192)
-          t1._liblib5$_offset = t1._liblib5$_offset - 1;
+          t1._liblib6$_offset = t1._liblib6$_offset - 1;
         break;
       }
       ++j;
@@ -4694,21 +4694,21 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
       nonOverlong = true;
     inRange = value <= 1114111;
     if (validSequence && nonOverlong && inRange) {
-      this._liblib5$_current = value;
+      this._liblib6$_current = value;
       return true;
     } else {
-      this._liblib5$_current = this.replacementCodepoint;
+      this._liblib6$_current = this.replacementCodepoint;
       return true;
     }
   },
   moveNext$0$bailout: function(state0, t1, value, t3, nextValue, additionalBytes, j) {
     switch (state0) {
       case 0:
-        this._liblib5$_current = null;
+        this._liblib6$_current = null;
         t1 = this.utf8EncodedBytesIterator;
-        t2 = t1._liblib5$_offset + 1;
-        t1._liblib5$_offset = t2;
-        t3 = t1._liblib5$_end;
+        t2 = t1._liblib6$_offset + 1;
+        t1._liblib6$_offset = t2;
+        t3 = t1._liblib6$_end;
         if (!(t2 < t3))
           return false;
         value = t1.get$current();
@@ -4716,13 +4716,13 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
         state0 = 0;
         t2 = $.getInterceptor$n(value);
         if (t2.$lt(value, 0)) {
-          this._liblib5$_current = this.replacementCodepoint;
+          this._liblib6$_current = this.replacementCodepoint;
           return true;
         } else if (t2.$le(value, 127)) {
-          this._liblib5$_current = value;
+          this._liblib6$_current = value;
           return true;
         } else if (t2.$lt(value, 192)) {
-          this._liblib5$_current = this.replacementCodepoint;
+          this._liblib6$_current = this.replacementCodepoint;
           return true;
         } else if (t2.$lt(value, 224)) {
           value = t2.$sub(value, 192);
@@ -4740,7 +4740,7 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
           if (t2.$lt(value, 254))
             value = t2.$sub(value, 252);
           else {
-            this._liblib5$_current = this.replacementCodepoint;
+            this._liblib6$_current = this.replacementCodepoint;
             return true;
           }
           additionalBytes = 5;
@@ -4753,8 +4753,8 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
             switch (state0) {
               case 0:
                 if (j < additionalBytes) {
-                  t2 = t1._liblib5$_offset + 1;
-                  t1._liblib5$_offset = t2;
+                  t2 = t1._liblib6$_offset + 1;
+                  t1._liblib6$_offset = t2;
                   t2 = t2 < t3;
                 } else
                   t2 = false;
@@ -4768,7 +4768,7 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
                   value = ($.$shl$n(value, 6) | t2.$and(nextValue, 63)) >>> 0;
                 else {
                   if (t2.$ge(nextValue, 192))
-                    t1._liblib5$_offset = t1._liblib5$_offset - 1;
+                    t1._liblib6$_offset = t1._liblib6$_offset - 1;
                   break L0;
                 }
                 ++j;
@@ -4788,17 +4788,17 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
           nonOverlong = true;
         inRange = $.$le$n(value, 1114111);
         if (validSequence && nonOverlong && inRange) {
-          this._liblib5$_current = value;
+          this._liblib6$_current = value;
           return true;
         } else {
-          this._liblib5$_current = this.replacementCodepoint;
+          this._liblib6$_current = this.replacementCodepoint;
           return true;
         }
     }
   }
 };
 
-$$.Instance = {"": "Object;model,center,scale,MV",
+$$.Instance = {"": "Object;model>,center,scale,MV",
   update$1: function(_, gameLoop) {
   },
   draw$2: function(gameLoop, cam) {
@@ -4834,8 +4834,8 @@ $$.Instance = {"": "Object;model,center,scale,MV",
   }
 };
 
-$$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program@",
-  _createBuffers$3: function(gl, vertCoord, vertInd) {
+$$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize<,vertexIndexLength,instanceList,program@",
+  _createBuffers$5: function(gl, indices, vertCoord, textCoord, normCoord) {
     var t1 = $.getInterceptor$x(gl);
     this.vertexPositionBuffer = t1.createBuffer$0(gl);
     t1.bindBuffer$2(gl, 34962, this.vertexPositionBuffer);
@@ -4843,10 +4843,10 @@ $$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBuf
     this.vertexPositionBufferItemSize = 3;
     this.vertexIndexBuffer = t1.createBuffer$0(gl);
     t1.bindBuffer$2(gl, 34963, this.vertexIndexBuffer);
-    t1.bufferData$3(gl, 34963, new Uint16Array(vertInd), 35044);
+    t1.bufferData$3(gl, 34963, new Uint16Array(indices), 35044);
     this.vertexIndexBufferItemSize = 2;
-    this.vertexIndexLength = $.get$length$asx(vertInd);
-    $.Primitives_printString("Model: vertex index length: " + $.S(this.vertexIndexLength));
+    this.vertexIndexLength = $.get$length$asx(indices);
+    $.Primitives_printString("Model._createBuffers: vertex index length: " + $.S(this.vertexIndexLength));
     t1.bindBuffer$2(gl, 34962, null);
     t1.bindBuffer$2(gl, 34963, null);
   },
@@ -4857,17 +4857,16 @@ $$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBuf
     $.JSArray_methods.forEach$1(this.instanceList, new $.Model_update_anon(gameLoop));
   },
   Model$fromOBJ$3: function(gl, program, URL) {
-    $.HttpRequest_getString(URL, null, null).then$1(new $.handleResponse0(this, gl, URL)).catchError$1(new $.handleError0(URL));
+    $.HttpRequest_getString(URL, null, null).then$1(new $.handleResponse1(this, gl, URL)).catchError$1(new $.handleError1(URL));
   },
   Model$fromJson$3: function(gl, program, URL) {
-    $.HttpRequest_getString(URL, null, null).then$1(new $.handleResponse(this, gl, URL)).catchError$1(new $.handleError(URL));
+    $.HttpRequest_getString(URL, null, null).then$1(new $.handleResponse(this, gl)).catchError$1(new $.handleError(URL));
   }
 };
 
-$$.handleResponse = {"": "Closure;this_0,gl_1,URL_2",
+$$.handleResponse = {"": "Closure;this_0,gl_1",
   call$1: function(response) {
-    var m, e, exception, t1, vertCoord, vertInd;
-    $.Primitives_printString("Model.fromJson: fetched JSON from URL: " + this.URL_2 + ": [" + $.S(response) + "]");
+    var m, e, exception, t1, indices, vertCoord;
     m = null;
     try {
       m = $.parse(response, null);
@@ -4878,30 +4877,29 @@ $$.handleResponse = {"": "Closure;this_0,gl_1,URL_2",
       return;
     }
 
-    $.Primitives_printString("Model.fromJson: JSON parsed: [" + $.S(m) + "]");
+    indices = $.$index$asx(m, "vertInd");
     vertCoord = $.$index$asx(m, "vertCoord");
-    vertInd = $.$index$asx(m, "vertInd");
-    this.this_0._createBuffers$3(this.gl_1, vertCoord, vertInd);
+    this.this_0._createBuffers$5(this.gl_1, indices, vertCoord, null, null);
   }
 };
 
-$$.handleError = {"": "Closure;URL_3",
+$$.handleError = {"": "Closure;URL_2",
   call$1: function(err) {
-    $.Primitives_printString("Model.fromURL: failure fetching JSON from URL: " + this.URL_3 + ": " + $.S(err));
+    $.Primitives_printString("Model.fromJson: failure fetching JSON from URL: " + this.URL_2 + ": " + $.S(err));
   }
 };
 
-$$.handleResponse0 = {"": "Closure;this_0,gl_1,URL_2",
+$$.handleResponse1 = {"": "Closure;this_0,gl_1,URL_2",
   call$1: function(response) {
     var t1, obj;
     t1 = this.URL_2;
     $.Primitives_printString("Model.fromOBJ: fetched OBJ from URL: " + t1);
     obj = $.Obj$fromString(t1, response);
-    this.this_0._createBuffers$3(this.gl_1, obj.vertCoord, obj.indices);
+    this.this_0._createBuffers$5(this.gl_1, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
   }
 };
 
-$$.handleError0 = {"": "Closure;URL_3",
+$$.handleError1 = {"": "Closure;URL_3",
   call$1: function(err) {
     $.Primitives_printString("Model.fromOBJ: failure fetching OBJ from URL: " + this.URL_3 + ": " + $.S(err));
   }
@@ -4969,7 +4967,13 @@ $$.initDebugLostContext_anon0 = {"": "Closure;",
 
 $$.initSquares_anon = {"": "Closure;squareProgram2_0",
   call$0: function() {
-    this.squareProgram2_0.fetch$3($.get$shaderCache(), "/shader/clip_vs.txt", "/shader/clip2_fs.txt");
+    this.squareProgram2_0.fetch$3($.shaderCache, "/shader/clip_vs.txt", "/shader/clip2_fs.txt");
+  }
+};
+
+$$.initContext_anon = {"": "Closure;gl_0",
+  call$1: function(p) {
+    return p.initContext$2(this.gl_0, $.textureTable);
   }
 };
 
@@ -5003,20 +5007,21 @@ $$.main_anon0 = {"": "Closure;gl_0",
   }
 };
 
-$$.Obj = {"": "Object;vertCoord<,textCoord<,indices<",
+$$.Obj = {"": "Object;indices<,vertCoord<,textCoord<,normCoord",
   Obj$fromString$2: function(url, str, box_0) {
     var indexTable, _vertCoord, _textCoord;
     indexTable = $.Map_Map($.JSString, $.JSInt);
     _vertCoord = $.List_List($, $.JSDouble);
     $.setRuntimeTypeInfo(_vertCoord, [$.JSDouble]);
-    _textCoord = $.List_List($, $.JSInt);
-    $.setRuntimeTypeInfo(_textCoord, [$.JSInt]);
+    _textCoord = $.List_List($, $.JSDouble);
+    $.setRuntimeTypeInfo(_textCoord, [$.JSDouble]);
     box_0.indexCounter_0 = 0;
     box_0.lineNum_1 = 0;
     $.JSArray_methods.forEach$1($.split$1$s(str, "\n"), new $.anon(new $.parseLine(box_0, this, url, indexTable, _vertCoord, _textCoord)));
     $.print("Obj.fromString: indices.length = " + this.indices.length);
     $.print("Obj.fromString: vertCoord.length = " + this.vertCoord.length);
     $.print("Obj.fromString: textCoord.length = " + this.textCoord.length);
+    $.print("Obj.fromString: normCoord.length = " + this.normCoord.length);
   }
 };
 
@@ -5145,7 +5150,18 @@ $$.anon = {"": "Closure;parseLine_6",
   }
 };
 
-$$.ShaderProgram = {"": "Object;program@,gl<,a_Position?,u_MV?,u_P?,modelList",
+$$.ShaderProgram = {"": "Object;program@,gl<,a_Position,u_MV,u_P,modelList",
+  initContext$2: function(gl, textureTable) {
+  },
+  getLocations$0: function() {
+    var t1, t2;
+    t1 = this.gl;
+    t2 = $.getInterceptor$x(t1);
+    this.a_Position = t2.getAttribLocation$2(t1, this.program, "a_Position");
+    this.u_MV = t2.getUniformLocation$2(t1, this.program, "u_MV");
+    this.u_P = t2.getUniformLocation$2(t1, this.program, "u_P");
+    $.Primitives_printString("ShaderProgram: locations ready");
+  },
   fetch$3: function(shaderCache, vertexShaderURL, fragmentShaderURL) {
     var t1, t2, t3;
     t1 = {};
@@ -5214,11 +5230,9 @@ $$.ShaderProgram_fetch_tryLink = {"": "Closure;box_0,this_3",
     $.linkProgram$1$x(t2.get$gl(), p);
     if ($.getProgramParameter$2$x(t2.get$gl(), p, 35714) !== true && $.isContextLost$0$x(t2.get$gl()) !== true)
       $.Primitives_printString($.toString$0($.getProgramInfoLog$1$x(t2.get$gl(), p)));
-    t2.set$a_Position($.getAttribLocation$2$x(t2.get$gl(), p, "a_Position"));
-    t2.set$u_MV($.getUniformLocation$2$x(t2.get$gl(), p, "u_MV"));
-    t2.set$u_P($.getUniformLocation$2$x(t2.get$gl(), p, "u_P"));
+    $.Primitives_printString("ShaderProgram: program ready");
     t2.set$program(p);
-    $.Primitives_printString("shader program: ready");
+    t2.getLocations$0();
   }
 };
 
@@ -5245,7 +5259,6 @@ $$.ShaderProgram_fetch_fetchVertexShader_anon = {"": "Closure;box_0,vertexShader
       $.Primitives_printString("vertexShader: error: [" + $.S(response) + "]");
       return;
     }
-    $.Primitives_printString("vertexShader: loaded: [" + $.S(response) + "]");
     vertexShader = this.compileShader_8.call$3(this.vertexShaderURL_7, response, 35633);
     this.box_0.vertexShader_0 = vertexShader;
     this.tryLink_9.call$0();
@@ -5281,7 +5294,6 @@ $$.ShaderProgram_fetch_fetchFragmentShader_anon = {"": "Closure;box_0,fragmentSh
       $.Primitives_printString("fragmentShader: error: [" + $.S(response) + "]");
       return;
     }
-    $.Primitives_printString("fragmentShader: loaded: [" + $.S(response) + "]");
     fragmentShader = this.compileShader_15.call$3(this.fragmentShaderURL_14, response, 35632);
     this.box_0.fragmentShader_1 = fragmentShader;
     this.tryLink_16.call$0();
@@ -5306,13 +5318,167 @@ $$.ShaderProgram_update_anon = {"": "Closure;gameLoop_0",
   }
 };
 
-$$.TexShaderProgram = {"": "ShaderProgram;program,gl,a_Position,u_MV,u_P,modelList"};
+$$.TexShaderProgram = {"": "ShaderProgram;a_TextureCoord,u_Sampler,u_Color,program,gl,a_Position,u_MV,u_P,modelList",
+  initContext$2: function(gl, textureTable) {
+    $.JSArray_methods.forEach$1(this.modelList, new $.TexShaderProgram_initContext_anon(gl, textureTable));
+  },
+  getLocations$0: function() {
+    var t1, t2;
+    $.ShaderProgram.prototype.getLocations$0.call(this);
+    t1 = this.gl;
+    t2 = $.getInterceptor$x(t1);
+    this.a_TextureCoord = t2.getAttribLocation$2(t1, this.program, "a_TextureCoord");
+    this.u_Sampler = t2.getUniformLocation$2(t1, this.program, "u_Sampler");
+    this.u_Color = t2.getUniformLocation$2(t1, this.program, "u_Color");
+    $.Primitives_printString("TexShaderProgram: locations ready");
+  },
+  drawModels$3: function(gameLoop, cam, pMatrix) {
+    var t1, t2;
+    t1 = this.gl;
+    t2 = $.getInterceptor$x(t1);
+    t2.useProgram$1(t1, this.program);
+    t2.enableVertexAttribArray$1(t1, this.a_Position);
+    t2.enableVertexAttribArray$1(t1, this.a_TextureCoord);
+    t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.storage);
+    t2.uniform4fv$2(t1, this.u_Color, [1, 1, 1, 1]);
+    $.JSArray_methods.forEach$1(this.modelList, new $.TexShaderProgram_drawModels_anon(gameLoop, cam));
+    t2.bindBuffer$2(t1, 34962, null);
+    t2.bindBuffer$2(t1, 34963, null);
+    t2.bindTexture$2(t1, 3553, null);
+  },
+  $isTexShaderProgram: true
+};
 
-$$.TexModel = {"": "Model;textureList,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program"};
+$$.TexShaderProgram_initContext_anon = {"": "Closure;gl_0,textureTable_1",
+  call$1: function(m) {
+    return m.initContext$2(this.gl_0, this.textureTable_1);
+  }
+};
 
-$$.TexInstance = {"": "Instance;model,center,scale,MV"};
+$$.TexShaderProgram_drawModels_anon = {"": "Closure;gameLoop_0,cam_1",
+  call$1: function(m) {
+    return m.drawInstances$2(this.gameLoop_0, this.cam_1);
+  }
+};
+
+$$.TexModel = {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,textureInfoList,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program",
+  initContext$2: function(gl, textureTable) {
+    $.JSArray_methods.forEach$1(this.textureInfoList, new $.TexModel_initContext_anon(gl, textureTable));
+  },
+  _liblib4$_createBuffers$5: function(gl, indices, vertCoord, textCoord, normCoord) {
+    var t1 = $.getInterceptor$x(gl);
+    this.vertexPositionBuffer = t1.createBuffer$0(gl);
+    t1.bindBuffer$2(gl, 34962, this.vertexPositionBuffer);
+    t1.bufferData$3(gl, 34962, new Float32Array(vertCoord), 35044);
+    this.vertexPositionBufferItemSize = 3;
+    this.textureCoordBuffer = t1.createBuffer$0(gl);
+    t1.bindBuffer$2(gl, 34962, this.textureCoordBuffer);
+    t1.bufferData$3(gl, 34962, new Float32Array(textCoord), 35044);
+    this.textureCoordBufferItemSize = 2;
+    this.vertexIndexBuffer = t1.createBuffer$0(gl);
+    t1.bindBuffer$2(gl, 34963, this.vertexIndexBuffer);
+    t1.bufferData$3(gl, 34963, new Uint16Array(indices), 35044);
+    this.vertexIndexBufferItemSize = 2;
+    this.vertexIndexLength = indices.length;
+    $.Primitives_printString("TexModel._createBuffers: vertex index length: " + $.S(this.vertexIndexLength));
+    t1.bindBuffer$2(gl, 34962, null);
+    t1.bindBuffer$2(gl, 34963, null);
+  },
+  drawInstances$2: function(gameLoop, cam) {
+    var gl, t1;
+    gl = this.program.gl;
+    t1 = $.getInterceptor$x(gl);
+    t1.bindBuffer$2(gl, 34962, this.vertexPositionBuffer);
+    t1.vertexAttribPointer$6(gl, this.program.a_Position, this.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t1.bindBuffer$2(gl, 34962, this.textureCoordBuffer);
+    t1.vertexAttribPointer$6(gl, $.propertyTypeCast(this.program, "$isTexShaderProgram").a_TextureCoord, this.textureCoordBufferItemSize, 5126, false, 0, 0);
+    t1.bindBuffer$2(gl, 34963, this.vertexIndexBuffer);
+    $.JSArray_methods.forEach$1(this.instanceList, new $.TexModel_drawInstances_anon(gameLoop, cam));
+  },
+  TexModel$fromOBJ$3: function(gl, program, URL) {
+    this.program = program;
+    $.HttpRequest_getString(URL, null, null).then$1(new $.handleResponse0(this, gl, URL)).catchError$1(new $.handleError0(URL));
+  },
+  $isTexModel: true
+};
+
+$$.TexModel_initContext_anon = {"": "Closure;gl_0,textureTable_1",
+  call$1: function(ti) {
+    return ti.forceCreateTexture$2(this.gl_0, this.textureTable_1);
+  }
+};
+
+$$.handleResponse0 = {"": "Closure;this_0,gl_1,URL_2",
+  call$1: function(response) {
+    var t1, obj;
+    t1 = this.URL_2;
+    $.Primitives_printString("TexModel.fromOBJ: fetched OBJ from URL: " + t1);
+    obj = $.Obj$fromString(t1, response);
+    this.this_0._liblib4$_createBuffers$5(this.gl_1, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
+  }
+};
+
+$$.handleError0 = {"": "Closure;URL_3",
+  call$1: function(err) {
+    $.Primitives_printString("TexModel.fromOBJ: failure fetching OBJ from URL: " + this.URL_3 + ": " + $.S(err));
+  }
+};
+
+$$.TexModel_drawInstances_anon = {"": "Closure;gameLoop_0,cam_1",
+  call$1: function(i) {
+    return i.draw$2(this.gameLoop_0, this.cam_1);
+  }
+};
+
+$$.TexInstance = {"": "Instance;model,center,scale,MV",
+  draw$2: function(gameLoop, cam) {
+    var t1, t2, t3, t4, t5, prog, gl;
+    t1 = this.MV;
+    $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
+    t2 = this.center.storage;
+    t3 = t2.length;
+    if (0 >= t3)
+      throw $.ioore(0);
+    t4 = t2[0];
+    if (1 >= t3)
+      throw $.ioore(1);
+    t5 = t2[1];
+    if (2 >= t3)
+      throw $.ioore(2);
+    t1.translate$3(t1, t4, t5, t2[2]);
+    t2 = this.scale;
+    t1.scale$3(t1, t2, t2, t2);
+    t2 = this.model;
+    prog = t2.program;
+    gl = prog.gl;
+    $.uniformMatrix4fv$3$x(gl, prog.u_MV, false, t1.storage);
+    $.JSArray_methods.forEach$1($.propertyTypeCast(t2, "$isTexModel").textureInfoList, new $.TexInstance_draw_anon(this, prog, gl));
+  }
+};
+
+$$.TexInstance_draw_anon = {"": "Closure;this_0,prog_1,gl_2",
+  call$1: function(ti) {
+    var t1, t2, t3, t4, t5;
+    t1 = this.gl_2;
+    t2 = $.getInterceptor$x(t1);
+    t2.activeTexture$1(t1, 33985);
+    t2.bindTexture$2(t1, 3553, ti.get$texture());
+    t2.uniform1i$2(t1, $.propertyTypeCast(this.prog_1, "$isTexShaderProgram").u_Sampler, 1);
+    t3 = ti.get$indexNumber();
+    t4 = ti.get$indexOffset();
+    t5 = $.get$model$x(this.this_0).get$vertexIndexBufferItemSize();
+    if (typeof t5 !== "number")
+      throw $.iae(t5);
+    t2.drawElements$4(t1, 4, t3, 5123, t4 * t5);
+  }
+};
 
 $$.SkyboxProgram = {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,modelList",
+  getLocations$0: function() {
+    $.ShaderProgram.prototype.getLocations$0.call(this);
+    this.u_Skybox = $.getUniformLocation$2$x(this.gl, this.program, "u_Skybox");
+    $.Primitives_printString("SkyboxProgram: locations ready");
+  },
   drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2;
     t1 = this.gl;
@@ -5422,7 +5588,56 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
   }
 };
 
-$$.TextureInfo = {"": "Object;indexOffset,indexNumber,textureName"};
+$$.loadTexture2D_onDone = {"": "Closure;gl_0,textureTable_1,textureName_2,handleDone_3,image_4",
+  call$1: function(e) {
+    var t1, t2, tex;
+    t1 = this.gl_0;
+    t2 = $.getInterceptor$x(t1);
+    tex = t2.createTexture$0(t1);
+    t2.bindTexture$2(t1, 3553, tex);
+    t2.pixelStorei$2(t1, 37440, true);
+    t2.texParameteri$3(t1, 3553, 10240, 9728);
+    t2.texParameteri$3(t1, 3553, 10241, 9728);
+    t2.texImage2D$6(t1, 3553, 0, 6408, 6408, 5121, this.image_4);
+    t2.texParameteri$3(t1, 3553, 10242, 33071);
+    t2.texParameteri$3(t1, 3553, 10243, 33071);
+    t2.bindTexture$2(t1, 3553, null);
+    t1 = this.textureTable_1;
+    t2 = this.textureName_2;
+    $.$indexSet$ax(t1, t2, tex);
+    $.Primitives_printString("loadTexture2D: fetched: " + t2);
+    this.handleDone_3.call$1(e);
+  }
+};
+
+$$.TextureInfo = {"": "Object;indexOffset<,indexNumber<,textureName<,texture@",
+  forceCreateTexture$2: function(gl, textureTable) {
+    $.loadTexture2D(gl, textureTable, this.textureName, new $.TextureInfo_forceCreateTexture_handleDone(this, textureTable), new $.TextureInfo_forceCreateTexture_handleError(this));
+  },
+  TextureInfo$5: function(gl, textureTable, indexOffset, indexNumber, textureName) {
+    var t1 = this.textureName;
+    this.texture = textureTable.$index(textureTable, t1);
+    if (this.texture != null) {
+      $.print("TextureInfo: texture table HIT: " + t1);
+      return;
+    }
+    this.forceCreateTexture$2(gl, textureTable);
+  }
+};
+
+$$.TextureInfo_forceCreateTexture_handleDone = {"": "Closure;this_0,textureTable_1",
+  call$1: function(e) {
+    var t1 = this.this_0;
+    $.Primitives_printString("TextureInfo: handleDone: loaded image from URL: " + t1.get$textureName());
+    t1.set$texture($.$index$asx(this.textureTable_1, t1.get$textureName()));
+  }
+};
+
+$$.TextureInfo_forceCreateTexture_handleError = {"": "Closure;this_2",
+  call$1: function(e) {
+    $.Primitives_printString("TextureInfo: handleError: failure loading image from URL: " + this.this_2.get$textureName() + ": " + $.S(e));
+  }
+};
 
 $$.initWebSocket_anon = {"": "Closure;box_0,wsUri_1,sid_2,status_3",
   call$1: function(e) {
@@ -5624,7 +5839,7 @@ $$.GameLoopTimer = {"": "Object;gameLoop<"};
 
 $$.GameLoopGamepad = {"": "Object;gameLoop<,buttons,sticks"};
 
-$$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_previousFrameTime,_frameTime,_resizePending,_nextResize,maxAccumulatedTime,_accumulatedTime,_gameTime,_renderInterpolationFactor,resizeLimit,_pointerLock,_keyboard,_mouse,_gamepad0,_touchSet,_touchEvents,_keyboardEvents,_mouseEvents,onRender,onResize,onFullscreenChange,onPointerLockChange,onTouchStart,onTouchEnd,updateTimeStep,lib6$GameLoop$maxAccumulatedTime,_timers,onUpdate",
+$$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_previousFrameTime,_frameTime,_resizePending,_nextResize,maxAccumulatedTime,_accumulatedTime,_gameTime,_renderInterpolationFactor,resizeLimit,_pointerLock,_keyboard,_mouse,_gamepad0,_touchSet,_touchEvents,_keyboardEvents,_mouseEvents,onRender,onResize,onFullscreenChange,onPointerLockChange,onTouchStart,onTouchEnd,updateTimeStep,lib7$GameLoop$maxAccumulatedTime,_timers,onUpdate",
   get$frame: function() {
     return this._frameCounter;
   },
@@ -5716,7 +5931,7 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
       t3 = $.getInterceptor$x(touchEvent);
       switch (t3.get$type(touchEvent)) {
         case 3:
-          this._touchSet._liblib4$_start$1(t3.get$event(touchEvent));
+          this._touchSet._liblib5$_start$1(t3.get$event(touchEvent));
           break;
         case 2:
           this._touchSet._end$1(t3.get$event(touchEvent));
@@ -6066,7 +6281,7 @@ $$.GameLoopTouchPosition = {"": "Object;x>,y>,dx,dy,time,frame"};
 $$.GameLoopTouch = {"": "Object;id>,positions<"};
 
 $$.GameLoopTouchSet = {"": "Object;activeTouches<,gameLoop<",
-  _liblib4$_start$1: function($event) {
+  _liblib5$_start$1: function($event) {
     $.IterableMixinWorkaround_forEach($.get$changedTouches$x($event), new $.GameLoopTouchSet__start_anon(this));
   },
   _end$1: function($event) {
@@ -9110,6 +9325,16 @@ $$.Node = {"": "EventTarget;text:textContent}",
     }
 
     return receiver;
+  },
+  get$model: function(receiver) {
+    var t1, node;
+    t1 = receiver._modelChangedStreams;
+    if (t1 != null && $.JSNull_methods.get$isEmpty(t1) !== true)
+      return receiver._model;
+    for (node = receiver; node != null; node = node.parentNode)
+      if (node._hasLocalModel === true)
+        return node._model;
+    return;
   },
   toString$0: function(receiver) {
     var t1 = receiver.localName;
@@ -12851,6 +13076,9 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
   linkProgram$1: function(receiver, program) {
     return receiver.linkProgram(program);
   },
+  pixelStorei$2: function(receiver, pname, param) {
+    return receiver.pixelStorei(pname, param);
+  },
   shaderSource$2: function(receiver, shader, string) {
     return receiver.shaderSource(shader, string);
   },
@@ -12895,6 +13123,9 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
   },
   uniform1i$2: function(receiver, $location, x) {
     return receiver.uniform1i($location, x);
+  },
+  uniform4fv$2: function(receiver, $location, v) {
+    return receiver.uniform4fv($location, v);
   },
   uniformMatrix4fv$3: function(receiver, $location, transpose, array) {
     return receiver.uniformMatrix4fv($location, transpose, array);
@@ -14022,6 +14253,14 @@ $.convertDartClosureToJS = function(closure, arity) {
   $function = (function ($2, $3) { return function($0, $1) { return $3(closure, $2, arity, $0, $1) }})($._currentIsolate(), $.invokeClosure.call$5);
   closure.$identity = $function;
   return $function;
+};
+
+$.propertyTypeCast = function(value, property) {
+  var t1;
+  if (value == null || !!value[property])
+    return value;
+  t1 = $.getInterceptor$asx(property);
+  $.throwExpression($.CastErrorImplementation$($.Primitives_objectTypeName(value), t1.substring$2(property, 3, t1.get$length(property))));
 };
 
 $.interceptedTypeCast = function(value, property) {
@@ -15452,13 +15691,13 @@ $.boot = function() {
 $.initSquares = function(gl) {
   var squareProgram, squareModel, squareProgram2, milliseconds, squareModel2, squareProgram3, squareModel3;
   squareProgram = $.ShaderProgram$(gl);
-  $.get$programList().push(squareProgram);
-  squareProgram.fetch$3($.get$shaderCache(), "/shader/clip_vs.txt", "/shader/clip_fs.txt");
+  $.add$1$ax($.programList, squareProgram);
+  squareProgram.fetch$3($.shaderCache, "/shader/clip_vs.txt", "/shader/clip_fs.txt");
   squareModel = $.Model$fromJson(gl, squareProgram, "/mesh/square.json");
   squareProgram.modelList.push(squareModel);
   squareModel.instanceList.push($.Instance$(squareModel, $.vec3$(0, 0, 0), 1));
   squareProgram2 = $.ShaderProgram$(gl);
-  $.get$programList().push(squareProgram2);
+  $.add$1$ax($.programList, squareProgram2);
   milliseconds = $.Duration$(0, 0, 0, 0, 0, 2).get$inMilliseconds();
   if (milliseconds < 0)
     milliseconds = 0;
@@ -15467,8 +15706,8 @@ $.initSquares = function(gl) {
   squareProgram2.modelList.push(squareModel2);
   squareModel2.instanceList.push($.Instance$(squareModel2, $.vec3$(0, 0, 0), 1));
   squareProgram3 = $.ShaderProgram$(gl);
-  $.get$programList().push(squareProgram3);
-  squareProgram3.fetch$3($.get$shaderCache(), "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
+  $.add$1$ax($.programList, squareProgram3);
+  squareProgram3.fetch$3($.shaderCache, "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
   squareModel3 = $.Model$fromJson(gl, squareProgram3, "/mesh/square3.json");
   squareProgram3.modelList.push(squareModel3);
   squareModel3.instanceList.push($.Instance$(squareModel3, $.vec3$(0, 0, 0), 1));
@@ -15477,9 +15716,8 @@ $.initSquares = function(gl) {
 $.initSkybox = function(gl) {
   var skyboxProgram, skyboxModel;
   skyboxProgram = $.SkyboxProgram$(gl);
-  $.get$programList().push(skyboxProgram);
-  $.ShaderProgram.prototype.fetch$3.call(skyboxProgram, $.get$shaderCache(), "/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
-  skyboxProgram.u_Skybox = $.getUniformLocation$2$x(skyboxProgram.gl, skyboxProgram.program, "u_Skybox");
+  $.add$1$ax($.programList, skyboxProgram);
+  $.ShaderProgram.prototype.fetch$3.call(skyboxProgram, $.shaderCache, "/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
   skyboxModel = $.SkyboxModel$fromJson(gl, skyboxProgram, "/mesh/cube.json", true, 0);
   skyboxModel.addCubemapFace$2(34069, "/texture/space_rt.jpg");
   skyboxModel.addCubemapFace$2(34070, "/texture/space_lf.jpg");
@@ -15494,8 +15732,8 @@ $.initSkybox = function(gl) {
 $.initAirship = function(gl) {
   var prog, airshipModel;
   prog = $.ShaderProgram$(gl);
-  $.get$programList().push(prog);
-  prog.fetch$3($.get$shaderCache(), "/shader/simple_vs.txt", "/shader/simple_fs.txt");
+  $.add$1$ax($.programList, prog);
+  prog.fetch$3($.shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
   airshipModel = $.Model$fromOBJ(gl, prog, "/obj/airship.obj");
   prog.modelList.push(airshipModel);
   airshipModel.instanceList.push($.Instance$(airshipModel, $.vec3$(-5, 0, 0), 1));
@@ -15504,11 +15742,11 @@ $.initAirship = function(gl) {
 $.initAirshipTex = function(gl) {
   var prog, airshipModel;
   prog = $.TexShaderProgram$(gl);
-  $.get$programList().push(prog);
-  prog.fetch$3($.get$shaderCache(), "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
+  $.add$1$ax($.programList, prog);
+  prog.fetch$3($.shaderCache, "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
   airshipModel = $.TexModel$fromOBJ(gl, prog, "/obj/airship.obj");
   prog.modelList.push(airshipModel);
-  airshipModel.textureList.push($.TextureInfo$($.get$textureTable(), 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg"));
+  airshipModel.textureInfoList.push($.TextureInfo$(gl, $.textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg"));
   airshipModel.instanceList.push($.TexInstance$(airshipModel, $.vec3$(5, 0, 0), 1));
 };
 
@@ -15518,6 +15756,8 @@ $.initContext = function(gl, gameLoop) {
   $.setRuntimeTypeInfo(t1, [$.ShaderProgram]);
   $.programList = t1;
   $.shaderCache = $.HashMap$($.JSString, $.Shader);
+  $.textureTable = $.HashMap$($.JSString, $.Texture);
+  $.forEach$1$ax($.programList, new $.initContext_anon(gl));
   $.initSquares(gl);
   $.initAirship(gl);
   $.initAirshipTex(gl);
@@ -15559,14 +15799,14 @@ $.draw = function(gl, gameLoop) {
   $.clear$1$ax(gl, 16640);
   $.setPerspectiveMatrix($.get$pMatrix(), $.fieldOfViewYRadians, $.canvasAspect, 1, 1000);
   $.get$cam().render$1(gameLoop);
-  $.JSArray_methods.forEach$1($.get$programList(), new $.draw_anon(gameLoop));
+  $.forEach$1$ax($.programList, new $.draw_anon(gameLoop));
 };
 
 $.update = function(gameLoop) {
   var t1 = $.get$cam();
   t1.oldAngle = t1.angle;
   t1.angle = $.JSNumber_methods.$mod(gameLoop.get$gameTime() * t1.degreesPerSec, 360);
-  $.JSArray_methods.forEach$1($.get$programList(), new $.update_anon(gameLoop));
+  $.forEach$1$ax($.programList, new $.update_anon(gameLoop));
 };
 
 $.main = function() {
@@ -15583,16 +15823,18 @@ $.main = function() {
 };
 
 $.Obj$fromString = function(url, str) {
-  var t1, t2, t3;
-  t1 = $.List_List($, $.JSDouble);
-  $.setRuntimeTypeInfo(t1, [$.JSDouble]);
-  t2 = $.List_List($, $.JSInt);
-  $.setRuntimeTypeInfo(t2, [$.JSInt]);
-  t3 = $.List_List($, $.JSInt);
-  $.setRuntimeTypeInfo(t3, [$.JSInt]);
-  t3 = new $.Obj(t1, t2, t3);
-  t3.Obj$fromString$2(url, str, {});
-  return t3;
+  var t1, t2, t3, t4;
+  t1 = $.List_List($, $.JSInt);
+  $.setRuntimeTypeInfo(t1, [$.JSInt]);
+  t2 = $.List_List($, $.JSDouble);
+  $.setRuntimeTypeInfo(t2, [$.JSDouble]);
+  t3 = $.List_List($, $.JSDouble);
+  $.setRuntimeTypeInfo(t3, [$.JSDouble]);
+  t4 = $.List_List($, $.JSDouble);
+  $.setRuntimeTypeInfo(t4, [$.JSDouble]);
+  t4 = new $.Obj(t1, t2, t3, t4);
+  t4.Obj$fromString$2(url, str, {});
+  return t4;
 };
 
 $.ShaderProgram$ = function(gl) {
@@ -15604,7 +15846,7 @@ $.ShaderProgram$ = function(gl) {
 $.TexShaderProgram$ = function(gl) {
   var t1 = $.List_List($, $.Model);
   $.setRuntimeTypeInfo(t1, [$.Model]);
-  return new $.TexShaderProgram(null, gl, null, null, null, t1);
+  return new $.TexShaderProgram(null, null, null, null, gl, null, null, null, t1);
 };
 
 $.TexModel$fromOBJ = function(gl, program, URL) {
@@ -15613,8 +15855,8 @@ $.TexModel$fromOBJ = function(gl, program, URL) {
   $.setRuntimeTypeInfo(t1, [$.TextureInfo]);
   t2 = $.List_List($, $.Instance);
   $.setRuntimeTypeInfo(t2, [$.Instance]);
-  t2 = new $.TexModel(t1, null, null, null, null, null, t2, program);
-  t2.Model$fromOBJ$3(gl, program, URL);
+  t2 = new $.TexModel(null, null, t1, null, null, null, null, null, t2, null);
+  t2.TexModel$fromOBJ$3(gl, program, URL);
   return t2;
 };
 
@@ -15641,8 +15883,20 @@ $.SkyboxInstance$ = function(model, center, scale) {
   return new $.SkyboxInstance(model, center, scale, $.mat4$identity());
 };
 
-$.TextureInfo$ = function(textureTable, indexOffset, indexNumber, textureName) {
-  return new $.TextureInfo(indexOffset, indexNumber, textureName);
+$.loadTexture2D = function(gl, textureTable, textureName, handleDone, handleError) {
+  var image, t1, t2;
+  image = $.ImageElement_ImageElement(null, null, null);
+  t1 = $.getInterceptor$x(image);
+  t2 = t1.get$onLoad(image);
+  $._EventStreamSubscription$(t2._target, t2._eventType, new $.loadTexture2D_onDone(gl, textureTable, textureName, handleDone, image), t2._useCapture);
+  t1.get$onError(image).listen$1(handleError);
+  t1.set$src(image, textureName);
+};
+
+$.TextureInfo$ = function(gl, textureTable, indexOffset, indexNumber, textureName) {
+  var t1 = new $.TextureInfo(indexOffset, indexNumber, textureName, null);
+  t1.TextureInfo$5(gl, textureTable, indexOffset, indexNumber, textureName);
+  return t1;
 };
 
 $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
@@ -15924,8 +16178,8 @@ $.JSArray_methods = $.JSArray.prototype;
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
 $.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
 $.Window_methods = $.Window.prototype;
-$.EventStreamProvider_success = new $.EventStreamProvider("success");
 $.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
+$.EventStreamProvider_success = new $.EventStreamProvider("success");
 $.Duration_0 = new $.Duration(0);
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.C_NullThrownError = new $.NullThrownError();
@@ -15933,7 +16187,6 @@ $.JSInt_methods = $.JSInt.prototype;
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
 $._WorkerStub_methods = $._WorkerStub.prototype;
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.EventStreamProvider_click = new $.EventStreamProvider("click");
@@ -15943,6 +16196,7 @@ $.JSString_methods = $.JSString.prototype;
 $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 $.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
 $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_touchend = new $.EventStreamProvider("touchend");
 $.EventStreamProvider_keyup = new $.EventStreamProvider("keyup");
 $.Expando__keyCount = 0;
@@ -15957,6 +16211,9 @@ $._callbacksAreEnqueued = false;
 $.canvas = null;
 $.canvasAspect = null;
 $.debugLostContext = true;
+$.programList = null;
+$.shaderCache = null;
+$.textureTable = null;
 $.fieldOfViewYRadians = 0.7853981633974483;
 $.backfaceCulling = false;
 $.fullRateFrames = 0;
@@ -16105,6 +16362,9 @@ $.get$iterator$ax = function(receiver) {
 $.get$length$asx = function(receiver) {
   return $.getInterceptor$asx(receiver).get$length(receiver);
 };
+$.get$model$x = function(receiver) {
+  return $.getInterceptor$x(receiver).get$model(receiver);
+};
 $.get$nodes$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$nodes(receiver);
 };
@@ -16143,9 +16403,6 @@ $.get$x$x = function(receiver) {
 };
 $.get$y$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$y(receiver);
-};
-$.getAttribLocation$2$x = function(receiver, a0, a1) {
-  return $.getInterceptor$x(receiver).getAttribLocation$2(receiver, a0, a1);
 };
 $.getContext3d$0$x = function(receiver) {
   return $.getInterceptor$x(receiver).getContext3d$0(receiver);
@@ -16254,6 +16511,9 @@ $.toString$0 = function(receiver) {
 };
 $.trim$0$s = function(receiver) {
   return $.getInterceptor$s(receiver).trim$0(receiver);
+};
+$.uniformMatrix4fv$3$x = function(receiver, a0, a1, a2) {
+  return $.getInterceptor$x(receiver).uniformMatrix4fv$3(receiver, a0, a1, a2);
 };
 $.update$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).update$1(receiver, a0);
@@ -16383,17 +16643,6 @@ Isolate.$lazy($, "_asyncCallbacks", "_asyncCallbacks", "get$_asyncCallbacks", fu
 });
 Isolate.$lazy($, "_runCallbacks", "Timer__runCallbacks", "get$Timer__runCallbacks", function() {
   return [];
-});
-Isolate.$lazy($, "programList", "programList", "get$programList", function() {
-  var t1 = $.List_List($, $.ShaderProgram);
-  $.setRuntimeTypeInfo(t1, [$.ShaderProgram]);
-  return t1;
-});
-Isolate.$lazy($, "shaderCache", "shaderCache", "get$shaderCache", function() {
-  return $.Map_Map($.JSString, $.Shader);
-});
-Isolate.$lazy($, "textureTable", "textureTable", "get$textureTable", function() {
-  return $.Map_Map($.JSString, $.TextureInfo);
 });
 Isolate.$lazy($, "pMatrix", "pMatrix", "get$pMatrix", function() {
   return $.mat4$zero();

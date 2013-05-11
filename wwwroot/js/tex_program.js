@@ -208,19 +208,6 @@ TexInstance.prototype.draw = function(program) {
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 		gl.uniform1i(program.u_Sampler, unit);
 	
-		/*
-		// vertex coord
-		gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexPositionBuffer);
-		gl.vertexAttribPointer(program.a_Position, buf.vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0);
-	
-		// texture coord
-		gl.bindBuffer(gl.ARRAY_BUFFER, buf.vertexTextureCoordBuffer);
-		gl.vertexAttribPointer(program.a_TextureCoord, buf.vertexTextureCoordBufferItemSize, gl.FLOAT, false, 0, 0);
-		*/
-	
-		// draw
-		//gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.vertexIndexBuffer);
-		//gl.drawElements(gl.TRIANGLES, buf.vertexIndexLength, gl.UNSIGNED_SHORT, 0 * buf.vertexIndexBufferItemSize);
 		gl.drawElements(gl.TRIANGLES, tex.indexNumber, gl.UNSIGNED_SHORT, tex.indexOffset * buf.vertexIndexBufferItemSize);
 	}
 }

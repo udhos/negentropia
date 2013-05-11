@@ -21,9 +21,9 @@ CanvasElement canvas;
 num canvasAspect;
 ShaderProgram shaderProgram;
 bool debugLostContext = true;
-List<ShaderProgram> programList = new List<ShaderProgram>();
-Map<String,Shader> shaderCache = new Map<String,Shader>();
-Map<String,TextureInfo> textureTable = new Map<String,TextureInfo>();
+List<ShaderProgram> programList;
+Map<String,Shader> shaderCache;
+Map<String,Texture> textureTable;
 mat4 pMatrix = new mat4.zero();
 num fieldOfViewYRadians = 45 * math.PI / 180;
 Camera cam = new Camera(new vec3(0.0,0.0,15.0), new vec3(0.0,0.0,-1.0), new vec3(0.0,1.0,0.0));
@@ -173,8 +173,8 @@ void initAirshipTex(RenderingContext gl) {
   prog.fetch(shaderCache, "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
   TexModel airshipModel = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj");
   prog.addModel(airshipModel);
-  TextureInfo tex = new TextureInfo(textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg");
-  airshipModel.addTexture(tex);
+  TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg");
+  airshipModel.addTexture(texInfo);
   TexInstance airshipInstance = new TexInstance(airshipModel, new vec3(5.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
 }
@@ -185,10 +185,13 @@ void initShips(RenderingContext gl) {
 }
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
-
+    
   programList = new List<ShaderProgram>(); // drop existing programs 
   shaderCache = new Map<String,Shader>();  // drop existing compile shader cache
+  textureTable = new Map<String,Texture>(); // drop existing texture table
 
+  programList.forEach((ShaderProgram p) => p.initContext(gl, textureTable));
+  
   initSquares(gl);
   initShips(gl);
   initSkybox(gl);

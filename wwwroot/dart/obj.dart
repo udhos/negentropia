@@ -2,15 +2,16 @@ library skybox;
 
 class Obj {
   
-  List<double> vertCoord = new List<double>();   
-  List<int> textCoord = new List<int>();
   List<int> indices = new List<int>();
+  List<double> vertCoord = new List<double>();   
+  List<double> textCoord = new List<double>();
+  List<double> normCoord = new List<double>();
 
   Obj.fromString(String url, String str) {
   
     Map<String,int> indexTable = new Map<String,int>();
     List<double> _vertCoord = new List<double>();   
-    List<int> _textCoord = new List<int>();
+    List<double> _textCoord = new List<double>();
     int indexCounter = 0;
 
     int lineNum = 0;
@@ -121,5 +122,6 @@ class Obj {
     print("Obj.fromString: indices.length = ${indices.length}");
     print("Obj.fromString: vertCoord.length = ${vertCoord.length}");
     print("Obj.fromString: textCoord.length = ${textCoord.length}");
+    print("Obj.fromString: normCoord.length = ${normCoord.length}");
   }
 }
