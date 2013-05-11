@@ -5306,6 +5306,12 @@ $$.ShaderProgram_update_anon = {"": "Closure;gameLoop_0",
   }
 };
 
+$$.TexShaderProgram = {"": "ShaderProgram;program,gl,a_Position,u_MV,u_P,modelList"};
+
+$$.TexModel = {"": "Model;textureList,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program"};
+
+$$.TexInstance = {"": "Instance;model,center,scale,MV"};
+
 $$.SkyboxProgram = {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,modelList",
   drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2;
@@ -5415,6 +5421,8 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
     t3.drawElements$4(gl, 4, t2, 5123, 0 * t1);
   }
 };
+
+$$.TextureInfo = {"": "Object;indexOffset,indexNumber,textureName"};
 
 $$.initWebSocket_anon = {"": "Closure;box_0,wsUri_1,sid_2,status_3",
   call$1: function(e) {
@@ -15495,12 +15503,13 @@ $.initAirship = function(gl) {
 
 $.initAirshipTex = function(gl) {
   var prog, airshipModel;
-  prog = $.ShaderProgram$(gl);
+  prog = $.TexShaderProgram$(gl);
   $.get$programList().push(prog);
-  prog.fetch$3($.get$shaderCache(), "/shader/simple_vs.txt", "/shader/simple_fs.txt");
-  airshipModel = $.Model$fromOBJ(gl, prog, "/obj/airship.obj");
+  prog.fetch$3($.get$shaderCache(), "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
+  airshipModel = $.TexModel$fromOBJ(gl, prog, "/obj/airship.obj");
   prog.modelList.push(airshipModel);
-  airshipModel.instanceList.push($.Instance$(airshipModel, $.vec3$(5, 0, 0), 1));
+  airshipModel.textureList.push($.TextureInfo$($.get$textureTable(), 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg"));
+  airshipModel.instanceList.push($.TexInstance$(airshipModel, $.vec3$(5, 0, 0), 1));
 };
 
 $.initContext = function(gl, gameLoop) {
@@ -15592,6 +15601,27 @@ $.ShaderProgram$ = function(gl) {
   return new $.ShaderProgram(null, gl, null, null, null, t1);
 };
 
+$.TexShaderProgram$ = function(gl) {
+  var t1 = $.List_List($, $.Model);
+  $.setRuntimeTypeInfo(t1, [$.Model]);
+  return new $.TexShaderProgram(null, gl, null, null, null, t1);
+};
+
+$.TexModel$fromOBJ = function(gl, program, URL) {
+  var t1, t2;
+  t1 = $.List_List($, $.TextureInfo);
+  $.setRuntimeTypeInfo(t1, [$.TextureInfo]);
+  t2 = $.List_List($, $.Instance);
+  $.setRuntimeTypeInfo(t2, [$.Instance]);
+  t2 = new $.TexModel(t1, null, null, null, null, null, t2, program);
+  t2.Model$fromOBJ$3(gl, program, URL);
+  return t2;
+};
+
+$.TexInstance$ = function(model, center, scale) {
+  return new $.TexInstance(model, center, scale, $.mat4$identity());
+};
+
 $.SkyboxProgram$ = function(gl) {
   var t1 = $.List_List($, $.Model);
   $.setRuntimeTypeInfo(t1, [$.Model]);
@@ -15609,6 +15639,10 @@ $.SkyboxModel$fromJson = function(gl, prog, URL, reverse, rescale) {
 
 $.SkyboxInstance$ = function(model, center, scale) {
   return new $.SkyboxInstance(model, center, scale, $.mat4$identity());
+};
+
+$.TextureInfo$ = function(textureTable, indexOffset, indexNumber, textureName) {
+  return new $.TextureInfo(indexOffset, indexNumber, textureName);
 };
 
 $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
@@ -15877,18 +15911,17 @@ Isolate.makeConstantList = function(list) {
 };
 $.List_empty = Isolate.makeConstantList([]);
 $.EventStreamProvider_message = new $.EventStreamProvider("message");
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.EventStreamProvider_webkitfullscreenchange = new $.EventStreamProvider("webkitfullscreenchange");
 $.JSNull_methods = $.JSNull.prototype;
 $.NodeList_methods = $.NodeList.prototype;
-$.JSDouble_methods = $.JSDouble.prototype;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
-$.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
+$.JSDouble_methods = $.JSDouble.prototype;
 $.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
+$.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
+$.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.JSArray_methods = $.JSArray.prototype;
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
-$.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_success = new $.EventStreamProvider("success");
@@ -15900,6 +15933,7 @@ $.JSInt_methods = $.JSInt.prototype;
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
 $._WorkerStub_methods = $._WorkerStub.prototype;
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.EventStreamProvider_click = new $.EventStreamProvider("click");
@@ -16357,6 +16391,9 @@ Isolate.$lazy($, "programList", "programList", "get$programList", function() {
 });
 Isolate.$lazy($, "shaderCache", "shaderCache", "get$shaderCache", function() {
   return $.Map_Map($.JSString, $.Shader);
+});
+Isolate.$lazy($, "textureTable", "textureTable", "get$textureTable", function() {
+  return $.Map_Map($.JSString, $.TextureInfo);
 });
 Isolate.$lazy($, "pMatrix", "pMatrix", "get$pMatrix", function() {
   return $.mat4$zero();

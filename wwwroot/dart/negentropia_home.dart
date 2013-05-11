@@ -14,6 +14,7 @@ import 'skybox.dart';
 import 'buffer.dart';
 import 'lost_context.dart';
 import 'camera.dart';
+import 'texture.dart';
 
 int requestId;
 CanvasElement canvas;
@@ -22,6 +23,7 @@ ShaderProgram shaderProgram;
 bool debugLostContext = true;
 List<ShaderProgram> programList = new List<ShaderProgram>();
 Map<String,Shader> shaderCache = new Map<String,Shader>();
+Map<String,TextureInfo> textureTable = new Map<String,TextureInfo>();
 mat4 pMatrix = new mat4.zero();
 num fieldOfViewYRadians = 45 * math.PI / 180;
 Camera cam = new Camera(new vec3(0.0,0.0,15.0), new vec3(0.0,0.0,-1.0), new vec3(0.0,1.0,0.0));
@@ -166,12 +168,14 @@ void initAirship(RenderingContext gl) {
 }
 
 void initAirshipTex(RenderingContext gl) {
-  ShaderProgram prog = new ShaderProgram(gl);
+  TexShaderProgram prog = new TexShaderProgram(gl);
   programList.add(prog);
-  prog.fetch(shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
-  Model airshipModel = new Model.fromOBJ(gl, prog, "/obj/airship.obj");
+  prog.fetch(shaderCache, "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
+  TexModel airshipModel = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj");
   prog.addModel(airshipModel);
-  Instance airshipInstance = new Instance(airshipModel, new vec3(5.0, 0.0, 0.0), 1.0);
+  TextureInfo tex = new TextureInfo(textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg");
+  airshipModel.addTexture(tex);
+  TexInstance airshipInstance = new TexInstance(airshipModel, new vec3(5.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
 }
 

@@ -8,6 +8,9 @@ import 'package:game_loop/game_loop_html.dart';
 
 import 'buffer.dart';
 import 'camera.dart';
+import 'texture.dart';
+
+part 'shader_tex.dart';
 
 class ShaderProgram {
   
