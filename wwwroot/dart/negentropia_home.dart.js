@@ -5340,7 +5340,7 @@ $$.TexShaderProgram = {"": "ShaderProgram;a_TextureCoord,u_Sampler,u_Color,progr
     t2.enableVertexAttribArray$1(t1, this.a_Position);
     t2.enableVertexAttribArray$1(t1, this.a_TextureCoord);
     t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.storage);
-    t2.uniform4fv$2(t1, this.u_Color, [1, 1, 1, 1]);
+    t2.uniform4fv$2(t1, this.u_Color, new Float32Array([1, 1, 1, 1]));
     $.JSArray_methods.forEach$1(this.modelList, new $.TexShaderProgram_drawModels_anon(gameLoop, cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
@@ -5595,7 +5595,7 @@ $$.loadTexture2D_onDone = {"": "Closure;gl_0,textureTable_1,textureName_2,handle
     t2 = $.getInterceptor$x(t1);
     tex = t2.createTexture$0(t1);
     t2.bindTexture$2(t1, 3553, tex);
-    t2.pixelStorei$2(t1, 37440, true);
+    t2.pixelStorei$2(t1, 37440, 1);
     t2.texParameteri$3(t1, 3553, 10240, 9728);
     t2.texParameteri$3(t1, 3553, 10241, 9728);
     t2.texImage2D$6(t1, 3553, 0, 6408, 6408, 5121, this.image_4);

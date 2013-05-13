@@ -33,7 +33,7 @@ class TexShaderProgram extends ShaderProgram {
     
     // fallback solid color for textured objects
     List<double> white = [1.0, 1.0, 1.0, 1.0]; // neutral color in multiplication
-    gl.uniform4fv(u_Color, white);    
+    gl.uniform4fv(u_Color, new Float32List.fromList(white));    
 
     modelList.forEach((TexModel m) => m.drawInstances(gameLoop, cam));
 
