@@ -46,7 +46,7 @@ function onMessage(evt, status) {
 }
 
 function onError(evt, status) {
-	console.log("websocket: error: [" + evt.data + "]");
+	console.log("websocket: error: [" + evt + "]");
 }
 
 function doSend(message) {
