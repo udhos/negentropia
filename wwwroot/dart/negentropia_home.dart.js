@@ -3877,22 +3877,42 @@ $$.Rect = {"": "Object;left>,top>,width>,height>",
 
 $$.FixedSizeListIterator = {"": "Object;_array,_length,_position,_current",
   moveNext$0: function() {
-    var nextPosition, t1;
-    nextPosition = this._position + 1;
+    var t1, nextPosition;
+    t1 = this._position;
+    if (typeof t1 !== "number")
+      return this.moveNext$0$bailout(1, t1);
+    nextPosition = t1 + 1;
     t1 = this._length;
     if (t1 !== (t1 | 0))
-      throw $.iae(t1);
+      return this.moveNext$0$bailout(2, t1, nextPosition);
     if (nextPosition < t1) {
-      t1 = this._array;
-      if (nextPosition < 0 || nextPosition >= t1.length)
-        throw $.ioore(nextPosition);
-      this._current = t1[nextPosition];
+      this._current = $.$index$asx(this._array, nextPosition);
       this._position = nextPosition;
       return true;
     }
     this._current = null;
     this._position = t1;
     return false;
+  },
+  moveNext$0$bailout: function(state0, t1, nextPosition) {
+    switch (state0) {
+      case 0:
+        t1 = this._position;
+      case 1:
+        state0 = 0;
+        nextPosition = $.$add$ns(t1, 1);
+        t1 = this._length;
+      case 2:
+        state0 = 0;
+        if ($.JSNumber_methods.$lt(nextPosition, t1)) {
+          this._current = $.$index$asx(this._array, nextPosition);
+          this._position = nextPosition;
+          return true;
+        }
+        this._current = null;
+        this._position = t1;
+        return false;
+    }
   },
   get$current: function() {
     return this._current;
@@ -5690,6 +5710,7 @@ $$.initWebSocket_anon0 = {"": "Closure;wsUri_10,status_11,scheduleReconnect_12",
 
 $$.initWebSocket_anon1 = {"": "Closure;scheduleReconnect_13",
   call$1: function(e) {
+    $.Primitives_printString("websocket: error: w.onError.listen");
     $.Primitives_printString("websocket: error: [" + $.S($.get$data$x(e)) + "]");
     this.scheduleReconnect_13.call$0();
   }
@@ -5698,6 +5719,7 @@ $$.initWebSocket_anon1 = {"": "Closure;scheduleReconnect_13",
 $$.initWebSocket_anon2 = {"": "Closure;box_0,status_14",
   call$1: function(e) {
     var t1, msg, m, output, t2;
+    $.Primitives_printString("websocket: received: w.onMessage.listen");
     t1 = $.getInterceptor$x(e);
     $.Primitives_printString("websocket: received: [" + $.S(t1.get$data(e)) + "]");
     msg = $.parse(t1.get$data(e), null);
