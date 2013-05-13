@@ -69,15 +69,14 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
     reconnectScheduled = true;
   }
   
-  subClose = w.onClose.listen((MessageEvent e) {
+  subClose = w.onClose.listen((Event e) {
     status.text = "disconnected from $wsUri";    
     print("websocket: DISCONNECTED");
     scheduleReconnect();
   });
   
-  subError = w.onError.listen((MessageEvent e) {
-    print("websocket: error: w.onError.listen");
-    print("websocket: error: [${e.data}]");
+  subError = w.onError.listen((Event e) {
+    print("websocket: error: [$e]");
     scheduleReconnect();
   });
   
