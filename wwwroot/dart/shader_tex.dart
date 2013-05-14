@@ -91,7 +91,7 @@ class TexModel extends Model {
     super.fromOBJ(gl, program, URL);
   */  
 
-  TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL) {
+  TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL, void onDone(RenderingContext gl, TexModel model)) {
 
     this.program = program;
     
@@ -101,6 +101,8 @@ class TexModel extends Model {
       Obj obj = new Obj.fromString(URL, response);
       
       _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
+      
+      onDone(gl, this);
     }
 
     void handleError(Object err) {

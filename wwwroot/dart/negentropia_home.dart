@@ -167,14 +167,17 @@ void initAirship(RenderingContext gl) {
   airshipModel.addInstance(airshipInstance);  
 }
 
+void onModelDone(RenderingContext gl, TexModel airshipModel) {
+  TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg");
+  airshipModel.addTexture(texInfo);  
+}
+
 void initAirshipTex(RenderingContext gl) {
   TexShaderProgram prog = new TexShaderProgram(gl);
   programList.add(prog);
   prog.fetch(shaderCache, "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
-  TexModel airshipModel = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj");
+  TexModel airshipModel = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj", onModelDone);
   prog.addModel(airshipModel);
-  TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg");
-  airshipModel.addTexture(texInfo);
   TexInstance airshipInstance = new TexInstance(airshipModel, new vec3(5.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
 }

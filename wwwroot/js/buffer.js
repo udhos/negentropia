@@ -1,7 +1,6 @@
 
 function bufferAlert(msg) {
 	console.log(msg);
-	alert(msg);
 }
 
 function fetchBufferData(bufferURL, callbackOnDone, reverse, rescale) {

@@ -1,7 +1,6 @@
 
 function shaderAlert(msg) {
 	console.log(msg);
-	alert(msg);
 }
 
 function compileShader(gl, shaderURL, shaderString, shaderType) {

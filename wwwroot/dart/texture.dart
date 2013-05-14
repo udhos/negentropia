@@ -49,7 +49,7 @@ class TextureInfo {
   void forceCreateTexture(RenderingContext gl, Map<String,Texture> textureTable) {
     
     void handleDone(Event e) {
-      print("TextureInfo: handleDone: loaded image from URL: $textureName");
+      //print("TextureInfo: handleDone: loaded image from URL: $textureName");
       
       texture = textureTable[textureName];
     }
@@ -62,6 +62,8 @@ class TextureInfo {
   }
   
   TextureInfo(RenderingContext gl, Map<String,Texture> textureTable, this.indexOffset, this.indexNumber, this.textureName) {
+    
+    //print("TextureInfo: indexOffset=$indexOffset indexNumber=$indexNumber");
     
     texture = textureTable[textureName];
     if (texture != null) {
