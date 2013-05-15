@@ -1,0 +1,37 @@
+Greggman recipe - Replace Color With Texture in WebGL
+
+http://stackoverflow.com/questions/8090281/replace-color-with-texture-in-webgl/
+
+The approach I would take is as follows
+
+loadTexture(url, initialColor) {
+
+  var tex = gl.createTexture();
+
+  // start with a single color.
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  var pixel = new Uint8Array(initialColor);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, pixel);
+
+  // start loading the image
+  var img = new Image();
+  img.src = url;
+  img.onLoad = function() {
+
+    // when the image has loaded update the texture.          
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    gl.generateMipmap(gl.TEXTURE_2D);
+  }
+  return tex;
+}
+
+// Load a tree texture, use brown until the texture loads.
+var treeTexture = loadTexture("tree.png", [255, 200, 0, 255]);
+// Load a water texture, use blue until it loads.  
+var waterTexture = loadTexture("water.jpg", [0, 0, 255, 255]);
+This is how most of the samples on http://webglsamples.googlecode.com work although they all default to blue textures.
+
+You could easily extend that idea to use a solid color, the load a low-res texture, then when that finishes load a high-res texture.
+
+Note: the code above assumes you are loading power-of-2 textures. If not you'll need to setup your texture parameters correctly.
