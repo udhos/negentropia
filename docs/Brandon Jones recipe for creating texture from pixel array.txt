@@ -1,0 +1,33 @@
+Brandon Jones recipe for creating texture from pixel array
+
+http://stackoverflow.com/questions/9046643/webgl-create-texture/
+
+It's absolutely possible to create a texture with a pixel array! I use the following in my code all the time to create a single pixel, solid color texture.
+
+function createSolidTexture(gl, r, g, b, a) {
+    var data = new Uint8Array([r, g, b, a]);
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    return texture;
+}
+EDIT: To extrapolate this a little further, most of what you need to know is in the gl.texImage2d call. In order to create a texture from raw RGB(A) data you need an array of unsigned byte values, you need to specify to WebGL what the data represents (RGB or RGBA), and you need to know the dimensions of the texture. A more generalized function would look like this:
+
+function textureFromPixelArray(gl, dataArray, type, width, height) {
+    var dataTypedArray = new Uint8Array(dataArray); // Don't need to do this if the data is already in a typed array
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, type, width, height, 0, type, gl.UNSIGNED_BYTE, dataTypedArray);
+    // Other texture setup here, like filter modes and mipmap generation
+    return texture;
+}
+
+// RGB Texture:
+// For a 16x16 texture the array must have at least 768 values in it (16x16x3)
+var rgbTex = textureFromPixelArray(gl, [r,g,b,r,g,b...], gl.RGB, 16, 16);
+
+// RGBA Texture:
+// For a 16x16 texture the array must have at least 1024 values in it (16x16x4)
+var rgbaTex = textureFromPixelArray(gl, [r,g,b,a,r,g,b,a...], gl.RGBA, 16, 16);
