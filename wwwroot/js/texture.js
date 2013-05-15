@@ -5,10 +5,10 @@ function textureFinishedLoading(textureTable, textureName, onTextureLoad, textur
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 
 	/*
 	While OpenGL 2.0 and later for the desktop offer full support for non-power-of-two (NPOT) textures, OpenGL ES 2.0 and WebGL have only limited NPOT support. The restrictions are defined in Sections 3.8.2, "Shader Execution", and 3.7.11, "Mipmap Generation", of the OpenGL ES 2.0 specification, and are summarized here:
@@ -55,7 +55,7 @@ function loadImageForTexture(textureTable, textureName, onTextureLoad, texture) 
   image.src = textureName;
 }
 
-function loadTexture(textureTable, textureName, onTextureLoad) {
+function loadTexture(textureTable, textureName, onTextureLoad, temporaryColor) {
 
 	console.log("loadTexture: " + textureName);
 	
@@ -64,6 +64,17 @@ function loadTexture(textureTable, textureName, onTextureLoad) {
 		console.log("loadTexture: failure creating texture: " + textureName);
 		return;
 	}
+
+	// temporary solid color texture
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(temporaryColor));
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);  
+	gl.bindTexture(gl.TEXTURE_2D, null);
+	
+	textureTable[textureName] = texture;
 	
 	loadImageForTexture(textureTable, textureName, onTextureLoad, texture);
 }

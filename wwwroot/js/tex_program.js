@@ -43,7 +43,7 @@ function texShaderProgramLoaded(p, prog) {
 	texGetUniform(p, "u_MV");
 	texGetUniform(p, "u_P");	
 	texGetUniform(p, "u_Sampler");	
-	texGetUniform(p, "u_Color");	
+	//texGetUniform(p, "u_Color");	
 }
 
 TexProgram.prototype.addModel = function(m) {
@@ -65,9 +65,11 @@ TexProgram.prototype.drawModels = function() {
 	// perspective projection
 	gl.uniformMatrix4fv(this.u_P, false, neg.pMatrix);
 	
+	/*
 	// fallback solid color for textured objects
 	var white = [1.0, 1.0, 1.0, 1.0]; // neutral color in multiplication
 	gl.uniform4fv(this.u_Color, white);
+	*/
 
 	for (var m in this.modelList) {
 		this.modelList[m].drawInstances();
@@ -145,8 +147,6 @@ TexModel.prototype.addTexture = function(texture) {
 }
 
 function textureLoadDone(textureTable, textureName, texture) {
-	textureTable[textureName] = texture;
-	
 	console.log("textureLoadDone: " + textureName);
 }
 
@@ -161,8 +161,9 @@ function Texture(textureTable, indexOffset, indexNumber, textureName) {
 		console.log("textureTable HIT: " + textureTable);
 		return;
 	}
-		
-	loadTexture(textureTable, this.textureName, textureLoadDone);
+	
+	var solidColor = [.1*255, .7*255, .1*255, 255]; // green
+	loadTexture(textureTable, this.textureName, textureLoadDone, solidColor);
 }
 
 function TexInstance(model, center) {

@@ -241,7 +241,7 @@ function initAirship() {
 	var opaque = {
 		URL: objURL,
 		program: prog,
-		center: [-5.0, 0.0, 0.0]
+		center: [-8.0, 0.0, 0.0]
 	};
 	console.log("initAirship: loading OBJ from: " + objURL);
 	fetchFile(objURL, onObjDone, opaque)
@@ -285,10 +285,20 @@ function initAirshipTex() {
 		URL: objURL,
 		textureURL: texURL,
 		program: prog,
-		center: [5.0, 0.0, 0.0]
+		center: [0.0, 0.0, 0.0]
 	};
 	console.log("initAirshipTex: loading OBJ from: " + objURL);
 	fetchFile(objURL, onTexObjDone, opaque)
+	
+	var opaque = {
+		URL: objURL,
+		textureURL: "/texture/airship_all_diffuse.jpgXXX",
+		program: prog,
+		center: [8.0, 0.0, 0.0]
+	};
+	console.log("initAirshipTex: loading OBJ from: " + objURL);
+	fetchFile(objURL, onTexObjDone, opaque)
+	
 }
 
 function initShips() {
