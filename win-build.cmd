@@ -16,6 +16,9 @@ set GOPATH=%DEVEL%\negentropia\webserv
 @rem
 @rem load from git bash:
 @rem go get github.com/HairyMezican/goauth2/oauth
+@rem
+@rem untested:
+@rem go get bitbucket.org/gosimple/oauth2
 
 @rem build
 go install negentropia/webserv

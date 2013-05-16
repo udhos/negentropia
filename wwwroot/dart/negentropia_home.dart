@@ -92,7 +92,7 @@ RenderingContext boot() {
   
   if (debugLostContext) {
     //initDebugLostContext(canvas, cfg);
-    initDebugLostContext(canvas);
+    initDebugLostContext(gl, canvas);
   }
   
   var sid = Cookie.getCookie("sid");

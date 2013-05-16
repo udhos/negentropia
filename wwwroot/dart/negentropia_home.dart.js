@@ -13620,7 +13620,7 @@ $$.ExtTextureFilterAnisotropic = {"": "Interceptor;"};
 
 $$.Framebuffer = {"": "Interceptor;"};
 
-$$.LoseContext = {"": "Interceptor;"};
+$$.LoseContext = {"": "Interceptor;", $isLoseContext: true, $asLoseContext: null};
 
 $$.OesElementIndexUint = {"": "Interceptor;"};
 
@@ -13690,6 +13690,9 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
   },
   getAttribLocation$2: function(receiver, program, $name) {
     return receiver.getAttribLocation(program, $name);
+  },
+  getExtension$1: function(receiver, $name) {
+    return receiver.getExtension($name);
   },
   getProgramInfoLog$1: function(receiver, program) {
     return receiver.getProgramInfoLog(program);
@@ -16743,9 +16746,16 @@ $.Cookie_getCookie = function($name) {
   return;
 };
 
-$.initDebugLostContext = function(canvas) {
+$.initDebugLostContext = function(gl, canvas) {
   var control, t1, loseContextButton, t2, t3, restoreContextButton;
   $.interceptedTypeCheck(canvas, "$isCanvasElement");
+  $.Primitives_printString("FIXME: initDebugLostContext: trap webglcontextlost");
+  $.Primitives_printString("FIXME: initDebugLostContext: trap webglcontextrestored");
+  if ($.interceptedTypeCheck($.getExtension$1$x(gl, "WEBGL_lose_context"), "$isLoseContext") == null) {
+    $.Primitives_printString("WEBGL_lose_context: NOT AVAILABLE");
+    return;
+  }
+  $.Primitives_printString("WEBGL_lose_context: available");
   control = $.interceptedTypeCheck($.HtmlDocument_methods.query$1(document, "#control"), "$isDivElement");
   t1 = $.getInterceptor(control);
   $.assertHelper(control != null);
@@ -16767,8 +16777,6 @@ $.initDebugLostContext = function(canvas) {
   $.functionTypeCheck(t3);
   $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
   t1.append$1(control, restoreContextButton);
-  $.Primitives_printString("FIXME: initDebugLostContext: trap webglcontextlost");
-  $.Primitives_printString("FIXME: initDebugLostContext: trap webglcontextrestored");
 };
 
 $.initGL = function(canvas) {
@@ -16813,7 +16821,7 @@ $.boot = function() {
     return;
   }
   if ($.debugLostContext)
-    $.initDebugLostContext($.canvas);
+    $.initDebugLostContext(gl, $.canvas);
   sid = $.Cookie_getCookie("sid");
   $.assertHelper(sid != null);
   $.Primitives_printString("session id sid=" + $.S(sid));
@@ -17435,28 +17443,28 @@ $.Instance.$isInstance = true;
 $.Instance.$isInstance = true;
 $.Instance.$isObject = true;
 $.Instance.$isObject = true;
-$.Model.$isModel = true;
-$.Model.$isModel = true;
 $.Model.$isObject = true;
 $.Model.$isObject = true;
+$.Model.$isModel = true;
+$.Model.$isModel = true;
 $.TextureInfo.$isObject = true;
 $.TextureInfo.$isObject = true;
 $.TextureInfo.$isTextureInfo = true;
 $.TextureInfo.$isTextureInfo = true;
-$.HttpRequest.$isHttpRequest = true;
-$.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
 $.HttpRequest.$isObject = true;
+$.HttpRequest.$isHttpRequest = true;
+$.HttpRequest.$isHttpRequest = true;
 $.ElementInstance.$isObject = true;
 $.ElementInstance.$isObject = true;
 $.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isElementInstance = true;
 $.SourceBuffer.$isObject = true;
 $.SourceBuffer.$isObject = true;
-$.ReceivePort.$isObject = true;
-$.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
 $.ReceivePort.$isReceivePort = true;
+$.ReceivePort.$isObject = true;
+$.ReceivePort.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
@@ -17533,46 +17541,50 @@ $.MouseEvent.$isObject = true;
 $.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isNode = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
+$.Node.$isObject = true;
+$.Node.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isList = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouch.$isObject = true;
-$.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouch.$isObject = true;
+$.GameLoopTouch.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isnum = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $._EntrySync.$isObject = true;
 $._EntrySync.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isdouble = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
@@ -17581,38 +17593,36 @@ $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
 $.JSString.$isString = true;
-$.DigitalButton.$isDigitalButton = true;
-$.DigitalButton.$isDigitalButton = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.DigitalButton.$isObject = true;
 $.DigitalButton.$isObject = true;
-$.GameLoopTimer.$isObject = true;
-$.GameLoopTimer.$isObject = true;
+$.DigitalButton.$isDigitalButton = true;
+$.DigitalButton.$isDigitalButton = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
+$.GameLoopTimer.$isObject = true;
+$.GameLoopTimer.$isObject = true;
 $.Element.$isObject = true;
 $.Element.$isObject = true;
 $.Element.$isElement = true;
 $.Element.$isElement = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
 $.Element.$isNode = true;
 $.Element.$isNode = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
@@ -17621,24 +17631,22 @@ $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isnum = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.Entry.$isEntry = true;
-$.Entry.$isEntry = true;
 $.Entry.$isObject = true;
 $.Entry.$isObject = true;
+$.Entry.$isEntry = true;
+$.Entry.$isEntry = true;
 $.Transform.$isObject = true;
 $.Transform.$isObject = true;
 $.Plugin.$isObject = true;
 $.Plugin.$isObject = true;
-$.File.$isObject = true;
-$.File.$isObject = true;
 $.File.$isFile = true;
 $.File.$isFile = true;
+$.File.$isObject = true;
+$.File.$isObject = true;
 Isolate.makeConstantList = function(list) {
   list.immutable$list = true;
   list.fixed$length = true;
@@ -17880,6 +17888,9 @@ $.get$width$x = function(receiver) {
 };
 $.getContext3d$0$x = function(receiver) {
   return $.getInterceptor$x(receiver).getContext3d$0(receiver);
+};
+$.getExtension$1$x = function(receiver, a0) {
+  return $.getInterceptor$x(receiver).getExtension$1(receiver, a0);
 };
 $.getProgramInfoLog$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).getProgramInfoLog$1(receiver, a0);

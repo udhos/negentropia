@@ -1,11 +1,23 @@
 library lost_context;
 
 import 'dart:html';
+import 'dart:web_gl';
 
-void initDebugLostContext(CanvasElement canvas) {
+void initDebugLostContext(RenderingContext gl, CanvasElement canvas) {
+
+  print("FIXME: initDebugLostContext: trap webglcontextlost");
+  print("FIXME: initDebugLostContext: trap webglcontextrestored");
+  
+  LoseContext ext = gl.getExtension('WEBGL_lose_context');
+  if (ext == null) {
+    print("WEBGL_lose_context: NOT AVAILABLE");
+    return;
+  }
+  print("WEBGL_lose_context: available");
+
   DivElement control = query("#control");
   assert(control != null);
-    
+  
   InputElement loseContextButton = new InputElement();
   loseContextButton.type = 'button';
   loseContextButton.value = 'lose context';
@@ -17,10 +29,7 @@ void initDebugLostContext(CanvasElement canvas) {
   restoreContextButton.type = 'button';
   restoreContextButton.value = 'restore context';
   restoreContextButton.onClick.listen((Event e) { print("restore context button: FIXME"); });
-  control.append(restoreContextButton);
-  
-  print("FIXME: initDebugLostContext: trap webglcontextlost");
-  print("FIXME: initDebugLostContext: trap webglcontextrestored"); 
+  control.append(restoreContextButton);  
 }
 
 
