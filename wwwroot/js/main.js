@@ -292,7 +292,7 @@ function initAirshipTex() {
 	
 	var opaque = {
 		URL: objURL,
-		textureURL: "/texture/airship_all_diffuse.jpgXXX",
+		textureURL: "INTENTIONAL-BAD-TEXTURE-NAME",
 		program: prog,
 		center: [8.0, 0.0, 0.0]
 	};

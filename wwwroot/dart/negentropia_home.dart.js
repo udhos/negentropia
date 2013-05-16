@@ -6480,6 +6480,26 @@ $$.initSquares_closure = {"": "Closure;squareProgram2_0",
   $isVoidCallback: true
 };
 
+$$.initAirshipTex_onModelDone = {"": "Closure;temporaryColor_0",
+  call$2: function(gl, airshipModel) {
+    $.interceptedTypeCheck(gl, "$isRenderingContext");
+    $.propertyTypeCheck(airshipModel, "$isTexModel");
+    airshipModel.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg", this.temporaryColor_0));
+  },
+  $isFunction: true,
+  $asObject: null
+};
+
+$$.initAirshipTex_onModelDone2 = {"": "Closure;temporaryColor_1",
+  call$2: function(gl, airshipModel) {
+    $.interceptedTypeCheck(gl, "$isRenderingContext");
+    $.propertyTypeCheck(airshipModel, "$isTexModel");
+    airshipModel.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, airshipModel.vertexIndexLength, "INTENTIONAL-BAD-TEXTURE-NAME", this.temporaryColor_1));
+  },
+  $isFunction: true,
+  $asObject: null
+};
+
 $$.initContext_closure = {"": "Closure;gl_0",
   call$1: function(p) {
     return $.propertyTypeCheck(p, "$isShaderProgram").initContext$2(this.gl_0, $.textureTable);
@@ -6953,7 +6973,7 @@ $$.ShaderProgram_update_closure = {"": "Closure;gameLoop_0",
   $is_FutureErrorTest: true
 };
 
-$$.TexShaderProgram = {"": "ShaderProgram;a_TextureCoord,u_Sampler,u_Color,program,gl,a_Position,u_MV,u_P,modelList",
+$$.TexShaderProgram = {"": "ShaderProgram;a_TextureCoord,u_Sampler,program,gl,a_Position,u_MV,u_P,modelList",
   initContext$2: function(gl, textureTable) {
     $.JSArray_methods.forEach$1(this.modelList, new $.TexShaderProgram_initContext_closure($.interceptedTypeCheck(gl, "$isRenderingContext"), $.interceptedTypeCheck(textureTable, "$isMap")));
   },
@@ -6964,11 +6984,10 @@ $$.TexShaderProgram = {"": "ShaderProgram;a_TextureCoord,u_Sampler,u_Color,progr
     t2 = $.getInterceptor$x(t1);
     this.a_TextureCoord = t2.getAttribLocation$2(t1, this.program, "a_TextureCoord");
     this.u_Sampler = t2.getUniformLocation$2(t1, this.program, "u_Sampler");
-    this.u_Color = t2.getUniformLocation$2(t1, this.program, "u_Color");
     $.Primitives_printString("TexShaderProgram: locations ready");
   },
   drawModels$3: function(gameLoop, cam, pMatrix) {
-    var t1, t2, white, t3;
+    var t1, t2;
     $.propertyTypeCheck(gameLoop, "$isGameLoopHtml");
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
@@ -6976,10 +6995,6 @@ $$.TexShaderProgram = {"": "ShaderProgram;a_TextureCoord,u_Sampler,u_Color,progr
     t2.enableVertexAttribArray$1(t1, this.a_Position);
     t2.enableVertexAttribArray$1(t1, this.a_TextureCoord);
     t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.storage);
-    white = $.listTypeCheck([1, 1, 1, 1]);
-    t3 = this.u_Color;
-    $.listTypeCheck(white);
-    t2.uniform4fv$2(t1, t3, new Float32Array(white));
     $.JSArray_methods.forEach$1(this.modelList, new $.TexShaderProgram_drawModels_closure(gameLoop, cam));
     t2.bindBuffer$2(t1, 34962, null);
     t2.bindBuffer$2(t1, 34963, null);
@@ -7311,62 +7326,79 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
   }
 };
 
-$$.loadTexture2D_onDone = {"": "Closure;gl_0,textureTable_1,textureName_2,handleDone_3,image_4",
-  call$1: function(e) {
-    var t1, t2, tex;
-    $.interceptedTypeCheck(e, "$isEvent");
-    t1 = this.gl_0;
-    t2 = $.getInterceptor$x(t1);
-    tex = t2.createTexture$0(t1);
-    t2.bindTexture$2(t1, 3553, tex);
-    t2.pixelStorei$2(t1, 37440, 1);
-    t2.texParameteri$3(t1, 3553, 10240, 9728);
-    t2.texParameteri$3(t1, 3553, 10241, 9728);
-    t2.texImage2D$6(t1, 3553, 0, 6408, 6408, 5121, this.image_4);
-    t2.texParameteri$3(t1, 3553, 10242, 33071);
-    t2.texParameteri$3(t1, 3553, 10243, 33071);
-    t2.bindTexture$2(t1, 3553, null);
-    t1 = this.textureName_2;
-    $.$indexSet$ax(this.textureTable_1, t1, tex);
-    $.Primitives_printString("loadTexture2D: fetched: " + t1);
-    this.handleDone_3.call$1(e);
-  },
-  $isFunction: true,
-  $asObject: null,
-  $is_FutureOnError: true,
-  $isEventListener: true
-};
-
-$$.TextureInfo = {"": "Object;indexOffset,indexNumber,textureName<,texture",
-  set$texture: function(v) {
-    this.texture = $.interceptedTypeCheck(v, "$isTexture");
-  },
-  forceCreateTexture$2: function(gl, textureTable) {
-    $.interceptedTypeCheck(gl, "$isRenderingContext");
+$$.TextureInfo = {"": "Object;indexOffset,indexNumber,textureName<,texture<",
+  loadTexture2D$6: function(gl, textureTable, textureName, temporaryColor, handleDone, handleError) {
+    var image, t1, t2, t3, fail, e;
     $.interceptedTypeCheck(textureTable, "$isMap");
-    $.loadTexture2D(gl, textureTable, this.textureName, new $.TextureInfo_forceCreateTexture_handleDone(this, textureTable), new $.TextureInfo_forceCreateTexture_handleError(this));
+    $.listTypeCheck(temporaryColor);
+    $.functionTypeCheck(handleDone);
+    $.functionTypeCheck(handleError);
+    image = $.interceptedTypeCheck($.ImageElement_ImageElement(null, null, null), "$isImageElement");
+    t1 = $.getInterceptor$x(gl);
+    this.texture = gl.createTexture();
+    t2 = new $.TextureInfo_loadTexture2D_onDone(this, gl, handleDone, image);
+    t3 = this.texture;
+    if (t3 == null) {
+      fail = "could not create texture for: " + textureName;
+      $.Primitives_printString("loadTexture2D: " + fail);
+      e = $.HtmlDocument_methods.$$dom_createEvent$1(document, "Event");
+      $.$$dom_initEvent$3$x(e, fail, true, true);
+      handleError.call$1(e);
+      return;
+    }
+    $.$indexSet$ax(textureTable, textureName, t3);
+    t1.bindTexture$2(gl, 3553, this.texture);
+    $.listTypeCheck(temporaryColor);
+    $.listTypeCheck(temporaryColor);
+    t1.texImage2D$9(gl, 3553, 0, 6408, 1, 1, 0, 6408, 5121, new Uint8Array(temporaryColor));
+    t1.texParameteri$3(gl, 3553, 10240, 9728);
+    t1.texParameteri$3(gl, 3553, 10241, 9728);
+    t1.texParameteri$3(gl, 3553, 10242, 33071);
+    t1.texParameteri$3(gl, 3553, 10243, 33071);
+    t1.bindTexture$2(gl, 3553, null);
+    t1 = $.getInterceptor$x(image);
+    t3 = t1.get$onLoad(image);
+    $.functionTypeCheck(t2);
+    $.functionTypeCheck(null);
+    $.functionTypeCheck(null);
+    $.propertyTypeCheck($._EventStreamSubscription$(t3._target, t3._eventType, t2, t3._useCapture, $.getRuntimeTypeArgument(t3, t3.$as_EventStream, 0)), "$isStreamSubscription");
+    t1.get$onError(image).listen$1(handleError);
+    image.src = textureName;
   },
-  TextureInfo$5: function(gl, textureTable, indexOffset, indexNumber, textureName) {
+  forceCreateTexture$3: function(gl, textureTable, temporaryColor) {
+    this.loadTexture2D$6(gl, $.interceptedTypeCheck(textureTable, "$isMap"), this.textureName, $.listTypeCheck(temporaryColor), new $.TextureInfo_forceCreateTexture_handleDone(this), new $.TextureInfo_forceCreateTexture_handleError(this));
+  },
+  TextureInfo$6: function(gl, textureTable, indexOffset, indexNumber, textureName, temporaryColor) {
     var t1;
     $.interceptedTypeCheck(gl, "$isRenderingContext");
     $.interceptedTypeCheck(textureTable, "$isMap");
+    $.listTypeCheck(temporaryColor);
     t1 = this.textureName;
     this.texture = $.interceptedTypeCheck($.$index$asx(textureTable, t1), "$isTexture");
     if (this.texture != null) {
       $.print("TextureInfo: texture table HIT: " + t1);
       return;
     }
-    this.forceCreateTexture$2(gl, textureTable);
+    this.forceCreateTexture$3(gl, textureTable, temporaryColor);
   },
   $isTextureInfo: true
 };
 
-$$.TextureInfo_forceCreateTexture_handleDone = {"": "Closure;this_0,textureTable_1",
+$$.TextureInfo_loadTexture2D_onDone = {"": "Closure;this_0,gl_1,handleDone_2,image_3",
   call$1: function(e) {
-    var t1;
+    var t1, t2;
     $.interceptedTypeCheck(e, "$isEvent");
-    t1 = this.this_0;
-    t1.set$texture($.$index$asx(this.textureTable_1, t1.get$textureName()));
+    t1 = this.gl_1;
+    t2 = $.getInterceptor$x(t1);
+    t2.bindTexture$2(t1, 3553, this.this_0.get$texture());
+    t2.pixelStorei$2(t1, 37440, 1);
+    t2.texImage2D$6(t1, 3553, 0, 6408, 6408, 5121, this.image_3);
+    t2.texParameteri$3(t1, 3553, 10240, 9728);
+    t2.texParameteri$3(t1, 3553, 10241, 9728);
+    t2.texParameteri$3(t1, 3553, 10242, 33071);
+    t2.texParameteri$3(t1, 3553, 10243, 33071);
+    t2.bindTexture$2(t1, 3553, null);
+    this.handleDone_2.call$1(e);
   },
   $isFunction: true,
   $asObject: null,
@@ -7374,10 +7406,21 @@ $$.TextureInfo_forceCreateTexture_handleDone = {"": "Closure;this_0,textureTable
   $isEventListener: true
 };
 
-$$.TextureInfo_forceCreateTexture_handleError = {"": "Closure;this_2",
+$$.TextureInfo_forceCreateTexture_handleDone = {"": "Closure;this_0",
   call$1: function(e) {
     $.interceptedTypeCheck(e, "$isEvent");
-    $.Primitives_printString("TextureInfo: handleError: failure loading image from URL: " + this.this_2.get$textureName() + ": " + $.S(e));
+    $.Primitives_printString("TextureInfo: handleDone: loaded image from URL: " + this.this_0.get$textureName());
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $isEventListener: true
+};
+
+$$.TextureInfo_forceCreateTexture_handleError = {"": "Closure;this_1",
+  call$1: function(e) {
+    $.interceptedTypeCheck(e, "$isEvent");
+    $.Primitives_printString("TextureInfo: handleError: failure loading image from URL: " + this.this_1.get$textureName() + ": " + $.S(e));
   },
   $isFunction: true,
   $asObject: null,
@@ -10015,6 +10058,9 @@ $$.Document = {"": "Node;",
   $$dom_createElement$1: function($receiver, localName_OR_tagName) {
     return $receiver.createElement(localName_OR_tagName);
   },
+  $$dom_createEvent$1: function(receiver, eventType) {
+    return receiver.createEvent(eventType);
+  },
   query$1: function(receiver, selectors) {
     return receiver.querySelector(selectors);
   },
@@ -10169,7 +10215,13 @@ $$.Entry = {"": "Interceptor;",
 
 $$.ErrorEvent = {"": "Event;"};
 
-$$.Event = {"": "Interceptor;", $isEvent: true, $asEvent: null};
+$$.Event = {"": "Interceptor;",
+  $$dom_initEvent$3: function(receiver, eventTypeArg, canBubbleArg, cancelableArg) {
+    return receiver.initEvent(eventTypeArg, canBubbleArg, cancelableArg);
+  },
+  $isEvent: true,
+  $asEvent: null
+};
 
 $$.EventException = {"": "Interceptor;",
   toString$0: function(receiver) {
@@ -13615,9 +13667,6 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
   createShader$1: function(receiver, type) {
     return receiver.createShader(type);
   },
-  createTexture$0: function(receiver) {
-    return receiver.createTexture();
-  },
   cullFace$1: function(receiver, mode) {
     return receiver.cullFace(mode);
   },
@@ -13680,11 +13729,11 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
     t3 = $ === pixels;
     if (t3)
       pixels = null;
-    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null) {
+    if (typeof border_OR_canvas_OR_image_OR_pixels_OR_video === "number" && Math.floor(border_OR_canvas_OR_image_OR_pixels_OR_video) === border_OR_canvas_OR_image_OR_pixels_OR_video || border_OR_canvas_OR_image_OR_pixels_OR_video == null) {
       this._texImage2D_1$9(receiver, target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video, format, type, pixels);
       return;
     }
-    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null && t1 && t2 && t3) {
+    if ((typeof border_OR_canvas_OR_image_OR_pixels_OR_video === "object" && border_OR_canvas_OR_image_OR_pixels_OR_video !== null && !!$.getInterceptor(border_OR_canvas_OR_image_OR_pixels_OR_video).$isImageData || border_OR_canvas_OR_image_OR_pixels_OR_video == null) && t1 && t2 && t3) {
       this._texImage2D_2$6(receiver, target, level, internalformat, format_OR_width, height_OR_type, receiver._convertDartToNative_ImageData$1(border_OR_canvas_OR_image_OR_pixels_OR_video));
       return;
     }
@@ -13725,9 +13774,6 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
   },
   uniform1i$2: function(receiver, $location, x) {
     return receiver.uniform1i($location, x);
-  },
-  uniform4fv$2: function(receiver, $location, v) {
-    return receiver.uniform4fv($location, v);
   },
   uniformMatrix4fv$3: function(receiver, $location, transpose, array) {
     return receiver.uniformMatrix4fv($location, transpose, array);
@@ -16837,23 +16883,22 @@ $.initAirship = function(gl) {
   prog.fetch$3($.shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
   airshipModel = $.Model$fromOBJ(gl, prog, "/obj/airship.obj");
   $.JSArray_methods.add$1(prog.modelList, airshipModel);
-  $.JSArray_methods.add$1(airshipModel.instanceList, $.Instance$(airshipModel, $.vec3$(-5, 0, 0), 1));
-};
-
-$.onModelDone = function(gl, airshipModel) {
-  $.interceptedTypeCheck(gl, "$isRenderingContext");
-  $.propertyTypeCheck(airshipModel, "$isTexModel");
-  airshipModel.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg"));
+  $.JSArray_methods.add$1(airshipModel.instanceList, $.Instance$(airshipModel, $.vec3$(-8, 0, 0), 1));
 };
 
 $.initAirshipTex = function(gl) {
-  var prog, airshipModel;
+  var prog, temporaryColor, airshipModel, t1, airshipModel2;
   prog = $.TexShaderProgram$(gl);
   $.add$1$ax($.programList, prog);
   prog.fetch$3($.shaderCache, "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
-  airshipModel = $.TexModel$fromOBJ(gl, prog, "/obj/airship.obj", $.onModelDone);
-  $.JSArray_methods.add$1(prog.modelList, airshipModel);
-  $.JSArray_methods.add$1(airshipModel.instanceList, $.TexInstance$(airshipModel, $.vec3$(5, 0, 0), 1));
+  temporaryColor = $.listTypeCheck([0, 255, 0, 255]);
+  airshipModel = $.TexModel$fromOBJ(gl, prog, "/obj/airship.obj", new $.initAirshipTex_onModelDone(temporaryColor));
+  t1 = prog.modelList;
+  $.JSArray_methods.add$1(t1, airshipModel);
+  $.JSArray_methods.add$1(airshipModel.instanceList, $.TexInstance$(airshipModel, $.vec3$(0, 0, 0), 1));
+  airshipModel2 = $.TexModel$fromOBJ(gl, prog, "/obj/airship.obj", new $.initAirshipTex_onModelDone2(temporaryColor));
+  $.JSArray_methods.add$1(t1, airshipModel2);
+  $.JSArray_methods.add$1(airshipModel2.instanceList, $.TexInstance$(airshipModel2, $.vec3$(8, 0, 0), 1));
 };
 
 $.initContext = function(gl, gameLoop) {
@@ -16952,7 +16997,7 @@ $.ShaderProgram$ = function(gl) {
 $.TexShaderProgram$ = function(gl) {
   var t1 = $.List_List($, $.Model);
   $.setRuntimeTypeInfo(t1, [$.Model]);
-  return new $.TexShaderProgram(null, null, null, null, gl, null, null, null, $.listTypeCheck(t1));
+  return new $.TexShaderProgram(null, null, null, gl, null, null, null, $.listTypeCheck(t1));
 };
 
 $.TexModel$fromOBJ = function(gl, program, URL, onDone) {
@@ -16990,26 +17035,9 @@ $.SkyboxInstance$ = function(model, center, scale) {
   return new $.SkyboxInstance(model, center, $.doubleTypeCheck(scale), $.mat4$identity());
 };
 
-$.loadTexture2D = function(gl, textureTable, textureName, handleDone, handleError) {
-  var image, t1, t2, t3;
-  $.interceptedTypeCheck(textureTable, "$isMap");
-  $.functionTypeCheck(handleDone);
-  $.functionTypeCheck(handleError);
-  image = $.interceptedTypeCheck($.ImageElement_ImageElement(null, null, null), "$isImageElement");
-  t1 = new $.loadTexture2D_onDone(gl, textureTable, textureName, handleDone, image);
-  t2 = $.getInterceptor$x(image);
-  t3 = t2.get$onLoad(image);
-  $.functionTypeCheck(t1);
-  $.functionTypeCheck(null);
-  $.functionTypeCheck(null);
-  $.propertyTypeCheck($._EventStreamSubscription$(t3._target, t3._eventType, t1, t3._useCapture, $.getRuntimeTypeArgument(t3, t3.$as_EventStream, 0)), "$isStreamSubscription");
-  t2.get$onError(image).listen$1(handleError);
-  image.src = textureName;
-};
-
-$.TextureInfo$ = function(gl, textureTable, indexOffset, indexNumber, textureName) {
+$.TextureInfo$ = function(gl, textureTable, indexOffset, indexNumber, textureName, temporaryColor) {
   var t1 = new $.TextureInfo(indexOffset, $.intTypeCheck(indexNumber), textureName, null);
-  t1.TextureInfo$5(gl, $.interceptedTypeCheck(textureTable, "$isMap"), indexOffset, indexNumber, textureName);
+  t1.TextureInfo$6(gl, $.interceptedTypeCheck(textureTable, "$isMap"), indexOffset, indexNumber, textureName, $.listTypeCheck(temporaryColor));
   return t1;
 };
 
@@ -17397,18 +17425,16 @@ $._asyncRunCallback.$isVoidCallback = true;
 $.Element__determineMouseWheelEventType.call$1 = $.Element__determineMouseWheelEventType;
 $.Element__determineMouseWheelEventType.$name = "Element__determineMouseWheelEventType";
 $.Element__determineMouseWheelEventType.$is_FutureOnError = true;
-$.onModelDone.call$2 = $.onModelDone;
-$.onModelDone.$name = "onModelDone";
 $.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isShaderProgram = true;
 $.Gamepad.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Instance.$isObject = true;
-$.Instance.$isObject = true;
 $.Instance.$isInstance = true;
 $.Instance.$isInstance = true;
+$.Instance.$isObject = true;
+$.Instance.$isObject = true;
 $.Model.$isModel = true;
 $.Model.$isModel = true;
 $.Model.$isObject = true;
@@ -17417,20 +17443,20 @@ $.TextureInfo.$isObject = true;
 $.TextureInfo.$isObject = true;
 $.TextureInfo.$isTextureInfo = true;
 $.TextureInfo.$isTextureInfo = true;
-$.HttpRequest.$isObject = true;
-$.HttpRequest.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isHttpRequest = true;
-$.ElementInstance.$isElementInstance = true;
-$.ElementInstance.$isElementInstance = true;
+$.HttpRequest.$isObject = true;
+$.HttpRequest.$isObject = true;
 $.ElementInstance.$isObject = true;
 $.ElementInstance.$isObject = true;
+$.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isElementInstance = true;
 $.SourceBuffer.$isObject = true;
 $.SourceBuffer.$isObject = true;
-$.ReceivePort.$isReceivePort = true;
-$.ReceivePort.$isReceivePort = true;
 $.ReceivePort.$isObject = true;
 $.ReceivePort.$isObject = true;
+$.ReceivePort.$isReceivePort = true;
+$.ReceivePort.$isReceivePort = true;
 $.SpeechGrammar.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
@@ -17453,10 +17479,10 @@ $.StyleSheet.$isObject = true;
 $.StyleSheet.$isObject = true;
 $.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isEvent = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isObject = true;
 $.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.TextTrack.$isObject = true;
 $.TextTrack.$isObject = true;
 $.Length.$isObject = true;
@@ -17471,10 +17497,10 @@ $._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
 $.Touch.$isObject = true;
 $.Touch.$isObject = true;
-$._IsolateEvent.$isObject = true;
-$._IsolateEvent.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateEvent.$isObject = true;
+$._IsolateEvent.$isObject = true;
 $._ManagerStub.$is_ManagerStub = true;
 $._ManagerStub.$is_ManagerStub = true;
 $._ManagerStub.$isObject = true;
@@ -17485,10 +17511,10 @@ $.Number.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
 $.PathSeg.$isObject = true;
-$.Shader.$isObject = true;
-$.Shader.$isObject = true;
 $.Shader.$isShader = true;
 $.Shader.$isShader = true;
+$.Shader.$isObject = true;
+$.Shader.$isObject = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
@@ -17507,54 +17533,54 @@ $.MouseEvent.$isObject = true;
 $.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isNode = true;
-$.Node.$isNode = true;
 $.Node.$isObject = true;
 $.Node.$isObject = true;
+$.Node.$isNode = true;
+$.Node.$isNode = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isList = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $._EntrySync.$isObject = true;
 $._EntrySync.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
+$.JSDouble.$isdouble = true;
+$.JSDouble.$isdouble = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isdouble = true;
-$.JSDouble.$isdouble = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
@@ -17579,32 +17605,32 @@ $.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
 $.Element.$isElement = true;
 $.Element.$isElement = true;
 $.Element.$isNode = true;
 $.Element.$isNode = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
+$.JSInt.$isint = true;
+$.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isnum = true;
-$.JSInt.$isint = true;
-$.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.Entry.$isObject = true;
-$.Entry.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.Entry.$isEntry = true;
 $.Entry.$isEntry = true;
+$.Entry.$isObject = true;
+$.Entry.$isObject = true;
 $.Transform.$isObject = true;
 $.Transform.$isObject = true;
 $.Plugin.$isObject = true;
@@ -17623,13 +17649,14 @@ $.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.JSNull_methods = $.JSNull.prototype;
 $.JSDouble_methods = $.JSDouble.prototype;
-$.EventStreamProvider_webkitfullscreenchange = new $.EventStreamProvider("webkitfullscreenchange");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
-$.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
+$.EventStreamProvider_webkitfullscreenchange = new $.EventStreamProvider("webkitfullscreenchange");
 $.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
 $.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
 $.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
+$.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
 $.Duration_0 = new $.Duration(0);
 $.EventStreamProvider_success = new $.EventStreamProvider("success");
 $.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
@@ -17642,7 +17669,6 @@ $._WorkerStub_methods = $._WorkerStub.prototype;
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.Window_methods = $.Window.prototype;
 $.Float32List_methods = $.Float32List.prototype;
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.JSArray_methods = $.JSArray.prototype;
 $.C_CloseToken = new $.CloseToken();
@@ -17676,6 +17702,9 @@ $.fullRateFrames = 0;
 $.stats = null;
 $.$$dom_addEventListener$3$x = function(receiver, a0, a1, a2) {
   return $.getInterceptor$x(receiver).$$dom_addEventListener$3(receiver, a0, a1, a2);
+};
+$.$$dom_initEvent$3$x = function(receiver, a0, a1, a2) {
+  return $.getInterceptor$x(receiver).$$dom_initEvent$3(receiver, a0, a1, a2);
 };
 $.$$dom_removeChild$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).$$dom_removeChild$1(receiver, a0);

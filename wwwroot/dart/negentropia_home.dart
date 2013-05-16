@@ -163,23 +163,37 @@ void initAirship(RenderingContext gl) {
   prog.fetch(shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
   Model airshipModel = new Model.fromOBJ(gl, prog, "/obj/airship.obj");
   prog.addModel(airshipModel);
-  Instance airshipInstance = new Instance(airshipModel, new vec3(-5.0, 0.0, 0.0), 1.0);
+  Instance airshipInstance = new Instance(airshipModel, new vec3(-8.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);  
 }
 
-void onModelDone(RenderingContext gl, TexModel airshipModel) {
-  TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg");
-  airshipModel.addTexture(texInfo);  
-}
 
 void initAirshipTex(RenderingContext gl) {
   TexShaderProgram prog = new TexShaderProgram(gl);
   programList.add(prog);
   prog.fetch(shaderCache, "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
+  
+  List<int> temporaryColor = [0, 255, 0, 255]; // green
+
+  void onModelDone(RenderingContext gl, TexModel airshipModel) {
+    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg", temporaryColor);
+    airshipModel.addTexture(texInfo);  
+  }
+
   TexModel airshipModel = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj", onModelDone);
   prog.addModel(airshipModel);
-  TexInstance airshipInstance = new TexInstance(airshipModel, new vec3(5.0, 0.0, 0.0), 1.0);
+  TexInstance airshipInstance = new TexInstance(airshipModel, new vec3(0.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
+
+  void onModelDone2(RenderingContext gl, TexModel airshipModel) {
+    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, airshipModel.vertexIndexLength, "INTENTIONAL-BAD-TEXTURE-NAME", temporaryColor);
+    airshipModel.addTexture(texInfo);  
+  }
+
+  TexModel airshipModel2 = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj", onModelDone2);
+  prog.addModel(airshipModel2);
+  TexInstance airshipInstance2 = new TexInstance(airshipModel2, new vec3(8.0, 0.0, 0.0), 1.0);
+  airshipModel2.addInstance(airshipInstance2);
 }
 
 void initShips(RenderingContext gl) {

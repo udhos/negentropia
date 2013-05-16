@@ -4,7 +4,7 @@ class TexShaderProgram extends ShaderProgram {
   
   int a_TextureCoord;
   UniformLocation u_Sampler;
-  UniformLocation u_Color;  
+  //UniformLocation u_Color;  
    
   TexShaderProgram(RenderingContext gl) : super(gl);
   
@@ -17,7 +17,7 @@ class TexShaderProgram extends ShaderProgram {
 
     a_TextureCoord = gl.getAttribLocation(program, "a_TextureCoord");
     u_Sampler      = gl.getUniformLocation(program, "u_Sampler");
-    u_Color        = gl.getUniformLocation(program, "u_Color");
+    //u_Color        = gl.getUniformLocation(program, "u_Color");
     
     print("TexShaderProgram: locations ready");      
   }
@@ -31,9 +31,11 @@ class TexShaderProgram extends ShaderProgram {
     // send perspective projection matrix uniform
     gl.uniformMatrix4fv(u_P, false, pMatrix.storage);
     
+    /*
     // fallback solid color for textured objects
     List<double> white = [1.0, 1.0, 1.0, 1.0]; // neutral color in multiplication
-    gl.uniform4fv(u_Color, new Float32List.fromList(white));    
+    gl.uniform4fv(u_Color, new Float32List.fromList(white));
+    */    
 
     modelList.forEach((TexModel m) => m.drawInstances(gameLoop, cam));
 
