@@ -18,14 +18,20 @@ class Camera {
   
   double getRad(double interpolation) {
     //double deg = interpolation * angle + (1 - interpolation) * oldAngle;
-    double deg = interpolation * (angle - oldAngle) + oldAngle;
+    double deg;
+    if (angle > oldAngle) {
+      deg = interpolation * (angle       - oldAngle) + oldAngle;
+    } else {
+      // undo modulo 360 for correct interpolation
+      deg = interpolation * (angle + 360 - oldAngle) + oldAngle;
+    }
     double r = deg * math.PI / 180.0;
     return r;
   }
   
   void update(GameLoopHtml gameLoop) {
     oldAngle = angle;
-    angle = gameLoop.gameTime * this.degreesPerSec % 360.0;
+    angle = gameLoop.gameTime * this.degreesPerSec % 360;
   }
     
   void render(GameLoopHtml gameLoop) {

@@ -126,7 +126,7 @@ class SkyboxInstance extends Instance {
     
     double s = scale * size;
     MV.scale(s, s, s);
-    
+
     ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;
 
