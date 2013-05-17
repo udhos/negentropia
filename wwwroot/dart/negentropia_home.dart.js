@@ -4477,6 +4477,12 @@ $$.Entry_remove_closure0 = {"": "Closure;completer_1",
   $isGameLoopPointerLockChangeFunction: true
 };
 
+$$.Events = {"": "Object;_ptr",
+  $index: function(_, type) {
+    return $._EventStream$(this._ptr, $.stringTypeCheck(type), false, null);
+  }
+};
+
 $$.Object_ListMixin0 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.File]; }, $isIterable: true, $asIterable: function() { return [$.File]; }, $asObject: null};
 
 $$.Object_ListMixin_ImmutableListMixin0 = {"": "Object_ListMixin0+ImmutableListMixin;", $isList: true, $asList: function() { return [$.File]; }, $isIterable: true, $asIterable: function() { return [$.File]; }, $asObject: null};
@@ -6247,7 +6253,7 @@ $$.Instance = {"": "Object;model>,center,scale,MV",
     t1.scale$3(t1, t2, t2, t2);
     t2 = this.model;
     prog = t2.program;
-    gl = $.interceptedTypeCheck(prog.gl, "$isRenderingContext");
+    gl = prog.gl;
     t5 = $.getInterceptor$x(gl);
     t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.storage);
     t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
@@ -6457,10 +6463,34 @@ $$.Cookie__readCookie_closure = {"": "Closure;cookie_0",
   $isGameLoopPointerLockChangeFunction: true
 };
 
-$$.initDebugLostContext_closure = {"": "Closure;",
+$$.initDebugLostContext_onContextLost = {"": "Closure;gameLoop_0",
   call$1: function(e) {
     $.interceptedTypeCheck(e, "$isEvent");
-    $.Primitives_printString("lose context button: FIXME");
+    $.Primitives_printString("webgl context: lost");
+    e.preventDefault();
+    this.gameLoop_0._interrupt = true;
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $isEventListener: true
+};
+
+$$.initDebugLostContext_onContextRestored = {"": "Closure;gl_1,gameLoop_2,initContextCall_3",
+  call$1: function(e) {
+    $.interceptedTypeCheck(e, "$isEvent");
+    $.Primitives_printString("webgl context: restored");
+    this.initContextCall_3.call$2(this.gl_1, this.gameLoop_2);
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $isEventListener: true
+};
+
+$$.initDebugLostContext_closure = {"": "Closure;onContextLost_4",
+  call$1: function(e) {
+    return this.onContextLost_4.call$1($.interceptedTypeCheck(e, "$isEvent"));
   },
   $isFunction: true,
   $asObject: null,
@@ -6469,10 +6499,33 @@ $$.initDebugLostContext_closure = {"": "Closure;",
   $isEventListener: true
 };
 
-$$.initDebugLostContext_closure0 = {"": "Closure;",
+$$.initDebugLostContext_closure0 = {"": "Closure;onContextRestored_5",
+  call$1: function(e) {
+    return this.onContextRestored_5.call$1($.interceptedTypeCheck(e, "$isEvent"));
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $is_FutureErrorTest: true,
+  $isEventListener: true
+};
+
+$$.initDebugLostContext_closure1 = {"": "Closure;ext_6",
   call$1: function(e) {
     $.interceptedTypeCheck(e, "$isEvent");
-    $.Primitives_printString("restore context button: FIXME");
+    $.loseContext$0$x(this.ext_6);
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $is_FutureErrorTest: true,
+  $isEventListener: true
+};
+
+$$.initDebugLostContext_closure2 = {"": "Closure;ext_7",
+  call$1: function(e) {
+    $.interceptedTypeCheck(e, "$isEvent");
+    $.restoreContext$0$x(this.ext_7);
   },
   $isFunction: true,
   $asObject: null,
@@ -7072,7 +7125,7 @@ $$.TexModel = {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,textureI
   drawInstances$2: function(gameLoop, cam) {
     var gl, t1;
     $.propertyTypeCheck(gameLoop, "$isGameLoopHtml");
-    gl = $.interceptedTypeCheck(this.program.gl, "$isRenderingContext");
+    gl = this.program.gl;
     t1 = $.getInterceptor$x(gl);
     t1.bindBuffer$2(gl, 34962, this.vertexPositionBuffer);
     t1.vertexAttribPointer$6(gl, this.program.a_Position, this.vertexPositionBufferItemSize, 5126, false, 0, 0);
@@ -7165,7 +7218,7 @@ $$.TexInstance = {"": "Instance;model,center,scale,MV",
     t1.scale$3(t1, t2, t2, t2);
     t2 = this.model;
     prog = t2.program;
-    gl = $.interceptedTypeCheck(prog.gl, "$isRenderingContext");
+    gl = prog.gl;
     $.uniformMatrix4fv$3$x(gl, prog.u_MV, false, t1.storage);
     $.JSArray_methods.forEach$1($.propertyTypeCast(t2, "$isTexModel").textureInfoList, new $.TexInstance_draw_closure(this, prog, gl));
   }
@@ -7242,7 +7295,7 @@ $$.SkyboxModel = {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuf
   drawInstances$2: function(gameLoop, cam) {
     var gl, t1;
     $.propertyTypeCheck(gameLoop, "$isGameLoopHtml");
-    gl = $.interceptedTypeCheck(this.program.gl, "$isRenderingContext");
+    gl = this.program.gl;
     t1 = $.getInterceptor$x(gl);
     t1.bindTexture$2(gl, 34067, this.cubemapTexture);
     $.JSArray_methods.forEach$1(this.instanceList, new $.SkyboxModel_drawInstances_closure(gameLoop, cam));
@@ -7322,7 +7375,7 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
     t1.scale$3(t1, s, s, s);
     t2 = this.model;
     prog = t2.program;
-    gl = $.interceptedTypeCheck(prog.gl, "$isRenderingContext");
+    gl = prog.gl;
     t5 = $.getInterceptor$x(gl);
     t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.storage);
     t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
@@ -10249,6 +10302,9 @@ $$.EventSource = {"": "EventTarget;",
 };
 
 $$.EventTarget = {"": "Interceptor;",
+  get$on: function(receiver) {
+    return $.Events$(receiver);
+  },
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.addEventListener($.stringTypeCheck(type), $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
   },
@@ -13630,7 +13686,16 @@ $$.ExtTextureFilterAnisotropic = {"": "Interceptor;"};
 
 $$.Framebuffer = {"": "Interceptor;"};
 
-$$.LoseContext = {"": "Interceptor;", $isLoseContext: true, $asLoseContext: null};
+$$.LoseContext = {"": "Interceptor;",
+  loseContext$0: function(receiver) {
+    return receiver.loseContext();
+  },
+  restoreContext$0: function(receiver) {
+    return receiver.restoreContext();
+  },
+  $isLoseContext: true,
+  $asLoseContext: null
+};
 
 $$.OesElementIndexUint = {"": "Interceptor;"};
 
@@ -16195,6 +16260,10 @@ $.Element__determineMouseWheelEventType = function(e) {
     return "DOMMouseScroll";
 };
 
+$.Events$ = function(_ptr) {
+  return new $.Events(_ptr);
+};
+
 $.HttpRequest_getString = function(url, onProgress, withCredentials) {
   return $.propertyTypeCheck($.HttpRequest_request(url, null, $.functionTypeCheck(onProgress), null, null, withCredentials).then$1(new $.HttpRequest_getString_closure()), "$isFuture");
 };
@@ -16756,12 +16825,25 @@ $.Cookie_getCookie = function($name) {
   return;
 };
 
-$.initDebugLostContext = function(gl, canvas) {
-  var control, t1, loseContextButton, t2, t3, restoreContextButton;
+$.initDebugLostContext = function(gl, canvas, gameLoop, initContextCall) {
+  var t1, t2, t3, ext, control, loseContextButton, restoreContextButton;
   $.interceptedTypeCheck(canvas, "$isCanvasElement");
-  $.Primitives_printString("FIXME: initDebugLostContext: trap webglcontextlost");
-  $.Primitives_printString("FIXME: initDebugLostContext: trap webglcontextrestored");
-  if ($.interceptedTypeCheck($.getExtension$1$x(gl, "WEBGL_lose_context"), "$isLoseContext") == null) {
+  $.functionTypeCheck(initContextCall);
+  t1 = $.getInterceptor$x(canvas);
+  t2 = $._EventStream$(t1.get$on(canvas)._ptr, "webglcontextlost", false, null);
+  t3 = new $.initDebugLostContext_closure(new $.initDebugLostContext_onContextLost(gameLoop));
+  $.functionTypeCheck(t3);
+  $.functionTypeCheck(null);
+  $.functionTypeCheck(null);
+  $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
+  t1 = $._EventStream$(t1.get$on(canvas)._ptr, "webglcontextrestored", false, null);
+  t2 = new $.initDebugLostContext_closure0(new $.initDebugLostContext_onContextRestored(gl, gameLoop, initContextCall));
+  $.functionTypeCheck(t2);
+  $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
+  $.Primitives_printString("initDebugLostContext: webglcontextlost trapped");
+  $.Primitives_printString("initDebugLostContext: webglcontextrestored trapped");
+  ext = $.interceptedTypeCheck($.getExtension$1$x(gl, "WEBGL_lose_context"), "$isLoseContext");
+  if (ext == null) {
     $.Primitives_printString("WEBGL_lose_context: NOT AVAILABLE");
     return;
   }
@@ -16773,17 +16855,15 @@ $.initDebugLostContext = function(gl, canvas) {
   loseContextButton.type = "button";
   loseContextButton.value = "lose context";
   t2 = $.get$onClick$x(loseContextButton);
-  t3 = new $.initDebugLostContext_closure();
+  t3 = new $.initDebugLostContext_closure1(ext);
   $.functionTypeCheck(t3);
-  $.functionTypeCheck(null);
-  $.functionTypeCheck(null);
   $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
   t1.append$1(control, loseContextButton);
   restoreContextButton = $.interceptedTypeCheck($.InputElement_InputElement(null), "$isInputElement");
   restoreContextButton.type = "button";
   restoreContextButton.value = "restore context";
   t2 = $.get$onClick$x(restoreContextButton);
-  t3 = new $.initDebugLostContext_closure0();
+  t3 = new $.initDebugLostContext_closure2(ext);
   $.functionTypeCheck(t3);
   $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
   t1.append$1(control, restoreContextButton);
@@ -16830,8 +16910,6 @@ $.boot = function() {
     $.set$backgroundColor$x(canvasbox.style, "lightblue");
     return;
   }
-  if ($.debugLostContext)
-    $.initDebugLostContext(gl, $.canvas);
   sid = $.Cookie_getCookie("sid");
   $.assertHelper(sid != null);
   $.Primitives_printString("session id sid=" + $.S(sid));
@@ -16921,6 +16999,8 @@ $.initAirshipTex = function(gl) {
 
 $.initContext = function(gl, gameLoop) {
   var t1, t2, before, i, duration;
+  $.interceptedTypeCheck(gl, "$isRenderingContext");
+  $.propertyTypeCheck(gameLoop, "$isGameLoopHtml");
   t1 = $.List_List($, $.ShaderProgram);
   $.setRuntimeTypeInfo(t1, [$.ShaderProgram]);
   $.programList = $.listTypeCheck(t1);
@@ -16986,6 +17066,8 @@ $.main = function() {
     return;
   }
   gameLoop = $.GameLoopHtml$($.canvas);
+  if ($.debugLostContext)
+    $.initDebugLostContext(gl, $.canvas, gameLoop, $.initContext);
   gameLoop.onUpdate = $.propertyTypeCheck(new $.main_closure(), "$isGameLoopUpdateFunction");
   gameLoop.onRender = $.propertyTypeCheck(new $.main_closure0(gl), "$isGameLoopRenderFunction");
   $.initContext(gl, gameLoop);
@@ -17443,6 +17525,8 @@ $._asyncRunCallback.$isVoidCallback = true;
 $.Element__determineMouseWheelEventType.call$1 = $.Element__determineMouseWheelEventType;
 $.Element__determineMouseWheelEventType.$name = "Element__determineMouseWheelEventType";
 $.Element__determineMouseWheelEventType.$is_FutureOnError = true;
+$.initContext.call$2 = $.initContext;
+$.initContext.$name = "initContext";
 $.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
@@ -17457,72 +17541,72 @@ $.Model.$isModel = true;
 $.Model.$isModel = true;
 $.Model.$isObject = true;
 $.Model.$isObject = true;
-$.TextureInfo.$isObject = true;
-$.TextureInfo.$isObject = true;
 $.TextureInfo.$isTextureInfo = true;
 $.TextureInfo.$isTextureInfo = true;
+$.TextureInfo.$isObject = true;
+$.TextureInfo.$isObject = true;
 $.HttpRequest.$isObject = true;
 $.HttpRequest.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isHttpRequest = true;
-$.ElementInstance.$isObject = true;
-$.ElementInstance.$isObject = true;
 $.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isObject = true;
+$.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SourceBuffer.$isObject = true;
-$.ReceivePort.$isObject = true;
-$.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
 $.ReceivePort.$isReceivePort = true;
+$.ReceivePort.$isObject = true;
+$.ReceivePort.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
 $.Rect.$isObject = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isObject = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
-$.SpeechRecognitionResult.$isObject = true;
-$.SpeechRecognitionResult.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
+$.SpeechRecognitionResult.$isObject = true;
+$.SpeechRecognitionResult.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
 $.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isEvent = true;
-$.KeyboardEvent.$isEvent = true;
-$.KeyboardEvent.$isObject = true;
-$.KeyboardEvent.$isObject = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
+$.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isEvent = true;
+$.KeyboardEvent.$isEvent = true;
 $.TextTrack.$isObject = true;
 $.TextTrack.$isObject = true;
 $.Length.$isObject = true;
 $.Length.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.TextTrackCue.$isObject = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$is_IsolateContext = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
 $.Touch.$isObject = true;
 $.Touch.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
 $._IsolateEvent.$isObject = true;
-$._ManagerStub.$is_ManagerStub = true;
-$._ManagerStub.$is_ManagerStub = true;
 $._ManagerStub.$isObject = true;
 $._ManagerStub.$isObject = true;
+$._ManagerStub.$is_ManagerStub = true;
+$._ManagerStub.$is_ManagerStub = true;
 $.Map.$isObject = true;
 $.Map.$isObject = true;
 $.Number.$isObject = true;
@@ -17533,10 +17617,10 @@ $.Shader.$isShader = true;
 $.Shader.$isShader = true;
 $.Shader.$isObject = true;
 $.Shader.$isObject = true;
-$.CssRule.$isObject = true;
-$.CssRule.$isObject = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isCssRule = true;
+$.CssRule.$isObject = true;
+$.CssRule.$isObject = true;
 $.Texture.$isTexture = true;
 $.Texture.$isTexture = true;
 $.Texture.$isObject = true;
@@ -17581,12 +17665,12 @@ $.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isnum = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $._EntrySync.$isObject = true;
 $._EntrySync.$isObject = true;
 $.JSDouble.$isObject = true;
@@ -17595,18 +17679,14 @@ $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isnum = true;
-$.JSDouble.$isnum = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isdouble = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isnum = true;
+$.JSDouble.$isnum = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
@@ -17615,40 +17695,44 @@ $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
-$.DigitalButton.$isObject = true;
-$.DigitalButton.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $.DigitalButton.$isDigitalButton = true;
+$.DigitalButton.$isObject = true;
+$.DigitalButton.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isObject = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
 $.Element.$isElement = true;
 $.Element.$isElement = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
 $.Element.$isNode = true;
 $.Element.$isNode = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
 $.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isnum = true;
-$.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.Entry.$isEntry = true;
-$.Entry.$isEntry = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isnum = true;
+$.JSInt.$isnum = true;
 $.Entry.$isObject = true;
 $.Entry.$isObject = true;
+$.Entry.$isEntry = true;
+$.Entry.$isEntry = true;
 $.Transform.$isObject = true;
 $.Transform.$isObject = true;
 $.Plugin.$isObject = true;
@@ -17923,6 +18007,9 @@ $.isContextLost$0$x = function(receiver) {
 $.linkProgram$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).linkProgram$1(receiver, a0);
 };
+$.loseContext$0$x = function(receiver) {
+  return $.getInterceptor$x(receiver).loseContext$0(receiver);
+};
 $.postMessage$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).postMessage$1(receiver, a0);
 };
@@ -17934,6 +18021,9 @@ $.remove$0$ax = function(receiver) {
 };
 $.replaceWith$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).replaceWith$1(receiver, a0);
+};
+$.restoreContext$0$x = function(receiver) {
+  return $.getInterceptor$x(receiver).restoreContext$0(receiver);
 };
 $.send$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).send$1(receiver, a0);

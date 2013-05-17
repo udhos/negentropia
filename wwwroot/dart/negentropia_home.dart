@@ -1,3 +1,4 @@
+
 import 'dart:html';
 import 'dart:async';
 import 'dart:web_gl';
@@ -89,12 +90,7 @@ RenderingContext boot() {
     canvasbox.style.backgroundColor = 'lightblue';    
     return null;
   }
-  
-  if (debugLostContext) {
-    //initDebugLostContext(canvas, cfg);
-    initDebugLostContext(gl, canvas);
-  }
-  
+    
   var sid = Cookie.getCookie("sid");
   assert(sid != null);
   print("session id sid=${sid}");
@@ -334,8 +330,13 @@ void main() {
     print("WebGL: not available");
     return;
   }
-
+  
   GameLoopHtml gameLoop = new GameLoopHtml(canvas);
+
+  if (debugLostContext) {
+    initDebugLostContext(gl, canvas, gameLoop, initContext);
+  }
+
   gameLoop.onUpdate = ((GameLoopHtml gameLoop) { 
     update(gameLoop);
   });

@@ -3,11 +3,28 @@ library lost_context;
 import 'dart:html';
 import 'dart:web_gl';
 
-void initDebugLostContext(RenderingContext gl, CanvasElement canvas) {
+import 'package:game_loop/game_loop_html.dart';
 
-  print("FIXME: initDebugLostContext: trap webglcontextlost");
-  print("FIXME: initDebugLostContext: trap webglcontextrestored");
+void initDebugLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHtml gameLoop,
+                          void initContextCall(RenderingContext gl, GameLoopHtml gameLoop)) {
   
+  void onContextLost(Event e) {
+    print("webgl context: lost");
+    e.preventDefault();
+    gameLoop.stop();
+  }
+
+  void onContextRestored(Event e) {
+    print("webgl context: restored");
+    initContextCall(gl, gameLoop); // recreate resources and restart gameLoop
+  }
+
+  canvas.on['webglcontextlost'].listen((Event e) => onContextLost(e));
+  canvas.on['webglcontextrestored'].listen((Event e) => onContextRestored(e));
+
+  print("initDebugLostContext: webglcontextlost trapped");
+  print("initDebugLostContext: webglcontextrestored trapped");
+
   LoseContext ext = gl.getExtension('WEBGL_lose_context');
   if (ext == null) {
     print("WEBGL_lose_context: NOT AVAILABLE");
@@ -21,15 +38,12 @@ void initDebugLostContext(RenderingContext gl, CanvasElement canvas) {
   InputElement loseContextButton = new InputElement();
   loseContextButton.type = 'button';
   loseContextButton.value = 'lose context';
-  //loseContextButton.onClick.listen((Event e) { WebGLLoseContext.internal().loseContext(); });
-  loseContextButton.onClick.listen((Event e) { print("lose context button: FIXME"); });
+  loseContextButton.onClick.listen((Event e) { ext.loseContext(); });
   control.append(loseContextButton);
   
   InputElement restoreContextButton = new InputElement();
   restoreContextButton.type = 'button';
   restoreContextButton.value = 'restore context';
-  restoreContextButton.onClick.listen((Event e) { print("restore context button: FIXME"); });
+  restoreContextButton.onClick.listen((Event e) { ext.restoreContext(); });
   control.append(restoreContextButton);  
 }
-
-
