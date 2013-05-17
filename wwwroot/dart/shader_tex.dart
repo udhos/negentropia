@@ -22,7 +22,7 @@ class TexShaderProgram extends ShaderProgram {
     print("TexShaderProgram: locations ready");      
   }
 
-  void drawModels(GameLoopHtml gameLoop, Camera cam, mat4 pMatrix) {
+  void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
@@ -141,7 +141,7 @@ class TexModel extends Model {
 
 class TexInstance extends Instance {
     
-  TexInstance(TexModel model, vec3 center, double scale) : super(model, center, scale);
+  TexInstance(TexModel model, Vector3 center, double scale) : super(model, center, scale);
 
   void draw(GameLoopHtml gameLoop, Camera cam) {
 

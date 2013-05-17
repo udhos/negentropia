@@ -140,7 +140,7 @@ class ShaderProgram {
     this.modelList.add(m);
   }
   
-  void drawModels(GameLoopHtml gameLoop, Camera cam, mat4 pMatrix) {
+  void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);

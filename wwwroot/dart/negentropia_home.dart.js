@@ -7580,7 +7580,6 @@ $$.initWebSocket_closure2 = {"": "Closure;box_0,status_14",
   call$1: function(e) {
     var t1, msg, m, output, t2;
     $.interceptedTypeCheck(e, "$isMessageEvent");
-    $.Primitives_printString("websocket: received: w.onMessage.listen");
     t1 = $.getInterceptor$x(e);
     $.Primitives_printString("websocket: received: [" + $.S(t1.get$data(e)) + "]");
     msg = $.interceptedTypeCheck($.parse(t1.get$data(e), null), "$isMap");
@@ -8431,7 +8430,7 @@ $$.Stats = {"": "Object;_timer,_ms,_msMin,_msMax,_fps,_fpsMin,_fpsMax,_frames,_m
   }
 };
 
-$$.mat4 = {"": "Object;storage",
+$$.Matrix4 = {"": "Object;storage",
   toString$0: function(_) {
     return "[0] " + $.S(this.getRow$1(0)) + "\n[1] " + $.S(this.getRow$1(1)) + "\n[2] " + $.S(this.getRow$1(2)) + "\n[3] " + $.S(this.getRow$1(3)) + "\n";
   },
@@ -8454,7 +8453,7 @@ $$.mat4 = {"": "Object;storage",
   },
   getRow$1: function(row) {
     var r, t1, t2, t3, t4, t5;
-    r = $.vec4$zero();
+    r = $.Vector4$zero();
     t1 = r.storage;
     t2 = this.storage;
     t3 = 0 + row;
@@ -8491,8 +8490,8 @@ $$.mat4 = {"": "Object;storage",
   },
   _mul_matrix$1: function(arg) {
     var r, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14;
-    $.propertyTypeCheck(arg, "$ismat4");
-    r = $.mat4$zero();
+    $.propertyTypeCheck(arg, "$isMatrix4");
+    r = $.Matrix4$zero();
     t1 = r.storage;
     t2 = this.storage;
     t3 = t2.length;
@@ -8653,7 +8652,7 @@ $$.mat4 = {"": "Object;storage",
   },
   _mul_vector3$1: function(arg) {
     var r, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12;
-    r = $.vec3$zero();
+    r = $.Vector3$zero();
     t1 = r.storage;
     t2 = this.storage;
     t3 = t2.length;
@@ -8718,8 +8717,8 @@ $$.mat4 = {"": "Object;storage",
   },
   $add: function(_, arg) {
     var r, t1, t2, t3, t4, t5, t6, t7, t8;
-    $.propertyTypeCheck(arg, "$ismat4");
-    r = $.mat4$zero();
+    $.propertyTypeCheck(arg, "$isMatrix4");
+    r = $.Matrix4$zero();
     t1 = r.storage;
     t2 = this.storage;
     t3 = t2.length;
@@ -8874,8 +8873,8 @@ $$.mat4 = {"": "Object;storage",
   },
   $sub: function(_, arg) {
     var r, t1, t2, t3, t4, t5, t6, t7, t8;
-    $.propertyTypeCheck(arg, "$ismat4");
-    r = $.mat4$zero();
+    $.propertyTypeCheck(arg, "$isMatrix4");
+    r = $.Matrix4$zero();
     t1 = r.storage;
     t2 = this.storage;
     t3 = t2.length;
@@ -9032,9 +9031,9 @@ $$.mat4 = {"": "Object;storage",
     var t1, tw, tx, ty, tz, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17;
     $.doubleTypeCheck(y);
     $.doubleTypeCheck(z);
-    t1 = typeof x === "object" && x !== null && !!$.getInterceptor(x).$isvec4;
+    t1 = typeof x === "object" && x !== null && !!$.getInterceptor(x).$isVector4;
     tw = $.doubleTypeCheck(t1 ? x.get$w() : 1);
-    if (typeof x === "object" && x !== null && !!$.getInterceptor(x).$isvec3 || t1) {
+    if (typeof x === "object" && x !== null && !!$.getInterceptor(x).$isVector3 || t1) {
       tx = $.doubleTypeCheck($.JSNumber_methods.get$x(x));
       ty = $.doubleTypeCheck($.JSNumber_methods.get$y(x));
       tz = $.doubleTypeCheck($.JSNumber_methods.get$z(x));
@@ -9094,9 +9093,9 @@ $$.mat4 = {"": "Object;storage",
     var t1, sw, sx, sy, sz, t2, t3;
     $.doubleTypeCheck(y);
     $.doubleTypeCheck(z);
-    t1 = typeof x === "object" && x !== null && !!$.getInterceptor(x).$isvec4;
+    t1 = typeof x === "object" && x !== null && !!$.getInterceptor(x).$isVector4;
     sw = $.doubleTypeCheck(t1 ? x.get$w() : 1);
-    if (typeof x === "object" && x !== null && !!$.getInterceptor(x).$isvec3 || t1) {
+    if (typeof x === "object" && x !== null && !!$.getInterceptor(x).$isVector3 || t1) {
       sx = $.doubleTypeCheck($.JSNumber_methods.get$x(x));
       sy = $.doubleTypeCheck($.JSNumber_methods.get$y(x));
       sz = $.doubleTypeCheck($.JSNumber_methods.get$z(x));
@@ -9314,7 +9313,7 @@ $$.mat4 = {"": "Object;storage",
   },
   add$1: function(_, o) {
     var t1, t2, t3, t4, t5;
-    $.propertyTypeCheck(o, "$ismat4");
+    $.propertyTypeCheck(o, "$isMatrix4");
     t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
@@ -9417,13 +9416,13 @@ $$.mat4 = {"": "Object;storage",
     t1[15] = t2 + t4[15];
     return this;
   },
-  mat4$identity$0: function() {
+  Matrix4$identity$0: function() {
     this.setIdentity$0();
   },
-  $ismat4: true
+  $isMatrix4: true
 };
 
-$$.vec3 = {"": "Object;storage",
+$$.Vector3 = {"": "Object;storage",
   setValues$3: function(x_, y_, z_) {
     var t1, t2;
     t1 = this.storage;
@@ -9464,11 +9463,11 @@ $$.vec3 = {"": "Object;storage",
     t4 = t1[1];
     if (2 >= t2)
       throw $.ioore(2);
-    return $.vec3$(-t3, -t4, -t1[2]);
+    return $.Vector3$(-t3, -t4, -t1[2]);
   },
   $sub: function(_, other) {
     var t1, t2, t3, t4, t5, t6, t7, t8;
-    $.propertyTypeCheck(other, "$isvec3");
+    $.propertyTypeCheck(other, "$isVector3");
     t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
@@ -9490,11 +9489,11 @@ $$.vec3 = {"": "Object;storage",
     t1 = t1[2];
     if (2 >= t5)
       throw $.ioore(2);
-    return $.vec3$(t3 - t6, t7 - t8, t1 - t4[2]);
+    return $.Vector3$(t3 - t6, t7 - t8, t1 - t4[2]);
   },
   $add: function(_, other) {
     var t1, t2, t3, t4, t5, t6, t7, t8;
-    $.propertyTypeCheck(other, "$isvec3");
+    $.propertyTypeCheck(other, "$isVector3");
     t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
@@ -9516,7 +9515,7 @@ $$.vec3 = {"": "Object;storage",
     t1 = t1[2];
     if (2 >= t5)
       throw $.ioore(2);
-    return $.vec3$(t3 + t6, t7 + t8, t1 + t4[2]);
+    return $.Vector3$(t3 + t6, t7 + t8, t1 + t4[2]);
   },
   $div: function(_, scale) {
     var o, t1, t2, t3, t4;
@@ -9534,7 +9533,7 @@ $$.vec3 = {"": "Object;storage",
     t4 = t1[1];
     if (2 >= t2)
       throw $.ioore(2);
-    return $.vec3$(t3 * o, t4 * o, t1[2] * o);
+    return $.Vector3$(t3 * o, t4 * o, t1[2] * o);
   },
   $index: function(_, i) {
     var t1;
@@ -9616,11 +9615,11 @@ $$.vec3 = {"": "Object;storage",
     t1 = $.getInterceptor$n(_y);
     t2 = $.getInterceptor$n(_z);
     t3 = $.getInterceptor$n(_x);
-    return $.vec3$(t1.$mul(_y, oz) - t2.$mul(_z, oy), t2.$mul(_z, ox) - t3.$mul(_x, oz), t3.$mul(_x, oy) - t1.$mul(_y, ox));
+    return $.Vector3$(t1.$mul(_y, oz) - t2.$mul(_z, oy), t2.$mul(_z, ox) - t3.$mul(_x, oz), t3.$mul(_x, oy) - t1.$mul(_y, ox));
   },
   add$1: function(_, arg) {
     var t1, t2, t3, t4, t5;
-    $.propertyTypeCheck(arg, "$isvec3");
+    $.propertyTypeCheck(arg, "$isVector3");
     t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
@@ -9663,13 +9662,13 @@ $$.vec3 = {"": "Object;storage",
       throw $.ioore(2);
     return $.doubleTypeCheck(t1[2]);
   },
-  vec3$3: function(x_, y_, z_) {
+  Vector3$3: function(x_, y_, z_) {
     this.setValues$3($.doubleTypeCheck(x_), $.doubleTypeCheck(y_), $.doubleTypeCheck(z_));
   },
-  $isvec3: true
+  $isVector3: true
 };
 
-$$.vec4 = {"": "Object;storage",
+$$.Vector4 = {"": "Object;storage",
   setValues$4: function(x_, y_, z_, w_) {
     var t1 = this.storage;
     if (3 >= t1.length)
@@ -9698,7 +9697,7 @@ $$.vec4 = {"": "Object;storage",
   },
   $sub: function(_, other) {
     var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
-    $.propertyTypeCheck(other, "$isvec4");
+    $.propertyTypeCheck(other, "$isVector4");
     t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
@@ -9726,11 +9725,11 @@ $$.vec4 = {"": "Object;storage",
     t1 = t1[3];
     if (3 >= t5)
       throw $.ioore(3);
-    return $.vec4$(t3 - t6, t7 - t8, t9 - t10, t1 - t4[3]);
+    return $.Vector4$(t3 - t6, t7 - t8, t9 - t10, t1 - t4[3]);
   },
   $add: function(_, other) {
     var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
-    $.propertyTypeCheck(other, "$isvec4");
+    $.propertyTypeCheck(other, "$isVector4");
     t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
@@ -9758,7 +9757,7 @@ $$.vec4 = {"": "Object;storage",
     t1 = t1[3];
     if (3 >= t5)
       throw $.ioore(3);
-    return $.vec4$(t3 + t6, t7 + t8, t9 + t10, t1 + t4[3]);
+    return $.Vector4$(t3 + t6, t7 + t8, t9 + t10, t1 + t4[3]);
   },
   $div: function(_, scale) {
     var o, t1, t2, t3, t4, t5;
@@ -9779,7 +9778,7 @@ $$.vec4 = {"": "Object;storage",
     t5 = t1[2];
     if (3 >= t2)
       throw $.ioore(3);
-    return $.vec4$(t3 * o, t4 * o, t5 * o, t1[3] * o);
+    return $.Vector4$(t3 * o, t4 * o, t5 * o, t1[3] * o);
   },
   $index: function(_, i) {
     var t1;
@@ -9821,7 +9820,7 @@ $$.vec4 = {"": "Object;storage",
   },
   add$1: function(_, arg) {
     var t1, t2, t3, t4, t5;
-    $.propertyTypeCheck(arg, "$isvec4");
+    $.propertyTypeCheck(arg, "$isVector4");
     t1 = this.storage;
     t2 = t1.length;
     if (0 >= t2)
@@ -9858,10 +9857,10 @@ $$.vec4 = {"": "Object;storage",
       throw $.ioore(3);
     return $.doubleTypeCheck(t1[3]);
   },
-  vec4$4: function(x_, y_, z_, w_) {
+  Vector4$4: function(x_, y_, z_, w_) {
     this.setValues$4($.doubleTypeCheck(x_), $.doubleTypeCheck(y_), $.doubleTypeCheck(z_), $.doubleTypeCheck(w_));
   },
-  $isvec4: true
+  $isVector4: true
 };
 
 // Native classes
@@ -16789,7 +16788,7 @@ $.Utf8Decoder$ = function(utf8EncodedBytes, offset, $length, replacementCodepoin
 };
 
 $.Instance$ = function(model, center, scale) {
-  return new $.Instance(model, center, $.doubleTypeCheck(scale), $.mat4$identity());
+  return new $.Instance(model, center, $.doubleTypeCheck(scale), $.Matrix4$identity());
 };
 
 $.Model$fromJson = function(gl, program, URL) {
@@ -16933,7 +16932,7 @@ $.initSquares = function(gl) {
   squareProgram.fetch$3($.shaderCache, "/shader/clip_vs.txt", "/shader/clip_fs.txt");
   squareModel = $.Model$fromJson(gl, squareProgram, "/mesh/square.json");
   $.JSArray_methods.add$1(squareProgram.modelList, squareModel);
-  $.JSArray_methods.add$1(squareModel.instanceList, $.Instance$(squareModel, $.vec3$(0, 0, 0), 1));
+  $.JSArray_methods.add$1(squareModel.instanceList, $.Instance$(squareModel, $.Vector3$(0, 0, 0), 1));
   squareProgram2 = $.ShaderProgram$(gl);
   $.add$1$ax($.programList, squareProgram2);
   t1 = $.Duration$(0, 0, 0, 0, 0, 2);
@@ -16945,13 +16944,13 @@ $.initSquares = function(gl) {
   $.TimerImpl$(milliseconds, t2);
   squareModel2 = $.Model$fromJson(gl, squareProgram2, "/mesh/square2.json");
   $.JSArray_methods.add$1(squareProgram2.modelList, squareModel2);
-  $.JSArray_methods.add$1(squareModel2.instanceList, $.Instance$(squareModel2, $.vec3$(0, 0, 0), 1));
+  $.JSArray_methods.add$1(squareModel2.instanceList, $.Instance$(squareModel2, $.Vector3$(0, 0, 0), 1));
   squareProgram3 = $.ShaderProgram$(gl);
   $.add$1$ax($.programList, squareProgram3);
   squareProgram3.fetch$3($.shaderCache, "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
   squareModel3 = $.Model$fromJson(gl, squareProgram3, "/mesh/square3.json");
   $.JSArray_methods.add$1(squareProgram3.modelList, squareModel3);
-  $.JSArray_methods.add$1(squareModel3.instanceList, $.Instance$(squareModel3, $.vec3$(0, 0, 0), 1));
+  $.JSArray_methods.add$1(squareModel3.instanceList, $.Instance$(squareModel3, $.Vector3$(0, 0, 0), 1));
 };
 
 $.initSkybox = function(gl) {
@@ -16969,7 +16968,7 @@ $.initSkybox = function(gl) {
   skyboxModel.addCubemapFace$2(34073, "/texture/space_fr.jpg");
   skyboxModel.addCubemapFace$2(34074, "/texture/space_bk.jpg");
   $.JSArray_methods.add$1(skyboxProgram.modelList, skyboxModel);
-  $.JSArray_methods.add$1(skyboxModel.instanceList, $.SkyboxInstance$(skyboxModel, $.vec3$(0, 0, 0), 1));
+  $.JSArray_methods.add$1(skyboxModel.instanceList, $.SkyboxInstance$(skyboxModel, $.Vector3$(0, 0, 0), 1));
 };
 
 $.initAirship = function(gl) {
@@ -16979,7 +16978,7 @@ $.initAirship = function(gl) {
   prog.fetch$3($.shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
   airshipModel = $.Model$fromOBJ(gl, prog, "/obj/airship.obj");
   $.JSArray_methods.add$1(prog.modelList, airshipModel);
-  $.JSArray_methods.add$1(airshipModel.instanceList, $.Instance$(airshipModel, $.vec3$(-8, 0, 0), 1));
+  $.JSArray_methods.add$1(airshipModel.instanceList, $.Instance$(airshipModel, $.Vector3$(-8, 0, 0), 1));
 };
 
 $.initAirshipTex = function(gl) {
@@ -16991,10 +16990,10 @@ $.initAirshipTex = function(gl) {
   airshipModel = $.TexModel$fromOBJ(gl, prog, "/obj/airship.obj", new $.initAirshipTex_onModelDone(temporaryColor));
   t1 = prog.modelList;
   $.JSArray_methods.add$1(t1, airshipModel);
-  $.JSArray_methods.add$1(airshipModel.instanceList, $.TexInstance$(airshipModel, $.vec3$(0, 0, 0), 1));
+  $.JSArray_methods.add$1(airshipModel.instanceList, $.TexInstance$(airshipModel, $.Vector3$(0, 0, 0), 1));
   airshipModel2 = $.TexModel$fromOBJ(gl, prog, "/obj/airship.obj", new $.initAirshipTex_onModelDone2(temporaryColor));
   $.JSArray_methods.add$1(t1, airshipModel2);
-  $.JSArray_methods.add$1(airshipModel2.instanceList, $.TexInstance$(airshipModel2, $.vec3$(8, 0, 0), 1));
+  $.JSArray_methods.add$1(airshipModel2.instanceList, $.TexInstance$(airshipModel2, $.Vector3$(8, 0, 0), 1));
 };
 
 $.initContext = function(gl, gameLoop) {
@@ -17113,7 +17112,7 @@ $.TexModel$fromOBJ = function(gl, program, URL, onDone) {
 };
 
 $.TexInstance$ = function(model, center, scale) {
-  return new $.TexInstance(model, center, $.doubleTypeCheck(scale), $.mat4$identity());
+  return new $.TexInstance(model, center, $.doubleTypeCheck(scale), $.Matrix4$identity());
 };
 
 $.SkyboxProgram$ = function(gl) {
@@ -17132,7 +17131,7 @@ $.SkyboxModel$fromJson = function(gl, prog, URL, reverse, rescale) {
 };
 
 $.SkyboxInstance$ = function(model, center, scale) {
-  return new $.SkyboxInstance(model, center, $.doubleTypeCheck(scale), $.mat4$identity());
+  return new $.SkyboxInstance(model, center, $.doubleTypeCheck(scale), $.Matrix4$identity());
 };
 
 $.TextureInfo$ = function(gl, textureTable, indexOffset, indexNumber, textureName, temporaryColor) {
@@ -17279,13 +17278,13 @@ $.Stats$ = function() {
   return t1;
 };
 
-$.mat4$zero = function() {
-  return new $.mat4($.interceptedTypeCheck($.Float32List_Float32List(16), "$isFloat32List"));
+$.Matrix4$zero = function() {
+  return new $.Matrix4($.interceptedTypeCheck($.Float32List_Float32List(16), "$isFloat32List"));
 };
 
-$.mat4$identity = function() {
-  var t1 = new $.mat4($.interceptedTypeCheck($.Float32List_Float32List(16), "$isFloat32List"));
-  t1.mat4$identity$0();
+$.Matrix4$identity = function() {
+  var t1 = new $.Matrix4($.interceptedTypeCheck($.Float32List_Float32List(16), "$isFloat32List"));
+  t1.Matrix4$identity$0();
   return t1;
 };
 
@@ -17331,7 +17330,7 @@ $.setViewMatrix = function(viewMatrix, cameraPosition, cameraFocusPosition, upDi
   $.doubleTypeCheck(t2);
   t1[10] = t2;
   viewMatrix.transpose$0();
-  rotatedEye = $.propertyTypeCheck(viewMatrix.$mul(viewMatrix, cameraPosition.$negate(cameraPosition)), "$isvec3");
+  rotatedEye = $.propertyTypeCheck(viewMatrix.$mul(viewMatrix, cameraPosition.$negate(cameraPosition)), "$isVector3");
   t2 = rotatedEye.get$x(rotatedEye);
   $.doubleTypeCheck(t2);
   t3 = t1.length;
@@ -17410,24 +17409,24 @@ $.setFrustumMatrix = function(perspectiveMatrix, left, right, bottom, $top, near
   t3[14] = -t1 / far_minus_near;
 };
 
-$.vec3$ = function(x_, y_, z_) {
-  var t1 = new $.vec3($.interceptedTypeCheck($.Float32List_Float32List(3), "$isFloat32List"));
-  t1.vec3$3($.doubleTypeCheck(x_), $.doubleTypeCheck(y_), $.doubleTypeCheck(z_));
+$.Vector3$ = function(x_, y_, z_) {
+  var t1 = new $.Vector3($.interceptedTypeCheck($.Float32List_Float32List(3), "$isFloat32List"));
+  t1.Vector3$3($.doubleTypeCheck(x_), $.doubleTypeCheck(y_), $.doubleTypeCheck(z_));
   return t1;
 };
 
-$.vec3$zero = function() {
-  return new $.vec3($.interceptedTypeCheck($.Float32List_Float32List(3), "$isFloat32List"));
+$.Vector3$zero = function() {
+  return new $.Vector3($.interceptedTypeCheck($.Float32List_Float32List(3), "$isFloat32List"));
 };
 
-$.vec4$ = function(x_, y_, z_, w_) {
-  var t1 = new $.vec4($.interceptedTypeCheck($.Float32List_Float32List(4), "$isFloat32List"));
-  t1.vec4$4($.doubleTypeCheck(x_), $.doubleTypeCheck(y_), $.doubleTypeCheck(z_), $.doubleTypeCheck(w_));
+$.Vector4$ = function(x_, y_, z_, w_) {
+  var t1 = new $.Vector4($.interceptedTypeCheck($.Float32List_Float32List(4), "$isFloat32List"));
+  t1.Vector4$4($.doubleTypeCheck(x_), $.doubleTypeCheck(y_), $.doubleTypeCheck(z_), $.doubleTypeCheck(w_));
   return t1;
 };
 
-$.vec4$zero = function() {
-  return new $.vec4($.interceptedTypeCheck($.Float32List_Float32List(4), "$isFloat32List"));
+$.Vector4$zero = function() {
+  return new $.Vector4($.interceptedTypeCheck($.Float32List_Float32List(4), "$isFloat32List"));
 };
 
 $.IsolateNatives__processWorkerMessage.call$2 = $.IsolateNatives__processWorkerMessage;
@@ -17527,32 +17526,32 @@ $.Element__determineMouseWheelEventType.$name = "Element__determineMouseWheelEve
 $.Element__determineMouseWheelEventType.$is_FutureOnError = true;
 $.initContext.call$2 = $.initContext;
 $.initContext.$name = "initContext";
-$.ShaderProgram.$isShaderProgram = true;
-$.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isObject = true;
+$.ShaderProgram.$isShaderProgram = true;
+$.ShaderProgram.$isShaderProgram = true;
 $.Gamepad.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Instance.$isInstance = true;
-$.Instance.$isInstance = true;
 $.Instance.$isObject = true;
 $.Instance.$isObject = true;
+$.Instance.$isInstance = true;
+$.Instance.$isInstance = true;
 $.Model.$isModel = true;
 $.Model.$isModel = true;
 $.Model.$isObject = true;
 $.Model.$isObject = true;
-$.TextureInfo.$isTextureInfo = true;
-$.TextureInfo.$isTextureInfo = true;
 $.TextureInfo.$isObject = true;
 $.TextureInfo.$isObject = true;
-$.HttpRequest.$isObject = true;
-$.HttpRequest.$isObject = true;
+$.TextureInfo.$isTextureInfo = true;
+$.TextureInfo.$isTextureInfo = true;
 $.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isHttpRequest = true;
-$.ElementInstance.$isElementInstance = true;
-$.ElementInstance.$isElementInstance = true;
+$.HttpRequest.$isObject = true;
+$.HttpRequest.$isObject = true;
 $.ElementInstance.$isObject = true;
 $.ElementInstance.$isObject = true;
+$.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isElementInstance = true;
 $.SourceBuffer.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
@@ -17579,10 +17578,10 @@ $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
 $.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isObject = true;
 $.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isEvent = true;
 $.TextTrack.$isObject = true;
@@ -17591,32 +17590,32 @@ $.Length.$isObject = true;
 $.Length.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.TextTrackCue.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$is_IsolateContext = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
 $.Touch.$isObject = true;
 $.Touch.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
 $._IsolateEvent.$isObject = true;
-$._ManagerStub.$isObject = true;
-$._ManagerStub.$isObject = true;
 $._ManagerStub.$is_ManagerStub = true;
 $._ManagerStub.$is_ManagerStub = true;
+$._ManagerStub.$isObject = true;
+$._ManagerStub.$isObject = true;
 $.Map.$isObject = true;
 $.Map.$isObject = true;
 $.Number.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
 $.PathSeg.$isObject = true;
-$.Shader.$isShader = true;
-$.Shader.$isShader = true;
 $.Shader.$isObject = true;
 $.Shader.$isObject = true;
+$.Shader.$isShader = true;
+$.Shader.$isShader = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
@@ -17627,18 +17626,18 @@ $.Texture.$isObject = true;
 $.Texture.$isObject = true;
 $.MimeType.$isObject = true;
 $.MimeType.$isObject = true;
-$.MouseEvent.$isMouseEvent = true;
-$.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isEvent = true;
+$.MouseEvent.$isMouseEvent = true;
+$.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isObject = true;
 $.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isNode = true;
+$.Node.$isObject = true;
+$.Node.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
@@ -17649,20 +17648,20 @@ $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isObject = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
@@ -17679,22 +17678,22 @@ $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isnum = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
 $.JSString.$isString = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
@@ -17711,14 +17710,10 @@ $.Element.$isObject = true;
 $.Element.$isObject = true;
 $.Element.$isElement = true;
 $.Element.$isElement = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
 $.Element.$isNode = true;
 $.Element.$isNode = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isint = true;
-$.JSInt.$isint = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
@@ -17729,18 +17724,22 @@ $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isnum = true;
-$.Entry.$isObject = true;
-$.Entry.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isint = true;
+$.JSInt.$isint = true;
 $.Entry.$isEntry = true;
 $.Entry.$isEntry = true;
+$.Entry.$isObject = true;
+$.Entry.$isObject = true;
 $.Transform.$isObject = true;
 $.Transform.$isObject = true;
 $.Plugin.$isObject = true;
 $.Plugin.$isObject = true;
-$.File.$isObject = true;
-$.File.$isObject = true;
 $.File.$isFile = true;
 $.File.$isFile = true;
+$.File.$isObject = true;
+$.File.$isObject = true;
 Isolate.makeConstantList = function(list) {
   list.immutable$list = true;
   list.fixed$length = true;
@@ -18224,10 +18223,10 @@ Isolate.$lazy($, "_runCallbacks", "Timer__runCallbacks", "get$Timer__runCallback
   return [];
 });
 Isolate.$lazy($, "pMatrix", "pMatrix", "get$pMatrix", function() {
-  return $.mat4$zero();
+  return $.Matrix4$zero();
 });
 Isolate.$lazy($, "cam", "cam", "get$cam", function() {
-  return $.Camera$($.vec3$(0, 0, 15), $.vec3$(0, 0, -1), $.vec3$(0, 1, 0));
+  return $.Camera$($.Vector3$(0, 0, 15), $.Vector3$(0, 0, -1), $.Vector3$(0, 1, 0));
 });
 Isolate.$lazy($, "_buttonIds", "Keyboard__buttonIds", "get$Keyboard__buttonIds", function() {
   return $.listTypeCheck([65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 16, 17, 18, 32, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 192, 13, 38, 40, 37, 39]);

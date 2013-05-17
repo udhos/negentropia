@@ -30,7 +30,7 @@ class SkyboxProgram extends ShaderProgram {
     super.fetch(shaderCache, vertexShaderURL, fragmentShaderURL);
   }
 
-  void drawModels(GameLoopHtml gameLoop, Camera cam, mat4 pMatrix) {
+  void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
@@ -112,7 +112,7 @@ class SkyboxModel extends Model {
 
 class SkyboxInstance extends Instance {
   
-  SkyboxInstance(Model model, vec3 center, double scale) : super(model, center, scale);
+  SkyboxInstance(Model model, Vector3 center, double scale) : super(model, center, scale);
   
   void draw(GameLoopHtml gameLoop, Camera cam) {
     

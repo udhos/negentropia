@@ -81,7 +81,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
   });
   
   subMessage = w.onMessage.listen((MessageEvent e) {
-    print('websocket: received: w.onMessage.listen');
+    //print('websocket: received: w.onMessage.listen');
     print('websocket: received: [${e.data}]');
     
     Map msg = parse(e.data);

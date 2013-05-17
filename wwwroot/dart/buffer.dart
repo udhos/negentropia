@@ -17,11 +17,11 @@ import 'obj.dart';
 class Instance {
   
   Model model;
-  vec3 center;
+  Vector3 center;
   double scale;
-  mat4 MV = new mat4.identity(); // model-view matrix
+  Matrix4 MV = new Matrix4.identity(); // model-view matrix
   
-  Instance(Model this.model, vec3 this.center, double this.scale);
+  Instance(Model this.model, Vector3 this.center, double this.scale);
   
   void update(GameLoopHtml gameLoop) {
   }

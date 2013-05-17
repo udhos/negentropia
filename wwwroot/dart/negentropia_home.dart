@@ -25,9 +25,9 @@ bool debugLostContext = true;
 List<ShaderProgram> programList;
 Map<String,Shader> shaderCache;
 Map<String,Texture> textureTable;
-mat4 pMatrix = new mat4.zero();
+Matrix4 pMatrix = new Matrix4.zero();
 num fieldOfViewYRadians = 45 * math.PI / 180;
-Camera cam = new Camera(new vec3(0.0,0.0,15.0), new vec3(0.0,0.0,-1.0), new vec3(0.0,1.0,0.0));
+Camera cam = new Camera(new Vector3(0.0,0.0,15.0), new Vector3(0.0,0.0,-1.0), new Vector3(0.0,1.0,0.0));
 bool backfaceCulling = false;
 
 // >0  : render at max rate then stop
@@ -114,7 +114,7 @@ void initSquares(RenderingContext gl) {
   squareProgram.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip_fs.txt");
   Model squareModel = new Model.fromJson(gl, squareProgram, "/mesh/square.json");
   squareProgram.addModel(squareModel);
-  Instance squareInstance = new Instance(squareModel, new vec3(0.0, 0.0, 0.0), 1.0);
+  Instance squareInstance = new Instance(squareModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel.addInstance(squareInstance);
 
   ShaderProgram squareProgram2 = new ShaderProgram(gl);
@@ -125,7 +125,7 @@ void initSquares(RenderingContext gl) {
   });
   Model squareModel2 = new Model.fromJson(gl, squareProgram2, "/mesh/square2.json");
   squareProgram2.addModel(squareModel2);
-  Instance squareInstance2 = new Instance(squareModel2, new vec3(0.0, 0.0, 0.0), 1.0);
+  Instance squareInstance2 = new Instance(squareModel2, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel2.addInstance(squareInstance2);
   
   ShaderProgram squareProgram3 = new ShaderProgram(gl);
@@ -133,7 +133,7 @@ void initSquares(RenderingContext gl) {
   squareProgram3.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
   Model squareModel3 = new Model.fromJson(gl, squareProgram3, "/mesh/square3.json");
   squareProgram3.addModel(squareModel3);
-  Instance squareInstance3 = new Instance(squareModel3, new vec3(0.0, 0.0, 0.0), 1.0);
+  Instance squareInstance3 = new Instance(squareModel3, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel3.addInstance(squareInstance3);  
 }
 
@@ -149,7 +149,7 @@ void initSkybox(RenderingContext gl) {
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');  
   skyboxProgram.addModel(skyboxModel);
-  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new vec3(0.0, 0.0, 0.0), 1.0);
+  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   skyboxModel.addInstance(skyboxInstance);
 }
 
@@ -159,7 +159,7 @@ void initAirship(RenderingContext gl) {
   prog.fetch(shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
   Model airshipModel = new Model.fromOBJ(gl, prog, "/obj/airship.obj");
   prog.addModel(airshipModel);
-  Instance airshipInstance = new Instance(airshipModel, new vec3(-8.0, 0.0, 0.0), 1.0);
+  Instance airshipInstance = new Instance(airshipModel, new Vector3(-8.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);  
 }
 
@@ -178,7 +178,7 @@ void initAirshipTex(RenderingContext gl) {
 
   TexModel airshipModel = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj", onModelDone);
   prog.addModel(airshipModel);
-  TexInstance airshipInstance = new TexInstance(airshipModel, new vec3(0.0, 0.0, 0.0), 1.0);
+  TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
 
   void onModelDone2(RenderingContext gl, TexModel airshipModel) {
@@ -188,7 +188,7 @@ void initAirshipTex(RenderingContext gl) {
 
   TexModel airshipModel2 = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj", onModelDone2);
   prog.addModel(airshipModel2);
-  TexInstance airshipInstance2 = new TexInstance(airshipModel2, new vec3(8.0, 0.0, 0.0), 1.0);
+  TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0);
   airshipModel2.addInstance(airshipInstance2);
 }
 
