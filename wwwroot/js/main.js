@@ -244,7 +244,20 @@ function initAirship() {
 		center: [-8.0, 0.0, 0.0]
 	};
 	console.log("initAirship: loading OBJ from: " + objURL);
-	fetchFile(objURL, onObjDone, opaque)
+	fetchFile(objURL, onObjDone, opaque);
+}
+
+function onMaterialDone(opaque, response) {
+	if (response == null) {
+		console.log("onMaterialDone: fetch FAILURE: " + opaque.URL);
+		return;
+	}
+	
+	console.log("onMaterialDone: " + opaque.URL);
+	
+	var mtllib = mtllib_parse(response);
+	
+	console.log("onMaterialDone mtllib = " + mtllib);	
 }
 
 function onTexObjDone(opaque, response) {
@@ -267,7 +280,21 @@ function onTexObjDone(opaque, response) {
 	console.log("onTexObjDone: mod.buffer.vertexTextureCoordBuffer = " + mod.buffer.vertexTextureCoordBuffer);
 	console.log("onTexObjDone: mod.buffer.vertexIndexBuffer = " + mod.buffer.vertexIndexBuffer);
 	
+	/*
+	if ('mtllib' in airship) {
+		console.log("onTexObjDone: mtllib FOUND: " + airship.mtllib);
+		var opaqueMaterial = {
+			URL: "/mtl/" + airship.mtllib
+		};
+		fetchFile(opaqueMaterial.URL, onMaterialDone, opaqueMaterial);
+		return;
+	}
+	
+	var tex = new Texture(neg.textureTable, 0, airship.indices.length, "MTLLIB-NOT-PROVIDED");
+	*/
+	
 	var tex = new Texture(neg.textureTable, 0, airship.indices.length, opaque.textureURL);
+	
 	mod.addTexture(tex);
 	
 	var inst = new TexInstance(mod, opaque.center);
@@ -297,8 +324,7 @@ function initAirshipTex() {
 		center: [8.0, 0.0, 0.0]
 	};
 	console.log("initAirshipTex: loading OBJ from: " + objURL);
-	fetchFile(objURL, onTexObjDone, opaque)
-	
+	fetchFile(objURL, onTexObjDone, opaque);
 }
 
 function initShips() {

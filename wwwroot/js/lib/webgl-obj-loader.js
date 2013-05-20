@@ -2,6 +2,7 @@
 // https://github.com/frenchtoast747/WebGL-Obj-Loader/blob/master/webgl-obj-loader.js
 // webgl-obj-loader.js
 
+/* See str.js
 // Thanks to CMS for the startsWith function
 // http://stackoverflow.com/questions/646628/javascript-startswith/646643#646643
 if (typeof String.prototype.startsWith !== 'function') {
@@ -9,6 +10,7 @@ if (typeof String.prototype.startsWith !== 'function') {
     return this.slice(0, str.length) === str;
   };
 }
+*/
 var obj_loader = {};
 
 obj_loader.Mesh = function( objectData ){
@@ -33,6 +35,9 @@ obj_loader.Mesh = function( objectData ){
     // array of lines separated by the newline
     var lines = objectData.split( '\n' )
     for( var i=0; i<lines.length; i++ ){
+	
+		var currLine = lines[i];
+		
       // if this is a vertex
       if( lines[ i ].startsWith( 'v ' ) ){
         line = lines[ i ].slice( 2 ).split( " " )
@@ -98,11 +103,18 @@ obj_loader.Mesh = function( objectData ){
             }
         }
       }
+	  
+		if (currLine.startsWith('mtllib ')) {
+			this.mtllib = currLine.split(' ')[1];
+			continue;
+		}
     }
     this.vertices = packed.verts;
     this.vertexNormals = packed.norms;
     this.textures = packed.textures;
     this.indices = packed.indices;
+	
+	console.log("obj_loader.Mesh: mtllib = " + this.mtllib);
 }
 
 
