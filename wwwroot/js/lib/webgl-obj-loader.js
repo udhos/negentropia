@@ -19,6 +19,9 @@ obj_loader.Mesh = function( objectData ){
         OBJ and creates the mesh.
     */
 
+	var prefix_mtllib = 'mtllib ';
+	var prefix_usemtl = 'usemtl ';
+	
     var verts = [];
     var vertNormals = [];
     var textures = [];
@@ -104,17 +107,27 @@ obj_loader.Mesh = function( objectData ){
         }
       }
 	  
-		if (currLine.startsWith('mtllib ')) {
-			this.mtllib = currLine.split(' ')[1];
+		if (currLine.startsWith(prefix_mtllib)) {
+			this.mtllib = currLine.slice(prefix_mtllib.length);
 			continue;
 		}
-    }
+
+		if (currLine.startsWith(prefix_usemtl)) {
+			var use = currLine.slice(prefix_usemtl.length);
+			if ('usemtl' in this) {
+				console.log("obj_loader.Mesh: usemtl redefinition: from usemtl=" + this.usemtl + " to usemtl=" + use);
+			}
+			this.usemtl = use;
+			continue;
+		}
+	}
     this.vertices = packed.verts;
     this.vertexNormals = packed.norms;
     this.textures = packed.textures;
     this.indices = packed.indices;
 	
 	console.log("obj_loader.Mesh: mtllib = " + this.mtllib);
+	console.log("obj_loader.Mesh: usemtl = " + this.usemtl);
 }
 
 

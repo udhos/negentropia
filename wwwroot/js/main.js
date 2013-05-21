@@ -257,7 +257,20 @@ function onMaterialDone(opaque, response) {
 	
 	var mtllib = mtllib_parse(response);
 	
-	console.log("onMaterialDone mtllib = " + mtllib);	
+	console.log("onMaterialDone mtllib = " + mtllib);
+	
+	var usemtl = opaque.airship.usemtl;
+	
+	console.log("onMaterialDone usemtl = " + usemtl);
+
+	var map_Kd = mtllib[usemtl].map_Kd;
+	
+	var textureName = "/texture/" + map_Kd;
+
+	console.log("onMaterialDone textureName = " + textureName);
+	
+	var tex = new Texture(neg.textureTable, 0, opaque.airship.indices.length, textureName);
+	opaque.mod.addTexture(tex);
 }
 
 function onTexObjDone(opaque, response) {
@@ -269,36 +282,44 @@ function onTexObjDone(opaque, response) {
 
 	console.log("onTexObjDone: fetch done: " + opaque.URL);
 	
-	var airship = new obj_loader.Mesh(response);
+	var obj_airship = new obj_loader.Mesh(response);
 	
 	console.log("onTexObjDone: parsing done: " + opaque.URL);
 			
-	var mod = new TexModel(opaque.program, null, false, airship);
+	var mod = new TexModel(opaque.program, null, false, obj_airship);
 	opaque.program.addModel(mod);
 	
 	console.log("onTexObjDone: mod.buffer.vertexPositionBufferItemSize = " + mod.buffer.vertexPositionBufferItemSize);
 	console.log("onTexObjDone: mod.buffer.vertexTextureCoordBuffer = " + mod.buffer.vertexTextureCoordBuffer);
 	console.log("onTexObjDone: mod.buffer.vertexIndexBuffer = " + mod.buffer.vertexIndexBuffer);
-	
-	/*
-	if ('mtllib' in airship) {
-		console.log("onTexObjDone: mtllib FOUND: " + airship.mtllib);
-		var opaqueMaterial = {
-			URL: "/mtl/" + airship.mtllib
-		};
-		fetchFile(opaqueMaterial.URL, onMaterialDone, opaqueMaterial);
+
+	if (opaque.forceSolidColor) {
+		console.log("onTexObjDone: FORCED SOLID COLOR");
+		var tex = new Texture(neg.textureTable, 0, obj_airship.indices.length, "FORCED-SOLID-COLOR");
+		mod.addTexture(tex);
+		
+		var inst = new TexInstance(mod, opaque.center);
+		mod.addInstance(inst);
+		
 		return;
 	}
 	
-	var tex = new Texture(neg.textureTable, 0, airship.indices.length, "MTLLIB-NOT-PROVIDED");
-	*/
+	if ('mtllib' in obj_airship) {
+		console.log("onTexObjDone: mtllib FOUND: " + obj_airship.mtllib);
+		var opaqueMaterial = {
+			URL: "/mtl/" + obj_airship.mtllib,
+			airship: obj_airship,
+			mod: mod
+		};
+		fetchFile(opaqueMaterial.URL, onMaterialDone, opaqueMaterial);
+		
+		var inst = new TexInstance(mod, opaque.center);
+		mod.addInstance(inst);
+		
+		return;
+	}
 	
-	var tex = new Texture(neg.textureTable, 0, airship.indices.length, opaque.textureURL);
-	
-	mod.addTexture(tex);
-	
-	var inst = new TexInstance(mod, opaque.center);
-	mod.addInstance(inst);
+	console.log("onTexObjDone: mtllib NOT FOUND: " + opaque.URL);
 }
 
 function initAirshipTex() {
@@ -317,14 +338,15 @@ function initAirshipTex() {
 	console.log("initAirshipTex: loading OBJ from: " + objURL);
 	fetchFile(objURL, onTexObjDone, opaque)
 	
-	var opaque = {
+	var opaque2 = {
 		URL: objURL,
 		textureURL: "INTENTIONAL-BAD-TEXTURE-NAME",
+		forceSolidColor: true,
 		program: prog,
 		center: [8.0, 0.0, 0.0]
 	};
 	console.log("initAirshipTex: loading OBJ from: " + objURL);
-	fetchFile(objURL, onTexObjDone, opaque);
+	fetchFile(objURL, onTexObjDone, opaque2);
 }
 
 function initShips() {
