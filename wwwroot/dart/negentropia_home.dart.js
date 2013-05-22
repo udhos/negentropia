@@ -15,11 +15,11 @@ var $$ = {};
 // Classes
 $$.ListIterable = {"": "IterableBase;",
   get$iterator: function(_) {
-    return $.propertyTypeCheck($.ListIterator$(this, $.getRuntimeTypeArgument(this, this.$asListIterable, 0)), "$isIterator");
+    return $.assertSubtype($.ListIterator$(this, $.getRuntimeTypeArgument(this, this.$asListIterable, 0)), "$isIterator", [$.getRuntimeTypeArgument(this, this.$asListIterable, 0)], "$asIterator");
   },
   forEach$1: function(_, action) {
     var $length, i, t1;
-    $.functionTypeCheck(action);
+    $.propertyTypeCheck(action, "$isFunction");
     $length = this.get$length(this);
     $.intTypeCheck($length);
     if ($length !== ($length | 0))
@@ -40,23 +40,81 @@ $$.ListIterable = {"": "IterableBase;",
     }
   },
   get$first: function(_) {
-    if ($.boolConversionCheck($.$eq(this.get$length(this), 0)))
+    if ($.$eq(this.get$length(this), 0))
       throw $.wrapException($.StateError$("No elements"));
-    return this.elementAt$1(this, 0);
+    return $.assertSubtypeOfRuntimeType(this.elementAt$1(this, 0), $.getRuntimeTypeArgument(this, this.$asListIterable, 0));
   },
   skip$1: function(_, count) {
-    return $.listSuperNativeTypeCheck($.SubListIterable$(this, count, null, null), "$isIterable");
+    var t1, $arguments, arguments0, t2;
+    t1 = $.SubListIterable$(this, count, null, null);
+    $arguments = this.$asListIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.listSuperNativeTypeCheck(t1, "$isIterable");
   },
   toList$1$growable: function(_, growable) {
-    var result, i, t1;
+    var $arguments, arguments0, t1, result, t2, i;
     if (growable) {
-      result = $.List_List($, $.getRuntimeTypeArgument(this, this.$asListIterable, 0));
-      $.setRuntimeTypeInfo(result, [$.getRuntimeTypeArgument(this, this.$asListIterable, 0)]);
+      $arguments = this.$asListIterable;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      result = $.List_List($, t1);
+      $arguments = this.$asListIterable;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      t1 = [t1];
+      t2 = t1.constructor === Array;
+      $.assertHelper(t2);
+      result.$builtinTypeInfo = t1;
       $.JSArray_methods.set$length(result, this.get$length(this));
+      $arguments = this.$asListIterable;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
       $.listTypeCheck(result);
     } else {
-      result = $.List_List(this.get$length(this), $.getRuntimeTypeArgument(this, this.$asListIterable, 0));
-      $.setRuntimeTypeInfo(result, [$.getRuntimeTypeArgument(this, this.$asListIterable, 0)]);
+      t1 = this.get$length(this);
+      $arguments = this.$asListIterable;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t2 = $arguments == null ? null : $arguments[0];
+      result = $.List_List(t1, t2);
+      $arguments = this.$asListIterable;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      t1 = [t1];
+      t2 = t1.constructor === Array;
+      $.assertHelper(t2);
+      result.$builtinTypeInfo = t1;
+      $arguments = this.$asListIterable;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
       $.listTypeCheck(result);
     }
     if (typeof result !== "object" || result === null || (result.constructor !== Array || !!result.immutable$list) && !$.getInterceptor(result).$isJavaScriptIndexingBehavior)
@@ -67,12 +125,26 @@ $$.ListIterable = {"": "IterableBase;",
         throw $.ioore(i);
       result[i] = t1;
     }
+    $arguments = this.$asListIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     return $.listTypeCheck(result);
   },
   toList$1$growable$bailout1: function(state0, result) {
-    var t1, i, t2;
+    var t1, i, t2, $arguments, arguments0;
     for (t1 = $.getInterceptor$ax(result), i = 0; t2 = $.getInterceptor$n(i), t2.$lt(i, this.get$length(this)); i = $.intTypeCheck(t2.$add(i, 1)))
       t1.$indexSet(result, i, this.elementAt$1(this, i));
+    $arguments = this.$asListIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     return $.listTypeCheck(result);
   },
   toList$0: function($receiver) {
@@ -137,7 +209,7 @@ $$.SubListIterable = {"": "ListIterable;_iterable,_start,_endOrLength",
     }
   },
   elementAt$1: function(_, index) {
-    var t1, realIndex;
+    var t1, realIndex, $arguments, arguments0;
     $.intTypeCheck(index);
     if (index !== (index | 0))
       return this.elementAt$1$bailout2(1, index);
@@ -157,7 +229,14 @@ $$.SubListIterable = {"": "ListIterable;_iterable,_start,_endOrLength",
       t1 = true;
     if (t1)
       throw $.wrapException($.RangeError$range(index, 0, this.get$length(this)));
-    return $.elementAt$1$ax(this._iterable, realIndex);
+    t1 = $.elementAt$1$ax(this._iterable, realIndex);
+    $arguments = this.$asSubListIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
   },
   elementAt$1$bailout2: function(state0, index, t1, realIndex) {
     switch (state0) {
@@ -171,6 +250,7 @@ $$.SubListIterable = {"": "ListIterable;_iterable,_start,_endOrLength",
         realIndex = $.$add$ns(t1, index);
         $.intTypeCheck(realIndex);
       case 3:
+        var $arguments, arguments0;
         state0 = 0;
         if (!$.$lt$n(index, 0)) {
           t1 = this.get$_endIndex();
@@ -181,13 +261,29 @@ $$.SubListIterable = {"": "ListIterable;_iterable,_start,_endOrLength",
           t1 = true;
         if (t1)
           throw $.wrapException($.RangeError$range(index, 0, this.get$length(this)));
-        return $.elementAt$1$ax(this._iterable, realIndex);
+        t1 = $.elementAt$1$ax(this._iterable, realIndex);
+        $arguments = this.$asSubListIterable;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
     }
   },
   skip$1: function(_, count) {
+    var t1, $arguments, arguments0, t2;
     if ($.$lt$n(count, 0))
       throw $.wrapException($.ArgumentError$(count));
-    return $.listSuperNativeTypeCheck($.SubListIterable$(this._iterable, $.$add$ns(this._start, count), this._endOrLength, null), "$isIterable");
+    t1 = $.SubListIterable$(this._iterable, $.$add$ns(this._start, count), this._endOrLength, null);
+    $arguments = this.$asSubListIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.listSuperNativeTypeCheck(t1, "$isIterable");
   },
   $asListIterable: null,
   $asListIterable: null,
@@ -196,23 +292,23 @@ $$.SubListIterable = {"": "ListIterable;_iterable,_start,_endOrLength",
   $asIterable: null
 };
 
-$$.ListIterator = {"": "Object;_iterable,_liblib1$_length,_index,_liblib1$_current",
+$$.ListIterator = {"": "Object;_iterable,_liblib0$_length,_index,_current?",
   get$current: function() {
-    return this._liblib1$_current;
+    return $.assertSubtypeOfRuntimeType(this._current, $.getRuntimeTypeArgument(this, this.$asListIterator, 0));
   },
   moveNext$0: function() {
     var t1, t2, t3;
-    t1 = this._liblib1$_length;
+    t1 = this._liblib0$_length;
     t2 = this._iterable;
     t3 = $.get$length$asx(t2);
     if (t1 == null ? t3 != null : t1 !== t3)
       throw $.wrapException($.ConcurrentModificationError$(t2));
     t3 = this._index;
     if (t3 === t1) {
-      this._liblib1$_current = null;
+      this.set$_current(null);
       return false;
     }
-    this._liblib1$_current = $.elementAt$1$ax(t2, t3);
+    this.set$_current($.elementAt$1$ax(t2, t3));
     this._index = $.intTypeCheck(this._index + 1);
     return true;
   },
@@ -226,7 +322,7 @@ $$.MappedIterable = {"": "IterableBase;_iterable,_f",
   },
   get$iterator: function(_) {
     var t1 = this._iterable;
-    return $.propertyTypeCheck($.MappedIterator$(t1.get$iterator(t1), this._f, $.getRuntimeTypeArgument(this, this.$asMappedIterable, 0), $.getRuntimeTypeArgument(this, this.$asMappedIterable, 1)), "$isIterator");
+    return $.assertSubtype($.MappedIterator$(t1.get$iterator(t1), this._f, $.getRuntimeTypeArgument(this, this.$asMappedIterable, 0), $.getRuntimeTypeArgument(this, this.$asMappedIterable, 1)), "$isIterator", [$.getRuntimeTypeArgument(this, this.$asMappedIterable, 1)], "$asIterator");
   },
   get$length: function(_) {
     var t1 = this._iterable;
@@ -234,11 +330,19 @@ $$.MappedIterable = {"": "IterableBase;_iterable,_f",
   },
   get$first: function(_) {
     var t1 = this._iterable;
-    return this._f$1(t1.get$first(t1));
+    return $.assertSubtypeOfRuntimeType(this._f$1(t1.get$first(t1)), $.getRuntimeTypeArgument(this, this.$asMappedIterable, 1));
   },
   elementAt$1: function(_, index) {
-    var t1 = this._iterable;
-    return this._f$1(t1.elementAt$1(t1, $.intTypeCheck(index)));
+    var t1, $arguments, arguments0;
+    t1 = this._iterable;
+    t1 = this._f$1(t1.elementAt$1(t1, $.intTypeCheck(index)));
+    $arguments = this.$asMappedIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterableBase: function (S, T) { return [T]; },
@@ -246,21 +350,21 @@ $$.MappedIterable = {"": "IterableBase;_iterable,_f",
   $asIterable: function (S, T) { return [T]; }
 };
 
-$$.MappedIterator = {"": "Iterator;_liblib1$_current,_iterator,_f",
+$$.MappedIterator = {"": "Iterator;_current?,_iterator,_f",
   _f$1: function(arg0) {
     return this._f.call$1(arg0);
   },
   moveNext$0: function() {
     var t1 = this._iterator;
     if ($.boolConversionCheck(t1.moveNext$0())) {
-      this._liblib1$_current = this._f$1(t1.get$current());
+      this.set$_current(this._f$1(t1.get$current()));
       return true;
     }
-    this._liblib1$_current = null;
+    this.set$_current(null);
     return false;
   },
   get$current: function() {
-    return this._liblib1$_current;
+    return $.assertSubtypeOfRuntimeType(this._current, $.getRuntimeTypeArgument(this, this.$asMappedIterator, 1));
   },
   $asIterator: function (S, T) { return [T]; },
   $asObject: null
@@ -268,7 +372,7 @@ $$.MappedIterator = {"": "Iterator;_liblib1$_current,_iterator,_f",
 
 $$.WhereIterable = {"": "IterableBase;_iterable,_f",
   get$iterator: function(_) {
-    return $.propertyTypeCheck($.WhereIterator$($.get$iterator$ax(this._iterable), this._f, $.getRuntimeTypeArgument(this, this.$asWhereIterable, 0)), "$isIterator");
+    return $.assertSubtype($.WhereIterator$($.get$iterator$ax(this._iterable), this._f, $.getRuntimeTypeArgument(this, this.$asWhereIterable, 0)), "$isIterator", [$.getRuntimeTypeArgument(this, this.$asWhereIterable, 0)], "$asIterator");
   },
   $asIterableBase: null,
   $asIterableBase: null,
@@ -287,7 +391,7 @@ $$.WhereIterator = {"": "Iterator;_iterator,_f",
     return false;
   },
   get$current: function() {
-    return this._iterator.get$current();
+    return $.assertSubtypeOfRuntimeType(this._iterator.get$current(), $.getRuntimeTypeArgument(this, this.$asWhereIterator, 0));
   },
   $asIterator: null,
   $asObject: null
@@ -295,12 +399,29 @@ $$.WhereIterator = {"": "Iterator;_iterator,_f",
 
 $$.SkipIterable = {"": "IterableBase;_iterable,_skipCount",
   skip$1: function(_, n) {
+    var t1, $arguments, arguments0, t2;
     if (typeof n !== "number" || Math.floor(n) !== n || n < 0)
       throw $.wrapException($.ArgumentError$(n));
-    return $.listSuperNativeTypeCheck($.SkipIterable$(this._iterable, $.$add$ns(this._skipCount, n), $.getRuntimeTypeArgument(this, this.$asSkipIterable, 0)), "$isIterable");
+    t1 = $.$add$ns(this._skipCount, n);
+    $arguments = this.$asSkipIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    t2 = $.SkipIterable$(this._iterable, t1, t2);
+    $arguments = this.$asSkipIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    return $.listSuperNativeTypeCheck(t2, "$isIterable");
   },
   get$iterator: function(_) {
-    return $.propertyTypeCheck($.SkipIterator$($.get$iterator$ax(this._iterable), this._skipCount, $.getRuntimeTypeArgument(this, this.$asSkipIterable, 0)), "$isIterator");
+    return $.assertSubtype($.SkipIterator$($.get$iterator$ax(this._iterable), this._skipCount, $.getRuntimeTypeArgument(this, this.$asSkipIterable, 0)), "$isIterator", [$.getRuntimeTypeArgument(this, this.$asSkipIterable, 0)], "$asIterator");
   },
   SkipIterable$2: function(_iterable, _skipCount, E) {
     var t1 = this._skipCount;
@@ -321,7 +442,7 @@ $$.SkipIterator = {"": "Iterator;_iterator,_skipCount",
     while (true) {
       t2 = this._skipCount;
       if (t2 !== (t2 | 0))
-        throw $.iae(t2);
+        return this.moveNext$0$bailout1(1, t2, t1, i);
       if (!(i < t2))
         break;
       t1.moveNext$0();
@@ -330,27 +451,27 @@ $$.SkipIterator = {"": "Iterator;_iterator,_skipCount",
     this._skipCount = 0;
     return $.boolTypeCheck(t1.moveNext$0());
   },
-  moveNext$0$bailout1: function(state0, i, t1) {
+  moveNext$0$bailout1: function(state0, t2, t1, i) {
     switch (state0) {
       case 0:
         t1 = this._iterator;
         i = 0;
-      case 1:
-        var t2, t3;
+      default:
+        var t3;
         L0:
           while (true)
             switch (state0) {
               case 0:
                 t2 = this._skipCount;
+              case 1:
+                state0 = 0;
                 t3 = $.getInterceptor$n(i);
-                if (t2 !== (t2 | 0))
-                  throw $.iae(t2);
                 if (!t3.$lt(i, t2))
                   break L0;
                 t1.moveNext$0();
                 i = t3.$add(i, 1);
                 $.intTypeCheck(i);
-              case 1:
+              case 2:
                 state0 = 0;
             }
         this._skipCount = 0;
@@ -358,7 +479,7 @@ $$.SkipIterator = {"": "Iterator;_iterator,_skipCount",
     }
   },
   get$current: function() {
-    return this._iterator.get$current();
+    return $.assertSubtypeOfRuntimeType(this._iterator.get$current(), $.getRuntimeTypeArgument(this, this.$asSkipIterator, 0));
   },
   SkipIterator$2: function(_iterator, _skipCount, E) {
     var t1 = this._skipCount;
@@ -406,15 +527,15 @@ $$.HashMap_values_closure = {"": "Closure;this_0",
 
 $$.HashMapKeyIterable = {"": "IterableBase;_map",
   get$length: function(_) {
-    return $.intTypeCheck(this._map._liblib0$_length);
+    return $.intTypeCheck(this._map._length);
   },
   get$iterator: function(_) {
     var t1 = this._map;
-    return $.propertyTypeCheck($.HashMapKeyIterator$(t1, t1._computeKeys$0(), $.getRuntimeTypeArgument(this, this.$asHashMapKeyIterable, 0)), "$isIterator");
+    return $.assertSubtype($.HashMapKeyIterator$(t1, t1._computeKeys$0(), $.getRuntimeTypeArgument(this, this.$asHashMapKeyIterable, 0)), "$isIterator", [$.getRuntimeTypeArgument(this, this.$asHashMapKeyIterable, 0)], "$asIterator");
   },
   forEach$1: function(_, f) {
     var t1, keys, $length, i, t2;
-    $.functionTypeCheck(f);
+    $.propertyTypeCheck(f, "$isFunction");
     t1 = this._map;
     keys = t1._computeKeys$0();
     for ($length = keys.length, i = 0; t2 = $.getInterceptor$n(i), t2.$lt(i, $length); i = $.intTypeCheck(t2.$add(i, 1))) {
@@ -429,9 +550,9 @@ $$.HashMapKeyIterable = {"": "IterableBase;_map",
   $asIterable: null
 };
 
-$$.HashMapKeyIterator = {"": "Object;_map,_keys,_offset,_liblib0$_current",
+$$.HashMapKeyIterator = {"": "Object;_map,_keys,_offset,_liblib1$_current?",
   get$current: function() {
-    return this._liblib0$_current;
+    return $.assertSubtypeOfRuntimeType(this._liblib1$_current, $.getRuntimeTypeArgument(this, this.$asHashMapKeyIterator, 0));
   },
   moveNext$0: function() {
     var keys, offset, t1;
@@ -441,10 +562,10 @@ $$.HashMapKeyIterator = {"": "Object;_map,_keys,_offset,_liblib0$_current",
     if (keys !== t1._keys)
       throw $.wrapException($.ConcurrentModificationError$(t1));
     else if (offset >= keys.length) {
-      this._liblib0$_current = null;
+      this.set$_liblib1$_current(null);
       return false;
     } else {
-      this._liblib0$_current = keys[offset];
+      this.set$_liblib1$_current(keys[offset]);
       this._offset = offset + 1;
       return true;
     }
@@ -475,15 +596,15 @@ $$.LinkedHashMapCell = {"": "Object;_key<,_value,_next<,_previous", $isLinkedHas
 
 $$.LinkedHashMapKeyIterable = {"": "IterableBase;_map",
   get$length: function(_) {
-    return $.intTypeCheck(this._map._liblib0$_length);
+    return $.intTypeCheck(this._map._length);
   },
   get$iterator: function(_) {
     var t1 = this._map;
-    return $.propertyTypeCheck($.LinkedHashMapKeyIterator$(t1, t1._modifications, $.getRuntimeTypeArgument(this, this.$asLinkedHashMapKeyIterable, 0)), "$isIterator");
+    return $.assertSubtype($.LinkedHashMapKeyIterator$(t1, t1._modifications, $.getRuntimeTypeArgument(this, this.$asLinkedHashMapKeyIterable, 0)), "$isIterator", [$.getRuntimeTypeArgument(this, this.$asLinkedHashMapKeyIterable, 0)], "$asIterator");
   },
   forEach$1: function(_, f) {
     var t1, cell, modifications;
-    $.functionTypeCheck(f);
+    $.propertyTypeCheck(f, "$isFunction");
     t1 = this._map;
     cell = t1._first;
     modifications = t1._modifications;
@@ -500,9 +621,9 @@ $$.LinkedHashMapKeyIterable = {"": "IterableBase;_map",
   $asIterable: null
 };
 
-$$.LinkedHashMapKeyIterator = {"": "Object;_map,_modifications,_cell,_liblib0$_current",
+$$.LinkedHashMapKeyIterator = {"": "Object;_map,_modifications,_cell,_liblib1$_current?",
   get$current: function() {
-    return this._liblib0$_current;
+    return $.assertSubtypeOfRuntimeType(this._liblib1$_current, $.getRuntimeTypeArgument(this, this.$asLinkedHashMapKeyIterator, 0));
   },
   moveNext$0: function() {
     var t1 = this._map;
@@ -511,10 +632,10 @@ $$.LinkedHashMapKeyIterator = {"": "Object;_map,_modifications,_cell,_liblib0$_c
     else {
       t1 = this._cell;
       if (t1 == null) {
-        this._liblib0$_current = null;
+        this.set$_liblib1$_current(null);
         return false;
       } else {
-        this._liblib0$_current = t1._key;
+        this.set$_liblib1$_current(t1._key);
         this._cell = this._cell._next;
         return true;
       }
@@ -529,7 +650,7 @@ $$.LinkedHashMapKeyIterator = {"": "Object;_map,_modifications,_cell,_liblib0$_c
 
 $$.NoSuchMethodError_toString_closure = {"": "Closure;box_0",
   call$2: function(key, value) {
-    var t1, t2, str;
+    var t1, t2, str, t3;
     $.stringTypeCheck(key);
     t1 = this.box_0;
     if ($.$gt$n(t1.i_1, 0)) {
@@ -542,9 +663,8 @@ $$.NoSuchMethodError_toString_closure = {"": "Closure;box_0",
     t2 = t1.sb_0;
     t2._contents = t2._contents + ": ";
     t2 = t1.sb_0;
-    str = $.Error_safeToString(value);
-    str = typeof str === "string" ? str : $.S(str);
-    t2._contents = t2._contents + str;
+    t3 = $.Error_safeToString(value);
+    t2._contents = t2._contents + t3;
     t1.i_1 = $.intTypeCheck($.$add$ns(t1.i_1, 1));
   },
   $isFunction: true,
@@ -559,16 +679,8 @@ $$.Interceptor = {"": "Object;",
     return $.intTypeCheck($.Primitives_objectHashCode(receiver));
   },
   toString$0: function(receiver) {
-    return "Instance of '" + $.S($.Primitives_objectTypeName(receiver)) + "'";
+    return "Instance of '" + $.Primitives_objectTypeName(receiver) + "'";
   }
-};
-
-$$.JSFunction = {"": "Interceptor;",
-  toString$0: function(receiver) {
-    return "Closure";
-  },
-  $isFunction: true,
-  $asObject: null
 };
 
 $$.JSBool = {"": "bool/Interceptor;",
@@ -616,7 +728,13 @@ $$.JsIsolateSink = {"": "EventSink;_isClosed,_port<",
   $isIsolateSink: true
 };
 
-$$._Manager = {"": "Object;nextIsolateId,currentManagerId,nextManagerId,currentContext,rootContext,topEventLoop,fromCommandLine,isWorker,supportsWorkers,isolates,mainManager,managers",
+$$._Manager = {"": "Object;nextIsolateId,currentManagerId,nextManagerId,currentContext,rootContext,topEventLoop,fromCommandLine,isWorker,supportsWorkers,isolates,mainManager,managers,entry",
+  set$isolates: function(v) {
+    this.isolates = $.interceptedTypeCheck(v, "$isMap");
+  },
+  set$managers: function(v) {
+    this.managers = $.interceptedTypeCheck(v, "$isMap");
+  },
   get$useWorkers: function() {
     return this.supportsWorkers;
   },
@@ -640,26 +758,30 @@ $$._Manager = {"": "Object;nextIsolateId,currentManagerId,nextManagerId,currentC
     this.fromCommandLine = t1 && !$.boolConversionCheck(this.isWorker);
   },
   _nativeInitWorkerMessageHandler$0: function() {
-    var $function = function (e) { $.IsolateNatives__processWorkerMessage.call$2(this.mainManager, e); };
+    var $function = function (e) { $.IsolateNatives__processWorkerMessage$closure.call$2(this.mainManager, e); };
     $.get$globalThis().onmessage = $function;
     $.get$globalThis().dartPrint = function (object) {};
   },
   maybeCloseWorker$0: function() {
+    var t1, t2;
     if ($.boolConversionCheck(this.isWorker)) {
-      var t1 = this.isolates;
-      t1 = t1.get$isEmpty(t1) && this.topEventLoop.activeTimerCount === 0;
+      t1 = this.isolates;
+      t1.get$isEmpty;
+      t1 = t1._length === 0 && this.topEventLoop.activeTimerCount === 0;
     } else
       t1 = false;
     if (t1) {
-      t1 = $._serializeMessage($.makeLiteralMap(["command", "close"]));
-      $.get$globalThis().postMessage(t1);
+      t1 = this.mainManager;
+      t2 = $._serializeMessage($.makeLiteralMap(["command", "close"]));
+      t1.postMessage$1;
+      self.postMessage(t2);
     }
   },
-  _Manager$0: function() {
+  _Manager$1: function(entry) {
     this._nativeDetectEnvironment$0();
     this.topEventLoop = $._EventLoop$();
-    this.isolates = $.interceptedTypeCheck($.Map_Map($.JSInt, $._IsolateContext), "$isMap");
-    this.managers = $.interceptedTypeCheck($.Map_Map($.JSInt, $._ManagerStub), "$isMap");
+    this.set$isolates($.Map_Map($.JSInt, $._IsolateContext));
+    this.set$managers($.Map_Map($.JSInt, null));
     if ($.boolConversionCheck(this.isWorker)) {
       this.mainManager = $._MainManagerStub$();
       this._nativeInitWorkerMessageHandler$0();
@@ -668,9 +790,12 @@ $$._Manager = {"": "Object;nextIsolateId,currentManagerId,nextManagerId,currentC
 };
 
 $$._IsolateContext = {"": "Object;id>,ports,isolateStatics",
+  set$ports: function(receiver, v) {
+    this.ports = $.interceptedTypeCheck(v, "$isMap");
+  },
   eval$1: function(code) {
     var old, result;
-    $.functionTypeCheck(code);
+    $.propertyTypeCheck(code, "$isFunction");
     old = $globalState.currentContext;
     $globalState.currentContext = this;
     $ = this.isolateStatics;
@@ -693,7 +818,7 @@ $$._IsolateContext = {"": "Object;id>,ports,isolateStatics",
   },
   register$2: function(_, portId, port) {
     var t1 = this.ports;
-    if ($.boolConversionCheck(t1.containsKey$1(t1, portId)))
+    if (t1.containsKey$1(t1, portId))
       throw $.wrapException($._ExceptionImplementation$("Registry: ports must be registered only once."));
     t1 = this.ports;
     t1.$indexSet(t1, portId, port);
@@ -703,8 +828,7 @@ $$._IsolateContext = {"": "Object;id>,ports,isolateStatics",
   unregister$1: function(portId) {
     var t1 = this.ports;
     t1.remove$1(t1, portId);
-    t1 = this.ports;
-    if (t1.get$isEmpty(t1)) {
+    if (this.ports._length === 0) {
       t1 = $globalState.isolates;
       t1.remove$1(t1, this.id);
     }
@@ -715,7 +839,7 @@ $$._IsolateContext = {"": "Object;id>,ports,isolateStatics",
     t2 = t1.nextIsolateId;
     t1.nextIsolateId = $.intTypeCheck(t2 + 1);
     this.id = $.intTypeCheck(t2);
-    this.ports = $.interceptedTypeCheck($.Map_Map($.JSInt, $.ReceivePort), "$isMap");
+    this.set$ports(this, $.Map_Map($.JSInt, $.ReceivePort));
     this.isolateStatics = new Isolate();
   },
   $is_IsolateContext: true,
@@ -724,29 +848,18 @@ $$._IsolateContext = {"": "Object;id>,ports,isolateStatics",
 
 $$._EventLoop = {"": "Object;events,activeTimerCount",
   enqueue$3: function(isolate, fn, msg) {
-    var t1, t2;
-    t1 = this.events;
-    t2 = $._IsolateEvent$(isolate, fn, msg);
-    t2;
-    t1._add$1(t1, t2);
+    this.events.addLast$1($._IsolateEvent$(isolate, fn, msg));
   },
   dequeue$0: function() {
     var t1 = this.events;
-    if (t1.get$isEmpty(t1))
+    if (t1._head === t1._tail)
       return;
     return $.propertyTypeCheck(t1.removeFirst$0(), "$is_IsolateEvent");
   },
   checkOpenReceivePortsFromCommandLine$0: function() {
     if ($globalState.rootContext != null) {
       var t1 = $globalState.isolates;
-      if ($.boolConversionCheck(t1.containsKey$1(t1, $globalState.rootContext.id)))
-        if ($.boolConversionCheck($globalState.fromCommandLine)) {
-          t1 = $globalState.rootContext.ports;
-          t1 = t1.get$isEmpty(t1);
-        } else
-          t1 = false;
-      else
-        t1 = false;
+      t1 = t1.containsKey$1(t1, $globalState.rootContext.id) && $.boolConversionCheck($globalState.fromCommandLine) && $globalState.rootContext.ports._length === 0;
     } else
       t1 = false;
     if (t1)
@@ -770,7 +883,7 @@ $$._EventLoop = {"": "Object;events,activeTimerCount",
         ;
   },
   run$0: function() {
-    var e, trace, exception, t1;
+    var e, trace, exception, t1, t2;
     if (!$.boolConversionCheck($globalState.isWorker))
       this._runHelper$0();
     else
@@ -779,10 +892,11 @@ $$._EventLoop = {"": "Object;events,activeTimerCount",
       } catch (exception) {
         t1 = $.unwrapException(exception);
         e = t1;
-        trace = $.getTraceFromException(exception);
-        $globalState;
-        t1 = $._serializeMessage($.makeLiteralMap(["command", "error", "msg", $.S(e) + "\n" + $.S(trace)]));
-        $.get$globalThis().postMessage(t1);
+        trace = $._StackTrace$(exception.stack);
+        t1 = $globalState.mainManager;
+        t2 = $._serializeMessage($.makeLiteralMap(["command", "error", "msg", $.S(e) + "\n" + $.S(trace)]));
+        t1.postMessage$1;
+        self.postMessage(t2);
       }
 
   },
@@ -807,28 +921,14 @@ $$._IsolateEvent = {"": "Object;isolate,fn,message",
   $is_IsolateEvent: true
 };
 
-$$._ManagerStub = {"": "Object;", $is_ManagerStub: true, $as_ManagerStub: null};
-
-$$._MainManagerStub = {"": "Object;",
-  get$id: function(_) {
-    return 0;
-  },
-  postMessage$1: function(_, msg) {
-    $.get$globalThis().postMessage(msg);
-  },
-  terminate$0: function(_) {
-  },
-  $is_ManagerStub: true,
-  $as_ManagerStub: null,
-  $asObject: null
-};
+$$._MainManagerStub = {"": "Object;", $is_MainManagerStub: true};
 
 $$.IsolateNatives__processWorkerMessage_closure = {"": "Closure;entryPoint_0,replyTo_1",
   call$0: function() {
     var t1, t2;
     t1 = this.entryPoint_0;
     t2 = this.replyTo_1;
-    $.functionTypeCheck(t1);
+    $.propertyTypeCheck(t1, "$isFunction");
     $.propertyTypeCheck(t2, "$isSendPort");
     $.lazyPort = $.ReceivePortImpl$();
     $.send$2$x(t2, "spawned", $.propertyTypeCheck($._Isolate_port(), "$isReceivePort").toSendPort$0());
@@ -851,7 +951,7 @@ $$._BaseSendPort = {"": "Object;_isolateId<",
     port = $.ReceivePortImpl$();
     this.send$2(this, message, $._NativeJsSendPort$(port, $globalState.currentContext.id));
     t1 = new $._BaseSendPort_call_closure(completer, port);
-    $.functionTypeCheck(t1);
+    $.propertyTypeCheck(t1, "$isFunction");
     port._callback = t1;
     return completer.future;
   },
@@ -880,13 +980,8 @@ $$._BaseSendPort_call_closure = {"": "Closure;completer_0,port_1",
         $.throwExpression($.StateError$("Future already completed"));
       t1._isComplete = true;
       t1._setFutureError$1(value);
-    } else {
-      value;
-      if (t1._isComplete)
-        $.throwExpression($.StateError$("Future already completed"));
-      t1._isComplete = true;
-      t1._setFutureValue$1(value);
-    }
+    } else
+      t1.complete$1(t1, value);
   },
   $isFunction: true,
   $asObject: null,
@@ -945,10 +1040,8 @@ $$._NativeJsSendPort_send_closure = {"": "Closure;this_1,message_2,replyTo_3",
     }
     t3 = $globalState.topEventLoop;
     t4 = "receive " + $.S(msg);
-    t3 = t3.events;
-    t4 = $._IsolateEvent$(isolate, new $._NativeJsSendPort_send__closure(t1, t2, shouldSerialize), t4);
-    t4;
-    t3._add$1(t3, t4);
+    t3.enqueue$3;
+    t3.events.addLast$1($._IsolateEvent$(isolate, new $._NativeJsSendPort_send__closure(t1, t2, shouldSerialize), t4));
   },
   $isFunction: true,
   $asObject: null,
@@ -1027,13 +1120,13 @@ $$._WorkerSendPort_send_closure = {"": "Closure;this_0,message_1,replyTo_2",
     t1._checkReplyTo$1(t2);
     workerMessage = $._serializeMessage($.makeLiteralMap(["command", "message", "port", t1, "msg", this.message_1, "replyTo", t2]));
     if ($.boolConversionCheck($globalState.isWorker)) {
-      $globalState;
-      $.get$globalThis().postMessage(workerMessage);
+      $globalState.mainManager.postMessage$1;
+      self.postMessage(workerMessage);
     } else {
       t2 = $globalState.managers;
-      manager = $.interceptedTypeCheck(t2.$index(t2, t1.get$_workerId()), "$is_ManagerStub");
+      manager = t2.$index(t2, t1.get$_workerId());
       if (manager != null)
-        $.postMessage$1$x(manager, workerMessage);
+        manager.postMessage(workerMessage);
     }
   },
   $isFunction: true,
@@ -1246,6 +1339,7 @@ $$._JsVisitedMap = {"": "Object;tagged",
     }
     this.tagged = null;
   },
+  $is_MessageTraverserVisitedMap: true,
   $asObject: null
 };
 
@@ -1258,7 +1352,8 @@ $$._MessageTraverserVisitedMap = {"": "Object;",
   reset$0: function(_) {
   },
   cleanup$0: function() {
-  }
+  },
+  $is_MessageTraverserVisitedMap: true
 };
 
 $$._MessageTraverser = {"": "Object;",
@@ -1300,39 +1395,53 @@ $$._Copier = {"": "_MessageTraverser;",
     return x;
   },
   visitList$1: function(list) {
-    var t1, copy, len, t2, i, t3;
+    var t1, copy, len, i, t2;
+    if (typeof list !== "string" && (typeof list !== "object" || list === null || list.constructor !== Array && !$.getInterceptor(list).$isJavaScriptIndexingBehavior))
+      return this.visitList$1$bailout1(1, list);
     t1 = this._visited;
     copy = $.listTypeCheck(t1.$index(t1, list));
     if (copy != null)
       return copy;
-    t1 = $.getInterceptor$asx(list);
-    len = t1.get$length(list);
-    $.intTypeCheck(len);
-    if (len !== (len | 0))
-      return this.visitList$1$bailout1(1, list, t1, len);
+    len = list.length;
     copy = $.List_List(len, null);
-    t2 = this._visited;
-    t2.$indexSet(t2, list, copy);
-    for (t2 = copy.length, i = 0; i < len; ++i) {
-      t3 = this._dispatch$1(t1.$index(list, i));
-      if (i >= t2)
+    t1 = this._visited;
+    t1.$indexSet(t1, list, copy);
+    for (t1 = copy.length, i = 0; i < len; ++i) {
+      if (i >= list.length)
         throw $.ioore(i);
-      copy[i] = t3;
+      t2 = this._dispatch$1(list[i]);
+      if (i >= t1)
+        throw $.ioore(i);
+      copy[i] = t2;
     }
     return copy;
   },
   visitList$1$bailout1: function(state0, list, t1, len) {
-    var copy, t2, i, t3;
-    copy = $.List_List(len, null);
-    t2 = this._visited;
-    t2.$indexSet(t2, list, copy);
-    for (t2 = copy.length, i = 0; $.$lt$n(i, len); ++i) {
-      t3 = this._dispatch$1(t1.$index(list, i));
-      if (i < 0 || i >= t2)
-        throw $.ioore(i);
-      copy[i] = t3;
+    switch (state0) {
+      case 0:
+      case 1:
+        state0 = 0;
+        t1 = this._visited;
+        copy = $.listTypeCheck(t1.$index(t1, list));
+        if (copy != null)
+          return copy;
+        t1 = $.getInterceptor$asx(list);
+        len = t1.get$length(list);
+        $.intTypeCheck(len);
+      case 2:
+        var copy, t2, i, t3;
+        state0 = 0;
+        copy = $.List_List(len, null);
+        t2 = this._visited;
+        t2.$indexSet(t2, list, copy);
+        for (t2 = copy.length, i = 0; $.$lt$n(i, len); ++i) {
+          t3 = this._dispatch$1(t1.$index(list, i));
+          if (i < 0 || i >= t2)
+            throw $.ioore(i);
+          copy[i] = t3;
+        }
+        return copy;
     }
-    return copy;
   },
   visitMap$1: function(map) {
     var t1, t2;
@@ -1392,40 +1501,54 @@ $$._Serializer = {"": "_MessageTraverser;",
     return ["map", id, this._serializeList$1($.toList$0$ax(t1.get$keys(map))), this._serializeList$1($.toList$0$ax(t1.get$values(map)))];
   },
   _serializeList$1: function(list) {
-    var t1, len, result, t2, i, t3;
+    var len, result, t1, i, t2;
     $.listTypeCheck(list);
-    t1 = $.getInterceptor$asx(list);
-    len = t1.get$length(list);
-    $.intTypeCheck(len);
-    if (len !== (len | 0))
-      return this._serializeList$1$bailout(1, list, t1, len);
+    if (typeof list !== "string" && (typeof list !== "object" || list === null || list.constructor !== Array && !$.getInterceptor(list).$isJavaScriptIndexingBehavior))
+      return this._serializeList$1$bailout(1, list);
+    len = list.length;
     result = $.List_List(len, null);
-    for (t2 = result.length, i = 0; i < len; ++i) {
-      t3 = this._dispatch$1(t1.$index(list, i));
-      if (i >= t2)
+    for (t1 = result.length, i = 0; i < len; ++i) {
+      if (i >= list.length)
         throw $.ioore(i);
-      result[i] = t3;
+      t2 = this._dispatch$1(list[i]);
+      if (i >= t1)
+        throw $.ioore(i);
+      result[i] = t2;
     }
     return result;
   },
   _serializeList$1$bailout: function(state0, list, t1, len) {
-    var result, t2, i, t3;
-    result = $.List_List(len, null);
-    for (t2 = result.length, i = 0; $.$lt$n(i, len); ++i) {
-      t3 = this._dispatch$1(t1.$index(list, i));
-      if (i < 0 || i >= t2)
-        throw $.ioore(i);
-      result[i] = t3;
+    switch (state0) {
+      case 0:
+        $.listTypeCheck(list);
+      case 1:
+        state0 = 0;
+        t1 = $.getInterceptor$asx(list);
+        len = t1.get$length(list);
+        $.intTypeCheck(len);
+      case 2:
+        var result, t2, i, t3;
+        state0 = 0;
+        result = $.List_List(len, null);
+        for (t2 = result.length, i = 0; $.$lt$n(i, len); ++i) {
+          t3 = this._dispatch$1(t1.$index(list, i));
+          if (i < 0 || i >= t2)
+            throw $.ioore(i);
+          result[i] = t3;
+        }
+        return result;
     }
-    return result;
   }
 };
 
-$$._Deserializer = {"": "Object;",
+$$._Deserializer = {"": "Object;_deserialized",
+  set$_deserialized: function(v) {
+    this._deserialized = $.interceptedTypeCheck(v, "$isMap");
+  },
   deserialize$1: function(x) {
     if (x == null || typeof x === "string" || typeof x === "number" || typeof x === "boolean")
       return x;
-    this._deserialized = $.interceptedTypeCheck($.HashMap$(null, null), "$isMap");
+    this.set$_deserialized($.HashMap$(null, null));
     return this._deserializeHelper$1(x);
   },
   _deserializeHelper$1: function(x) {
@@ -1506,7 +1629,7 @@ $$._Deserializer = {"": "Object;",
     }
   },
   _deserializeMap$1: function(x) {
-    var result, t1, id, t2, keys, values, len, i, t3;
+    var result, t1, id, t2, keys, values, len, i, key;
     $.listTypeCheck(x);
     result = $.HashMap$(null, null);
     t1 = $.getInterceptor$asx(x);
@@ -1515,27 +1638,54 @@ $$._Deserializer = {"": "Object;",
     t2.$indexSet(t2, id, result);
     keys = t1.$index(x, 2);
     $.listTypeCheck(keys);
+    if (typeof keys !== "string" && (typeof keys !== "object" || keys === null || keys.constructor !== Array && !$.getInterceptor(keys).$isJavaScriptIndexingBehavior))
+      return this._deserializeMap$1$bailout(1, x, keys, t1, result);
     values = t1.$index(x, 3);
     $.listTypeCheck(values);
-    t1 = $.getInterceptor$asx(keys);
-    len = t1.get$length(keys);
-    $.intTypeCheck(len);
-    if (len !== (len | 0))
-      return this._deserializeMap$1$bailout(1, result, t1, len, keys, values);
-    t2 = $.getInterceptor$asx(values);
-    $.assertHelper(len === t2.get$length(values));
-    for (i = 0; t3 = $.getInterceptor$n(i), t3.$lt(i, len); i = $.intTypeCheck(t3.$add(i, 1)))
-      result.$indexSet(result, this._deserializeHelper$1(t1.$index(keys, i)), this._deserializeHelper$1(t2.$index(values, i)));
+    if (typeof values !== "string" && (typeof values !== "object" || values === null || values.constructor !== Array && !$.getInterceptor(values).$isJavaScriptIndexingBehavior))
+      return this._deserializeMap$1$bailout(2, 0, keys, 0, result, values);
+    len = keys.length;
+    $.assertHelper(len === values.length);
+    for (i = 0; $.$lt$n(i, len); ++i) {
+      if (i >>> 0 !== i || i >= keys.length)
+        throw $.ioore(i);
+      key = this._deserializeHelper$1(keys[i]);
+      if (i >= values.length)
+        throw $.ioore(i);
+      result.$indexSet(result, key, this._deserializeHelper$1(values[i]));
+    }
     return result;
   },
-  _deserializeMap$1$bailout: function(state0, result, t1, len, keys, values) {
-    var t2, t3, i;
-    t2 = $.getInterceptor$asx(values);
-    t3 = t2.get$length(values);
-    $.assertHelper(len == null ? t3 == null : len === t3);
-    for (i = 0; t3 = $.getInterceptor$n(i), t3.$lt(i, len); i = $.intTypeCheck(t3.$add(i, 1)))
-      result.$indexSet(result, this._deserializeHelper$1(t1.$index(keys, i)), this._deserializeHelper$1(t2.$index(values, i)));
-    return result;
+  _deserializeMap$1$bailout: function(state0, x, keys, t1, result, values, len) {
+    switch (state0) {
+      case 0:
+        $.listTypeCheck(x);
+        result = $.HashMap$(null, null);
+        t1 = $.getInterceptor$asx(x);
+        id = $.intTypeCheck(t1.$index(x, 1));
+        t2 = this._deserialized;
+        t2.$indexSet(t2, id, result);
+        keys = t1.$index(x, 2);
+        $.listTypeCheck(keys);
+      case 1:
+        state0 = 0;
+        values = t1.$index(x, 3);
+        $.listTypeCheck(values);
+      case 2:
+        state0 = 0;
+        t1 = $.getInterceptor$asx(keys);
+        len = t1.get$length(keys);
+        $.intTypeCheck(len);
+      case 3:
+        var id, t2, t3, i;
+        state0 = 0;
+        t2 = $.getInterceptor$asx(values);
+        t3 = t2.get$length(values);
+        $.assertHelper(len == null ? t3 == null : len === t3);
+        for (i = 0; t3 = $.getInterceptor$n(i), t3.$lt(i, len); i = $.intTypeCheck(t3.$add(i, 1)))
+          result.$indexSet(result, this._deserializeHelper$1(t1.$index(keys, i)), this._deserializeHelper$1(t2.$index(values, i)));
+        return result;
+    }
   }
 };
 
@@ -1546,14 +1696,13 @@ $$.TimerImpl = {"": "Object;_once,_inEventLoop,_handle",
   TimerImpl$2: function(milliseconds, callback) {
     var t1;
     $.intTypeCheck(milliseconds);
-    $.functionTypeCheck(callback);
+    $.propertyTypeCheck(callback, "$isFunction");
     if (milliseconds === 0)
       t1 = !$.hasTimer() || $.boolConversionCheck($._globalState().isWorker);
     else
       t1 = false;
     if (t1) {
-      t1 = $._globalState;
-      t1().topEventLoop.enqueue$3(t1().currentContext, callback, "timer");
+      $._globalState().topEventLoop.enqueue$3($._globalState().currentContext, callback, "timer");
       this._inEventLoop = true;
     } else if ($.hasTimer()) {
       t1 = $._globalState().topEventLoop;
@@ -1581,44 +1730,84 @@ $$.TimerImpl_internalCallback = {"": "Closure;this_0,callback_1",
 
 $$.JSArray = {"": "List/Interceptor;",
   add$1: function(receiver, value) {
-    value;
+    var $arguments, arguments0;
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]);
     if (!!receiver.fixed$length)
       $.throwExpression($.UnsupportedError$("add"));
     receiver.push(value);
   },
   removeLast$0: function(receiver) {
+    var t1, $arguments, arguments0;
     if (!!receiver.fixed$length)
       $.throwExpression($.UnsupportedError$("removeLast"));
     if (receiver.length === 0)
       throw $.wrapException($.RangeError$value(-1));
-    return receiver.pop();
+    t1 = receiver.pop();
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
   },
   addAll$1: function(receiver, collection) {
-    var t1, e;
+    var $arguments, arguments0, t1, e;
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     for (t1 = $.get$iterator$ax($.listSuperNativeTypeCheck(collection, "$isIterable")); $.boolConversionCheck(t1.moveNext$0());) {
       e = t1.get$current();
-      e;
-      if (!!receiver.fixed$length)
-        $.throwExpression($.UnsupportedError$("add"));
-      receiver.push(e);
+      $arguments = receiver.$asJSArray;
+      arguments0 = $.getRuntimeTypeInfo(receiver);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      this.add$1(receiver, $.assertSubtypeOfRuntimeType(e, $arguments == null ? null : $arguments[0]));
     }
   },
-  clear$0: function(receiver) {
-    this.set$length(receiver, 0);
-  },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   skip$1: function(receiver, n) {
-    return $.listSuperNativeTypeCheck($.SubListIterable$(receiver, n, null, null), "$isIterable");
+    var t1, $arguments, arguments0, t2;
+    t1 = $.SubListIterable$(receiver, n, null, null);
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.listSuperNativeTypeCheck(t1, "$isIterable");
   },
   elementAt$1: function(receiver, index) {
+    var t1, $arguments, arguments0;
     $.intTypeCheck(index);
     if (index >>> 0 !== index || index >= receiver.length)
       throw $.ioore(index);
-    return receiver[index];
+    t1 = receiver[index];
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
   },
   sublist$2: function(receiver, start, end) {
+    var $arguments, arguments0, t1, t2;
     $.intTypeCheck(start);
     if (start == null)
       $.throwExpression($.ArgumentError$(null));
@@ -1636,21 +1825,45 @@ $$.JSArray = {"": "List/Interceptor;",
       if (end < start || end > receiver.length)
         throw $.wrapException($.RangeError$range(end, start, receiver.length));
     }
-    if (start === end)
+    if (start === end) {
+      $arguments = receiver.$asJSArray;
+      arguments0 = $.getRuntimeTypeInfo(receiver);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
       return $.listTypeCheck([]);
-    return $.listTypeCheck(receiver.slice(start, end));
+    }
+    t1 = receiver.slice(start, end);
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.listTypeCheck(t1);
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
   },
   get$first: function(receiver) {
     if (receiver.length > 0)
-      return receiver[0];
+      return $.assertSubtypeOfRuntimeType(receiver[0], $.getRuntimeTypeArgument(receiver, receiver.$asJSArray, 0));
     throw $.wrapException($.StateError$("No elements"));
   },
   setRange$4: function(receiver, start, end, iterable, skipCount) {
+    var $arguments, arguments0, t1;
     $.intTypeCheck(start);
     $.intTypeCheck(end);
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     $.listSuperNativeTypeCheck(iterable, "$isIterable");
     $.intTypeCheck(skipCount);
     if (!!receiver.immutable$list)
@@ -1661,13 +1874,17 @@ $$.JSArray = {"": "List/Interceptor;",
     return this.setRange$4($receiver, start, end, iterable, 0);
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Arrays_indexOf(receiver, element, start, receiver.length));
+    var $arguments, arguments0;
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.intTypeCheck($.Arrays_indexOf(receiver, $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
-  },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
   },
   toString$0: function(receiver) {
     var result = $.StringBuffer$("");
@@ -1675,13 +1892,29 @@ $$.JSArray = {"": "List/Interceptor;",
     return result._contents;
   },
   toList$1$growable: function(receiver, growable) {
-    return $.listTypeCheck($.List_List$from(receiver, growable, $.getRuntimeTypeArgument(receiver, receiver.$asJSArray, 0)));
+    var $arguments, arguments0, t1, t2;
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    t1 = $.List_List$from(receiver, growable, t1);
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.listTypeCheck(t1);
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.ListIterator$(receiver, $.getRuntimeTypeArgument(receiver, receiver.$asJSArray, 0)), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.getRuntimeTypeArgument(receiver, receiver.$asJSArray, 0)), "$isIterator", [$.getRuntimeTypeArgument(receiver, receiver.$asJSArray, 0)], "$asIterator");
   },
   get$hashCode: function(receiver) {
     return $.Primitives_objectHashCode(receiver);
@@ -1699,16 +1932,31 @@ $$.JSArray = {"": "List/Interceptor;",
     receiver.length = newLength;
   },
   $index: function(receiver, index) {
+    var t1, $arguments, arguments0;
     $.intTypeCheck(index);
     if (typeof index !== "number" || Math.floor(index) !== index)
       throw $.wrapException($.ArgumentError$(index));
     if (index >= receiver.length || index < 0)
       throw $.wrapException($.RangeError$value(index));
-    return receiver[index];
+    t1 = receiver[index];
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
   },
   $indexSet: function(receiver, index, value) {
+    var $arguments, arguments0;
     $.intTypeCheck(index);
-    value;
+    $arguments = receiver.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]);
     if (!!receiver.immutable$list)
       $.throwExpression($.UnsupportedError$("indexed set"));
     if (typeof index !== "number" || Math.floor(index) !== index)
@@ -1732,19 +1980,16 @@ $$.JSFixedArray = {"": "JSMutableArray;"};
 $$.JSExtendableArray = {"": "JSMutableArray;"};
 
 $$.DartError = {"": "Object;",
-  get$stack: function() {
-    return $.stringTypeCheck(this.stack);
-  },
   toString$0: function(_) {
     var dartException = this.dartException;
-    if (!!Error.captureStackTrace || this.get$stack() == null)
+    if (!!Error.captureStackTrace || $.stringTypeCheck(this.stack) == null)
       return $.stringTypeCheck($.toString$0(dartException));
     else
-      return $.S(dartException) + "\n" + $.S(this.get$stack());
+      return $.S(dartException) + "\n" + $.S($.stringTypeCheck(this.stack));
   },
   DartError$1: function(dartException) {
     this.dartException = dartException;
-    this.toString = $.DartError_toStringWrapper.call$0;
+    this.toString = $.DartError_toStringWrapper$closure.call$0;
   }
 };
 
@@ -1811,41 +2056,17 @@ $$.JSNumber = {"": "num/Interceptor;",
   get$isNegative: function(receiver) {
     return receiver === 0 ? 1 / receiver < 0 : receiver < 0;
   },
-  get$isNaN: function(receiver) {
-    return isNaN(receiver);
-  },
-  get$isInfinite: function(receiver) {
-    return receiver == Infinity || receiver == -Infinity;
-  },
-  remainder$1: function(receiver, b) {
-    return receiver % b;
-  },
   abs$0: function(receiver) {
     return Math.abs(receiver);
   },
   toInt$0: function(receiver) {
     var truncated;
-    if (this.get$isNaN(receiver))
+    if (isNaN(receiver))
       throw $.wrapException($.UnsupportedError$("NaN"));
-    if (this.get$isInfinite(receiver))
+    if (receiver == Infinity || receiver == -Infinity)
       throw $.wrapException($.UnsupportedError$("Infinity"));
     truncated = receiver < 0 ? $.doubleTypeCheck(Math.ceil(receiver)) : $.doubleTypeCheck(Math.floor(receiver));
     return $.intTypeCheck(truncated == -0.0 ? 0 : truncated);
-  },
-  truncate$0: function(receiver) {
-    var truncated;
-    if (this.get$isNaN(receiver))
-      $.throwExpression($.UnsupportedError$("NaN"));
-    if (this.get$isInfinite(receiver))
-      $.throwExpression($.UnsupportedError$("Infinity"));
-    truncated = receiver < 0 ? $.doubleTypeCheck(Math.ceil(receiver)) : $.doubleTypeCheck(Math.floor(receiver));
-    return $.intTypeCheck(truncated == -0.0 ? 0 : truncated);
-  },
-  floor$0: function(receiver) {
-    return $.intTypeCheck($.toInt$0$nx($.doubleTypeCheck(Math.floor(receiver))));
-  },
-  round$0: function(receiver) {
-    return $.intTypeCheck(this.toInt$0(this.roundToDouble$0(receiver)));
   },
   roundToDouble$0: function(receiver) {
     if (receiver < 0)
@@ -1854,7 +2075,7 @@ $$.JSNumber = {"": "num/Interceptor;",
       return $.doubleTypeCheck(Math.round(receiver));
   },
   toDouble$0: function(receiver) {
-    return $.doubleTypeCheck(receiver);
+    return receiver;
   },
   toString$0: function(receiver) {
     if (receiver === 0 && 1 / receiver < 0)
@@ -1865,8 +2086,10 @@ $$.JSNumber = {"": "num/Interceptor;",
   get$hashCode: function(receiver) {
     return receiver & 0x1FFFFFFF;
   },
+  $negate: function(receiver) {
+    return -receiver;
+  },
   $add: function(receiver, other) {
-    $.numTypeCheck(other);
     if (typeof other !== "number")
       throw $.wrapException($.ArgumentError$(other));
     return receiver + other;
@@ -1900,7 +2123,14 @@ $$.JSNumber = {"": "num/Interceptor;",
       return result + other;
   },
   $tdiv: function(receiver, other) {
-    return this.truncate$0(receiver / other);
+    var t1, truncated;
+    t1 = receiver / other;
+    if (isNaN(t1))
+      $.throwExpression($.UnsupportedError$("NaN"));
+    if (t1 == Infinity || t1 == -Infinity)
+      $.throwExpression($.UnsupportedError$("Infinity"));
+    truncated = t1 < 0 ? $.doubleTypeCheck(Math.ceil(t1)) : $.doubleTypeCheck(Math.floor(t1));
+    return $.intTypeCheck(truncated == -0.0 ? 0 : truncated);
   },
   $shl: function(receiver, other) {
     if (other < 0)
@@ -1958,7 +2188,6 @@ $$.JSDouble = {"": "double/JSNumber;", $isdouble: true, $isnum: true, $asObject:
 
 $$.JSString = {"": "String/Interceptor;",
   codeUnitAt$1: function(receiver, index) {
-    $.intTypeCheck(index);
     if (typeof index !== "number")
       throw $.wrapException($.ArgumentError$(index));
     else
@@ -2117,26 +2346,52 @@ $$._convertJsonToDart_walk = {"": "Closure;revive_0",
 
 $$.Future = {"": "Object;", $isFuture: true};
 
-$$._Completer = {"": "Object;", $asObject: null};
+$$._Completer = {"": "Object;",
+  complete$1: function(_, value) {
+    var $arguments, arguments0;
+    $arguments = this.$as_Completer;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]);
+    if (this._isComplete)
+      throw $.wrapException($.StateError$("Future already completed"));
+    this._isComplete = true;
+    this._setFutureValue$1(value);
+  },
+  complete$0: function($receiver) {
+    return this.complete$1($receiver, null);
+  },
+  $asObject: null
+};
 
 $$._AsyncCompleter = {"": "_Completer;future,_isComplete",
   _setFutureValue$1: function(value) {
-    var t1 = new $._AsyncCompleter__setFutureValue_closure(value, this.future);
-    $.functionTypeCheck(t1);
+    var $arguments, arguments0, t1;
+    $arguments = this.$as_AsyncCompleter;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = new $._AsyncCompleter__setFutureValue_closure($.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]), this.future);
+    $.propertyTypeCheck(t1, "$isFunction");
     $.JSArray_methods.add$1($.get$_asyncCallbacks(), t1);
     if (!$._callbacksAreEnqueued) {
-      $.functionTypeCheck($._asyncRunCallback);
-      $.Timer_run($._asyncRunCallback);
+      $.propertyTypeCheck($._asyncRunCallback$closure, "$isFunction");
+      $.Timer_run($._asyncRunCallback$closure);
       $._callbacksAreEnqueued = true;
     }
   },
   _setFutureError$1: function(error) {
     var t1 = new $._AsyncCompleter__setFutureError_closure(error, this.future);
-    $.functionTypeCheck(t1);
+    $.propertyTypeCheck(t1, "$isFunction");
     $.JSArray_methods.add$1($.get$_asyncCallbacks(), t1);
     if (!$._callbacksAreEnqueued) {
-      $.functionTypeCheck($._asyncRunCallback);
-      $.Timer_run($._asyncRunCallback);
+      $.propertyTypeCheck($._asyncRunCallback$closure, "$isFunction");
+      $.Timer_run($._asyncRunCallback$closure);
       $._callbacksAreEnqueued = true;
     }
   },
@@ -2165,7 +2420,14 @@ $$._AsyncCompleter__setFutureError_closure = {"": "Closure;error_0,future_1",
 
 $$._SyncCompleter = {"": "_Completer;future,_isComplete",
   _setFutureValue$1: function(value) {
-    this.future._setValue$1(value);
+    var $arguments, arguments0;
+    $arguments = this.$as_SyncCompleter;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    this.future._setValue$1($.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]));
   },
   _setFutureError$1: function(error) {
     this.future._setError$1(error);
@@ -2180,7 +2442,14 @@ $$._FutureListenerWrapper = {"": "Object;future,_nextListener<",
     this._nextListener = $.propertyTypeCheck(v, "$is_FutureListener");
   },
   _sendValue$1: function(value) {
-    this.future._setValue$1(value);
+    var $arguments, arguments0;
+    $arguments = this.$as_FutureListenerWrapper;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    this.future._setValue$1($.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]));
   },
   _sendError$1: function(error) {
     this.future._setError$1(error);
@@ -2193,83 +2462,40 @@ $$._FutureImpl = {"": "Object;_state<,_resultOrListeners<",
   set$_state: function(v) {
     this._state = $.intTypeCheck(v);
   },
-  get$_isComplete: function() {
-    return this._state !== 0;
-  },
-  get$_hasValue: function() {
-    return this._state === 1;
-  },
-  get$_hasError: function() {
-    return (this._state & 2) !== 0;
-  },
-  get$_hasUnhandledError: function() {
-    return (this._state & 4) !== 0;
-  },
   then$2$onError: function(f, onError) {
     var t1;
-    $.functionTypeCheck(f);
-    $.functionTypeCheck(onError);
-    if (!this.get$_isComplete()) {
-      if (onError == null) {
-        t1 = $._ThenFuture$(f, null, null);
-        t1._subscribeTo$1(this);
-        return t1;
-      }
-      t1 = $._SubscribeFuture$(f, onError, null, null);
+    $.propertyTypeCheck(f, "$isFunction");
+    $.propertyTypeCheck(onError, "$isFunction");
+    if (onError == null) {
+      t1 = $._ThenFuture$(f, null, null);
       t1._subscribeTo$1(this);
       return t1;
     }
-    if (this.get$_hasError()) {
-      if (onError != null)
-        return this._handleError$2(onError, null);
-      return $._FutureWrapper$(this, null);
-    } else {
-      $.assertHelper(this.get$_hasValue());
-      return this._handleValue$1(f);
-    }
+    t1 = $._SubscribeFuture$(f, onError, null, null);
+    t1._subscribeTo$1(this);
+    return t1;
   },
   then$1: function(f) {
     return this.then$2$onError(f, null);
   },
   catchError$2$test: function(f, test) {
-    var t1;
-    $.functionTypeCheck(f);
-    $.functionTypeCheck(test);
-    if (this.get$_hasValue())
-      return $._FutureWrapper$(this, null);
-    if (!this.get$_isComplete()) {
-      t1 = $._CatchErrorFuture$(f, test, null);
-      t1._subscribeTo$1(this);
-      return t1;
-    } else
-      return this._handleError$2(f, test);
+    var t1 = $._CatchErrorFuture$($.propertyTypeCheck(f, "$isFunction"), $.propertyTypeCheck(test, "$isFunction"), null);
+    t1._subscribeTo$1(this);
+    return t1;
   },
   catchError$1: function(f) {
     return this.catchError$2$test(f, null);
   },
-  _handleValue$1: function(onValue) {
-    var thenFuture;
-    $.functionTypeCheck(onValue);
-    $.assertHelper(this.get$_hasValue());
-    thenFuture = $._ThenFuture$(onValue, null, null);
-    $.Timer_run(new $._FutureImpl__handleValue_closure(thenFuture, this._resultOrListeners));
-    return thenFuture;
-  },
-  _handleError$2: function(onError, test) {
-    var error, errorFuture;
-    $.functionTypeCheck(onError);
-    $.functionTypeCheck(test);
-    $.assertHelper(this.get$_hasError());
-    this._state = (this._state & 4294967291) >>> 0;
-    error = this._resultOrListeners;
-    errorFuture = $._CatchErrorFuture$(onError, test, null);
-    $.Timer_run(new $._FutureImpl__handleError_closure(error, errorFuture));
-    return errorFuture;
-  },
   _setValue$1: function(value) {
-    var listeners, listeners0;
-    value;
-    if (this.get$_isComplete())
+    var $arguments, arguments0, listeners, listeners0;
+    $arguments = this.$as_FutureImpl;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]);
+    if (this._state !== 0)
       throw $.wrapException($.StateError$("Future already completed"));
     listeners = $.propertyTypeCheck(this._removeListeners$0(), "$is_FutureListener");
     this._state = 1;
@@ -2285,7 +2511,7 @@ $$._FutureImpl = {"": "Object;_state<,_resultOrListeners<",
   },
   _setError$1: function(error) {
     var listeners, listeners0;
-    if (this.get$_isComplete())
+    if (this._state !== 0)
       throw $.wrapException($.StateError$("Future already completed"));
     listeners = $.propertyTypeCheck(this._removeListeners$0(), "$is_FutureListener");
     this._state = 2;
@@ -2310,11 +2536,39 @@ $$._FutureImpl = {"": "Object;_state<,_resultOrListeners<",
   },
   _scheduleUnhandledError$0: function() {
     this._state = (this._state | 4) >>> 0;
-    $.Timer_run(new $._FutureImpl__scheduleUnhandledError_closure(this));
+    var t1 = new $._FutureImpl__scheduleUnhandledError_closure(this);
+    $.propertyTypeCheck(t1, "$isFunction");
+    $.JSArray_methods.add$1($.get$_asyncCallbacks(), t1);
+    if (!$._callbacksAreEnqueued) {
+      $.propertyTypeCheck($._asyncRunCallback$closure, "$isFunction");
+      $.Timer_run($._asyncRunCallback$closure);
+      $._callbacksAreEnqueued = true;
+    }
+  },
+  _addListener$1: function(listener) {
+    var t1, t2;
+    t1 = this._state;
+    t2 = t1 === 0;
+    if (!t2) {
+      this._state = (t1 & 4294967291) >>> 0;
+      t1 = new $._FutureImpl__addListener_closure(this, listener);
+      $.propertyTypeCheck(t1, "$isFunction");
+      $.JSArray_methods.add$1($.get$_asyncCallbacks(), t1);
+      if (!$._callbacksAreEnqueued) {
+        $.propertyTypeCheck($._asyncRunCallback$closure, "$isFunction");
+        $.Timer_run($._asyncRunCallback$closure);
+        $._callbacksAreEnqueued = true;
+      }
+    } else {
+      $.assertHelper(t2);
+      $.assertHelper(listener.get$_nextListener() == null);
+      listener.set$_nextListener(this._resultOrListeners);
+      this._resultOrListeners = listener;
+    }
   },
   _removeListeners$0: function() {
     var current, prev, next;
-    $.assertHelper(!this.get$_isComplete());
+    $.assertHelper(this._state === 0);
     current = $.propertyTypeCheck(this._resultOrListeners, "$is_FutureListener");
     this._resultOrListeners = null;
     for (prev = null; current != null; prev = current, current = next) {
@@ -2324,17 +2578,13 @@ $$._FutureImpl = {"": "Object;_state<,_resultOrListeners<",
     return prev;
   },
   _chain$1: function(future) {
-    var t1;
-    if (!this.get$_isComplete()) {
-      t1 = $._FutureListenerWrapper$(future, null);
-      $.assertHelper(!this.get$_isComplete());
-      $.assertHelper(t1._nextListener == null);
-      t1._nextListener = $.propertyTypeCheck(this._resultOrListeners, "$is_FutureListener");
-      this._resultOrListeners = t1;
-    } else if (this.get$_hasValue())
+    var t1 = this._state;
+    if (t1 === 0)
+      this._addListener$1($._FutureListenerWrapper$(future, null));
+    else if (t1 === 1)
       future._setValue$1(this._resultOrListeners);
     else {
-      $.assertHelper(this.get$_hasError());
+      $.assertHelper((t1 & 2) !== 0);
       this._state = (this._state & 4294967291) >>> 0;
       future._setError$1(this._resultOrListeners);
     }
@@ -2358,7 +2608,7 @@ $$._FutureImpl = {"": "Object;_state<,_resultOrListeners<",
     this._setError$1(error);
   },
   _FutureImpl$immediate$1: function(value, T) {
-    value;
+    $.assertSubtypeOfRuntimeType(value, T);
     this._state = 1;
     this._resultOrListeners = value;
   },
@@ -2373,6 +2623,7 @@ $$._FutureImpl__FutureImpl$wait_handleError = {"": "Closure;box_0",
     if (t1.values_1 != null) {
       t1.values_1 = null;
       t1 = t1.completer_0;
+      t1.completeError$2;
       if (t1._isComplete)
         $.throwExpression($.StateError$("Future already completed"));
       t1._isComplete = true;
@@ -2404,14 +2655,9 @@ $$._FutureImpl__FutureImpl$wait_closure = {"": "Closure;box_0,pos_1",
       throw $.ioore(t3);
     t2[t3] = value;
     t1.remaining_2 = $.intTypeCheck($.$sub$n(t1.remaining_2, 1));
-    if ($.boolConversionCheck($.$eq(t1.remaining_2, 0))) {
+    if ($.$eq(t1.remaining_2, 0)) {
       t2 = t1.completer_0;
-      t1 = t1.values_1;
-      t1;
-      if (t2._isComplete)
-        $.throwExpression($.StateError$("Future already completed"));
-      t2._isComplete = true;
-      t2._setFutureValue$1(t1);
+      t2.complete$1(t2, t1.values_1);
     }
   },
   $isFunction: true,
@@ -2428,30 +2674,13 @@ $$._FutureImpl__FutureImpl$wait_closure = {"": "Closure;box_0,pos_1",
   $isGameLoopPointerLockChangeFunction: true
 };
 
-$$._FutureImpl__handleValue_closure = {"": "Closure;thenFuture_0,value_1",
-  call$0: function() {
-    this.thenFuture_0._sendValue$1(this.value_1);
-  },
-  $isFunction: true,
-  $asObject: null,
-  $isVoidCallback: true
-};
-
-$$._FutureImpl__handleError_closure = {"": "Closure;error_0,errorFuture_1",
-  call$0: function() {
-    this.errorFuture_1._sendError$1(this.error_0);
-  },
-  $isFunction: true,
-  $asObject: null,
-  $isVoidCallback: true
-};
-
 $$._FutureImpl__scheduleUnhandledError_closure = {"": "Closure;this_0",
   call$0: function() {
-    var t1, error, trace;
+    var t1, t2, error, trace;
     t1 = this.this_0;
-    if (t1.get$_hasUnhandledError()) {
-      t1.set$_state((t1.get$_state() & 4294967291) >>> 0);
+    t2 = t1.get$_state();
+    if ((t2 & 4) !== 0) {
+      t1.set$_state((t2 & 4294967291) >>> 0);
       error = t1.get$_resultOrListeners();
       $.Primitives_printString("Uncaught Error: " + $.S(error));
       trace = $.getAttachedStackTrace(error);
@@ -2465,15 +2694,36 @@ $$._FutureImpl__scheduleUnhandledError_closure = {"": "Closure;this_0",
   $isVoidCallback: true
 };
 
+$$._FutureImpl__addListener_closure = {"": "Closure;this_0,listener_1",
+  call$0: function() {
+    var t1, t2, value, $arguments, arguments0;
+    t1 = this.this_0;
+    t2 = t1.get$_state();
+    if (t2 === 1) {
+      value = t1.get$_resultOrListeners();
+      $arguments = t1.$as_FutureImpl;
+      arguments0 = $.getRuntimeTypeInfo(t1);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      this.listener_1._sendValue$1($.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]));
+    } else {
+      $.assertHelper((t2 & 2) !== 0);
+      this.listener_1._sendError$1(t1.get$_resultOrListeners());
+    }
+  },
+  $isFunction: true,
+  $asObject: null,
+  $isVoidCallback: true
+};
+
 $$._TransformFuture = {"": "_FutureImpl;_nextListener<",
   set$_nextListener: function(v) {
     this._nextListener = $.propertyTypeCheck(v, "$is_FutureListener");
   },
   _subscribeTo$1: function(future) {
-    $.assertHelper(!future.get$_isComplete());
-    $.assertHelper(this._nextListener == null);
-    this._nextListener = $.propertyTypeCheck(future._resultOrListeners, "$is_FutureListener");
-    future._resultOrListeners = this;
+    future._addListener$1(this);
   },
   $as_FutureImpl: function (S, T) { return [T]; },
   $as_FutureImpl: function (S, T) { return [T]; },
@@ -2488,8 +2738,14 @@ $$._ThenFuture = {"": "_TransformFuture;_onValue,_nextListener,_state,_resultOrL
     return this._onValue.call$1(arg0);
   },
   _sendValue$1: function(value) {
-    var result, e, s, exception, t1;
-    value;
+    var result, e, s, $arguments, arguments0, exception, t1;
+    $arguments = this.$as_ThenFuture;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]);
     $.assertHelper(true);
     result = null;
     try {
@@ -2497,7 +2753,7 @@ $$._ThenFuture = {"": "_TransformFuture;_onValue,_nextListener,_state,_resultOrL
     } catch (exception) {
       t1 = $.unwrapException(exception);
       e = t1;
-      s = $.getTraceFromException(exception);
+      s = $._StackTrace$(exception.stack);
       this._setError$1($._asyncError(e, s));
       return;
     }
@@ -2522,11 +2778,18 @@ $$._CatchErrorFuture = {"": "_TransformFuture;_test,_onError,_nextListener,_stat
     return this._onError.call$1(arg0);
   },
   _sendValue$1: function(value) {
-    this._setValue$1(value);
+    var $arguments, arguments0;
+    $arguments = this.$as_CatchErrorFuture;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    this._setValue$1($.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]));
   },
   _sendError$1: function(error) {
     var matchesTest, e, s, result, e0, s0, exception, t1;
-    $.assertHelper(this._onError != null);
+    $.assertHelper(true);
     if (this._test != null) {
       matchesTest = null;
       try {
@@ -2534,7 +2797,7 @@ $$._CatchErrorFuture = {"": "_TransformFuture;_test,_onError,_nextListener,_stat
       } catch (exception) {
         t1 = $.unwrapException(exception);
         e = t1;
-        s = $.getTraceFromException(exception);
+        s = $._StackTrace$(exception.stack);
         this._setError$1($._asyncError(e, s));
         return;
       }
@@ -2550,7 +2813,7 @@ $$._CatchErrorFuture = {"": "_TransformFuture;_test,_onError,_nextListener,_stat
     } catch (exception) {
       t1 = $.unwrapException(exception);
       e0 = t1;
-      s0 = $.getTraceFromException(exception);
+      s0 = $._StackTrace$(exception.stack);
       this._setError$1($._asyncError(e0, s0));
       return;
     }
@@ -2577,7 +2840,7 @@ $$._SubscribeFuture = {"": "_ThenFuture;_onError,_onValue,_nextListener,_state,_
     } catch (exception) {
       t1 = $.unwrapException(exception);
       e = t1;
-      s = $.getTraceFromException(exception);
+      s = $._StackTrace$(exception.stack);
       this._setError$1($._asyncError(e, s));
       return;
     }
@@ -2592,39 +2855,22 @@ $$._SubscribeFuture = {"": "_ThenFuture;_onError,_onValue,_nextListener,_state,_
   $as_FutureListener: function (S, T) { return [S]; }
 };
 
-$$._FutureWrapper = {"": "Object;_future",
-  then$2$onError: function($function, onError) {
-    return $.propertyTypeCheck(this._future.then$2$onError($.functionTypeCheck($function), $.functionTypeCheck(onError)), "$isFuture");
-  },
-  then$1: function($function) {
-    return this.then$2$onError($function, null);
-  },
-  catchError$2$test: function($function, test) {
-    return $.propertyTypeCheck(this._future.catchError$2$test($.functionTypeCheck($function), $.functionTypeCheck(test)), "$isFuture");
-  },
-  catchError$1: function($function) {
-    return this.catchError$2$test($function, null);
-  },
-  $isFuture: true,
-  $asObject: null
-};
-
 $$.Stream = {"": "Object;",
   get$length: function(_) {
     var t1, future;
     t1 = {};
-    future = $.propertyTypeCheck($._FutureImpl$($.JSInt), "$is_FutureImpl");
+    future = $.assertSubtype($._FutureImpl$($.JSInt), "$is_FutureImpl", [$.JSInt], "$as_FutureImpl");
     t1.count_0 = 0;
     this.listen$4$cancelOnError$onDone$onError(new $.Stream_length_closure(t1), true, new $.Stream_length_closure0(t1, future), future.get$_setError());
-    return $.propertyTypeCheck(future, "$isFuture");
+    return $.assertSubtype(future, "$isFuture", [$.JSInt], "$asFuture");
   },
   get$first: function(_) {
     var t1, future;
     t1 = {};
-    future = $.propertyTypeCheck($._FutureImpl$($.getRuntimeTypeArgument(this, this.$asStream, 0)), "$is_FutureImpl");
+    future = $.assertSubtype($._FutureImpl$($.getRuntimeTypeArgument(this, this.$asStream, 0)), "$is_FutureImpl", [$.getRuntimeTypeArgument(this, this.$asStream, 0)], "$as_FutureImpl");
     t1.subscription_0 = null;
     t1.subscription_0 = this.listen$4$cancelOnError$onDone$onError(new $.Stream_first_closure(t1, future), true, new $.Stream_first_closure0(future), future.get$_setError());
-    return $.propertyTypeCheck(future, "$isFuture");
+    return $.assertSubtype(future, "$isFuture", [$.getRuntimeTypeArgument(this, this.$asStream, 0)], "$asFuture");
   },
   $isStream: true
 };
@@ -2697,7 +2943,7 @@ $$.Timer_run_closure = {"": "Closure;",
     runCallbacks = $.get$Timer__runCallbacks();
     $.Timer__runCallbacks = [];
     for (i = 0; $.$lt$n(i, $.get$length$asx(runCallbacks)); i = $.intTypeCheck($.$add$ns(i, 1))) {
-      callback = $.functionTypeCheck($.$index$asx(runCallbacks, i));
+      callback = $.propertyTypeCheck($.$index$asx(runCallbacks, i), "$isFunction");
       try {
         callback.call$0();
       } catch (exception) {
@@ -2717,12 +2963,9 @@ $$.Timer_run_closure = {"": "Closure;",
   $isVoidCallback: true
 };
 
-$$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
+$$.HashMap = {"": "Object;_length,_strings,_nums,_rest,_keys",
   get$length: function(_) {
-    return $.intTypeCheck(this._liblib0$_length);
-  },
-  get$isEmpty: function(_) {
-    return this._liblib0$_length === 0;
+    return $.intTypeCheck(this._length);
   },
   get$keys: function(_) {
     return $.listSuperNativeTypeCheck($.HashMapKeyIterable$(this, $.getRuntimeTypeArgument(this, this.$asHashMap, 0)), "$isIterable");
@@ -2732,8 +2975,14 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
     return $.listSuperNativeTypeCheck(t1.map$1(t1, new $.HashMap_values_closure(this)), "$isIterable");
   },
   containsKey$1: function(_, key) {
-    var strings, nums, rest;
-    key;
+    var $arguments, arguments0, strings, nums, rest;
+    $arguments = this.$asHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
     if (typeof key === "string" && key !== "__proto__") {
       strings = this._strings;
       return strings == null ? false : strings[key] != null;
@@ -2748,8 +2997,14 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
     }
   },
   $index: function(_, key) {
-    var strings, t1, entry, nums, rest, index;
-    key;
+    var $arguments, arguments0, strings, t1, entry, nums, rest, index;
+    $arguments = this.$asHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
     if (typeof key === "string" && key !== "__proto__") {
       strings = this._strings;
       if (strings == null)
@@ -2758,7 +3013,13 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
         entry = strings[key];
         t1 = entry === strings ? null : entry;
       }
-      return t1;
+      $arguments = this.$asHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
     } else if (typeof key === "number" && (key & 0x3ffffff) === key) {
       nums = this._nums;
       if (nums == null)
@@ -2767,26 +3028,52 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
         entry = nums[key];
         t1 = entry === nums ? null : entry;
       }
-      return t1;
+      $arguments = this.$asHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
     } else {
       rest = this._rest;
-      if (rest == null)
-        return null;
+      if (rest == null) {
+        $arguments = this.$asHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(null, $arguments == null ? null : $arguments[1]);
+      }
       t1 = rest[$.get$hashCode$(key) & 0x3ffffff];
       $.listTypeCheck(t1);
       index = $.HashMap__findBucketIndex(t1, key);
       $.intTypeCheck(index);
       if (index !== (index | 0))
         return this.$$index$bailout(1, t1, index);
-      return index < 0 ? null : t1[index + 1];
+      t1 = index < 0 ? null : t1[index + 1];
+      $arguments = this.$asHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
     }
   },
   $$index$bailout: function(state0, t1, index) {
     switch (state0) {
       case 0:
-        key;
+        $arguments = this.$asHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
       case 1:
-        var strings, entry, nums, rest, t2;
+        var $arguments, arguments0, strings, entry, nums, rest, t2;
         if (state0 === 0 && typeof key === "string" && key !== "__proto__") {
           strings = this._strings;
           if (strings == null)
@@ -2795,7 +3082,13 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
             entry = strings[key];
             t1 = entry === strings ? null : entry;
           }
-          return t1;
+          $arguments = this.$asHashMap;
+          arguments0 = $.getRuntimeTypeInfo(this);
+          if ($arguments != null && $arguments.constructor === Array)
+            ;
+          else
+            $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+          return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
         } else
           switch (state0) {
             case 0:
@@ -2808,13 +3101,26 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
                   entry = nums[key];
                   t1 = entry === nums ? null : entry;
                 }
-                return t1;
+                $arguments = this.$asHashMap;
+                arguments0 = $.getRuntimeTypeInfo(this);
+                if ($arguments != null && $arguments.constructor === Array)
+                  ;
+                else
+                  $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+                return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
               } else
                 switch (state0) {
                   case 0:
                     rest = this._rest;
-                    if (rest == null)
-                      return null;
+                    if (rest == null) {
+                      $arguments = this.$asHashMap;
+                      arguments0 = $.getRuntimeTypeInfo(this);
+                      if ($arguments != null && $arguments.constructor === Array)
+                        ;
+                      else
+                        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+                      return $.assertSubtypeOfRuntimeType(null, $arguments == null ? null : $arguments[1]);
+                    }
                     t1 = rest[$.get$hashCode$(key) & 0x3ffffff];
                     $.listTypeCheck(t1);
                     index = $.HashMap__findBucketIndex(t1, key);
@@ -2822,15 +3128,34 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
                   case 1:
                     state0 = 0;
                     t2 = $.getInterceptor$n(index);
-                    return t2.$lt(index, 0) ? null : t1[t2.$add(index, 1)];
+                    t1 = t2.$lt(index, 0) ? null : t1[t2.$add(index, 1)];
+                    $arguments = this.$asHashMap;
+                    arguments0 = $.getRuntimeTypeInfo(this);
+                    if ($arguments != null && $arguments.constructor === Array)
+                      ;
+                    else
+                      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+                    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
                 }
           }
     }
   },
   $indexSet: function(_, key, value) {
-    var strings, table, nums, rest, hash, bucket, t1, index;
-    key;
-    value;
+    var $arguments, arguments0, strings, table, nums, rest, hash, bucket, t1, index;
+    $arguments = this.$asHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
+    $arguments = this.$asHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[1]);
     if (typeof key === "string" && key !== "__proto__") {
       strings = this._strings;
       if (strings == null) {
@@ -2843,16 +3168,7 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
         this._strings = table;
         strings = table;
       }
-      key;
-      value;
-      if (strings[key] == null) {
-        this._liblib0$_length = $.intTypeCheck(this._liblib0$_length + 1);
-        this._keys = null;
-      }
-      if (value == null)
-        strings[key] = strings;
-      else
-        strings[key] = value;
+      this._addHashTableEntry$3(strings, key, value);
     } else if (typeof key === "number" && (key & 0x3ffffff) === key) {
       nums = this._nums;
       if (nums == null) {
@@ -2865,16 +3181,7 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
         this._nums = table;
         nums = table;
       }
-      key;
-      value;
-      if (nums[key] == null) {
-        this._liblib0$_length = $.intTypeCheck(this._liblib0$_length + 1);
-        this._keys = null;
-      }
-      if (value == null)
-        nums[key] = nums;
-      else
-        nums[key] = value;
+      this._addHashTableEntry$3(nums, key, value);
     } else {
       rest = this._rest;
       if (rest == null) {
@@ -2895,30 +3202,42 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
           rest[hash] = rest;
         else
           rest[hash] = t1;
-        this._liblib0$_length = $.intTypeCheck(this._liblib0$_length + 1);
+        this._length = $.intTypeCheck(this._length + 1);
         this._keys = null;
       } else {
         index = $.HashMap__findBucketIndex(bucket, key);
         $.intTypeCheck(index);
         if (index !== (index | 0))
-          return this.$$indexSet$bailout(1, key, value, bucket, index);
+          return this.$$indexSet$bailout(1, index, value, bucket, key);
         if (index >= 0)
           bucket[index + 1] = value;
         else {
           bucket.push(key, value);
-          this._liblib0$_length = $.intTypeCheck(this._liblib0$_length + 1);
+          this._length = $.intTypeCheck(this._length + 1);
           this._keys = null;
         }
       }
     }
   },
-  $$indexSet$bailout: function(state0, key, value, bucket, index) {
+  $$indexSet$bailout: function(state0, index, value, bucket, key) {
     switch (state0) {
       case 0:
-        key;
-        value;
+        $arguments = this.$asHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
+        $arguments = this.$asHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[1]);
       case 1:
-        var strings, table, nums, rest, hash, t1;
+        var $arguments, arguments0, strings, table, nums, rest, hash, t1;
         if (state0 === 0 && typeof key === "string" && key !== "__proto__") {
           strings = this._strings;
           if (strings == null) {
@@ -2931,16 +3250,7 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
             this._strings = table;
             strings = table;
           }
-          key;
-          value;
-          if (strings[key] == null) {
-            this._liblib0$_length = $.intTypeCheck(this._liblib0$_length + 1);
-            this._keys = null;
-          }
-          if (value == null)
-            strings[key] = strings;
-          else
-            strings[key] = value;
+          this._addHashTableEntry$3(strings, key, value);
         } else
           switch (state0) {
             case 0:
@@ -2957,16 +3267,7 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
                   this._nums = table;
                   nums = table;
                 }
-                key;
-                value;
-                if (nums[key] == null) {
-                  this._liblib0$_length = $.intTypeCheck(this._liblib0$_length + 1);
-                  this._keys = null;
-                }
-                if (value == null)
-                  nums[key] = nums;
-                else
-                  nums[key] = value;
+                this._addHashTableEntry$3(nums, key, value);
               } else
                 switch (state0) {
                   case 0:
@@ -2990,7 +3291,7 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
                         rest[hash] = rest;
                       else
                         rest[hash] = t1;
-                      this._liblib0$_length = $.intTypeCheck(this._liblib0$_length + 1);
+                      this._length = $.intTypeCheck(this._length + 1);
                       this._keys = null;
                     } else
                       switch (state0) {
@@ -3004,7 +3305,7 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
                             bucket[t1.$add(index, 1)] = value;
                           else {
                             bucket.push(key, value);
-                            this._liblib0$_length = $.intTypeCheck(this._liblib0$_length + 1);
+                            this._length = $.intTypeCheck(this._length + 1);
                             this._keys = null;
                           }
                       }
@@ -3013,28 +3314,69 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
     }
   },
   remove$1: function(_, key) {
-    var rest, bucket, index;
-    key;
-    if (typeof key === "string" && key !== "__proto__")
-      return this._removeHashTableEntry$2(this._strings, key);
-    else if (typeof key === "number" && (key & 0x3ffffff) === key)
-      return this._removeHashTableEntry$2(this._nums, key);
-    else {
+    var $arguments, arguments0, t1, rest, bucket, index;
+    $arguments = this.$asHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
+    if (typeof key === "string" && key !== "__proto__") {
+      t1 = this._removeHashTableEntry$2(this._strings, key);
+      $arguments = this.$asHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
+    } else if (typeof key === "number" && (key & 0x3ffffff) === key) {
+      t1 = this._removeHashTableEntry$2(this._nums, key);
+      $arguments = this.$asHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
+    } else {
       rest = this._rest;
-      if (rest == null)
-        return null;
+      if (rest == null) {
+        $arguments = this.$asHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(null, $arguments == null ? null : $arguments[1]);
+      }
       bucket = $.listTypeCheck(rest[$.get$hashCode$(key) & 0x3ffffff]);
       index = $.intTypeCheck($.HashMap__findBucketIndex(bucket, key));
-      if ($.$lt$n(index, 0))
-        return null;
-      this._liblib0$_length = $.intTypeCheck(this._liblib0$_length - 1);
+      if ($.$lt$n(index, 0)) {
+        $arguments = this.$asHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(null, $arguments == null ? null : $arguments[1]);
+      }
+      this._length = $.intTypeCheck(this._length - 1);
       this._keys = null;
-      return bucket.splice(index, 2)[1];
+      t1 = bucket.splice(index, 2)[1];
+      $arguments = this.$asHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
     }
   },
   forEach$1: function(_, action) {
     var keys, $length, i, t1, key;
-    $.functionTypeCheck(action);
+    $.propertyTypeCheck(action, "$isFunction");
     keys = this._computeKeys$0();
     for ($length = keys.length, i = 0; t1 = $.getInterceptor$n(i), t1.$lt(i, $length); i = $.intTypeCheck(t1.$add(i, 1))) {
       key = keys[i];
@@ -3053,7 +3395,7 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
     t1 = this._keys;
     if (t1 != null)
       return t1;
-    result = $.List_List(this._liblib0$_length, null);
+    result = $.List_List(this._length, null);
     strings = this._strings;
     if (strings != null) {
       names = Object.getOwnPropertyNames(strings);
@@ -3086,22 +3428,73 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
         }
       }
     }
-    $.assertHelper(index === this._liblib0$_length);
+    $.assertHelper(index === this._length);
     this._keys = result;
     return result;
   },
+  _addHashTableEntry$3: function(table, key, value) {
+    var $arguments, arguments0;
+    $arguments = this.$asHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
+    $arguments = this.$asHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[1]);
+    if (table[key] == null) {
+      this._length = $.intTypeCheck(this._length + 1);
+      this._keys = null;
+    }
+    if (value == null)
+      table[key] = table;
+    else
+      table[key] = value;
+  },
   _removeHashTableEntry$2: function(table, key) {
-    var entry, value;
-    key;
+    var $arguments, arguments0, entry, value;
+    $arguments = this.$asHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
     if (table != null && table[key] != null) {
       entry = table[key];
       value = entry === table ? null : entry;
+      $arguments = this.$asHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[1]);
       delete table[key];
-      this._liblib0$_length = $.intTypeCheck(this._liblib0$_length - 1);
+      this._length = $.intTypeCheck(this._length - 1);
       this._keys = null;
-      return value;
-    } else
-      return null;
+      $arguments = this.$asHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[1]);
+    } else {
+      $arguments = this.$asHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(null, $arguments == null ? null : $arguments[1]);
+    }
   },
   $isMap: true,
   $asMap: null,
@@ -3110,16 +3503,49 @@ $$.HashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_keys",
 
 $$.IterableBase = {"": "Object;",
   map$1: function(_, f) {
-    return $.MappedIterable$(this, $.functionTypeCheck(f), $.getRuntimeTypeArgument(this, this.$asIterableBase, 0), null);
+    var $arguments, arguments0, t1;
+    $.propertyTypeCheck(f, "$isFunction");
+    $arguments = this.$asIterableBase;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    return $.MappedIterable$(this, f, t1, null);
   },
   forEach$1: function(_, f) {
-    var t1;
-    $.functionTypeCheck(f);
-    for (t1 = this.get$iterator(this); $.boolConversionCheck(t1.moveNext$0());)
-      f.call$1(t1.get$current());
+    var t1, element, $arguments, arguments0;
+    $.propertyTypeCheck(f, "$isFunction");
+    for (t1 = this.get$iterator(this); $.boolConversionCheck(t1.moveNext$0());) {
+      element = t1.get$current();
+      $arguments = this.$asIterableBase;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      f.call$1($.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]));
+    }
   },
   toList$1$growable: function(_, growable) {
-    return $.listTypeCheck($.List_List$from(this, growable, $.getRuntimeTypeArgument(this, this.$asIterableBase, 0)));
+    var $arguments, arguments0, t1, t2;
+    $arguments = this.$asIterableBase;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    t1 = $.List_List$from(this, growable, t1);
+    $arguments = this.$asIterableBase;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.listTypeCheck(t1);
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
@@ -3132,16 +3558,32 @@ $$.IterableBase = {"": "Object;",
     return count;
   },
   skip$1: function(_, n) {
-    return $.listSuperNativeTypeCheck($.SkipIterable$(this, n, $.getRuntimeTypeArgument(this, this.$asIterableBase, 0)), "$isIterable");
+    var $arguments, arguments0, t1, t2;
+    $arguments = this.$asIterableBase;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    t1 = $.SkipIterable$(this, n, t1);
+    $arguments = this.$asIterableBase;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.listSuperNativeTypeCheck(t1, "$isIterable");
   },
   get$first: function(_) {
     var it = this.get$iterator(this);
     if (!$.boolConversionCheck(it.moveNext$0()))
       throw $.wrapException($.StateError$("No elements"));
-    return it.get$current();
+    return $.assertSubtypeOfRuntimeType(it.get$current(), $.getRuntimeTypeArgument(this, this.$asIterableBase, 0));
   },
   elementAt$1: function(_, index) {
-    var t1, remaining, element;
+    var t1, remaining, element, $arguments, arguments0;
     $.intTypeCheck(index);
     if (index !== (index | 0))
       return this.elementAt$1$bailout(1, index);
@@ -3149,20 +3591,48 @@ $$.IterableBase = {"": "Object;",
       throw $.wrapException($.RangeError$value(index));
     for (t1 = this.get$iterator(this), remaining = index; $.boolConversionCheck(t1.moveNext$0());) {
       element = t1.get$current();
-      if (remaining === 0)
-        return element;
+      $arguments = this.$asIterableBase;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]);
+      if (remaining === 0) {
+        $arguments = this.$asIterableBase;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]);
+      }
       remaining = $.intTypeCheck($.$sub$n(remaining, 1));
     }
     throw $.wrapException($.RangeError$value(index));
   },
   elementAt$1$bailout: function(state0, index) {
-    var t1, remaining, element;
+    var t1, remaining, element, $arguments, arguments0;
     if (typeof index !== "number" || Math.floor(index) !== index || index < 0)
       throw $.wrapException($.RangeError$value(index));
     for (t1 = this.get$iterator(this), remaining = index; $.boolConversionCheck(t1.moveNext$0());) {
       element = t1.get$current();
-      if (remaining === 0)
-        return element;
+      $arguments = this.$asIterableBase;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]);
+      if (remaining === 0) {
+        $arguments = this.$asIterableBase;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]);
+      }
       remaining = $.intTypeCheck($.$sub$n(remaining, 1));
     }
     throw $.wrapException($.RangeError$value(index));
@@ -3172,37 +3642,104 @@ $$.IterableBase = {"": "Object;",
   $asObject: null
 };
 
-$$.LinkedHashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_first,_last,_modifications",
+$$.LinkedHashMap = {"": "Object;_length,_strings,_nums,_rest,_first,_last,_modifications",
   $index: function(_, key) {
-    var strings, cell, nums, rest, bucket, index;
-    key;
+    var $arguments, arguments0, strings, cell, t1, nums, rest, bucket, index;
+    $arguments = this.$asLinkedHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
     if (typeof key === "string" && key !== "__proto__") {
       strings = this._strings;
-      if (strings == null)
-        return null;
+      if (strings == null) {
+        $arguments = this.$asLinkedHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(null, $arguments == null ? null : $arguments[1]);
+      }
       cell = $.propertyTypeCheck(strings[key], "$isLinkedHashMapCell");
-      return cell == null ? null : cell._value;
+      t1 = cell == null ? null : cell._value;
+      $arguments = this.$asLinkedHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
     } else if (typeof key === "number" && (key & 0x3ffffff) === key) {
       nums = this._nums;
-      if (nums == null)
-        return null;
+      if (nums == null) {
+        $arguments = this.$asLinkedHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(null, $arguments == null ? null : $arguments[1]);
+      }
       cell = $.propertyTypeCheck(nums[key], "$isLinkedHashMapCell");
-      return cell == null ? null : cell._value;
+      t1 = cell == null ? null : cell._value;
+      $arguments = this.$asLinkedHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
     } else {
       rest = this._rest;
-      if (rest == null)
-        return null;
+      if (rest == null) {
+        $arguments = this.$asLinkedHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(null, $arguments == null ? null : $arguments[1]);
+      }
       bucket = $.listTypeCheck(rest[$.get$hashCode$(key) & 0x3ffffff]);
       index = $.intTypeCheck($.LinkedHashMap__findBucketIndex(bucket, key));
-      if ($.$lt$n(index, 0))
-        return null;
-      return $.propertyTypeCheck(bucket[index], "$isLinkedHashMapCell")._value;
+      if ($.$lt$n(index, 0)) {
+        $arguments = this.$asLinkedHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        return $.assertSubtypeOfRuntimeType(null, $arguments == null ? null : $arguments[1]);
+      }
+      t1 = $.propertyTypeCheck(bucket[index], "$isLinkedHashMapCell")._value;
+      $arguments = this.$asLinkedHashMap;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
     }
   },
   $indexSet: function(_, key, value) {
-    var strings, table, nums, rest, hash, bucket, t1, index;
-    key;
-    value;
+    var $arguments, arguments0, strings, table, nums, rest, hash, bucket, t1, index;
+    $arguments = this.$asLinkedHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
+    $arguments = this.$asLinkedHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[1]);
     if (typeof key === "string" && key !== "__proto__") {
       strings = this._strings;
       if (strings == null) {
@@ -3256,10 +3793,22 @@ $$.LinkedHashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_first,_la
   $$indexSet$bailout: function(state0, key, value, bucket, index) {
     switch (state0) {
       case 0:
-        key;
-        value;
+        $arguments = this.$asLinkedHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
+        $arguments = this.$asLinkedHashMap;
+        arguments0 = $.getRuntimeTypeInfo(this);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[1]);
       case 1:
-        var strings, table, nums, rest, hash, t1;
+        var $arguments, arguments0, strings, table, nums, rest, hash, t1;
         if (state0 === 0 && typeof key === "string" && key !== "__proto__") {
           strings = this._strings;
           if (strings == null) {
@@ -3323,7 +3872,7 @@ $$.LinkedHashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_first,_la
   },
   forEach$1: function(_, action) {
     var cell, modifications;
-    $.functionTypeCheck(action);
+    $.propertyTypeCheck(action, "$isFunction");
     cell = this._first;
     modifications = this._modifications;
     for (; cell != null;) {
@@ -3341,7 +3890,7 @@ $$.LinkedHashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_first,_la
     return $.listSuperNativeTypeCheck(t1.map$1(t1, new $.LinkedHashMap_values_closure(this)), "$isIterable");
   },
   get$length: function(_) {
-    return $.intTypeCheck(this._liblib0$_length);
+    return $.intTypeCheck(this._length);
   },
   toString$0: function(_) {
     var result = $.StringBuffer$("");
@@ -3349,9 +3898,21 @@ $$.LinkedHashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_first,_la
     return result._contents;
   },
   _addHashTableEntry$3: function(table, key, value) {
-    var cell, t1;
-    key;
-    value;
+    var $arguments, arguments0, cell, t1;
+    $arguments = this.$asLinkedHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
+    $arguments = this.$asLinkedHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[1]);
     cell = $.propertyTypeCheck(table[key], "$isLinkedHashMapCell");
     if (cell == null) {
       t1 = this._newLinkedCell$2(key, value);
@@ -3361,8 +3922,21 @@ $$.LinkedHashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_first,_la
       cell._value = value;
   },
   _newLinkedCell$2: function(key, value) {
-    var cell, last;
-    cell = $.LinkedHashMapCell$(key, value);
+    var $arguments, arguments0, cell, last;
+    $arguments = this.$asLinkedHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(key, $arguments == null ? null : $arguments[0]);
+    $arguments = this.$asLinkedHashMap;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    cell = $.LinkedHashMapCell$(key, $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[1]));
     if (this._first == null) {
       this._last = cell;
       this._first = cell;
@@ -3372,7 +3946,7 @@ $$.LinkedHashMap = {"": "Object;_liblib0$_length,_strings,_nums,_rest,_first,_la
       last._next = cell;
       this._last = cell;
     }
-    this._liblib0$_length = $.intTypeCheck(this._liblib0$_length + 1);
+    this._length = $.intTypeCheck(this._length + 1);
     this._modifications = this._modifications + 1 & 67108863;
     return cell;
   },
@@ -3385,14 +3959,22 @@ $$.ListBase = {"": "Object+ListMixin;", $isList: true, $asList: null, $isIterabl
 
 $$.ListMixin = {"": "Object;",
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.ListIterator$(receiver, $.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0)), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0)), "$isIterator", [$.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0)], "$asIterator");
   },
   elementAt$1: function(receiver, index) {
-    return this.$index(receiver, $.intTypeCheck(index));
+    var t1, $arguments, arguments0;
+    t1 = this.$index(receiver, $.intTypeCheck(index));
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
   },
   forEach$1: function(receiver, action) {
     var $length, i, t1;
-    $.functionTypeCheck(action);
+    $.propertyTypeCheck(action, "$isFunction");
     $length = this.get$length(receiver);
     $.intTypeCheck($length);
     if ($length !== ($length | 0))
@@ -3413,69 +3995,174 @@ $$.ListMixin = {"": "Object;",
     }
   },
   get$first: function(receiver) {
-    if ($.boolConversionCheck($.$eq(this.get$length(receiver), 0)))
+    if ($.$eq(this.get$length(receiver), 0))
       throw $.wrapException($.StateError$("No elements"));
-    return this.$index(receiver, 0);
+    return $.assertSubtypeOfRuntimeType(this.$index(receiver, 0), $.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0));
   },
   get$last: function(receiver) {
-    if ($.boolConversionCheck($.$eq(this.get$length(receiver), 0)))
+    if ($.$eq(this.get$length(receiver), 0))
       throw $.wrapException($.StateError$("No elements"));
-    return this.$index(receiver, $.$sub$n(this.get$length(receiver), 1));
+    return $.assertSubtypeOfRuntimeType(this.$index(receiver, $.$sub$n(this.get$length(receiver), 1)), $.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0));
   },
   where$1: function(receiver, test) {
-    return $.listSuperNativeTypeCheck($.WhereIterable$(receiver, $.functionTypeCheck(test), $.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0)), "$isIterable");
+    var $arguments, arguments0, t1, t2;
+    $.propertyTypeCheck(test, "$isFunction");
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    t1 = $.WhereIterable$(receiver, test, t1);
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.listSuperNativeTypeCheck(t1, "$isIterable");
   },
   skip$1: function(receiver, count) {
-    return $.listSuperNativeTypeCheck($.SubListIterable$(receiver, count, null, null), "$isIterable");
+    var t1, $arguments, arguments0, t2;
+    t1 = $.SubListIterable$(receiver, count, null, null);
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.listSuperNativeTypeCheck(t1, "$isIterable");
   },
   toList$1$growable: function(receiver, growable) {
-    var result, i, t1;
+    var $arguments, arguments0, t1, result, t2, i;
     if (growable) {
-      result = $.List_List($, $.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0));
-      $.setRuntimeTypeInfo(result, [$.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0)]);
+      $arguments = receiver.$asListMixin;
+      arguments0 = $.getRuntimeTypeInfo(receiver);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      result = $.List_List($, t1);
+      $arguments = receiver.$asListMixin;
+      arguments0 = $.getRuntimeTypeInfo(receiver);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      t1 = [t1];
+      t2 = t1.constructor === Array;
+      $.assertHelper(t2);
+      result.$builtinTypeInfo = t1;
       $.JSArray_methods.set$length(result, this.get$length(receiver));
+      $arguments = receiver.$asListMixin;
+      arguments0 = $.getRuntimeTypeInfo(receiver);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
       $.listTypeCheck(result);
     } else {
-      result = $.List_List(this.get$length(receiver), $.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0));
-      $.setRuntimeTypeInfo(result, [$.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0)]);
+      t1 = this.get$length(receiver);
+      $arguments = receiver.$asListMixin;
+      arguments0 = $.getRuntimeTypeInfo(receiver);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t2 = $arguments == null ? null : $arguments[0];
+      result = $.List_List(t1, t2);
+      $arguments = receiver.$asListMixin;
+      arguments0 = $.getRuntimeTypeInfo(receiver);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      t1 = [t1];
+      t2 = t1.constructor === Array;
+      $.assertHelper(t2);
+      result.$builtinTypeInfo = t1;
+      $arguments = receiver.$asListMixin;
+      arguments0 = $.getRuntimeTypeInfo(receiver);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
       $.listTypeCheck(result);
     }
     if (typeof result !== "object" || result === null || (result.constructor !== Array || !!result.immutable$list) && !$.getInterceptor(result).$isJavaScriptIndexingBehavior)
-      return this.toList$1$growable$bailout(1, result, receiver);
+      return this.toList$1$growable$bailout(1, receiver, result);
     for (i = 0; $.$lt$n(i, this.get$length(receiver)); ++i) {
       t1 = this.$index(receiver, i);
       if (i >>> 0 !== i || i >= result.length)
         throw $.ioore(i);
       result[i] = t1;
     }
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     return $.listTypeCheck(result);
   },
-  toList$1$growable$bailout: function(state0, result, receiver) {
-    var t1, i, t2;
+  toList$1$growable$bailout: function(state0, receiver, result) {
+    var t1, i, t2, $arguments, arguments0;
     for (t1 = $.getInterceptor$ax(result), i = 0; t2 = $.getInterceptor$n(i), t2.$lt(i, this.get$length(receiver)); i = $.intTypeCheck(t2.$add(i, 1)))
       t1.$indexSet(result, i, this.$index(receiver, i));
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     return $.listTypeCheck(result);
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
   add$1: function(receiver, element) {
-    var t1;
-    element;
+    var $arguments, arguments0, t1;
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]);
     t1 = this.get$length(receiver);
     this.set$length(receiver, $.$add$ns(t1, 1));
     this.$indexSet(receiver, t1, element);
   },
-  clear$0: function(receiver) {
-    this.set$length(receiver, 0);
-  },
   removeLast$0: function(receiver) {
-    var result;
-    if ($.boolConversionCheck($.$eq(this.get$length(receiver), 0)))
+    var result, $arguments, arguments0;
+    if ($.$eq(this.get$length(receiver), 0))
       throw $.wrapException($.StateError$("No elements"));
     result = this.$index(receiver, $.$sub$n(this.get$length(receiver), 1));
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(result, $arguments == null ? null : $arguments[0]);
     this.set$length(receiver, $.$sub$n(this.get$length(receiver), 1));
-    return result;
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(result, $arguments == null ? null : $arguments[0]);
   },
   _rangeCheck$2: function(receiver, start, end) {
     var t1 = $.getInterceptor$n(start);
@@ -3486,7 +4173,7 @@ $$.ListMixin = {"": "Object;",
       throw $.wrapException($.RangeError$range(end, start, this.get$length(receiver)));
   },
   sublist$2: function(receiver, start, end) {
-    var $length, result, i, t1;
+    var $length, $arguments, arguments0, t1, result, t2, i;
     $.intTypeCheck(start);
     if (start !== (start | 0))
       return this.sublist$2$bailout(1, start, end, receiver);
@@ -3498,9 +4185,33 @@ $$.ListMixin = {"": "Object;",
     $.intTypeCheck($length);
     if ($length !== ($length | 0))
       return this.sublist$2$bailout(2, start, 0, receiver, $length);
-    result = $.List_List($, $.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0));
-    $.setRuntimeTypeInfo(result, [$.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0)]);
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    result = $.List_List($, t1);
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    t1 = [t1];
+    t2 = t1.constructor === Array;
+    $.assertHelper(t2);
+    result.$builtinTypeInfo = t1;
     $.JSArray_methods.set$length(result, $length);
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     $.listTypeCheck(result);
     if (typeof result !== "object" || result === null || (result.constructor !== Array || !!result.immutable$list) && !$.getInterceptor(result).$isJavaScriptIndexingBehavior)
       return this.sublist$2$bailout(3, start, 0, receiver, $length, result);
@@ -3512,6 +4223,13 @@ $$.ListMixin = {"": "Object;",
         throw $.ioore(i);
       result[i] = t1;
     }
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     return $.listTypeCheck(result);
   },
   sublist$2$bailout: function(state0, start, end, receiver, $length, result) {
@@ -3528,15 +4246,46 @@ $$.ListMixin = {"": "Object;",
         $.intTypeCheck($length);
       case 2:
         state0 = 0;
-        result = $.List_List($, $.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0));
-        $.setRuntimeTypeInfo(result, [$.getRuntimeTypeArgument(receiver, receiver.$asListMixin, 0)]);
+        $arguments = receiver.$asListMixin;
+        arguments0 = $.getRuntimeTypeInfo(receiver);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        t1 = $arguments == null ? null : $arguments[0];
+        result = $.List_List($, t1);
+        $arguments = receiver.$asListMixin;
+        arguments0 = $.getRuntimeTypeInfo(receiver);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        t1 = $arguments == null ? null : $arguments[0];
+        t1 = [t1];
+        t2 = t1.constructor === Array;
+        $.assertHelper(t2);
+        result.$builtinTypeInfo = t1;
         $.JSArray_methods.set$length(result, $length);
+        $arguments = receiver.$asListMixin;
+        arguments0 = $.getRuntimeTypeInfo(receiver);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        t1 = $arguments == null ? null : $arguments[0];
         $.listTypeCheck(result);
       case 3:
-        var t1, t2, i, t3;
+        var $arguments, arguments0, t1, t2, i, t3;
         state0 = 0;
         for (t1 = $.getInterceptor$ns(start), t2 = $.getInterceptor$ax(result), i = 0; t3 = $.getInterceptor$n(i), t3.$lt(i, $length); i = $.intTypeCheck(t3.$add(i, 1)))
           t2.$indexSet(result, i, this.$index(receiver, t1.$add(start, i)));
+        $arguments = receiver.$asListMixin;
+        arguments0 = $.getRuntimeTypeInfo(receiver);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        t1 = $arguments == null ? null : $arguments[0];
         return $.listTypeCheck(result);
     }
   },
@@ -3544,13 +4293,20 @@ $$.ListMixin = {"": "Object;",
     return this.sublist$2($receiver, start, null);
   },
   setRange$4: function(receiver, start, end, iterable, skipCount) {
-    var $length, otherStart, otherList, t1, t2, t3, i;
+    var $arguments, arguments0, t1, $length, otherStart, otherList, i;
     $.intTypeCheck(start);
     if (start !== (start | 0))
       return this.setRange$4$bailout(1, start, end, iterable, skipCount, receiver);
     $.intTypeCheck(end);
     if (end !== (end | 0))
       return this.setRange$4$bailout(2, start, end, iterable, skipCount, receiver);
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     $.listSuperNativeTypeCheck(iterable, "$isIterable");
     $.intTypeCheck(skipCount);
     if (skipCount !== (skipCount | 0))
@@ -3562,28 +4318,36 @@ $$.ListMixin = {"": "Object;",
     if (skipCount < 0)
       throw $.wrapException($.ArgumentError$(skipCount));
     if (typeof iterable === "object" && iterable !== null && (iterable.constructor === Array || !!$.getInterceptor(iterable).$isList)) {
+      if (typeof iterable !== "string" && (typeof iterable !== "object" || iterable === null || iterable.constructor !== Array && !$.getInterceptor(iterable).$isJavaScriptIndexingBehavior))
+        return this.setRange$4$bailout(5, start, 0, iterable, skipCount, receiver, $length);
       otherStart = skipCount;
       otherList = iterable;
     } else {
       t1 = $.skip$1$ax(iterable, skipCount);
-      otherList = $.listTypeCheck(t1.toList$1$growable(t1, false));
+      otherList = t1.toList$1$growable(t1, false);
+      $.listTypeCheck(otherList);
+      if (typeof otherList !== "string" && (typeof otherList !== "object" || otherList === null || otherList.constructor !== Array && !$.getInterceptor(otherList).$isJavaScriptIndexingBehavior))
+        return this.setRange$4$bailout(6, start, 0, 0, 0, receiver, $length, otherList);
       otherStart = 0;
     }
-    t1 = otherStart + $length;
-    t2 = $.getInterceptor$asx(otherList);
-    t3 = t2.get$length(otherList);
-    if (typeof t3 !== "number")
-      return this.setRange$4$bailout(5, start, 0, 0, 0, receiver, $length, otherList, otherStart, $.JSInt_methods, t2, t3, t1);
-    if (t1 > t3)
+    if (otherStart + $length > otherList.length)
       throw $.wrapException($.StateError$("Not enough elements"));
     if (otherStart < start)
-      for (i = $length - 1; i >= 0; --i)
-        this.$indexSet(receiver, start + i, t2.$index(otherList, otherStart + i));
+      for (i = $length - 1; i >= 0; --i) {
+        t1 = otherStart + i;
+        if (t1 >= otherList.length)
+          throw $.ioore(t1);
+        this.$indexSet(receiver, start + i, otherList[t1]);
+      }
     else
-      for (i = 0; i < $length; ++i)
-        this.$indexSet(receiver, start + i, t2.$index(otherList, otherStart + i));
+      for (i = 0; i < $length; ++i) {
+        t1 = otherStart + i;
+        if (t1 >= otherList.length)
+          throw $.ioore(t1);
+        this.$indexSet(receiver, start + i, otherList[t1]);
+      }
   },
-  setRange$4$bailout: function(state0, start, end, iterable, skipCount, receiver, $length, otherList, otherStart, t1, t3, t4, t2, i) {
+  setRange$4$bailout: function(state0, start, end, iterable, skipCount, receiver, $length, otherList, otherStart, t1, t2, t3, t4, i) {
     switch (state0) {
       case 0:
         $.intTypeCheck(start);
@@ -3592,6 +4356,13 @@ $$.ListMixin = {"": "Object;",
         $.intTypeCheck(end);
       case 2:
         state0 = 0;
+        $arguments = receiver.$asListMixin;
+        arguments0 = $.getRuntimeTypeInfo(receiver);
+        if ($arguments != null && $arguments.constructor === Array)
+          ;
+        else
+          $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+        t1 = $arguments == null ? null : $arguments[0];
         $.listSuperNativeTypeCheck(iterable, "$isIterable");
         $.intTypeCheck(skipCount);
       case 3:
@@ -3605,32 +4376,46 @@ $$.ListMixin = {"": "Object;",
           return;
         if ($.$lt$n(skipCount, 0))
           throw $.wrapException($.ArgumentError$(skipCount));
-        if (typeof iterable === "object" && iterable !== null && (iterable.constructor === Array || !!$.getInterceptor(iterable).$isList)) {
-          otherStart = skipCount;
-          otherList = iterable;
-        } else {
-          t1 = $.skip$1$ax(iterable, skipCount);
-          otherList = $.listTypeCheck(t1.toList$1$growable(t1, false));
-          otherStart = 0;
-        }
+      default:
+        if (state0 === 5 || state0 === 0 && typeof iterable === "object" && iterable !== null && (iterable.constructor === Array || !!$.getInterceptor(iterable).$isList))
+          switch (state0) {
+            case 0:
+            case 5:
+              state0 = 0;
+              otherStart = skipCount;
+              otherList = iterable;
+          }
+        else
+          switch (state0) {
+            case 0:
+              t1 = $.skip$1$ax(iterable, skipCount);
+              otherList = t1.toList$1$growable(t1, false);
+              $.listTypeCheck(otherList);
+            case 6:
+              state0 = 0;
+              otherStart = 0;
+          }
         t1 = $.getInterceptor$ns(otherStart);
         t2 = t1.$add(otherStart, $length);
         t3 = $.getInterceptor$asx(otherList);
         t4 = t3.get$length(otherList);
-      case 5:
+      case 7:
         state0 = 0;
         if ($.JSNumber_methods.$gt(t2, t4))
           throw $.wrapException($.StateError$("Not enough elements"));
-      default:
-        if (state0 === 7 || state0 === 6 || state0 === 0 && t1.$lt(otherStart, start))
+      case 8:
+      case 9:
+      case 10:
+        var $arguments, arguments0;
+        if (state0 === 9 || state0 === 8 || state0 === 0 && t1.$lt(otherStart, start))
           switch (state0) {
             case 0:
               i = $.$sub$n($length, 1);
               $.intTypeCheck(i);
-            case 6:
+            case 8:
               state0 = 0;
               t2 = $.getInterceptor$ns(start);
-            case 7:
+            case 9:
               L0:
                 while (true)
                   switch (state0) {
@@ -3641,7 +4426,7 @@ $$.ListMixin = {"": "Object;",
                       this.$indexSet(receiver, t2.$add(start, i), t3.$index(otherList, t1.$add(otherStart, i)));
                       i = t4.$sub(i, 1);
                       $.intTypeCheck(i);
-                    case 7:
+                    case 9:
                       state0 = 0;
                   }
           }
@@ -3650,7 +4435,7 @@ $$.ListMixin = {"": "Object;",
             case 0:
               t2 = $.getInterceptor$ns(start);
               i = 0;
-            case 8:
+            case 10:
               L1:
                 while (true)
                   switch (state0) {
@@ -3661,7 +4446,7 @@ $$.ListMixin = {"": "Object;",
                       this.$indexSet(receiver, t2.$add(start, i), t3.$index(otherList, t1.$add(otherStart, i)));
                       i = t4.$add(i, 1);
                       $.intTypeCheck(i);
-                    case 8:
+                    case 10:
                       state0 = 0;
                   }
           }
@@ -3671,14 +4456,20 @@ $$.ListMixin = {"": "Object;",
     return this.setRange$4($receiver, start, end, iterable, 0);
   },
   indexOf$2: function(receiver, element, startIndex) {
-    var i, t1;
-    element;
+    var $arguments, arguments0, i, t1;
+    $arguments = receiver.$asListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]);
     if ($.JSInt_methods.$ge(startIndex, this.get$length(receiver)))
       return -1;
     if (startIndex < 0)
       startIndex = 0;
     for (i = startIndex; t1 = $.getInterceptor$n(i), t1.$lt(i, this.get$length(receiver)); i = $.intTypeCheck(t1.$add(i, 1)))
-      if ($.boolConversionCheck($.$eq(this.$index(receiver, i), element)))
+      if ($.$eq(this.$index(receiver, i), element))
         return i;
     return -1;
   },
@@ -3698,12 +4489,15 @@ $$.ListMixin = {"": "Object;",
 };
 
 $$.ListQueue = {"": "IterableBase;_table,_head,_tail,_modificationCount",
+  set$_table: function(v) {
+    this._table = $.listTypeCheck(v);
+  },
   get$iterator: function(_) {
-    return $.propertyTypeCheck($._ListQueueIterator$(this, null), "$isIterator");
+    return $.assertSubtype($._ListQueueIterator$(this, null), "$isIterator", [$.getRuntimeTypeArgument(this, this.$asListQueue, 0)], "$asIterator");
   },
   forEach$1: function(_, action) {
     var modificationCount, i, t1;
-    $.functionTypeCheck(action);
+    $.propertyTypeCheck(action, "$isFunction");
     modificationCount = $.intTypeCheck(this._modificationCount);
     for (i = this._head; i !== this._tail; i = (i + 1 & this._table.length - 1) >>> 0) {
       t1 = this._table;
@@ -3713,9 +4507,6 @@ $$.ListQueue = {"": "IterableBase;_table,_head,_tail,_modificationCount",
       if (modificationCount !== this._modificationCount)
         $.throwExpression($.ConcurrentModificationError$(this));
     }
-  },
-  get$isEmpty: function(_) {
-    return this._head === this._tail;
   },
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
@@ -3728,14 +4519,14 @@ $$.ListQueue = {"": "IterableBase;_table,_head,_tail,_modificationCount",
     t2 = this._table;
     if (t1 < 0 || t1 >= t2.length)
       throw $.ioore(t1);
-    return t2[t1];
+    return $.assertSubtypeOfRuntimeType(t2[t1], $.getRuntimeTypeArgument(this, this.$asListQueue, 0));
   },
   elementAt$1: function(_, index) {
-    var t1, t2, t3;
+    var t1, t2, t3, $arguments, arguments0;
     $.intTypeCheck(index);
     t1 = $.getInterceptor$n(index);
-    if (t1.$lt(index, 0) || t1.$gt(index, this.get$length(this)))
-      throw $.wrapException($.RangeError$range(index, 0, this.get$length(this)));
+    if (t1.$lt(index, 0) || t1.$gt(index, (this._tail - this._head & this._table.length - 1) >>> 0))
+      throw $.wrapException($.RangeError$range(index, 0, (this._tail - this._head & this._table.length - 1) >>> 0));
     t1 = this._table;
     t2 = this._head;
     if (typeof index !== "number")
@@ -3744,51 +4535,151 @@ $$.ListQueue = {"": "IterableBase;_table,_head,_tail,_modificationCount",
     t2 = (t2 + index & t3 - 1) >>> 0;
     if (t2 < 0 || t2 >= t3)
       throw $.ioore(t2);
-    return t1[t2];
+    t2 = t1[t2];
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t2, $arguments == null ? null : $arguments[0]);
   },
   toList$1$growable: function(_, growable) {
-    var list;
+    var $arguments, arguments0, t1, list, t2, t3, t4;
     if (growable) {
-      list = $.List_List($, $.getRuntimeTypeArgument(this, this.$asListQueue, 0));
-      $.setRuntimeTypeInfo(list, [$.getRuntimeTypeArgument(this, this.$asListQueue, 0)]);
-      $.JSArray_methods.set$length(list, this.get$length(this));
+      $arguments = this.$asListQueue;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      list = $.List_List($, t1);
+      $arguments = this.$asListQueue;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      t1 = [t1];
+      t2 = t1.constructor === Array;
+      $.assertHelper(t2);
+      list.$builtinTypeInfo = t1;
+      $.JSArray_methods.set$length(list, (this._tail - this._head & this._table.length - 1) >>> 0);
+      $arguments = this.$asListQueue;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
       $.listTypeCheck(list);
     } else {
-      list = $.List_List(this.get$length(this), $.getRuntimeTypeArgument(this, this.$asListQueue, 0));
-      $.setRuntimeTypeInfo(list, [$.getRuntimeTypeArgument(this, this.$asListQueue, 0)]);
+      t1 = this._tail;
+      t2 = this._head;
+      t3 = this._table;
+      $arguments = this.$asListQueue;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t4 = $arguments == null ? null : $arguments[0];
+      list = $.List_List((t1 - t2 & t3.length - 1) >>> 0, t4);
+      $arguments = this.$asListQueue;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      t1 = [t1];
+      t2 = t1.constructor === Array;
+      $.assertHelper(t2);
+      list.$builtinTypeInfo = t1;
+      $arguments = this.$asListQueue;
+      arguments0 = $.getRuntimeTypeInfo(this);
+      if ($arguments != null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
       $.listTypeCheck(list);
     }
     this._writeToList$1(list);
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     return $.listTypeCheck(list);
   },
   toList$0: function($receiver) {
     return this.toList$1$growable($receiver, true);
   },
   add$1: function(_, element) {
-    this._add$1(this, element);
+    var $arguments, arguments0;
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    this._add$1(this, $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]));
   },
   toString$0: function(_) {
     var result = $.StringBuffer$("");
     $.ToString__emitValue(this, result, $.List_List($, null));
     return result._contents;
   },
+  addLast$1: function(element) {
+    var $arguments, arguments0;
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    this._add$1(this, $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]));
+  },
   removeFirst$0: function() {
-    var t1, t2, t3, result;
+    var t1, t2, result, $arguments, arguments0;
     if (this._head === this._tail)
       throw $.wrapException($.StateError$("No elements"));
     this._modificationCount = $.intTypeCheck(this._modificationCount + 1);
     t1 = this._table;
     t2 = this._head;
-    t3 = t1.length;
-    if (t2 < 0 || t2 >= t3)
+    if (t2 < 0 || t2 >= t1.length)
       throw $.ioore(t2);
     result = t1[t2];
-    this._head = (t2 + 1 & t3 - 1) >>> 0;
-    return result;
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(result, $arguments == null ? null : $arguments[0]);
+    this._head = (this._head + 1 & this._table.length - 1) >>> 0;
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(result, $arguments == null ? null : $arguments[0]);
   },
   _add$1: function(_, element) {
-    var t1, t2, t3;
-    element;
+    var $arguments, arguments0, t1, t2, t3;
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(element, $arguments == null ? null : $arguments[0]);
     t1 = this._table;
     t2 = this._tail;
     t3 = t1.length;
@@ -3801,9 +4692,34 @@ $$.ListQueue = {"": "IterableBase;_table,_head,_tail,_modificationCount",
     this._modificationCount = $.intTypeCheck(this._modificationCount + 1);
   },
   _grow$0: function() {
-    var newTable, t1, t2, split, t3;
-    newTable = $.List_List(this._table.length * 2, $.getRuntimeTypeArgument(this, this.$asListQueue, 0));
-    $.setRuntimeTypeInfo(newTable, [$.getRuntimeTypeArgument(this, this.$asListQueue, 0)]);
+    var t1, $arguments, arguments0, t2, newTable, split, t3;
+    t1 = this._table;
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    newTable = $.List_List(t1.length * 2, t2);
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    t1 = [t1];
+    t2 = t1.constructor === Array;
+    $.assertHelper(t2);
+    newTable.$builtinTypeInfo = t1;
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     $.listTypeCheck(newTable);
     t1 = this._table;
     t2 = this._head;
@@ -3813,13 +4729,20 @@ $$.ListQueue = {"": "IterableBase;_table,_head,_tail,_modificationCount",
     t3.setRange$4(newTable, split, split + this._head, this._table, 0);
     this._head = 0;
     this._tail = this._table.length;
-    this._table = $.listTypeCheck(newTable);
+    this.set$_table(newTable);
   },
   _writeToList$1: function(target) {
-    var t1, t2, t3, t4, $length, firstPartSize;
+    var $arguments, arguments0, t1, t2, t3, t4, $length, firstPartSize;
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     $.listTypeCheck(target);
     t1 = $.getInterceptor$asx(target);
-    $.assertHelper($.$ge$n(t1.get$length(target), this.get$length(this)));
+    $.assertHelper($.$ge$n(t1.get$length(target), (this._tail - this._head & this._table.length - 1) >>> 0));
     t2 = this._head;
     t3 = this._tail;
     t4 = this._table;
@@ -3843,7 +4766,7 @@ $$.ListQueue = {"": "IterableBase;_table,_head,_tail,_modificationCount",
     $.assertHelper($.ListQueue__isPowerOf2(initialCapacity));
     t1 = $.List_List(initialCapacity, E);
     $.setRuntimeTypeInfo(t1, [E]);
-    this._table = $.listTypeCheck(t1);
+    this.set$_table(t1);
   },
   $isListQueue: true,
   $asIterableBase: null,
@@ -3855,9 +4778,9 @@ $$.ListQueue = {"": "IterableBase;_table,_head,_tail,_modificationCount",
   $isIterable: true
 };
 
-$$._ListQueueIterator = {"": "Object;_queue,_liblib0$_end,_modificationCount,_liblib0$_position,_liblib0$_current",
+$$._ListQueueIterator = {"": "Object;_queue,_liblib1$_end,_modificationCount,_liblib1$_position,_liblib1$_current?",
   get$current: function() {
-    return this._liblib0$_current;
+    return $.assertSubtypeOfRuntimeType(this._liblib1$_current, $.getRuntimeTypeArgument(this, this.$as_ListQueueIterator, 0));
   },
   moveNext$0: function() {
     var t1, t2, t3;
@@ -3866,16 +4789,16 @@ $$._ListQueueIterator = {"": "Object;_queue,_liblib0$_end,_modificationCount,_li
     $.intTypeCheck(t2);
     if (t2 !== t1._modificationCount)
       $.throwExpression($.ConcurrentModificationError$(t1));
-    t2 = this._liblib0$_position;
-    if (t2 === this._liblib0$_end) {
-      this._liblib0$_current = null;
+    t2 = this._liblib1$_position;
+    if (t2 === this._liblib1$_end) {
+      this.set$_liblib1$_current(null);
       return false;
     }
     t3 = t1._table;
     if (t2 < 0 || t2 >= t3.length)
       throw $.ioore(t2);
-    this._liblib0$_current = t3[t2];
-    this._liblib0$_position = (this._liblib0$_position + 1 & t1._table.length - 1) >>> 0;
+    this.set$_liblib1$_current(t3[t2]);
+    this._liblib1$_position = (this._liblib1$_position + 1 & t1._table.length - 1) >>> 0;
     return true;
   },
   $isIterator: true,
@@ -3890,7 +4813,7 @@ $$.DateTime = {"": "Object;millisecondsSinceEpoch<,isUtc",
       return false;
     else
       other;
-    return $.boolConversionCheck($.$eq(this.millisecondsSinceEpoch, other.millisecondsSinceEpoch)) && $.boolConversionCheck($.$eq(this.isUtc, other.isUtc));
+    return $.$eq(this.millisecondsSinceEpoch, other.millisecondsSinceEpoch) && $.$eq(this.isUtc, other.isUtc);
   },
   get$hashCode: function(_) {
     return $.intTypeCheck(this.millisecondsSinceEpoch);
@@ -3898,13 +4821,13 @@ $$.DateTime = {"": "Object;millisecondsSinceEpoch<,isUtc",
   toString$0: function(_) {
     var t1, y, m, d, h, min, sec, ms;
     t1 = new $.DateTime_toString_twoDigits();
-    y = $.stringTypeCheck(new $.DateTime_toString_fourDigits().call$1(this.get$year()));
-    m = $.stringTypeCheck(t1.call$1(this.get$month()));
-    d = $.stringTypeCheck(t1.call$1(this.get$day()));
-    h = $.stringTypeCheck(t1.call$1(this.get$hour()));
-    min = $.stringTypeCheck(t1.call$1(this.get$minute()));
-    sec = $.stringTypeCheck(t1.call$1(this.get$second()));
-    ms = $.stringTypeCheck(new $.DateTime_toString_threeDigits().call$1(this.get$millisecond()));
+    y = $.stringTypeCheck(new $.DateTime_toString_fourDigits().call$1($.Primitives_getYear(this)));
+    m = $.stringTypeCheck(t1.call$1($.Primitives_getMonth(this)));
+    d = $.stringTypeCheck(t1.call$1($.Primitives_getDay(this)));
+    h = $.stringTypeCheck(t1.call$1($.Primitives_getHours(this)));
+    min = $.stringTypeCheck(t1.call$1($.Primitives_getMinutes(this)));
+    sec = $.stringTypeCheck(t1.call$1($.Primitives_getSeconds(this)));
+    ms = $.stringTypeCheck(new $.DateTime_toString_threeDigits().call$1($.Primitives_getMilliseconds(this)));
     if ($.boolConversionCheck(this.isUtc))
       return $.S(y) + "-" + $.S(m) + "-" + $.S(d) + " " + $.S(h) + ":" + $.S(min) + ":" + $.S(sec) + "." + $.S(ms) + "Z";
     else
@@ -3913,27 +4836,6 @@ $$.DateTime = {"": "Object;millisecondsSinceEpoch<,isUtc",
   add$1: function(_, duration) {
     $.propertyTypeCheck(duration, "$isDuration");
     return $.DateTime$fromMillisecondsSinceEpoch($.$add$ns($.intTypeCheck(this.millisecondsSinceEpoch), duration.get$inMilliseconds()), this.isUtc);
-  },
-  get$year: function() {
-    return $.Primitives_getYear(this);
-  },
-  get$month: function() {
-    return $.Primitives_getMonth(this);
-  },
-  get$day: function() {
-    return $.Primitives_getDay(this);
-  },
-  get$hour: function() {
-    return $.Primitives_getHours(this);
-  },
-  get$minute: function() {
-    return $.Primitives_getMinutes(this);
-  },
-  get$second: function() {
-    return $.Primitives_getSeconds(this);
-  },
-  get$millisecond: function() {
-    return $.Primitives_getMilliseconds(this);
   },
   DateTime$fromMillisecondsSinceEpoch$2$isUtc: function(millisecondsSinceEpoch, isUtc) {
     $.intTypeCheck(millisecondsSinceEpoch);
@@ -4021,20 +4923,8 @@ $$.Duration = {"": "Object;_duration",
   $ge: function(_, other) {
     return this._duration >= $.propertyTypeCheck(other, "$isDuration")._duration;
   },
-  get$inHours: function() {
-    return $.intTypeCheck($.JSNumber_methods.$tdiv(this._duration, 3600000000));
-  },
-  get$inMinutes: function() {
-    return $.intTypeCheck($.JSNumber_methods.$tdiv(this._duration, 60000000));
-  },
-  get$inSeconds: function() {
-    return $.intTypeCheck($.JSNumber_methods.$tdiv(this._duration, 1000000));
-  },
   get$inMilliseconds: function() {
     return $.intTypeCheck($.JSNumber_methods.$tdiv(this._duration, 1000));
-  },
-  get$inMicroseconds: function() {
-    return $.intTypeCheck(this._duration);
   },
   $eq: function(_, other) {
     if (other == null)
@@ -4047,14 +4937,17 @@ $$.Duration = {"": "Object;_duration",
     return $.JSNumber_methods.get$hashCode(this._duration);
   },
   toString$0: function(_) {
-    var t1, twoDigitMinutes, twoDigitSeconds, sixDigitUs;
+    var t1, t2, t3, twoDigitMinutes, twoDigitSeconds, sixDigitUs;
     t1 = new $.Duration_toString_twoDigits();
-    if (this.get$inMicroseconds() < 0)
-      return "-" + $.S($.Duration$(0, 0, -this.get$inMicroseconds(), 0, 0, 0));
-    twoDigitMinutes = $.stringTypeCheck(t1.call$1($.JSNumber_methods.remainder$1(this.get$inMinutes(), 60)));
-    twoDigitSeconds = $.stringTypeCheck(t1.call$1($.JSNumber_methods.remainder$1(this.get$inSeconds(), 60)));
-    sixDigitUs = $.stringTypeCheck(new $.Duration_toString_sixDigits().call$1($.JSNumber_methods.remainder$1(this.get$inMicroseconds(), 1000000)));
-    return $.S(this.get$inHours()) + ":" + $.S(twoDigitMinutes) + ":" + $.S(twoDigitSeconds) + "." + $.S(sixDigitUs);
+    t2 = $.intTypeCheck(this._duration);
+    if ($.$lt$n(t2, 0))
+      return "-" + $.S($.Duration$(0, 0, $.$negate$n(t2), 0, 0, 0));
+    t3 = $.intTypeCheck($.JSNumber_methods.$tdiv(t2, 60000000));
+    twoDigitMinutes = $.stringTypeCheck(t1.call$1(t3 % 60));
+    t3 = $.intTypeCheck($.JSNumber_methods.$tdiv(t2, 1000000));
+    twoDigitSeconds = $.stringTypeCheck(t1.call$1(t3 % 60));
+    sixDigitUs = $.stringTypeCheck(new $.Duration_toString_sixDigits().call$1(t2 % 1000000));
+    return $.S($.intTypeCheck($.JSNumber_methods.$tdiv(t2, 3600000000))) + ":" + $.S(twoDigitMinutes) + ":" + $.S(twoDigitSeconds) + "." + $.S(sixDigitUs);
   },
   $isDuration: true,
   $asObject: null
@@ -4123,7 +5016,7 @@ $$.RangeError = {"": "ArgumentError;message",
 
 $$.NoSuchMethodError = {"": "Object;_receiver,_memberName,_arguments,_namedArguments,_existingArgumentNames",
   toString$0: function(_) {
-    var t1, t2, t3, t4, str, actualParameters, i, formalParameters;
+    var t1, t2, t3, t4, actualParameters, i, str, formalParameters;
     t1 = {};
     t1.sb_0 = $.StringBuffer$("");
     t1.i_1 = 0;
@@ -4137,15 +5030,14 @@ $$.NoSuchMethodError = {"": "Object;_receiver,_memberName,_arguments,_namedArgum
       t4 = t1.i_1;
       if (t4 >>> 0 !== t4 || t4 >= t2.length)
         throw $.ioore(t4);
-      str = $.Error_safeToString(t2[t4]);
-      str = typeof str === "string" ? str : $.S(str);
-      t3._contents = t3._contents + str;
+      t4 = $.Error_safeToString(t2[t4]);
+      t3._contents = t3._contents + t4;
     }
     t2 = this._namedArguments;
     t2.forEach$1(t2, new $.NoSuchMethodError_toString_closure(t1));
     t2 = this._existingArgumentNames;
     if (t2 == null)
-      return "NoSuchMethodError : method not found: '" + $.S(this._memberName) + "'\nReceiver: " + $.S($.Error_safeToString(this._receiver)) + "\nArguments: [" + $.S(t1.sb_0) + "]";
+      return "NoSuchMethodError : method not found: '" + $.S(this._memberName) + "'\nReceiver: " + $.Error_safeToString(this._receiver) + "\nArguments: [" + $.S(t1.sb_0) + "]";
     else {
       actualParameters = t1.sb_0._contents;
       t1.sb_0 = $.StringBuffer$("");
@@ -4163,7 +5055,7 @@ $$.NoSuchMethodError = {"": "Object;_receiver,_memberName,_arguments,_namedArgum
       }
       formalParameters = t1.sb_0._contents;
       t1 = this._memberName;
-      return "NoSuchMethodError: incorrect number of arguments passed to method named '" + $.S(t1) + "'\nReceiver: " + $.S($.Error_safeToString(this._receiver)) + "\nTried calling: " + $.S(t1) + "(" + actualParameters + ")\nFound: " + $.S(t1) + "(" + formalParameters + ")";
+      return "NoSuchMethodError: incorrect number of arguments passed to method named '" + $.S(t1) + "'\nReceiver: " + $.Error_safeToString(this._receiver) + "\nTried calling: " + $.S(t1) + "(" + actualParameters + ")\nFound: " + $.S(t1) + "(" + formalParameters + ")";
     }
   },
   $asObject: null
@@ -4196,7 +5088,7 @@ $$.ConcurrentModificationError = {"": "Object;modifiedObject",
     var t1 = this.modifiedObject;
     if (t1 == null)
       return "Concurrent modification during iteration.";
-    return "Concurrent modification during iteration: " + $.S($.Error_safeToString(t1)) + ".";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
   },
   $asObject: null
 };
@@ -4236,15 +5128,29 @@ $$.FormatException = {"": "Object;message",
 
 $$.Expando = {"": "Object;name",
   toString$0: function(_) {
-    return "Expando:" + this.name;
+    return "Expando:" + $.S(this.name);
   },
   $index: function(_, object) {
-    var values = $.Primitives_getProperty(object, "expando$values");
-    return values == null ? null : $.Primitives_getProperty(values, this._getKey$0());
+    var values, t1, $arguments, arguments0;
+    values = $.Primitives_getProperty(object, "expando$values");
+    t1 = values == null ? null : $.Primitives_getProperty(values, this._getKey$0());
+    $arguments = this.$asExpando;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
   },
   $indexSet: function(_, object, value) {
-    var values;
-    value;
+    var $arguments, arguments0, values;
+    $arguments = this.$asExpando;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]);
     values = $.Primitives_getProperty(object, "expando$values");
     if (values == null) {
       values = $.Object$();
@@ -4262,7 +5168,8 @@ $$.Expando = {"": "Object;name",
       $.Primitives_setProperty(this, "expando$key", key);
     }
     return key;
-  }
+  },
+  $isExpando: true
 };
 
 $$.Iterator = {"": "Object;", $isIterator: true};
@@ -4277,7 +5184,7 @@ $$.Object = {"": ";",
     return $.Primitives_objectHashCode(this);
   },
   toString$0: function(_) {
-    return "Instance of '" + $.S($.Primitives_objectTypeName(this)) + "'";
+    return "Instance of '" + $.Primitives_objectTypeName(this) + "'";
   },
   $isObject: true,
   $asObject: null
@@ -4285,9 +5192,10 @@ $$.Object = {"": ";",
 
 $$.Stopwatch = {"": "Object;_liblib3$_start,_stop",
   start$0: function(_) {
-    if (this.get$isRunning())
+    var t1 = this._liblib3$_start == null;
+    if (!t1 && this._stop == null)
       return;
-    if (this._liblib3$_start == null)
+    if (t1)
       this._liblib3$_start = $.intTypeCheck($.Primitives_numMicroseconds());
     else {
       this._liblib3$_start = $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_numMicroseconds()), $.$sub$n(this._stop, this._liblib3$_start)));
@@ -4309,14 +5217,8 @@ $$.Stopwatch = {"": "Object;_liblib3$_start,_stop",
     t2 = this._stop;
     return $.intTypeCheck(t2 == null ? $.$sub$n($.Stopwatch__now(), this._liblib3$_start) : $.$sub$n(t2, t1));
   },
-  get$elapsedMilliseconds: function() {
-    return $.intTypeCheck($.JSNumber_methods.$tdiv(this.get$elapsedTicks() * 1000, this.get$frequency(this)));
-  },
   get$frequency: function(_) {
     return $.intTypeCheck($.Stopwatch__frequency());
-  },
-  get$isRunning: function() {
-    return this._liblib3$_start != null && this._stop == null;
   },
   $isStopwatch: true
 };
@@ -4339,7 +5241,7 @@ $$.StringBuffer = {"": "Object;_contents",
     iterator = $.get$iterator$ax(objects);
     if (!iterator.moveNext$0())
       return;
-    if ($.JSString_methods.get$isEmpty(separator))
+    if (separator.length === 0)
       do {
         str = iterator.get$current();
         str = $.stringTypeCheck(typeof str === "string" ? str : $.S(str));
@@ -4367,9 +5269,9 @@ $$.StringBuffer = {"": "Object;_contents",
   $asObject: null
 };
 
-$$.Object_ListMixin = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.JSString]; }, $isIterable: true, $asIterable: function() { return [$.JSString]; }, $asObject: null};
+$$.Interceptor_ListMixin = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.JSString]; }, $isIterable: true, $asIterable: function() { return [$.JSString]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin = {"": "Object_ListMixin+ImmutableListMixin;", $isList: true, $asList: function() { return [$.JSString]; }, $isIterable: true, $asIterable: function() { return [$.JSString]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin = {"": "Interceptor_ListMixin+ImmutableListMixin;", $isList: true, $asList: function() { return [$.JSString]; }, $isIterable: true, $asIterable: function() { return [$.JSString]; }, $asObject: null};
 
 $$._ChildrenElementList = {"": "ListBase;_element,_childElements",
   get$length: function(_) {
@@ -4402,7 +5304,7 @@ $$._ChildrenElementList = {"": "ListBase;_element,_childElements",
     return value;
   },
   get$iterator: function(_) {
-    return $.propertyTypeCheck($.get$iterator$ax(this.toList$0(this)), "$isIterator");
+    return $.assertSubtype($.get$iterator$ax(this.toList$0(this)), "$isIterator", [$.Element], "$asIterator");
   },
   setRange$4: function(_, start, end, iterable, skipCount) {
     $.intTypeCheck(start);
@@ -4414,23 +5316,19 @@ $$._ChildrenElementList = {"": "ListBase;_element,_childElements",
   setRange$3: function($receiver, start, end, iterable) {
     return this.setRange$4($receiver, start, end, iterable, 0);
   },
-  clear$0: function(_) {
-    this._element.textContent = "";
-  },
   removeLast$0: function(_) {
-    var result = this.get$last(this);
-    if (result != null)
-      $.$$dom_removeChild$1$x(this._element, result);
+    var t1, result, t2;
+    t1 = this._element;
+    result = t1.lastElementChild;
+    t2 = result == null;
+    if (t2)
+      $.throwExpression($.StateError$("No elements"));
+    if (!t2)
+      $.$$dom_removeChild$1$x(t1, result);
     return result;
   },
   get$first: function(_) {
     var result = this._element.firstElementChild;
-    if (result == null)
-      throw $.wrapException($.StateError$("No elements"));
-    return result;
-  },
-  get$last: function(_) {
-    var result = this._element.lastElementChild;
     if (result == null)
       throw $.wrapException($.StateError$("No elements"));
     return result;
@@ -4444,11 +5342,7 @@ $$._ChildrenElementList = {"": "ListBase;_element,_childElements",
 $$.Entry_remove_closure = {"": "Closure;completer_0",
   call$0: function() {
     var t1 = this.completer_0;
-    null;
-    if (t1._isComplete)
-      $.throwExpression($.StateError$("Future already completed"));
-    t1._isComplete = true;
-    t1._setFutureValue$1(null);
+    t1.complete$0(t1);
   },
   $isFunction: true,
   $asObject: null,
@@ -4483,17 +5377,17 @@ $$.Events = {"": "Object;_ptr",
   }
 };
 
-$$.Object_ListMixin0 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.File]; }, $isIterable: true, $asIterable: function() { return [$.File]; }, $asObject: null};
+$$.Interceptor_ListMixin0 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.File]; }, $isIterable: true, $asIterable: function() { return [$.File]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin0 = {"": "Object_ListMixin0+ImmutableListMixin;", $isList: true, $asList: function() { return [$.File]; }, $isIterable: true, $asIterable: function() { return [$.File]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin0 = {"": "Interceptor_ListMixin0+ImmutableListMixin;", $isList: true, $asList: function() { return [$.File]; }, $isIterable: true, $asIterable: function() { return [$.File]; }, $asObject: null};
 
-$$.Object_ListMixin1 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
+$$.Interceptor_ListMixin1 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin1 = {"": "Object_ListMixin1+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin1 = {"": "Interceptor_ListMixin1+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
 
-$$.Object_ListMixin2 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
+$$.Interceptor_ListMixin2 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin2 = {"": "Object_ListMixin2+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin2 = {"": "Interceptor_ListMixin2+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
 
 $$.HttpRequest_getString_closure = {"": "Closure;",
   call$1: function(xhr) {
@@ -4513,21 +5407,26 @@ $$.HttpRequest_getString_closure = {"": "Closure;",
   $isGameLoopPointerLockChangeFunction: true
 };
 
-$$.HttpRequest_request_closure = {"": "Closure;completer_0,xhr_1",
+$$.HttpRequest_request_closure = {"": "Closure;xhr_0",
+  call$2: function(header, value) {
+    $.HttpRequest_methods.setRequestHeader$2(this.xhr_0, header, value);
+  },
+  $isFunction: true,
+  $asObject: null,
+  $isGameLoopTouchEventFunction: true
+};
+
+$$.HttpRequest_request_closure0 = {"": "Closure;completer_1,xhr_2",
   call$1: function(e) {
     var t1, t2, t3;
-    t1 = this.xhr_1;
+    t1 = this.xhr_2;
     t2 = t1.status;
     t3 = $.getInterceptor$n(t2);
     t2 = t3.$ge(t2, 200) && t3.$lt(t2, 300) || t2 === 0 || t2 === 304;
-    t3 = this.completer_0;
-    if (t2) {
-      t1;
-      if (t3._isComplete)
-        $.throwExpression($.StateError$("Future already completed"));
-      t3._isComplete = true;
-      t3._setFutureValue$1(t1);
-    } else {
+    t3 = this.completer_1;
+    if (t2)
+      t3.complete$1(t3, t1);
+    else {
       if (t3._isComplete)
         $.throwExpression($.StateError$("Future already completed"));
       t3._isComplete = true;
@@ -4548,9 +5447,9 @@ $$.HttpRequest_request_closure = {"": "Closure;completer_0,xhr_1",
   $isGameLoopPointerLockChangeFunction: true
 };
 
-$$.HttpRequest_request_closure0 = {"": "Closure;completer_2",
+$$.HttpRequest_request_closure1 = {"": "Closure;completer_3",
   call$1: function(e) {
-    var t1 = this.completer_2;
+    var t1 = this.completer_3;
     if (t1._isComplete)
       $.throwExpression($.StateError$("Future already completed"));
     t1._isComplete = true;
@@ -4570,9 +5469,9 @@ $$.HttpRequest_request_closure0 = {"": "Closure;completer_2",
   $isGameLoopPointerLockChangeFunction: true
 };
 
-$$.Object_ListMixin3 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.MimeType]; }, $isIterable: true, $asIterable: function() { return [$.MimeType]; }, $asObject: null};
+$$.Interceptor_ListMixin3 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.MimeType]; }, $isIterable: true, $asIterable: function() { return [$.MimeType]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin3 = {"": "Object_ListMixin3+ImmutableListMixin;", $isList: true, $asList: function() { return [$.MimeType]; }, $isIterable: true, $asIterable: function() { return [$.MimeType]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin3 = {"": "Interceptor_ListMixin3+ImmutableListMixin;", $isList: true, $asList: function() { return [$.MimeType]; }, $isIterable: true, $asIterable: function() { return [$.MimeType]; }, $asObject: null};
 
 $$._ChildNodeListLazy = {"": "ListBase;_this",
   get$first: function(_) {
@@ -4581,23 +5480,19 @@ $$._ChildNodeListLazy = {"": "ListBase;_this",
       throw $.wrapException($.StateError$("No elements"));
     return result;
   },
-  get$last: function(_) {
-    var result = this._this.lastChild;
-    if (result == null)
-      throw $.wrapException($.StateError$("No elements"));
-    return result;
-  },
   add$1: function(_, value) {
     $.append$1$x(this._this, $.interceptedTypeCheck(value, "$isNode"));
   },
   removeLast$0: function(_) {
-    var result = this.get$last(this);
-    if (result != null)
-      $.$$dom_removeChild$1$x(this._this, result);
+    var t1, result, t2;
+    t1 = this._this;
+    result = t1.lastChild;
+    t2 = result == null;
+    if (t2)
+      $.throwExpression($.StateError$("No elements"));
+    if (!t2)
+      $.$$dom_removeChild$1$x(t1, result);
     return result;
-  },
-  clear$0: function(_) {
-    this._this.textContent = "";
   },
   $indexSet: function(_, index, value) {
     var t1, t2;
@@ -4610,7 +5505,7 @@ $$._ChildNodeListLazy = {"": "ListBase;_this",
     $.$$dom_replaceChild$2$x(t1, value, $.interceptedTypeCheck(t2[index], "$isNode"));
   },
   get$iterator: function(_) {
-    return $.propertyTypeCheck($.NodeList_methods.get$iterator(this._this.childNodes), "$isIterator");
+    return $.assertSubtype($.NodeList_methods.get$iterator(this._this.childNodes), "$isIterator", [$.Node], "$asIterator");
   },
   setRange$4: function(_, start, end, iterable, skipCount) {
     $.intTypeCheck(start);
@@ -4643,21 +5538,21 @@ $$._ChildNodeListLazy = {"": "ListBase;_this",
   $asIterable: function() { return [$.Node]; }
 };
 
-$$.Object_ListMixin4 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
+$$.Interceptor_ListMixin4 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin4 = {"": "Object_ListMixin4+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin4 = {"": "Interceptor_ListMixin4+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
 
-$$.Object_ListMixin5 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Plugin]; }, $isIterable: true, $asIterable: function() { return [$.Plugin]; }, $asObject: null};
+$$.Interceptor_ListMixin5 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Plugin]; }, $isIterable: true, $asIterable: function() { return [$.Plugin]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin5 = {"": "Object_ListMixin5+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Plugin]; }, $isIterable: true, $asIterable: function() { return [$.Plugin]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin5 = {"": "Interceptor_ListMixin5+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Plugin]; }, $isIterable: true, $asIterable: function() { return [$.Plugin]; }, $asObject: null};
 
 $$.EventTarget_ListMixin = {"": "EventTarget+ListMixin;", $isList: true, $asList: function() { return [$.SourceBuffer]; }, $isIterable: true, $asIterable: function() { return [$.SourceBuffer]; }, $asObject: null};
 
 $$.EventTarget_ListMixin_ImmutableListMixin = {"": "EventTarget_ListMixin+ImmutableListMixin;", $isList: true, $asList: function() { return [$.SourceBuffer]; }, $isIterable: true, $asIterable: function() { return [$.SourceBuffer]; }, $asObject: null};
 
-$$.Object_ListMixin6 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.SpeechGrammar]; }, $isIterable: true, $asIterable: function() { return [$.SpeechGrammar]; }, $asObject: null};
+$$.Interceptor_ListMixin6 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.SpeechGrammar]; }, $isIterable: true, $asIterable: function() { return [$.SpeechGrammar]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin6 = {"": "Object_ListMixin6+ImmutableListMixin;", $isList: true, $asList: function() { return [$.SpeechGrammar]; }, $isIterable: true, $asIterable: function() { return [$.SpeechGrammar]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin6 = {"": "Interceptor_ListMixin6+ImmutableListMixin;", $isList: true, $asList: function() { return [$.SpeechGrammar]; }, $isIterable: true, $asIterable: function() { return [$.SpeechGrammar]; }, $asObject: null};
 
 $$.Storage_keys_closure = {"": "Closure;keys_0",
   call$2: function(k, v) {
@@ -4677,64 +5572,80 @@ $$.Storage_values_closure = {"": "Closure;values_0",
   $isGameLoopTouchEventFunction: true
 };
 
-$$.Object_ListMixin7 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.TextTrackCue]; }, $isIterable: true, $asIterable: function() { return [$.TextTrackCue]; }, $asObject: null};
+$$.Interceptor_ListMixin7 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.TextTrackCue]; }, $isIterable: true, $asIterable: function() { return [$.TextTrackCue]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin7 = {"": "Object_ListMixin7+ImmutableListMixin;", $isList: true, $asList: function() { return [$.TextTrackCue]; }, $isIterable: true, $asIterable: function() { return [$.TextTrackCue]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin7 = {"": "Interceptor_ListMixin7+ImmutableListMixin;", $isList: true, $asList: function() { return [$.TextTrackCue]; }, $isIterable: true, $asIterable: function() { return [$.TextTrackCue]; }, $asObject: null};
 
 $$.EventTarget_ListMixin0 = {"": "EventTarget+ListMixin;", $isList: true, $asList: function() { return [$.TextTrack]; }, $isIterable: true, $asIterable: function() { return [$.TextTrack]; }, $asObject: null};
 
 $$.EventTarget_ListMixin_ImmutableListMixin0 = {"": "EventTarget_ListMixin0+ImmutableListMixin;", $isList: true, $asList: function() { return [$.TextTrack]; }, $isIterable: true, $asIterable: function() { return [$.TextTrack]; }, $asObject: null};
 
-$$.Object_ListMixin8 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Touch]; }, $isIterable: true, $asIterable: function() { return [$.Touch]; }, $asObject: null};
+$$.Interceptor_ListMixin8 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Touch]; }, $isIterable: true, $asIterable: function() { return [$.Touch]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin8 = {"": "Object_ListMixin8+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Touch]; }, $isIterable: true, $asIterable: function() { return [$.Touch]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin8 = {"": "Interceptor_ListMixin8+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Touch]; }, $isIterable: true, $asIterable: function() { return [$.Touch]; }, $asObject: null};
 
-$$.Object_ListMixin9 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Rect]; }, $isIterable: true, $asIterable: function() { return [$.Rect]; }, $asObject: null};
+$$.Interceptor_ListMixin9 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Rect]; }, $isIterable: true, $asIterable: function() { return [$.Rect]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin9 = {"": "Object_ListMixin9+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Rect]; }, $isIterable: true, $asIterable: function() { return [$.Rect]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin9 = {"": "Interceptor_ListMixin9+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Rect]; }, $isIterable: true, $asIterable: function() { return [$.Rect]; }, $asObject: null};
 
-$$.Object_ListMixin10 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.CssRule]; }, $isIterable: true, $asIterable: function() { return [$.CssRule]; }, $asObject: null};
+$$.Interceptor_ListMixin10 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.CssRule]; }, $isIterable: true, $asIterable: function() { return [$.CssRule]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin10 = {"": "Object_ListMixin10+ImmutableListMixin;", $isList: true, $asList: function() { return [$.CssRule]; }, $isIterable: true, $asIterable: function() { return [$.CssRule]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin10 = {"": "Interceptor_ListMixin10+ImmutableListMixin;", $isList: true, $asList: function() { return [$.CssRule]; }, $isIterable: true, $asIterable: function() { return [$.CssRule]; }, $asObject: null};
 
 $$._CSSValue_ListMixin = {"": "_CSSValue+ListMixin;", $isList: true, $asList: function() { return [$._CSSValue]; }, $isIterable: true, $asIterable: function() { return [$._CSSValue]; }, $asObject: null};
 
 $$._CSSValue_ListMixin_ImmutableListMixin = {"": "_CSSValue_ListMixin+ImmutableListMixin;", $isList: true, $asList: function() { return [$._CSSValue]; }, $isIterable: true, $asIterable: function() { return [$._CSSValue]; }, $asObject: null};
 
-$$.Object_ListMixin11 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Entry]; }, $isIterable: true, $asIterable: function() { return [$.Entry]; }, $asObject: null};
+$$.Interceptor_ListMixin11 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Entry]; }, $isIterable: true, $asIterable: function() { return [$.Entry]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin11 = {"": "Object_ListMixin11+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Entry]; }, $isIterable: true, $asIterable: function() { return [$.Entry]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin11 = {"": "Interceptor_ListMixin11+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Entry]; }, $isIterable: true, $asIterable: function() { return [$.Entry]; }, $asObject: null};
 
-$$.Object_ListMixin12 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$._EntrySync]; }, $isIterable: true, $asIterable: function() { return [$._EntrySync]; }, $asObject: null};
+$$.Interceptor_ListMixin12 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$._EntrySync]; }, $isIterable: true, $asIterable: function() { return [$._EntrySync]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin12 = {"": "Object_ListMixin12+ImmutableListMixin;", $isList: true, $asList: function() { return [$._EntrySync]; }, $isIterable: true, $asIterable: function() { return [$._EntrySync]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin12 = {"": "Interceptor_ListMixin12+ImmutableListMixin;", $isList: true, $asList: function() { return [$._EntrySync]; }, $isIterable: true, $asIterable: function() { return [$._EntrySync]; }, $asObject: null};
 
-$$.Object_ListMixin13 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Gamepad]; }, $isIterable: true, $asIterable: function() { return [$.Gamepad]; }, $asObject: null};
+$$.Interceptor_ListMixin13 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Gamepad]; }, $isIterable: true, $asIterable: function() { return [$.Gamepad]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin13 = {"": "Object_ListMixin13+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Gamepad]; }, $isIterable: true, $asIterable: function() { return [$.Gamepad]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin13 = {"": "Interceptor_ListMixin13+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Gamepad]; }, $isIterable: true, $asIterable: function() { return [$.Gamepad]; }, $asObject: null};
 
-$$.Object_ListMixin14 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
+$$.Interceptor_ListMixin14 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin14 = {"": "Object_ListMixin14+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin14 = {"": "Interceptor_ListMixin14+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Node]; }, $isIterable: true, $asIterable: function() { return [$.Node]; }, $asObject: null};
 
-$$.Object_ListMixin15 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.SpeechInputResult]; }, $isIterable: true, $asIterable: function() { return [$.SpeechInputResult]; }, $asObject: null};
+$$.Interceptor_ListMixin15 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.SpeechInputResult]; }, $isIterable: true, $asIterable: function() { return [$.SpeechInputResult]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin15 = {"": "Object_ListMixin15+ImmutableListMixin;", $isList: true, $asList: function() { return [$.SpeechInputResult]; }, $isIterable: true, $asIterable: function() { return [$.SpeechInputResult]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin15 = {"": "Interceptor_ListMixin15+ImmutableListMixin;", $isList: true, $asList: function() { return [$.SpeechInputResult]; }, $isIterable: true, $asIterable: function() { return [$.SpeechInputResult]; }, $asObject: null};
 
-$$.Object_ListMixin16 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.SpeechRecognitionResult]; }, $isIterable: true, $asIterable: function() { return [$.SpeechRecognitionResult]; }, $asObject: null};
+$$.Interceptor_ListMixin16 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.SpeechRecognitionResult]; }, $isIterable: true, $asIterable: function() { return [$.SpeechRecognitionResult]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin16 = {"": "Object_ListMixin16+ImmutableListMixin;", $isList: true, $asList: function() { return [$.SpeechRecognitionResult]; }, $isIterable: true, $asIterable: function() { return [$.SpeechRecognitionResult]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin16 = {"": "Interceptor_ListMixin16+ImmutableListMixin;", $isList: true, $asList: function() { return [$.SpeechRecognitionResult]; }, $isIterable: true, $asIterable: function() { return [$.SpeechRecognitionResult]; }, $asObject: null};
 
-$$.Object_ListMixin17 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.StyleSheet]; }, $isIterable: true, $asIterable: function() { return [$.StyleSheet]; }, $asObject: null};
+$$.Interceptor_ListMixin17 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.StyleSheet]; }, $isIterable: true, $asIterable: function() { return [$.StyleSheet]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin17 = {"": "Object_ListMixin17+ImmutableListMixin;", $isList: true, $asList: function() { return [$.StyleSheet]; }, $isIterable: true, $asIterable: function() { return [$.StyleSheet]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin17 = {"": "Interceptor_ListMixin17+ImmutableListMixin;", $isList: true, $asList: function() { return [$.StyleSheet]; }, $isIterable: true, $asIterable: function() { return [$.StyleSheet]; }, $asObject: null};
 
 $$._EventStream = {"": "Stream;_target,_eventType,_useCapture",
   listen$4$cancelOnError$onDone$onError: function(onData, cancelOnError, onDone, onError) {
-    $.functionTypeCheck(onData);
-    $.functionTypeCheck(onDone);
-    $.functionTypeCheck(onError);
-    return $.propertyTypeCheck($._EventStreamSubscription$(this._target, this._eventType, onData, this._useCapture, $.getRuntimeTypeArgument(this, this.$as_EventStream, 0)), "$isStreamSubscription");
+    var $arguments, arguments0, t1, t2;
+    $.propertyTypeCheck(onData, "$isFunction");
+    $.propertyTypeCheck(onDone, "$isFunction");
+    $.propertyTypeCheck(onError, "$isFunction");
+    $arguments = this.$as_EventStream;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    t1 = $._EventStreamSubscription$(this._target, this._eventType, onData, this._useCapture, t1);
+    $arguments = this.$as_EventStream;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.assertSubtype(t1, "$isStreamSubscription", [t2], "$asStreamSubscription");
   },
   listen$1: function(onData) {
     return this.listen$4$cancelOnError$onDone$onError(onData, null, null, null);
@@ -4745,24 +5656,19 @@ $$._EventStream = {"": "Stream;_target,_eventType,_useCapture",
 
 $$._EventStreamSubscription = {"": "StreamSubscription;_pauseCount,_target,_eventType,_onData,_useCapture",
   cancel$0: function(_) {
-    var t1;
-    if (this.get$_canceled())
+    var t1, t2;
+    t1 = this._target;
+    if (t1 == null)
       return;
-    t1 = this._onData;
-    if (t1 != null)
-      $.$$dom_removeEventListener$3$x(this._target, this._eventType, t1, this._useCapture);
+    t2 = this._onData;
+    if (t2 != null)
+      $.$$dom_removeEventListener$3$x(t1, this._eventType, t2, this._useCapture);
     this._target = null;
     this._onData = null;
   },
-  get$_canceled: function() {
-    return this._target == null;
-  },
-  get$_paused: function() {
-    return this._pauseCount > 0;
-  },
   _tryResume$0: function() {
     var t1 = this._onData;
-    if (t1 != null && !this.get$_paused())
+    if (t1 != null && this._pauseCount <= 0)
       $.$$dom_addEventListener$3$x(this._target, this._eventType, t1, this._useCapture);
   },
   _EventStreamSubscription$4: function(_target, _eventType, _onData, _useCapture, T) {
@@ -4774,7 +5680,16 @@ $$._EventStreamSubscription = {"": "StreamSubscription;_pauseCount,_target,_even
 
 $$.EventStreamProvider = {"": "Object;_eventType",
   forTarget$2$useCapture: function(e, useCapture) {
-    return $.propertyTypeCheck($._EventStream$(e, this._eventType, useCapture, null), "$isStream");
+    var t1, $arguments, arguments0, t2;
+    t1 = $._EventStream$(e, this._eventType, useCapture, null);
+    $arguments = this.$asEventStreamProvider;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.assertSubtype(t1, "$isStream", [t2], "$asStream");
   },
   forTarget$1: function(e) {
     return this.forTarget$2$useCapture(e, false);
@@ -4786,7 +5701,16 @@ $$._CustomEventStreamProvider = {"": "Object;_eventTypeGetter",
     return this._eventTypeGetter.call$1(arg0);
   },
   forTarget$2$useCapture: function(e, useCapture) {
-    return $.propertyTypeCheck($._EventStream$(e, this._eventTypeGetter$1(e), useCapture, null), "$isStream");
+    var t1, $arguments, arguments0, t2;
+    t1 = $._EventStream$(e, this._eventTypeGetter$1(e), useCapture, null);
+    $arguments = this.$as_CustomEventStreamProvider;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    return $.assertSubtype(t1, "$isStream", [t2], "$asStream");
   },
   forTarget$1: function(e) {
     return this.forTarget$2$useCapture(e, false);
@@ -4796,17 +5720,32 @@ $$._CustomEventStreamProvider = {"": "Object;_eventTypeGetter",
 
 $$.ImmutableListMixin = {"": "Object;",
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.getRuntimeTypeArgument(receiver, receiver.$asImmutableListMixin, 0)), "$isIterator");
+    return $.assertSubtype($.FixedSizeListIterator$(receiver, $.getRuntimeTypeArgument(receiver, receiver.$asImmutableListMixin, 0)), "$isIterator", [$.getRuntimeTypeArgument(receiver, receiver.$asImmutableListMixin, 0)], "$asIterator");
   },
   add$1: function(receiver, value) {
-    value;
+    var $arguments, arguments0;
+    $arguments = receiver.$asImmutableListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(value, $arguments == null ? null : $arguments[0]);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
   removeLast$0: function(receiver) {
     throw $.wrapException($.UnsupportedError$("Cannot remove from immutable List."));
   },
   setRange$4: function(receiver, start, end, iterable, skipCount) {
+    var $arguments, arguments0, t1;
     $.intTypeCheck(end);
+    $arguments = receiver.$asImmutableListMixin;
+    arguments0 = $.getRuntimeTypeInfo(receiver);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
     $.listSuperNativeTypeCheck(iterable, "$isIterable");
     throw $.wrapException($.UnsupportedError$("Cannot setRange on immutable List."));
   },
@@ -4849,9 +5788,6 @@ $$.Point = {"": "Object;x,y",
     $.propertyTypeCheck(other, "$isPoint");
     return $.Point$($.$sub$n(this.x, other.x), $.$sub$n(this.y, other.y));
   },
-  toInt$0: function(_) {
-    return $.Point$($.toInt$0$nx(this.x), $.toInt$0$nx(this.y));
-  },
   $isPoint: true
 };
 
@@ -4871,34 +5807,31 @@ $$.Rect = {"": "Object;left>,top>,width>,height>",
     if (t1 == null ? t3 == null : t1 === t3) {
       t1 = this.top;
       t3 = t2.get$top(other);
-      t1 = (t1 == null ? t3 == null : t1 === t3) && $.boolConversionCheck($.$eq(this.width, t2.get$width(other))) && $.boolConversionCheck($.$eq(this.height, t2.get$height(other)));
+      t1 = (t1 == null ? t3 == null : t1 === t3) && $.$eq(this.width, t2.get$width(other)) && $.$eq(this.height, t2.get$height(other));
     } else
       t1 = false;
     return t1;
-  },
-  toInt$0: function(_) {
-    return $.Rect$($.toInt$0$nx(this.left), $.toInt$0$nx(this.top), $.toInt$0$nx(this.width), $.toInt$0$nx(this.height));
   },
   $isRect: true,
   $asRect: null
 };
 
-$$.FixedSizeListIterator = {"": "Object;_array,_length,_position,_current",
+$$.FixedSizeListIterator = {"": "Object;_array,_liblib$_length,_position,_liblib$_current?",
   moveNext$0: function() {
     var t1, nextPosition;
     t1 = this._position;
     if (t1 !== (t1 | 0))
       return this.moveNext$0$bailout(1, t1);
     nextPosition = t1 + 1;
-    t1 = this._length;
+    t1 = this._liblib$_length;
     if (t1 !== (t1 | 0))
-      throw $.iae(t1);
+      return this.moveNext$0$bailout(3, t1, nextPosition);
     if (nextPosition < t1) {
-      this._current = $.$index$asx(this._array, nextPosition);
+      this.set$_liblib$_current($.$index$asx(this._array, nextPosition));
       this._position = nextPosition;
       return true;
     }
-    this._current = null;
+    this.set$_liblib$_current(null);
     this._position = t1;
     return false;
   },
@@ -4912,21 +5845,21 @@ $$.FixedSizeListIterator = {"": "Object;_array,_length,_position,_current",
         $.intTypeCheck(nextPosition);
       case 2:
         state0 = 0;
-        t1 = this._length;
-        if (t1 !== (t1 | 0))
-          throw $.iae(t1);
+        t1 = this._liblib$_length;
+      case 3:
+        state0 = 0;
         if ($.$lt$n(nextPosition, t1)) {
-          this._current = $.$index$asx(this._array, nextPosition);
+          this.set$_liblib$_current($.$index$asx(this._array, nextPosition));
           this._position = nextPosition;
           return true;
         }
-        this._current = null;
+        this.set$_liblib$_current(null);
         this._position = t1;
         return false;
     }
   },
   get$current: function() {
-    return this._current;
+    return $.assertSubtypeOfRuntimeType(this._liblib$_current, $.getRuntimeTypeArgument(this, this.$asFixedSizeListIterator, 0));
   },
   $isIterator: true,
   $asObject: null
@@ -5075,7 +6008,7 @@ $$._convertDartToNative_PrepareForStructuredClone_walk = {"": "Closure;findSlot_
               t3.call$2(slot, copy0);
             }
             if (typeof copy0 !== "object" || copy0 === null || (copy0.constructor !== Array || !!copy0.immutable$list) && !$.getInterceptor(copy0).$isJavaScriptIndexingBehavior)
-              return this.call$1$bailout(3, e, $length, $.JSArray_methods, i, t2, elementCopy, t3, slot, copy0, t1, copy);
+              return this.call$1$bailout(3, e, $.JSArray_methods, $length, t3, elementCopy, copy0, slot, t1, copy, i, t2);
             for (t1 = e.length, t2 = copy0.length, j = 0; $.$lt$n(j, i); ++j) {
               if (j >>> 0 !== j || j >= t1)
                 throw $.ioore(j);
@@ -5102,9 +6035,9 @@ $$._convertDartToNative_PrepareForStructuredClone_walk = {"": "Closure;findSlot_
         i = 0;
       }
       if (i !== (i | 0))
-        return this.call$1$bailout(5, e, $length, $.JSArray_methods, i, 0, 0, 0, 0, 0, 0, copy);
+        return this.call$1$bailout(5, e, $.JSArray_methods, $length, 0, 0, 0, 0, 0, copy, i);
       if (typeof copy !== "object" || copy === null || (copy.constructor !== Array || !!copy.immutable$list) && !$.getInterceptor(copy).$isJavaScriptIndexingBehavior)
-        return this.call$1$bailout(4, e, $length, $.JSArray_methods, i, 0, 0, 0, 0, 0, 0, copy);
+        return this.call$1$bailout(4, e, $.JSArray_methods, $length, 0, 0, 0, 0, 0, copy, i);
       for (; $.$lt$n(i, $length); ++i) {
         if (i >>> 0 !== i || i >= e.length)
           throw $.ioore(i);
@@ -5117,7 +6050,7 @@ $$._convertDartToNative_PrepareForStructuredClone_walk = {"": "Closure;findSlot_
     }
     throw $.wrapException($.UnimplementedError$("structured clone of other type"));
   },
-  call$1$bailout: function(state0, e, $length, t1, i, t3, elementCopy, t4, slot, copy0, t2, copy) {
+  call$1$bailout: function(state0, e, t1, $length, t4, elementCopy, copy0, slot, t2, copy, i, t3) {
     switch (state0) {
       case 0:
         t1 = {};
@@ -5440,7 +6373,7 @@ $$.FilteredElementList = {"": "ListBase;_node,_childNodes",
     return $.listTypeCheck($.List_List$from(t1.where$1(t1, new $.FilteredElementList__filtered_closure()), true, $.Element));
   },
   forEach$1: function(_, f) {
-    $.functionTypeCheck(f);
+    $.propertyTypeCheck(f, "$isFunction");
     $.JSArray_methods.forEach$1(this.get$_filtered(), f);
   },
   $indexSet: function(_, index, value) {
@@ -5490,9 +6423,6 @@ $$.FilteredElementList = {"": "ListBase;_node,_childNodes",
   removeRange$2: function(_, start, end) {
     $.JSArray_methods.forEach$1($.JSArray_methods.sublist$2(this.get$_filtered(), start, end), new $.FilteredElementList_removeRange_closure());
   },
-  clear$0: function(_) {
-    this._childNodes._this.textContent = "";
-  },
   removeLast$0: function(_) {
     var result = this.get$last(this);
     if (result != null)
@@ -5511,7 +6441,7 @@ $$.FilteredElementList = {"": "ListBase;_node,_childNodes",
     return $.interceptedTypeCheck(t1[index], "$isElement");
   },
   get$iterator: function(_) {
-    return $.propertyTypeCheck($.JSArray_methods.get$iterator(this.get$_filtered()), "$isIterator");
+    return $.assertSubtype($.JSArray_methods.get$iterator(this.get$_filtered()), "$isIterator", [$.Element], "$asIterator");
   },
   $asListBase: null,
   $asObject: null,
@@ -5560,12 +6490,9 @@ $$._completeRequest_closure = {"": "Closure;request_0,completer_1",
   call$1: function(e) {
     var t1, t2;
     t1 = this.completer_1;
-    t2 = $.get$result$x(this.request_0);
-    t2;
-    if (t1._isComplete)
-      $.throwExpression($.StateError$("Future already completed"));
-    t1._isComplete = true;
-    t1._setFutureValue$1(t2);
+    t2 = this.request_0;
+    t2.get$result;
+    t1.complete$1(t1, $._convertNativeToDart_IDBAny(t2.result));
   },
   $isFunction: true,
   $asObject: null,
@@ -5840,29 +6767,29 @@ $$._JsonStringifier_stringifyJsonValue_closure = {"": "Closure;box_0,this_1",
   $asObject: null
 };
 
-$$.Object_ListMixin18 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Length]; }, $isIterable: true, $asIterable: function() { return [$.Length]; }, $asObject: null};
+$$.Interceptor_ListMixin18 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Length]; }, $isIterable: true, $asIterable: function() { return [$.Length]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin18 = {"": "Object_ListMixin18+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Length]; }, $isIterable: true, $asIterable: function() { return [$.Length]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin18 = {"": "Interceptor_ListMixin18+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Length]; }, $isIterable: true, $asIterable: function() { return [$.Length]; }, $asObject: null};
 
-$$.Object_ListMixin19 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Number]; }, $isIterable: true, $asIterable: function() { return [$.Number]; }, $asObject: null};
+$$.Interceptor_ListMixin19 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Number]; }, $isIterable: true, $asIterable: function() { return [$.Number]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin19 = {"": "Object_ListMixin19+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Number]; }, $isIterable: true, $asIterable: function() { return [$.Number]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin19 = {"": "Interceptor_ListMixin19+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Number]; }, $isIterable: true, $asIterable: function() { return [$.Number]; }, $asObject: null};
 
-$$.Object_ListMixin20 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.PathSeg]; }, $isIterable: true, $asIterable: function() { return [$.PathSeg]; }, $asObject: null};
+$$.Interceptor_ListMixin20 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.PathSeg]; }, $isIterable: true, $asIterable: function() { return [$.PathSeg]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin20 = {"": "Object_ListMixin20+ImmutableListMixin;", $isList: true, $asList: function() { return [$.PathSeg]; }, $isIterable: true, $asIterable: function() { return [$.PathSeg]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin20 = {"": "Interceptor_ListMixin20+ImmutableListMixin;", $isList: true, $asList: function() { return [$.PathSeg]; }, $isIterable: true, $asIterable: function() { return [$.PathSeg]; }, $asObject: null};
 
-$$.Object_ListMixin21 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.JSString]; }, $isIterable: true, $asIterable: function() { return [$.JSString]; }, $asObject: null};
+$$.Interceptor_ListMixin21 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.JSString]; }, $isIterable: true, $asIterable: function() { return [$.JSString]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin21 = {"": "Object_ListMixin21+ImmutableListMixin;", $isList: true, $asList: function() { return [$.JSString]; }, $isIterable: true, $asIterable: function() { return [$.JSString]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin21 = {"": "Interceptor_ListMixin21+ImmutableListMixin;", $isList: true, $asList: function() { return [$.JSString]; }, $isIterable: true, $asIterable: function() { return [$.JSString]; }, $asObject: null};
 
-$$.Object_ListMixin22 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Transform]; }, $isIterable: true, $asIterable: function() { return [$.Transform]; }, $asObject: null};
+$$.Interceptor_ListMixin22 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Transform]; }, $isIterable: true, $asIterable: function() { return [$.Transform]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin22 = {"": "Object_ListMixin22+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Transform]; }, $isIterable: true, $asIterable: function() { return [$.Transform]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin22 = {"": "Interceptor_ListMixin22+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Transform]; }, $isIterable: true, $asIterable: function() { return [$.Transform]; }, $asObject: null};
 
-$$.Object_ListMixin23 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.ElementInstance]; }, $isIterable: true, $asIterable: function() { return [$.ElementInstance]; }, $asObject: null};
+$$.Interceptor_ListMixin23 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.ElementInstance]; }, $isIterable: true, $asIterable: function() { return [$.ElementInstance]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin23 = {"": "Object_ListMixin23+ImmutableListMixin;", $isList: true, $asList: function() { return [$.ElementInstance]; }, $isIterable: true, $asIterable: function() { return [$.ElementInstance]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin23 = {"": "Interceptor_ListMixin23+ImmutableListMixin;", $isList: true, $asList: function() { return [$.ElementInstance]; }, $isIterable: true, $asIterable: function() { return [$.ElementInstance]; }, $asObject: null};
 
 $$._ListRange = {"": "IterableBase;_source,_liblib5$_offset,_liblib5$_length",
   get$iterator: function(_) {
@@ -5914,9 +6841,6 @@ $$._ListRangeIteratorImpl = {"": "Object;_source,_liblib5$_offset,_liblib5$_end"
     this._liblib5$_offset = $.intTypeCheck(t1);
     return t1 < this._liblib5$_end;
   },
-  get$remaining: function() {
-    return $.intTypeCheck(this._liblib5$_end - this._liblib5$_offset - 1);
-  },
   $is_ListRangeIterator: true,
   $isIterator: true,
   $asIterator: function() { return [$.JSInt]; },
@@ -5925,15 +6849,19 @@ $$._ListRangeIteratorImpl = {"": "Object;_source,_liblib5$_offset,_liblib5$_end"
 
 $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib5$_current",
   decodeRest$0: function() {
-    var codepoints, i, i0, t1, truncCodepoints;
-    codepoints = $.List_List(this.utf8EncodedBytesIterator.get$remaining(), $.JSInt);
-    $.setRuntimeTypeInfo(codepoints, [$.JSInt]);
+    var t1, codepoints, t2, i, i0, truncCodepoints;
+    t1 = this.utf8EncodedBytesIterator;
+    codepoints = $.List_List($.intTypeCheck(t1._liblib5$_end - t1._liblib5$_offset - 1), $.JSInt);
+    t1 = [$.JSInt];
+    t2 = t1.constructor === Array;
+    $.assertHelper(t2);
+    codepoints.$builtinTypeInfo = t1;
     $.listTypeCheck(codepoints);
     if (typeof codepoints !== "object" || codepoints === null || (codepoints.constructor !== Array || !!codepoints.immutable$list) && !$.getInterceptor(codepoints).$isJavaScriptIndexingBehavior)
       return this.decodeRest$0$bailout(1, codepoints);
     for (i = 0; this.moveNext$0(); i = i0) {
       i0 = $.intTypeCheck($.$add$ns(i, 1));
-      t1 = this.get$current();
+      t1 = $.intTypeCheck(this._liblib5$_current);
       if (i >>> 0 !== i || i >= codepoints.length)
         throw $.ioore(i);
       codepoints[i] = t1;
@@ -5942,33 +6870,40 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
       return $.listTypeCheck(codepoints);
     else {
       truncCodepoints = $.List_List(i, $.JSInt);
-      $.setRuntimeTypeInfo(truncCodepoints, [$.JSInt]);
+      t1 = [$.JSInt];
+      t2 = t1.constructor === Array;
+      $.assertHelper(t2);
+      truncCodepoints.$builtinTypeInfo = t1;
       $.listTypeCheck(truncCodepoints);
       $.setRange$3$ax(truncCodepoints, 0, i, codepoints);
       return $.listTypeCheck(truncCodepoints);
     }
   },
   decodeRest$0$bailout: function(state0, codepoints) {
-    var t1, i, i0, truncCodepoints;
+    var t1, i, i0, truncCodepoints, t2;
     for (t1 = $.getInterceptor$ax(codepoints), i = 0; this.moveNext$0(); i = i0) {
       i0 = $.intTypeCheck($.$add$ns(i, 1));
-      t1.$indexSet(codepoints, i, this.get$current());
+      t1.$indexSet(codepoints, i, $.intTypeCheck(this._liblib5$_current));
     }
-    if (i === $.get$length$asx(codepoints))
+    t1 = $.get$length$asx(codepoints);
+    if (i == null ? t1 == null : i === t1)
       return $.listTypeCheck(codepoints);
     else {
       truncCodepoints = $.List_List(i, $.JSInt);
-      $.setRuntimeTypeInfo(truncCodepoints, [$.JSInt]);
+      t1 = [$.JSInt];
+      t2 = t1.constructor === Array;
+      $.assertHelper(t2);
+      truncCodepoints.$builtinTypeInfo = t1;
       $.listTypeCheck(truncCodepoints);
       $.setRange$3$ax(truncCodepoints, 0, i, codepoints);
       return $.listTypeCheck(truncCodepoints);
     }
   },
   get$current: function() {
-    return this._liblib5$_current;
+    return $.intTypeCheck(this._liblib5$_current);
   },
   moveNext$0: function() {
-    var t1, t2, t3, value, additionalBytes, j, nextValue, validSequence, nonOverlong, inRange;
+    var t1, t2, t3, t4, t5, value, additionalBytes, j, validSequence, nonOverlong, inRange;
     this._liblib5$_current = null;
     t1 = this.utf8EncodedBytesIterator;
     t2 = t1._liblib5$_offset + 1;
@@ -5976,34 +6911,40 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
     t3 = t1._liblib5$_end;
     if (!(t2 < t3))
       return false;
-    value = t1.get$current();
-    $.intTypeCheck(value);
-    if (value !== (value | 0))
-      return this.moveNext$0$bailout(1, t1, value, t3);
-    if (value < 0) {
+    t2 = t1._source;
+    t4 = t1._liblib5$_offset;
+    if (t4 !== (t4 | 0))
+      return this.moveNext$0$bailout(1, t3, t1, t2, t4);
+    if (t4 < 0 || t4 >= t2.length)
+      throw $.ioore(t4);
+    t5 = t2[t4];
+    $.intTypeCheck(t5);
+    if (t5 !== (t5 | 0))
+      return this.moveNext$0$bailout(2, t3, t1, t2, t4, t5);
+    if (t5 < 0) {
       this._liblib5$_current = this.replacementCodepoint;
       return true;
-    } else if (value <= 127) {
-      this._liblib5$_current = value;
+    } else if (t5 <= 127) {
+      this._liblib5$_current = t5;
       return true;
-    } else if (value < 192) {
+    } else if (t5 < 192) {
       this._liblib5$_current = this.replacementCodepoint;
       return true;
-    } else if (value < 224) {
-      value -= 192;
+    } else if (t5 < 224) {
+      value = t5 - 192;
       additionalBytes = 1;
-    } else if (value < 240) {
-      value -= 224;
+    } else if (t5 < 240) {
+      value = t5 - 224;
       additionalBytes = 2;
-    } else if (value < 248) {
-      value -= 240;
+    } else if (t5 < 248) {
+      value = t5 - 240;
       additionalBytes = 3;
-    } else if (value < 252) {
-      value -= 248;
+    } else if (t5 < 252) {
+      value = t5 - 248;
       additionalBytes = 4;
     } else {
-      if (value < 254)
-        value -= 252;
+      if (t5 < 254)
+        value = t5 - 252;
       else {
         this._liblib5$_current = this.replacementCodepoint;
         return true;
@@ -6013,22 +6954,27 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
     j = 0;
     while (true) {
       if (j < additionalBytes) {
-        t2 = t1._liblib5$_offset + 1;
-        t1._liblib5$_offset = $.intTypeCheck(t2);
-        t2 = t2 < t3;
+        t4 = t1._liblib5$_offset + 1;
+        t1._liblib5$_offset = $.intTypeCheck(t4);
+        t4 = t4 < t3;
       } else
-        t2 = false;
-      if (!t2)
+        t4 = false;
+      if (!t4)
         break;
-      nextValue = t1.get$current();
-      $.intTypeCheck(nextValue);
-      if (nextValue !== (nextValue | 0))
-        return this.moveNext$0$bailout(7, t1, value, t3, j, $.JSInt_methods, nextValue, additionalBytes);
-      if (nextValue > 127 && nextValue < 192)
-        value = (value << 6 | nextValue & 63) >>> 0;
+      t4 = t1._liblib5$_offset;
+      if (t4 !== (t4 | 0))
+        return this.moveNext$0$bailout(8, t3, t1, t2, $.JSInt_methods, t4, value, j, additionalBytes);
+      if (t4 < 0 || t4 >= t2.length)
+        throw $.ioore(t4);
+      t5 = t2[t4];
+      $.intTypeCheck(t5);
+      if (t5 !== (t5 | 0))
+        return this.moveNext$0$bailout(9, t3, t1, t2, $.JSInt_methods, t4, value, j, additionalBytes, t5);
+      if (t5 > 127 && t5 < 192)
+        value = (value << 6 | t5 & 63) >>> 0;
       else {
-        if (nextValue >= 192)
-          t1._liblib5$_offset = $.intTypeCheck(t1._liblib5$_offset - 1);
+        if (t5 >= 192)
+          t1._liblib5$_offset = t4 - 1;
         break;
       }
       ++j;
@@ -6054,7 +7000,7 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
       return true;
     }
   },
-  moveNext$0$bailout: function(state0, t1, value, t3, j, t2, nextValue, additionalBytes) {
+  moveNext$0$bailout: function(state0, t3, t1, t2, t4, t5, value, j, additionalBytes, t6) {
     switch (state0) {
       case 0:
         this._liblib5$_current = null;
@@ -6064,39 +7010,45 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
         t3 = t1._liblib5$_end;
         if (!(t2 < t3))
           return false;
-        value = t1.get$current();
-        $.intTypeCheck(value);
+        t2 = t1._source;
+        t4 = t1._liblib5$_offset;
       case 1:
         state0 = 0;
-        t2 = $.getInterceptor$n(value);
+        if (t4 >>> 0 !== t4 || t4 >= t2.length)
+          throw $.ioore(t4);
+        t5 = t2[t4];
+        $.intTypeCheck(t5);
+      case 2:
+        state0 = 0;
+        t6 = $.getInterceptor$n(t5);
       default:
-        if (state0 === 0 && t2.$lt(value, 0)) {
+        if (state0 === 0 && t6.$lt(t5, 0)) {
           this._liblib5$_current = this.replacementCodepoint;
           return true;
         } else
           switch (state0) {
             case 0:
             default:
-              if (state0 === 0 && t2.$le(value, 127)) {
-                this._liblib5$_current = value;
+              if (state0 === 0 && t6.$le(t5, 127)) {
+                this._liblib5$_current = t5;
                 return true;
               } else
                 switch (state0) {
                   case 0:
                   default:
-                    if (state0 === 0 && t2.$lt(value, 192)) {
+                    if (state0 === 0 && t6.$lt(t5, 192)) {
                       this._liblib5$_current = this.replacementCodepoint;
                       return true;
                     } else
                       switch (state0) {
                         case 0:
                         default:
-                          if (state0 === 2 || state0 === 0 && t2.$lt(value, 224))
+                          if (state0 === 3 || state0 === 0 && t6.$lt(t5, 224))
                             switch (state0) {
                               case 0:
-                                value = t2.$sub(value, 192);
+                                value = t6.$sub(t5, 192);
                                 $.intTypeCheck(value);
-                              case 2:
+                              case 3:
                                 state0 = 0;
                                 additionalBytes = 1;
                             }
@@ -6104,12 +7056,12 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
                             switch (state0) {
                               case 0:
                               default:
-                                if (state0 === 3 || state0 === 0 && t2.$lt(value, 240))
+                                if (state0 === 4 || state0 === 0 && t6.$lt(t5, 240))
                                   switch (state0) {
                                     case 0:
-                                      value = t2.$sub(value, 224);
+                                      value = t6.$sub(t5, 224);
                                       $.intTypeCheck(value);
-                                    case 3:
+                                    case 4:
                                       state0 = 0;
                                       additionalBytes = 2;
                                   }
@@ -6117,12 +7069,12 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
                                   switch (state0) {
                                     case 0:
                                     default:
-                                      if (state0 === 4 || state0 === 0 && t2.$lt(value, 248))
+                                      if (state0 === 5 || state0 === 0 && t6.$lt(t5, 248))
                                         switch (state0) {
                                           case 0:
-                                            value = t2.$sub(value, 240);
+                                            value = t6.$sub(t5, 240);
                                             $.intTypeCheck(value);
-                                          case 4:
+                                          case 5:
                                             state0 = 0;
                                             additionalBytes = 3;
                                         }
@@ -6130,25 +7082,25 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
                                         switch (state0) {
                                           case 0:
                                           default:
-                                            if (state0 === 5 || state0 === 0 && t2.$lt(value, 252))
+                                            if (state0 === 6 || state0 === 0 && t6.$lt(t5, 252))
                                               switch (state0) {
                                                 case 0:
-                                                  value = t2.$sub(value, 248);
+                                                  value = t6.$sub(t5, 248);
                                                   $.intTypeCheck(value);
-                                                case 5:
+                                                case 6:
                                                   state0 = 0;
                                                   additionalBytes = 4;
                                               }
                                             else
                                               switch (state0) {
                                                 case 0:
-                                                case 6:
-                                                  if (state0 === 6 || state0 === 0 && t2.$lt(value, 254))
+                                                case 7:
+                                                  if (state0 === 7 || state0 === 0 && t6.$lt(t5, 254))
                                                     switch (state0) {
                                                       case 0:
-                                                        value = t2.$sub(value, 252);
+                                                        value = t6.$sub(t5, 252);
                                                         $.intTypeCheck(value);
-                                                      case 6:
+                                                      case 7:
                                                         state0 = 0;
                                                     }
                                                   else {
@@ -6164,37 +7116,42 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
                 }
           }
         j = 0;
-      case 7:
       case 8:
-        var t4, validSequence, nonOverlong, inRange;
+      case 9:
+      case 10:
         L0:
           while (true)
             switch (state0) {
               case 0:
-                t2 = $.getInterceptor$n(j);
-                if (t2.$lt(j, additionalBytes)) {
-                  t4 = t1._liblib5$_offset + 1;
-                  t1._liblib5$_offset = $.intTypeCheck(t4);
-                  t4 = t4 < t3;
+                t4 = $.getInterceptor$n(j);
+                if (t4.$lt(j, additionalBytes)) {
+                  t5 = t1._liblib5$_offset + 1;
+                  t1._liblib5$_offset = $.intTypeCheck(t5);
+                  t5 = t5 < t3;
                 } else
-                  t4 = false;
-                if (!t4)
+                  t5 = false;
+                if (!t5)
                   break L0;
-                nextValue = t1.get$current();
-                $.intTypeCheck(nextValue);
-              case 7:
+                t5 = t1._liblib5$_offset;
+              case 8:
                 state0 = 0;
-                t4 = $.getInterceptor$n(nextValue);
-                if (t4.$gt(nextValue, 127) && t4.$lt(nextValue, 192))
-                  value = ($.$shl$n(value, 6) | t4.$and(nextValue, 63)) >>> 0;
+                if (t5 >>> 0 !== t5 || t5 >= t2.length)
+                  throw $.ioore(t5);
+                t6 = t2[t5];
+                $.intTypeCheck(t6);
+              case 9:
+                state0 = 0;
+                t7 = $.getInterceptor$n(t6);
+                if (t7.$gt(t6, 127) && t7.$lt(t6, 192))
+                  value = ($.$shl$n(value, 6) | t7.$and(t6, 63)) >>> 0;
                 else {
-                  if (t4.$ge(nextValue, 192))
-                    t1._liblib5$_offset = $.intTypeCheck(t1._liblib5$_offset - 1);
+                  if (t7.$ge(t6, 192))
+                    t1._liblib5$_offset = $.intTypeCheck(t5 - 1);
                   break L0;
                 }
-                j = t2.$add(j, 1);
+                j = t4.$add(j, 1);
                 $.intTypeCheck(j);
-              case 8:
+              case 10:
                 state0 = 0;
             }
         if (j === additionalBytes) {
@@ -6211,13 +7168,17 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
         else
           nonOverlong = true;
         inRange = $.$le$n(value, 1114111);
-        if (validSequence && nonOverlong && inRange) {
+      case 11:
+        var t7, validSequence, nonOverlong, inRange;
+        if (state0 === 0 && validSequence && nonOverlong && inRange) {
           this._liblib5$_current = value;
           return true;
-        } else {
-          this._liblib5$_current = this.replacementCodepoint;
-          return true;
-        }
+        } else
+          switch (state0) {
+            case 0:
+              this._liblib5$_current = this.replacementCodepoint;
+              return true;
+          }
     }
   },
   $isIterator: true,
@@ -6225,9 +7186,9 @@ $$.Utf8Decoder = {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_lib
   $asObject: null
 };
 
-$$.Object_ListMixin24 = {"": "Object+ListMixin;", $isList: true, $asList: function() { return [$.Map]; }, $isIterable: true, $asIterable: function() { return [$.Map]; }, $asObject: null};
+$$.Interceptor_ListMixin24 = {"": "Interceptor+ListMixin;", $isList: true, $asList: function() { return [$.Map]; }, $isIterable: true, $asIterable: function() { return [$.Map]; }, $asObject: null};
 
-$$.Object_ListMixin_ImmutableListMixin24 = {"": "Object_ListMixin24+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Map]; }, $isIterable: true, $asIterable: function() { return [$.Map]; }, $asObject: null};
+$$.Interceptor_ListMixin_ImmutableListMixin24 = {"": "Interceptor_ListMixin24+ImmutableListMixin;", $isList: true, $asList: function() { return [$.Map]; }, $isIterable: true, $asIterable: function() { return [$.Map]; }, $asObject: null};
 
 $$.Instance = {"": "Object;model>,center,scale,MV",
   update$1: function(_, gameLoop) {
@@ -6282,6 +7243,7 @@ $$.Model = {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBuf
     t1 = $.getInterceptor$x(gl);
     this.vertexPositionBuffer = gl.createBuffer();
     t1.bindBuffer$2(gl, 34962, this.vertexPositionBuffer);
+    $.listTypeCheck(vertCoord);
     $.listTypeCheck(vertCoord);
     t1.bufferData$3(gl, 34962, new Float32Array(vertCoord), 35044);
     this.vertexPositionBufferItemSize = 3;
@@ -6425,17 +7387,23 @@ $$.Camera = {"": "Object;degreesPerSec,camOrbitRadius,eye,center,up,oldAngle,ang
     return $.$mul$n(deg, 3.141592653589793) / 180;
   },
   render$1: function(gameLoop) {
-    var r, t1, t2, t3;
+    var r, t1, t2, t3, t4;
     r = $.doubleTypeCheck(this.getRad$1(gameLoop.get$renderInterpolationFactor()));
-    t1 = this.eye;
-    t2 = this.camOrbitRadius;
-    t3 = typeof r !== "number";
-    if (t3)
+    t1 = this.camOrbitRadius;
+    t2 = typeof r !== "number";
+    if (t2)
       $.throwExpression($.ArgumentError$(r));
-    t1.$indexSet(t1, 0, t2 * Math.sin(r));
-    if (t3)
+    t3 = Math.sin(r);
+    t4 = this.eye.storage;
+    if (0 >= t4.length)
+      throw $.ioore(0);
+    t4[0] = t1 * t3;
+    if (t2)
       $.throwExpression($.ArgumentError$(r));
-    t1.$indexSet(t1, 2, t2 * Math.cos(r));
+    t2 = Math.cos(r);
+    if (2 >= t4.length)
+      throw $.ioore(2);
+    t4[2] = t1 * t2;
   }
 };
 
@@ -6615,7 +7583,9 @@ $$.main_closure0 = {"": "Closure;gl_0",
     $.propertyTypeCheck(gameLoop, "$isGameLoopHtml");
     t1 = this.gl_0;
     $.interceptedTypeCheck(t1, "$isRenderingContext");
-    t2 = $.stats._timer;
+    t2 = $.stats;
+    t2.begin$0;
+    t2 = t2._timer;
     t2.start$0(t2);
     $.draw(t1, gameLoop);
     t1 = $.stats;
@@ -6655,12 +7625,12 @@ $$.Obj = {"": "Object;indices<,vertCoord<,textCoord<,normCoord",
 
 $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoord_4,_textCoord_5",
   call$1: function(rawLine) {
-    var t1, line, v, t2, t3, t, f, t4, t5, t6, i, t7, ind, index, t8, vi, vIndex, vOffset, t9, t10, t11, ti, tIndex, tOffset, ni;
+    var t1, line, v, t2, t3, t, f, t4, t5, i, t6, ind, index, vi, vIndex, vOffset, t7, t8, t9, ti, tIndex, tOffset, ni;
     $.stringTypeCheck(rawLine);
     t1 = this.box_0;
     t1.lineNum_1 = $.intTypeCheck($.$add$ns(t1.lineNum_1, 1));
     line = $.trim$0$s(rawLine);
-    if ($.JSString_methods.get$isEmpty(line))
+    if (line.length === 0)
       return;
     if (0 >= line.length)
       throw $.ioore(0);
@@ -6669,14 +7639,14 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
     if ($.JSString_methods.startsWith$1(line, "v ")) {
       v = $.listTypeCheck(line.split(" "));
       t2 = $.getInterceptor$asx(v);
-      if (!$.boolConversionCheck($.$eq(t2.get$length(v), 4))) {
+      if (!$.$eq(t2.get$length(v), 4)) {
         $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + $.S($.$sub$n(t2.get$length(v), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
         return;
       }
       t1 = this._vertCoord_4;
       t3 = t2.$index(v, 1);
       $.stringTypeCheck(t3);
-      $.functionTypeCheck(null);
+      $.propertyTypeCheck(null, "$isFunction");
       $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t3, null)));
       t3 = t2.$index(v, 2);
       $.stringTypeCheck(t3);
@@ -6689,14 +7659,14 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
     if ($.JSString_methods.startsWith$1(line, "vt ")) {
       t = $.listTypeCheck(line.split(" "));
       t2 = $.getInterceptor$asx(t);
-      if (!$.boolConversionCheck($.$eq(t2.get$length(t), 3))) {
+      if (!$.$eq(t2.get$length(t), 3)) {
         $.Primitives_printString("OBJ: wrong number of texture coordinates (" + $.S($.$sub$n(t2.get$length(t), 1)) + " != 2) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
         return;
       }
       t1 = this._textCoord_5;
       t3 = t2.$index(t, 1);
       $.stringTypeCheck(t3);
-      $.functionTypeCheck(null);
+      $.propertyTypeCheck(null, "$isFunction");
       $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t3, null)));
       t2 = t2.$index(t, 2);
       $.stringTypeCheck(t2);
@@ -6706,75 +7676,211 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
     if ($.JSString_methods.startsWith$1(line, "vn "))
       return;
     if ($.JSString_methods.startsWith$1(line, "f ")) {
-      f = $.listTypeCheck(line.split(" "));
-      t2 = $.getInterceptor$asx(f);
-      if (!$.boolConversionCheck($.$eq(t2.get$length(f), 4))) {
-        $.Primitives_printString("OBJ: wrong number of face indices (" + $.S($.$sub$n(t2.get$length(f), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+      f = line.split(" ");
+      $.listTypeCheck(f);
+      if (typeof f !== "string" && (typeof f !== "object" || f === null || f.constructor !== Array && !$.getInterceptor(f).$isJavaScriptIndexingBehavior))
+        return this.call$1$bailout(1, rawLine, f, t1);
+      t2 = f.length;
+      if (t2 !== 4) {
+        $.Primitives_printString("OBJ: wrong number of face indices (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
         return;
       }
-      for (t3 = this.this_1, t4 = this.indexTable_3, t5 = this._textCoord_5, t6 = this._vertCoord_4, i = 1; t7 = $.getInterceptor$n(i), t7.$lt(i, t2.get$length(f)); i = $.intTypeCheck(t7.$add(i, 1))) {
-        ind = $.stringTypeCheck(t2.$index(f, i));
-        index = $.intTypeCheck(t4.$index(t4, ind));
+      for (t2 = this.this_1, t3 = this.indexTable_3, t4 = this._textCoord_5, t5 = this._vertCoord_4, i = 1; t6 = f.length, $.$lt$n(i, t6); ++i) {
+        if (i >>> 0 !== i || i >= t6)
+          throw $.ioore(i);
+        ind = $.stringTypeCheck(f[i]);
+        index = $.intTypeCheck(t3.$index(t3, ind));
         if (index != null) {
-          $.JSArray_methods.add$1(t3.get$indices(), index);
+          $.JSArray_methods.add$1(t2.get$indices(), index);
           continue;
         }
         v = $.listTypeCheck($.split$1$s(ind, "/"));
-        t8 = $.getInterceptor$asx(v);
-        vi = $.stringTypeCheck(t8.$index(v, 0));
-        $.functionTypeCheck(null);
+        t6 = $.getInterceptor$asx(v);
+        vi = $.stringTypeCheck(t6.$index(v, 0));
+        $.propertyTypeCheck(null, "$isFunction");
         vIndex = $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(vi, null, null)), 1));
         if (typeof vIndex !== "number")
           throw $.iae(vIndex);
         vOffset = $.intTypeCheck(3 * vIndex);
-        t9 = t3.get$vertCoord();
-        t10 = $.getInterceptor$ns(vOffset);
-        t11 = t10.$add(vOffset, 0);
-        if (t11 >>> 0 !== t11 || t11 >= t6.length)
-          throw $.ioore(t11);
-        $.JSArray_methods.add$1(t9, t6[t11]);
-        t11 = t3.get$vertCoord();
-        t9 = t10.$add(vOffset, 1);
-        if (t9 >>> 0 !== t9 || t9 >= t6.length)
+        t7 = t2.get$vertCoord();
+        t8 = $.getInterceptor$ns(vOffset);
+        t9 = t8.$add(vOffset, 0);
+        if (t9 >>> 0 !== t9 || t9 >= t5.length)
           throw $.ioore(t9);
-        $.JSArray_methods.add$1(t11, t6[t9]);
-        t9 = t3.get$vertCoord();
-        t10 = t10.$add(vOffset, 2);
-        if (t10 >>> 0 !== t10 || t10 >= t6.length)
-          throw $.ioore(t10);
-        $.JSArray_methods.add$1(t9, t6[t10]);
-        if ($.$gt$n(t8.get$length(v), 1)) {
-          ti = $.stringTypeCheck(t8.$index(v, 1));
+        $.JSArray_methods.add$1(t7, t5[t9]);
+        t9 = t2.get$vertCoord();
+        t7 = t8.$add(vOffset, 1);
+        if (t7 >>> 0 !== t7 || t7 >= t5.length)
+          throw $.ioore(t7);
+        $.JSArray_methods.add$1(t9, t5[t7]);
+        t7 = t2.get$vertCoord();
+        t8 = t8.$add(vOffset, 2);
+        if (t8 >>> 0 !== t8 || t8 >= t5.length)
+          throw $.ioore(t8);
+        $.JSArray_methods.add$1(t7, t5[t8]);
+        if ($.$gt$n(t6.get$length(v), 1)) {
+          ti = $.stringTypeCheck(t6.$index(v, 1));
           if (ti != null && !$.get$isEmpty$asx(ti)) {
             tIndex = $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(ti, null, null)), 1));
             if (typeof tIndex !== "number")
               throw $.iae(tIndex);
             tOffset = $.intTypeCheck(2 * tIndex);
-            t9 = t3.get$textCoord();
-            t10 = $.getInterceptor$ns(tOffset);
-            t11 = t10.$add(tOffset, 0);
-            if (t11 >>> 0 !== t11 || t11 >= t5.length)
-              throw $.ioore(t11);
-            $.JSArray_methods.add$1(t9, t5[t11]);
-            t11 = t3.get$textCoord();
-            t10 = t10.$add(tOffset, 1);
-            if (t10 >>> 0 !== t10 || t10 >= t5.length)
-              throw $.ioore(t10);
-            $.JSArray_methods.add$1(t11, t5[t10]);
+            t7 = t2.get$textCoord();
+            t8 = $.getInterceptor$ns(tOffset);
+            t9 = t8.$add(tOffset, 0);
+            if (t9 >>> 0 !== t9 || t9 >= t4.length)
+              throw $.ioore(t9);
+            $.JSArray_methods.add$1(t7, t4[t9]);
+            t9 = t2.get$textCoord();
+            t8 = t8.$add(tOffset, 1);
+            if (t8 >>> 0 !== t8 || t8 >= t4.length)
+              throw $.ioore(t8);
+            $.JSArray_methods.add$1(t9, t4[t8]);
           }
         }
-        if ($.$gt$n(t8.get$length(v), 2)) {
-          ni = $.stringTypeCheck(t8.$index(v, 2));
+        if ($.$gt$n(t6.get$length(v), 2)) {
+          ni = $.stringTypeCheck(t6.$index(v, 2));
           if (ni != null && !$.get$isEmpty$asx(ni))
             $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(ni, null, null)), 1));
         }
-        $.JSArray_methods.add$1(t3.get$indices(), t1.indexCounter_0);
-        t4.$indexSet(t4, ind, t1.indexCounter_0);
+        $.JSArray_methods.add$1(t2.get$indices(), t1.indexCounter_0);
+        t3.$indexSet(t3, ind, t1.indexCounter_0);
         t1.indexCounter_0 = $.intTypeCheck($.$add$ns(t1.indexCounter_0, 1));
       }
       return;
     }
     $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+  },
+  call$1$bailout: function(state0, rawLine, f, t1) {
+    switch (state0) {
+      case 0:
+        $.stringTypeCheck(rawLine);
+        t1 = this.box_0;
+        t1.lineNum_1 = $.intTypeCheck($.$add$ns(t1.lineNum_1, 1));
+        line = $.trim$0$s(rawLine);
+        if (line.length === 0)
+          return;
+        if (0 >= line.length)
+          throw $.ioore(0);
+        if (line[0] === "#")
+          return;
+        if ($.JSString_methods.startsWith$1(line, "v ")) {
+          v = $.listTypeCheck(line.split(" "));
+          t2 = $.getInterceptor$asx(v);
+          if (!$.$eq(t2.get$length(v), 4)) {
+            $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + $.S($.$sub$n(t2.get$length(v), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+            return;
+          }
+          t1 = this._vertCoord_4;
+          t3 = t2.$index(v, 1);
+          $.stringTypeCheck(t3);
+          $.propertyTypeCheck(null, "$isFunction");
+          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t3, null)));
+          t3 = t2.$index(v, 2);
+          $.stringTypeCheck(t3);
+          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t3, null)));
+          t2 = t2.$index(v, 3);
+          $.stringTypeCheck(t2);
+          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t2, null)));
+          return;
+        }
+        if ($.JSString_methods.startsWith$1(line, "vt ")) {
+          t = $.listTypeCheck(line.split(" "));
+          t2 = $.getInterceptor$asx(t);
+          if (!$.$eq(t2.get$length(t), 3)) {
+            $.Primitives_printString("OBJ: wrong number of texture coordinates (" + $.S($.$sub$n(t2.get$length(t), 1)) + " != 2) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+            return;
+          }
+          t1 = this._textCoord_5;
+          t3 = t2.$index(t, 1);
+          $.stringTypeCheck(t3);
+          $.propertyTypeCheck(null, "$isFunction");
+          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t3, null)));
+          t2 = t2.$index(t, 2);
+          $.stringTypeCheck(t2);
+          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t2, null)));
+          return;
+        }
+        if ($.JSString_methods.startsWith$1(line, "vn "))
+          return;
+      case 1:
+        var line, v, t2, t3, t, t4, t5, t6, i, t7, ind, index, t8, vi, vIndex, vOffset, t9, t10, t11, ti, tIndex, tOffset, ni;
+        if (state0 === 1 || state0 === 0 && $.JSString_methods.startsWith$1(line, "f "))
+          switch (state0) {
+            case 0:
+              f = line.split(" ");
+              $.listTypeCheck(f);
+            case 1:
+              state0 = 0;
+              t2 = $.getInterceptor$asx(f);
+              if (!$.$eq(t2.get$length(f), 4)) {
+                $.Primitives_printString("OBJ: wrong number of face indices (" + $.S($.$sub$n(t2.get$length(f), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+                return;
+              }
+              for (t3 = this.this_1, t4 = this.indexTable_3, t5 = this._textCoord_5, t6 = this._vertCoord_4, i = 1; t7 = $.getInterceptor$n(i), t7.$lt(i, t2.get$length(f)); i = $.intTypeCheck(t7.$add(i, 1))) {
+                ind = $.stringTypeCheck(t2.$index(f, i));
+                index = $.intTypeCheck(t4.$index(t4, ind));
+                if (index != null) {
+                  $.JSArray_methods.add$1(t3.get$indices(), index);
+                  continue;
+                }
+                v = $.listTypeCheck($.split$1$s(ind, "/"));
+                t8 = $.getInterceptor$asx(v);
+                vi = $.stringTypeCheck(t8.$index(v, 0));
+                $.propertyTypeCheck(null, "$isFunction");
+                vIndex = $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(vi, null, null)), 1));
+                if (typeof vIndex !== "number")
+                  throw $.iae(vIndex);
+                vOffset = $.intTypeCheck(3 * vIndex);
+                t9 = t3.get$vertCoord();
+                t10 = $.getInterceptor$ns(vOffset);
+                t11 = t10.$add(vOffset, 0);
+                if (t11 >>> 0 !== t11 || t11 >= t6.length)
+                  throw $.ioore(t11);
+                $.JSArray_methods.add$1(t9, t6[t11]);
+                t11 = t3.get$vertCoord();
+                t9 = t10.$add(vOffset, 1);
+                if (t9 >>> 0 !== t9 || t9 >= t6.length)
+                  throw $.ioore(t9);
+                $.JSArray_methods.add$1(t11, t6[t9]);
+                t9 = t3.get$vertCoord();
+                t10 = t10.$add(vOffset, 2);
+                if (t10 >>> 0 !== t10 || t10 >= t6.length)
+                  throw $.ioore(t10);
+                $.JSArray_methods.add$1(t9, t6[t10]);
+                if ($.$gt$n(t8.get$length(v), 1)) {
+                  ti = $.stringTypeCheck(t8.$index(v, 1));
+                  if (ti != null && !$.get$isEmpty$asx(ti)) {
+                    tIndex = $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(ti, null, null)), 1));
+                    if (typeof tIndex !== "number")
+                      throw $.iae(tIndex);
+                    tOffset = $.intTypeCheck(2 * tIndex);
+                    t9 = t3.get$textCoord();
+                    t10 = $.getInterceptor$ns(tOffset);
+                    t11 = t10.$add(tOffset, 0);
+                    if (t11 >>> 0 !== t11 || t11 >= t5.length)
+                      throw $.ioore(t11);
+                    $.JSArray_methods.add$1(t9, t5[t11]);
+                    t11 = t3.get$textCoord();
+                    t10 = t10.$add(tOffset, 1);
+                    if (t10 >>> 0 !== t10 || t10 >= t5.length)
+                      throw $.ioore(t10);
+                    $.JSArray_methods.add$1(t11, t5[t10]);
+                  }
+                }
+                if ($.$gt$n(t8.get$length(v), 2)) {
+                  ni = $.stringTypeCheck(t8.$index(v, 2));
+                  if (ni != null && !$.get$isEmpty$asx(ni))
+                    $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(ni, null, null)), 1));
+                }
+                $.JSArray_methods.add$1(t3.get$indices(), t1.indexCounter_0);
+                t4.$indexSet(t4, ind, t1.indexCounter_0);
+                t1.indexCounter_0 = $.intTypeCheck($.$add$ns(t1.indexCounter_0, 1));
+              }
+              return;
+          }
+        $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+    }
   },
   $isFunction: true,
   $asObject: null,
@@ -6895,20 +8001,12 @@ $$.ShaderProgram_fetch_tryLink = {"": "Closure;box_0,this_3",
 
 $$.ShaderProgram_fetch_fetchVertexShader = {"": "Closure;box_0,vertexShaderURL_4,compileShader_5,tryLink_6",
   call$0: function() {
-    var requestVert, t1, t2;
+    var requestVert, t1;
     requestVert = new XMLHttpRequest();
     t1 = this.vertexShaderURL_4;
     $.HttpRequest_methods.open$2(requestVert, "GET", t1);
-    t2 = $.HttpRequest_methods.get$onLoad(requestVert);
-    t1 = new $.ShaderProgram_fetch_fetchVertexShader_closure(this.box_0, t1, this.compileShader_5, this.tryLink_6, requestVert);
-    $.functionTypeCheck(t1);
-    $.functionTypeCheck(null);
-    $.functionTypeCheck(null);
-    $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t1, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
-    t2 = $.HttpRequest_methods.get$onError(requestVert);
-    t1 = new $.ShaderProgram_fetch_fetchVertexShader_closure0();
-    $.functionTypeCheck(t1);
-    $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t1, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
+    $.assertSubtype($.EventStreamProvider_load.forTarget$1(requestVert), "$isStream", [$.ProgressEvent], "$asStream").listen$1(new $.ShaderProgram_fetch_fetchVertexShader_closure(this.box_0, t1, this.compileShader_5, this.tryLink_6, requestVert));
+    $.assertSubtype($.EventStreamProvider_error.forTarget$1(requestVert), "$isStream", [$.ProgressEvent], "$asStream").listen$1(new $.ShaderProgram_fetch_fetchVertexShader_closure0());
     requestVert.send();
   },
   $isFunction: true,
@@ -6956,20 +8054,12 @@ $$.ShaderProgram_fetch_fetchVertexShader_closure0 = {"": "Closure;",
 
 $$.ShaderProgram_fetch_fetchFragmentShader = {"": "Closure;box_0,fragmentShaderURL_11,compileShader_12,tryLink_13",
   call$0: function() {
-    var requestFrag, t1, t2;
+    var requestFrag, t1;
     requestFrag = new XMLHttpRequest();
     t1 = this.fragmentShaderURL_11;
     $.HttpRequest_methods.open$2(requestFrag, "GET", t1);
-    t2 = $.HttpRequest_methods.get$onLoad(requestFrag);
-    t1 = new $.ShaderProgram_fetch_fetchFragmentShader_closure(this.box_0, t1, this.compileShader_12, this.tryLink_13, requestFrag);
-    $.functionTypeCheck(t1);
-    $.functionTypeCheck(null);
-    $.functionTypeCheck(null);
-    $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t1, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
-    t2 = $.HttpRequest_methods.get$onError(requestFrag);
-    t1 = new $.ShaderProgram_fetch_fetchFragmentShader_closure0();
-    $.functionTypeCheck(t1);
-    $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t1, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
+    $.assertSubtype($.EventStreamProvider_load.forTarget$1(requestFrag), "$isStream", [$.ProgressEvent], "$asStream").listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_closure(this.box_0, t1, this.compileShader_12, this.tryLink_13, requestFrag));
+    $.assertSubtype($.EventStreamProvider_error.forTarget$1(requestFrag), "$isStream", [$.ProgressEvent], "$asStream").listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_closure0());
     requestFrag.send();
   },
   $isFunction: true,
@@ -7101,10 +8191,12 @@ $$.TexModel = {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,textureI
     this.vertexPositionBuffer = gl.createBuffer();
     t1.bindBuffer$2(gl, 34962, this.vertexPositionBuffer);
     $.listTypeCheck(vertCoord);
+    $.listTypeCheck(vertCoord);
     t1.bufferData$3(gl, 34962, new Float32Array(vertCoord), 35044);
     this.vertexPositionBufferItemSize = 3;
     this.textureCoordBuffer = gl.createBuffer();
     t1.bindBuffer$2(gl, 34962, this.textureCoordBuffer);
+    $.listTypeCheck(textCoord);
     $.listTypeCheck(textCoord);
     t1.bufferData$3(gl, 34962, new Float32Array(textCoord), 35044);
     this.textureCoordBufferItemSize = 2;
@@ -7136,7 +8228,7 @@ $$.TexModel = {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,textureI
   },
   TexModel$fromOBJ$4: function(gl, program, URL, onDone) {
     $.interceptedTypeCheck(gl, "$isRenderingContext");
-    $.functionTypeCheck(onDone);
+    $.propertyTypeCheck(onDone, "$isFunction");
     this.program = program;
     $.HttpRequest_getString(URL, null, null).then$1(new $.TexModel$fromOBJ_handleResponse(this, gl, URL, onDone)).catchError$1(new $.TexModel$fromOBJ_handleError(URL));
   },
@@ -7280,16 +8372,11 @@ $$.SkyboxProgram_drawModels_closure = {"": "Closure;gameLoop_0,cam_1",
 
 $$.SkyboxModel = {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program",
   addCubemapFace$2: function(face, URL) {
-    var image, t1, t2, t3;
+    var image, t1;
     image = $.interceptedTypeCheck($.ImageElement_ImageElement(null, null, null), "$isImageElement");
-    t1 = new $.SkyboxModel_addCubemapFace_handleDone(this, face, URL, image);
-    t2 = $.getInterceptor$x(image);
-    t3 = t2.get$onLoad(image);
-    $.functionTypeCheck(t1);
-    $.functionTypeCheck(null);
-    $.functionTypeCheck(null);
-    $.propertyTypeCheck($._EventStreamSubscription$(t3._target, t3._eventType, t1, t3._useCapture, $.getRuntimeTypeArgument(t3, t3.$as_EventStream, 0)), "$isStreamSubscription");
-    t2.get$onError(image).listen$1(new $.SkyboxModel_addCubemapFace_handleError(URL));
+    t1 = $.getInterceptor$x(image);
+    t1.get$onLoad(image).listen$1(new $.SkyboxModel_addCubemapFace_handleDone(this, face, URL, image));
+    t1.get$onError(image).listen$1(new $.SkyboxModel_addCubemapFace_handleError(URL));
     image.src = URL;
   },
   drawInstances$2: function(gameLoop, cam) {
@@ -7355,7 +8442,7 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
     r = $.doubleTypeCheck(cam.getRad$1($.propertyTypeCheck(gameLoop, "$isGameLoopHtml").get$renderInterpolationFactor()));
     if (typeof r !== "number")
       $.throwExpression($.ArgumentError$(r));
-    size = $.doubleTypeCheck(15 * $.JSDouble_methods.abs$0(Math.sin(r)) + 1);
+    size = $.doubleTypeCheck(15 * Math.abs(Math.sin(r)) + 1);
     t1 = this.MV;
     $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
     t2 = this.center.storage;
@@ -7391,17 +8478,16 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
 
 $$.TextureInfo = {"": "Object;indexOffset,indexNumber,textureName<,texture<",
   loadTexture2D$6: function(gl, textureTable, textureName, temporaryColor, handleDone, handleError) {
-    var image, t1, t2, t3, fail, e;
+    var image, t1, t2, fail, e;
     $.interceptedTypeCheck(textureTable, "$isMap");
     $.listTypeCheck(temporaryColor);
-    $.functionTypeCheck(handleDone);
-    $.functionTypeCheck(handleError);
+    $.propertyTypeCheck(handleDone, "$isFunction");
+    $.propertyTypeCheck(handleError, "$isFunction");
     image = $.interceptedTypeCheck($.ImageElement_ImageElement(null, null, null), "$isImageElement");
     t1 = $.getInterceptor$x(gl);
     this.texture = gl.createTexture();
-    t2 = new $.TextureInfo_loadTexture2D_onDone(this, gl, handleDone, image);
-    t3 = this.texture;
-    if (t3 == null) {
+    t2 = this.texture;
+    if (t2 == null) {
       fail = "could not create texture for: " + textureName;
       $.Primitives_printString("loadTexture2D: " + fail);
       e = $.HtmlDocument_methods.$$dom_createEvent$1(document, "Event");
@@ -7409,7 +8495,7 @@ $$.TextureInfo = {"": "Object;indexOffset,indexNumber,textureName<,texture<",
       handleError.call$1(e);
       return;
     }
-    $.$indexSet$ax(textureTable, textureName, t3);
+    $.$indexSet$ax(textureTable, textureName, t2);
     t1.bindTexture$2(gl, 3553, this.texture);
     $.listTypeCheck(temporaryColor);
     $.listTypeCheck(temporaryColor);
@@ -7420,11 +8506,7 @@ $$.TextureInfo = {"": "Object;indexOffset,indexNumber,textureName<,texture<",
     t1.texParameteri$3(gl, 3553, 10243, 33071);
     t1.bindTexture$2(gl, 3553, null);
     t1 = $.getInterceptor$x(image);
-    t3 = t1.get$onLoad(image);
-    $.functionTypeCheck(t2);
-    $.functionTypeCheck(null);
-    $.functionTypeCheck(null);
-    $.propertyTypeCheck($._EventStreamSubscription$(t3._target, t3._eventType, t2, t3._useCapture, $.getRuntimeTypeArgument(t3, t3.$as_EventStream, 0)), "$isStreamSubscription");
+    t1.get$onLoad(image).listen$1(new $.TextureInfo_loadTexture2D_onDone(this, gl, handleDone, image));
     t1.get$onError(image).listen$1(handleError);
     image.src = textureName;
   },
@@ -7529,11 +8611,9 @@ $$.initWebSocket_scheduleReconnect = {"": "Closure;box_0,wsUri_4,sid_5,status_6"
     $.Primitives_printString("websocket: retrying in " + $.S(t1.retrySeconds_0) + " seconds");
     t2 = $.Duration$(0, 0, 0, 0, 0, t1.retrySeconds_0);
     t3 = new $.initWebSocket_scheduleReconnect_closure(t1, this.wsUri_4, this.sid_5, this.status_6);
-    $.functionTypeCheck(t3);
-    milliseconds = $.intTypeCheck(t2.get$inMilliseconds());
-    if ($.$lt$n(milliseconds, 0))
-      milliseconds = 0;
-    $.TimerImpl$(milliseconds, t3);
+    $.propertyTypeCheck(t3, "$isFunction");
+    milliseconds = $.intTypeCheck($.JSNumber_methods.$tdiv(t2._duration, 1000));
+    $.TimerImpl$($.$lt$n(milliseconds, 0) ? 0 : milliseconds, t3);
     t1.reconnectScheduled_6 = true;
   },
   $isFunction: true,
@@ -7584,7 +8664,7 @@ $$.initWebSocket_closure2 = {"": "Closure;box_0,status_14",
     $.Primitives_printString("websocket: received: [" + $.S(t1.get$data(e)) + "]");
     msg = $.interceptedTypeCheck($.parse(t1.get$data(e), null), "$isMap");
     t1 = $.getInterceptor$asx(msg);
-    if ($.boolConversionCheck($.$eq(t1.$index(msg, "Code"), 1)) && $.startsWith$1$s(t1.$index(msg, "Data"), "welcome")) {
+    if ($.$eq(t1.$index(msg, "Code"), 1) && $.startsWith$1$s(t1.$index(msg, "Data"), "welcome")) {
       m = $.HashMap$(null, null);
       m.$indexSet(m, "Code", 3);
       m.$indexSet(m, "Data", "hi there");
@@ -7596,7 +8676,7 @@ $$.initWebSocket_closure2 = {"": "Closure;box_0,status_14",
       $.send$1$x(t1, t2);
       return;
     }
-    if ($.boolConversionCheck($.$eq(t1.$index(msg, "Code"), 4))) {
+    if ($.$eq(t1.$index(msg, "Code"), 4)) {
       m = "server killed our session: " + $.S($.stringTypeCheck(t1.$index(msg, "Data")));
       $.Primitives_printString(m);
       $.set$text$x(this.status_14, m);
@@ -7622,20 +8702,14 @@ $$.initWebSocket_closure2 = {"": "Closure;box_0,status_14",
 };
 
 $$.GameLoop = {"": "Object;",
-  get$dt: function() {
-    return this.updateTimeStep;
-  },
-  get$time: function() {
-    return $.doubleTypeCheck($.GameLoop_timeStampToSeconds($.DateTime_DateTime$now().get$millisecondsSinceEpoch()));
-  },
   processTimers$0: function() {
-    var t1, _timersLength, i, t2, lastElement;
+    var t1, _timersLength, t2, i, lastElement;
     t1 = this._timers;
     _timersLength = t1.length;
-    for (i = 0; $.$lt$n(i, _timersLength); ++i) {
+    for (t2 = this.updateTimeStep, i = 0; $.$lt$n(i, _timersLength); ++i) {
       if (i < 0 || i >= _timersLength)
         throw $.ioore(i);
-      t1[i]._update$1(this.get$dt());
+      t1[i]._update$1(t2);
     }
     for (i = _timersLength - 1; $.$ge$n(i, 0); --i) {
       t2 = t1.length;
@@ -7705,91 +8779,85 @@ $$.GameLoopTimer = {"": "Object;gameLoop<", $isGameLoopTimer: true};
 $$.GameLoopGamepad = {"": "Object;gameLoop<,buttons,sticks", $isGameLoopGamepad: true};
 
 $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_previousFrameTime,_frameTime,_resizePending,_nextResize,maxAccumulatedTime,_accumulatedTime,_gameTime,_renderInterpolationFactor,resizeLimit,_pointerLock,_keyboard,_mouse,_gamepad0,_touchSet,_touchEvents,_keyboardEvents,_mouseEvents,onRender,onResize,onFullscreenChange,onPointerLockChange,onTouchStart,onTouchEnd,updateTimeStep,lib6$GameLoop$maxAccumulatedTime,_timers,onUpdate",
-  get$frame: function() {
-    return $.intTypeCheck(this._frameCounter);
-  },
-  get$width: function(_) {
-    return $.intTypeCheck($.get$client$x(this.element).width);
-  },
-  get$height: function(_) {
-    return $.intTypeCheck($.get$client$x(this.element).height);
-  },
   get$gameTime: function() {
     return $.doubleTypeCheck(this._gameTime);
   },
   get$renderInterpolationFactor: function() {
     return $.doubleTypeCheck(this._renderInterpolationFactor);
   },
-  get$mouse: function() {
-    return this._mouse;
-  },
   _processInputEvents$0: function() {
-    var t1, t2, keyboardEvent, t3, time, $event, canvasX, canvasY, t4, mouseEvent, t5, t6, mouseX, mouseY, x, t7, y, clampX, withinCanvas, clampY, touchEvent;
+    var t1, t2, keyboardEvent, t3, time, $event, t4, t5, canvasX, canvasY, t6, mouseEvent, t7, t8, mouseX, mouseY, x, t9, y, clampX, withinCanvas, clampY, touchEvent;
     for (t1 = this._keyboardEvents, t2 = $.JSArray_methods.get$iterator(t1); t2.moveNext$0();) {
       keyboardEvent = $.interceptedTypeCheck(t2.get$current(), "$isKeyboardEvent");
       t3 = keyboardEvent.type;
       time = $.doubleTypeCheck($.$div$n(keyboardEvent.timeStamp, 1000));
-      $event = $.DigitalButtonEvent$($.get$keyCode$x(keyboardEvent), t3 === "keydown", this.get$frame(), time);
+      $event = $.DigitalButtonEvent$($.get$keyCode$x(keyboardEvent), t3 === "keydown", $.intTypeCheck(this._frameCounter), time);
       this._keyboard.digitalButtonEvent$1($event);
     }
-    $.JSArray_methods.clear$0(t1);
-    t1 = this.get$mouse();
+    $.JSArray_methods.set$length(t1, 0);
+    t1 = this._mouse;
+    t1._resetAccumulators$0;
     t1._wheelDx = 0;
     t1._wheelDy = 0;
     t1._dx = 0;
     t1._dy = 0;
     t1 = this.element;
-    t2 = $.getInterceptor$x(t1);
-    canvasX = $.intTypeCheck(t2.get$offset(t1).left);
-    canvasY = $.intTypeCheck(t2.get$offset(t1).top);
-    for (t1 = this._mouseEvents, t2 = $.JSArray_methods.get$iterator(t1), t3 = $.getInterceptor$ns(canvasX), t4 = $.getInterceptor$ns(canvasY); t2.moveNext$0();) {
-      mouseEvent = $.interceptedTypeCheck(t2.get$current(), "$isMouseEvent");
-      t5 = $.getInterceptor$x(mouseEvent);
-      t6 = mouseEvent.type;
+    t1.get$offset;
+    t2 = t1.offsetLeft;
+    t3 = t1.offsetTop;
+    t4 = t1.offsetWidth;
+    t5 = t1.offsetHeight;
+    canvasX = $.Rect$(t2, t3, t4, t5).left;
+    canvasY = $.Rect$(t2, t3, t4, t5).top;
+    for (t2 = this._mouseEvents, t3 = $.JSArray_methods.get$iterator(t2), t4 = $.getInterceptor$x(t1), t5 = $.getInterceptor$ns(canvasX), t6 = $.getInterceptor$ns(canvasY); t3.moveNext$0();) {
+      mouseEvent = $.interceptedTypeCheck(t3.get$current(), "$isMouseEvent");
+      t7 = $.getInterceptor$x(mouseEvent);
+      t8 = mouseEvent.type;
       time = $.doubleTypeCheck($.$div$n(mouseEvent.timeStamp, 1000));
-      if (t6 === "mousemove") {
-        mouseX = $.intTypeCheck(t5.get$page(mouseEvent).x);
-        mouseY = $.intTypeCheck(t5.get$page(mouseEvent).y);
-        t6 = $.getInterceptor$n(mouseX);
-        x = $.intTypeCheck(t6.$sub(mouseX, canvasX));
-        t7 = $.getInterceptor$n(mouseY);
-        y = $.intTypeCheck(t7.$sub(mouseY, canvasY));
-        if (t6.$lt(mouseX, canvasX)) {
+      if (t8 === "mousemove") {
+        mouseX = $.intTypeCheck(t7.get$page(mouseEvent).x);
+        mouseY = $.intTypeCheck(t7.get$page(mouseEvent).y);
+        t8 = $.getInterceptor$n(mouseX);
+        x = $.intTypeCheck(t8.$sub(mouseX, canvasX));
+        t9 = $.getInterceptor$n(mouseY);
+        y = $.intTypeCheck(t9.$sub(mouseY, canvasY));
+        if (t8.$lt(mouseX, canvasX)) {
           clampX = 0;
           withinCanvas = false;
-        } else if (t6.$gt(mouseX, t3.$add(canvasX, this.get$width(this)))) {
-          clampX = $.intTypeCheck(this.get$width(this));
+        } else if (t8.$gt(mouseX, t5.$add(canvasX, $.intTypeCheck(t4.get$client(t1).width)))) {
+          clampX = $.intTypeCheck(t4.get$client(t1).width);
           withinCanvas = false;
         } else {
           clampX = x;
           withinCanvas = true;
         }
-        if (t7.$lt(mouseY, canvasY)) {
+        if (t9.$lt(mouseY, canvasY)) {
           clampY = 0;
           withinCanvas = false;
-        } else if (t7.$gt(mouseY, t4.$add(canvasY, this.get$height(this)))) {
-          clampY = $.intTypeCheck(this.get$height(this));
+        } else if (t9.$gt(mouseY, t6.$add(canvasY, $.intTypeCheck(t4.get$client(t1).height)))) {
+          clampY = $.intTypeCheck(t4.get$client(t1).height);
           withinCanvas = false;
         } else
           clampY = y;
-        $event = $.GameLoopMouseEvent$(x, y, $.intTypeCheck(t5.get$movement(mouseEvent).x), $.intTypeCheck(t5.get$movement(mouseEvent).y), clampX, clampY, withinCanvas, time, this.get$frame());
+        $event = $.GameLoopMouseEvent$(x, y, $.intTypeCheck(t7.get$movement(mouseEvent).x), $.intTypeCheck(t7.get$movement(mouseEvent).y), clampX, clampY, withinCanvas, time, $.intTypeCheck(this._frameCounter));
         this._mouse.gameLoopMouseEvent$1($event);
       } else {
-        t5 = this._mouse;
-        if (t6 === "mousewheel") {
+        t7 = this._mouse;
+        if (t8 === "mousewheel") {
           $.interceptedTypeCast(mouseEvent, "$isWheelEvent");
-          t6 = $.getInterceptor$x(mouseEvent);
-          t7 = t6.get$deltaX(mouseEvent);
-          t6 = t6.get$deltaY(mouseEvent);
-          $.intTypeCheck(t7);
-          $.intTypeCheck(t6);
-          t5._wheelDx = $.intTypeCheck(t5._wheelDx + t7);
-          t5._wheelDy = $.intTypeCheck(t5._wheelDy + t6);
+          t8 = $.getInterceptor$x(mouseEvent);
+          t9 = t8.get$deltaX(mouseEvent);
+          t8 = t8.get$deltaY(mouseEvent);
+          $.intTypeCheck(t9);
+          $.intTypeCheck(t8);
+          t7._accumulateWheel$2;
+          t7._wheelDx = $.intTypeCheck(t7._wheelDx + t9);
+          t7._wheelDy = $.intTypeCheck(t7._wheelDy + t8);
         } else
-          t5.digitalButtonEvent$1($.DigitalButtonEvent$(mouseEvent.button, t6 === "mousedown", this.get$frame(), time));
+          t7.digitalButtonEvent$1($.DigitalButtonEvent$(mouseEvent.button, t8 === "mousedown", $.intTypeCheck(this._frameCounter), time));
       }
     }
-    $.JSArray_methods.clear$0(t1);
+    $.JSArray_methods.set$length(t2, 0);
     for (t1 = this._touchEvents, t2 = $.JSArray_methods.get$iterator(t1); t2.moveNext$0();) {
       touchEvent = $.propertyTypeCheck(t2.get$current(), "$is_GameLoopTouchEvent");
       switch (touchEvent.type) {
@@ -7806,13 +8874,13 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
           throw $.wrapException($.StateError$("Invalid _GameLoopTouchEven type."));
       }
     }
-    $.JSArray_methods.clear$0(t1);
+    $.JSArray_methods.set$length(t1, 0);
   },
   _requestAnimationFrame$1: function(_, _0) {
     var t1, t2, t3;
     $.numTypeCheck(_0);
     if (this._previousFrameTime == null) {
-      this._frameTime = $.doubleTypeCheck(this.get$time());
+      this._frameTime = $.doubleTypeCheck($.GameLoop_timeStampToSeconds($.DateTime_DateTime$now().get$millisecondsSinceEpoch()));
       this._previousFrameTime = this._frameTime;
       this._processInputEvents$0();
       $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
@@ -7823,7 +8891,7 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
     $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
     this._frameCounter = $.intTypeCheck(this._frameCounter + 1);
     this._previousFrameTime = this._frameTime;
-    this._frameTime = $.doubleTypeCheck(this.get$time());
+    this._frameTime = $.doubleTypeCheck($.GameLoop_timeStampToSeconds($.DateTime_DateTime$now().get$millisecondsSinceEpoch()));
     t1 = this._frameTime;
     if (typeof t1 !== "number")
       return this._requestAnimationFrame$1$bailout(1, t1);
@@ -7874,7 +8942,7 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
       case 0:
         $.numTypeCheck(_0);
         if (this._previousFrameTime == null) {
-          this._frameTime = $.doubleTypeCheck(this.get$time());
+          this._frameTime = $.doubleTypeCheck($.GameLoop_timeStampToSeconds($.DateTime_DateTime$now().get$millisecondsSinceEpoch()));
           this._previousFrameTime = this._frameTime;
           this._processInputEvents$0();
           $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
@@ -7885,7 +8953,7 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
         $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
         this._frameCounter = $.intTypeCheck(this._frameCounter + 1);
         this._previousFrameTime = this._frameTime;
-        this._frameTime = $.doubleTypeCheck(this.get$time());
+        this._frameTime = $.doubleTypeCheck($.GameLoop_timeStampToSeconds($.DateTime_DateTime$now().get$millisecondsSinceEpoch()));
         t1 = this._frameTime;
       case 1:
         state0 = 0;
@@ -8034,58 +9102,19 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
     return new $.Bound__resize_GameLoopHtml(this, "_resize$1");
   },
   start$0: function(_) {
-    var t1, t2;
     if (!this._initialized) {
-      t1 = $.HtmlDocument_methods.get$onFullscreenError(document);
-      t2 = this.get$_fullscreenError();
-      $.functionTypeCheck(t2);
-      $.functionTypeCheck(null);
-      $.functionTypeCheck(null);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.HtmlDocument_methods.get$onFullscreenChange(document);
-      t2 = this.get$_fullscreenChange();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onTouchStart(window);
-      t2 = this.get$_touchStartEvent();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onTouchEnd(window);
-      t2 = this.get$_touchEndEvent();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onTouchMove(window);
-      t2 = this.get$_touchMoveEvent();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onKeyDown(window);
-      t2 = this.get$_keyDown();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onKeyUp(window);
-      t2 = this.get$_keyUp();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onResize(window);
-      t2 = this.get$_resize();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onMouseMove(window);
-      t2 = this.get$_mouseMove();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onMouseDown(window);
-      t2 = this.get$_mouseDown();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onMouseUp(window);
-      t2 = this.get$_mouseUp();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
-      t1 = $.Window_methods.get$onMouseWheel(window);
-      t2 = this.get$_mouseWheel();
-      $.functionTypeCheck(t2);
-      $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
+      $.HtmlDocument_methods.get$onFullscreenError(document).listen$1(this.get$_fullscreenError());
+      $.HtmlDocument_methods.get$onFullscreenChange(document).listen$1(this.get$_fullscreenChange());
+      $.Window_methods.get$onTouchStart(window).listen$1(this.get$_touchStartEvent());
+      $.Window_methods.get$onTouchEnd(window).listen$1(this.get$_touchEndEvent());
+      $.Window_methods.get$onTouchMove(window).listen$1(this.get$_touchMoveEvent());
+      $.Window_methods.get$onKeyDown(window).listen$1(this.get$_keyDown());
+      $.Window_methods.get$onKeyUp(window).listen$1(this.get$_keyUp());
+      $.Window_methods.get$onResize(window).listen$1(this.get$_resize());
+      $.Window_methods.get$onMouseMove(window).listen$1(this.get$_mouseMove());
+      $.Window_methods.get$onMouseDown(window).listen$1(this.get$_mouseDown());
+      $.Window_methods.get$onMouseUp(window).listen$1(this.get$_mouseUp());
+      $.Window_methods.get$onMouseWheel(window).listen$1(this.get$_mouseWheel());
       this._initialized = true;
     }
     this._interrupt = false;
@@ -8206,7 +9235,7 @@ $$.GameLoopTouchSet__start_closure = {"": "Closure;this_0",
     t2 = t1.get$client(touch);
     t1 = t1.get$client(touch);
     t4 = t3.get$gameLoop();
-    $.JSArray_methods.add$1(glTouch.positions, $.GameLoopTouchPosition$(t2.x, t1.y, 0, 0, t4.get$gameTime(), t4.get$frame()));
+    $.JSArray_methods.add$1(glTouch.positions, $.GameLoopTouchPosition$(t2.x, t1.y, 0, 0, $.doubleTypeCheck(t4._gameTime), $.intTypeCheck(t4._frameCounter)));
     t1 = t3.get$gameLoop();
     if (t1.onTouchStart != null)
       t1.onTouchStart$2(t1, t1, glTouch);
@@ -8231,7 +9260,7 @@ $$.GameLoopTouchSet__end_closure = {"": "Closure;this_0",
     t2 = t3.get$client(touch);
     t3 = t3.get$client(touch);
     t4 = t1.get$gameLoop();
-    position = $.GameLoopTouchPosition$(t2.x, t3.y, 0, 0, t4.get$gameTime(), t4.get$frame());
+    position = $.GameLoopTouchPosition$(t2.x, t3.y, 0, 0, $.doubleTypeCheck(t4._gameTime), $.intTypeCheck(t4._frameCounter));
     $.JSArray_methods.add$1(glTouch.get$positions(), position);
     t1 = t1.get$gameLoop();
     if (t1.onTouchEnd != null)
@@ -8255,7 +9284,7 @@ $$.GameLoopTouchSet__move_closure = {"": "Closure;this_0",
     t2 = t3.get$client(touch);
     t3 = t3.get$client(touch);
     t1 = t1.get$gameLoop();
-    position = $.GameLoopTouchPosition$(t2.x, t3.y, 0, 0, t1.get$gameTime(), t1.get$frame());
+    position = $.GameLoopTouchPosition$(t2.x, t3.y, 0, 0, $.doubleTypeCheck(t1._gameTime), $.intTypeCheck(t1._frameCounter));
     $.JSArray_methods.add$1(glTouch.get$positions(), position);
   },
   $isFunction: true,
@@ -8268,24 +9297,19 @@ $$.Stats = {"": "Object;_timer,_ms,_msMin,_msMax,_fps,_fpsMin,_fpsMax,_frames,_m
   _onContainerMouseDown$1: function(e) {
     var t1;
     $.interceptedTypeCheck(e, "$isMouseEvent").preventDefault();
-    t1 = $.$add$ns(this.get$mode(this), 1);
+    t1 = $.$add$ns(this._mode, 1);
     this.set$mode(this, t1);
-    this.set$mode(this, $.$mod$n(t1, 2));
+    this.set$mode(this, $.JSNumber_methods.$mod(t1, 2));
   },
   get$_onContainerMouseDown: function() {
     return new $.Bound__onContainerMouseDown_Stats(this, "_onContainerMouseDown$1");
   },
   _createUi$0: function() {
-    var t1, t2, t3, bar;
+    var t1, t2, bar;
     t1 = $.HtmlDocument_methods.$$dom_createElement$1(document, "div");
     t2 = $.getInterceptor$x(t1);
     t2.set$id(t1, "stats");
-    t2 = t2.get$onMouseDown(t1);
-    t3 = this.get$_onContainerMouseDown();
-    $.functionTypeCheck(t3);
-    $.functionTypeCheck(null);
-    $.functionTypeCheck(null);
-    $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
+    t2.get$onMouseDown(t1).listen$1(this.get$_onContainerMouseDown());
     t1.style.cssText = "width:80px;opacity:0.9;cursor:pointer";
     this.container = $.interceptedTypeCheck(t1, "$isDivElement");
     t1 = $.HtmlDocument_methods.$$dom_createElement$1(document, "div");
@@ -8355,75 +9379,128 @@ $$.Stats = {"": "Object;_timer,_ms,_msMin,_msMax,_fps,_fpsMin,_fpsMax,_frames,_m
     return this._mode;
   },
   end$0: function(_) {
-    var t1, time, t2, t3, t4, t5, first;
+    var t1, t2, t3, t4, t5, t6, first, truncated;
     t1 = this._timer;
-    time = t1.get$elapsedMilliseconds();
-    $.intTypeCheck(time);
-    if (time !== (time | 0))
-      return this.end$0$bailout(1, t1, time);
-    this._ms = $.intTypeCheck(t1.get$elapsedMilliseconds());
+    t2 = $.JSNumber_methods.$tdiv(t1.get$elapsedTicks() * 1000, t1.get$frequency(t1));
+    $.intTypeCheck(t2);
+    if (t2 !== (t2 | 0))
+      return this.end$0$bailout(1, t2, t1);
+    this._ms = $.intTypeCheck($.JSNumber_methods.$tdiv(t1.get$elapsedTicks() * 1000, t1.get$frequency(t1)));
     this._msMin = $.intTypeCheck($.min(this._msMin, this._ms));
     this._msMax = $.intTypeCheck($.max(this._msMax, this._ms));
     this.msText.textContent = $.S(this._ms) + " MS (" + $.S(this._msMin) + " - " + $.S(this._msMax) + ")";
-    t2 = this.msGraph;
-    t3 = $.min(30, 30 - this._ms / 200 * 30);
-    t4 = $.getInterceptor$x(t2);
-    t5 = t4.get$children(t2);
-    first = t5.get$first(t5);
-    t2 = t4.get$children(t2);
-    t2.add$1(t2, first);
-    $.set$height$x(first.style, $.S($.JSNumber_methods.toInt$0(t3)) + "px");
+    t3 = this.msGraph;
+    t4 = $.min(30, 30 - this._ms / 200 * 30);
+    t5 = $.getInterceptor$x(t3);
+    t6 = t5.get$children(t3);
+    first = t6.get$first(t6);
+    t3 = t5.get$children(t3);
+    t3.add$1(t3, first);
+    t3 = first.style;
+    t4 = $.S($.JSNumber_methods.toInt$0(t4)) + "px";
+    t3.set$height;
+    $.setProperty$3$x(t3, "height", t4, "");
     this._frames = $.intTypeCheck(this._frames + 1);
-    if (time > 1000) {
-      this._fps = $.intTypeCheck($.JSNumber_methods.toInt$0($.JSDouble_methods.round$0(this._frames * 1000 / this._ms)));
+    if (t2 > 1000) {
+      t3 = $.JSDouble_methods.roundToDouble$0(this._frames * 1000 / this._ms);
+      if (isNaN(t3))
+        $.throwExpression($.UnsupportedError$("NaN"));
+      if (t3 == Infinity || t3 == -Infinity)
+        $.throwExpression($.UnsupportedError$("Infinity"));
+      truncated = t3 < 0 ? $.doubleTypeCheck(Math.ceil(t3)) : $.doubleTypeCheck(Math.floor(t3));
+      t3 = truncated == -0.0 ? 0 : truncated;
+      $.intTypeCheck(t3);
+      if (t3 !== (t3 | 0))
+        return this.end$0$bailout(2, t2, t1, t3);
+      if (isNaN(t3))
+        $.throwExpression($.UnsupportedError$("NaN"));
+      if (t3 == Infinity || t3 == -Infinity)
+        $.throwExpression($.UnsupportedError$("Infinity"));
+      truncated = t3 < 0 ? $.doubleTypeCheck(Math.ceil(t3)) : $.doubleTypeCheck(Math.floor(t3));
+      this._fps = $.intTypeCheck(truncated == -0.0 ? 0 : truncated);
       this._fpsMin = $.intTypeCheck($.min(this._fpsMin, this._fps));
       this._fpsMax = $.intTypeCheck($.max(this._fpsMax, this._fps));
       this.fpsText.textContent = $.S(this._fps) + " FPS (" + $.S(this._fpsMin) + " - " + $.S(this._fpsMax) + ")";
-      t2 = this.fpsGraph;
-      t3 = $.min(30, 30 - this._fps / 100 * 30);
-      t4 = $.getInterceptor$x(t2);
-      t5 = t4.get$children(t2);
-      first = t5.get$first(t5);
-      t2 = t4.get$children(t2);
-      t2.add$1(t2, first);
-      $.set$height$x(first.style, $.S($.JSNumber_methods.toInt$0(t3)) + "px");
+      t3 = this.fpsGraph;
+      t4 = $.min(30, 30 - this._fps / 100 * 30);
+      t5 = $.getInterceptor$x(t3);
+      t6 = t5.get$children(t3);
+      first = t6.get$first(t6);
+      t3 = t5.get$children(t3);
+      t3.add$1(t3, first);
+      t3 = first.style;
+      t4 = $.S($.JSNumber_methods.toInt$0(t4)) + "px";
+      t3.set$height;
+      $.setProperty$3$x(t3, "height", t4, "");
       t1.reset$0(t1);
       this._frames = 0;
     }
-    return time;
+    return t2;
   },
-  end$0$bailout: function(state0, t1, time) {
-    var t2, t3, t4, t5, first;
-    this._ms = $.intTypeCheck(t1.get$elapsedMilliseconds());
-    this._msMin = $.intTypeCheck($.min(this._msMin, this._ms));
-    this._msMax = $.intTypeCheck($.max(this._msMax, this._ms));
-    this.msText.textContent = $.S(this._ms) + " MS (" + $.S(this._msMin) + " - " + $.S(this._msMax) + ")";
-    t2 = this.msGraph;
-    t3 = $.min(30, 30 - this._ms / 200 * 30);
-    t4 = $.getInterceptor$x(t2);
-    t5 = t4.get$children(t2);
-    first = t5.get$first(t5);
-    t2 = t4.get$children(t2);
-    t2.add$1(t2, first);
-    $.set$height$x(first.style, $.S($.JSNumber_methods.toInt$0(t3)) + "px");
-    this._frames = $.intTypeCheck(this._frames + 1);
-    if ($.$gt$n(time, 1000)) {
-      this._fps = $.intTypeCheck($.JSNumber_methods.toInt$0($.JSDouble_methods.round$0(this._frames * 1000 / this._ms)));
-      this._fpsMin = $.intTypeCheck($.min(this._fpsMin, this._fps));
-      this._fpsMax = $.intTypeCheck($.max(this._fpsMax, this._fps));
-      this.fpsText.textContent = $.S(this._fps) + " FPS (" + $.S(this._fpsMin) + " - " + $.S(this._fpsMax) + ")";
-      t2 = this.fpsGraph;
-      t3 = $.min(30, 30 - this._fps / 100 * 30);
-      t4 = $.getInterceptor$x(t2);
-      t5 = t4.get$children(t2);
-      first = t5.get$first(t5);
-      t2 = t4.get$children(t2);
-      t2.add$1(t2, first);
-      $.set$height$x(first.style, $.S($.JSNumber_methods.toInt$0(t3)) + "px");
-      t1.reset$0(t1);
-      this._frames = 0;
+  end$0$bailout: function(state0, t2, t1, t3) {
+    switch (state0) {
+      case 0:
+        t1 = this._timer;
+        t2 = $.JSNumber_methods.$tdiv(t1.get$elapsedTicks() * 1000, t1.get$frequency(t1));
+        $.intTypeCheck(t2);
+      case 1:
+        state0 = 0;
+        this._ms = $.intTypeCheck($.JSNumber_methods.$tdiv(t1.get$elapsedTicks() * 1000, t1.get$frequency(t1)));
+        this._msMin = $.intTypeCheck($.min(this._msMin, this._ms));
+        this._msMax = $.intTypeCheck($.max(this._msMax, this._ms));
+        this.msText.textContent = $.S(this._ms) + " MS (" + $.S(this._msMin) + " - " + $.S(this._msMax) + ")";
+        t3 = this.msGraph;
+        t4 = $.min(30, 30 - this._ms / 200 * 30);
+        t5 = $.getInterceptor$x(t3);
+        t6 = t5.get$children(t3);
+        first = t6.get$first(t6);
+        t3 = t5.get$children(t3);
+        t3.add$1(t3, first);
+        t3 = first.style;
+        t4 = $.S($.JSNumber_methods.toInt$0(t4)) + "px";
+        t3.set$height;
+        $.setProperty$3$x(t3, "height", t4, "");
+        this._frames = $.intTypeCheck(this._frames + 1);
+      case 2:
+        var t4, t5, t6, first, truncated;
+        if (state0 === 2 || state0 === 0 && $.$gt$n(t2, 1000))
+          switch (state0) {
+            case 0:
+              t3 = $.JSDouble_methods.roundToDouble$0(this._frames * 1000 / this._ms);
+              if (isNaN(t3))
+                $.throwExpression($.UnsupportedError$("NaN"));
+              if (t3 == Infinity || t3 == -Infinity)
+                $.throwExpression($.UnsupportedError$("Infinity"));
+              truncated = t3 < 0 ? $.doubleTypeCheck(Math.ceil(t3)) : $.doubleTypeCheck(Math.floor(t3));
+              t3 = truncated == -0.0 ? 0 : truncated;
+              $.intTypeCheck(t3);
+            case 2:
+              state0 = 0;
+              if (isNaN(t3))
+                $.throwExpression($.UnsupportedError$("NaN"));
+              if (t3 == Infinity || t3 == -Infinity)
+                $.throwExpression($.UnsupportedError$("Infinity"));
+              truncated = $.$lt$n(t3, 0) ? $.doubleTypeCheck(Math.ceil(t3)) : $.doubleTypeCheck(Math.floor(t3));
+              this._fps = $.intTypeCheck(truncated == -0.0 ? 0 : truncated);
+              this._fpsMin = $.intTypeCheck($.min(this._fpsMin, this._fps));
+              this._fpsMax = $.intTypeCheck($.max(this._fpsMax, this._fps));
+              this.fpsText.textContent = $.S(this._fps) + " FPS (" + $.S(this._fpsMin) + " - " + $.S(this._fpsMax) + ")";
+              t3 = this.fpsGraph;
+              t4 = $.min(30, 30 - this._fps / 100 * 30);
+              t5 = $.getInterceptor$x(t3);
+              t6 = t5.get$children(t3);
+              first = t6.get$first(t6);
+              t3 = t5.get$children(t3);
+              t3.add$1(t3, first);
+              t3 = first.style;
+              t4 = $.S($.JSNumber_methods.toInt$0(t4)) + "px";
+              t3.set$height;
+              $.setProperty$3$x(t3, "height", t4, "");
+              t1.reset$0(t1);
+              this._frames = 0;
+          }
+        return t2;
     }
-    return time;
   },
   Stats$0: function() {
     this._createUi$0();
@@ -9101,8 +10178,8 @@ $$.Matrix4 = {"": "Object;storage",
       sz = $.doubleTypeCheck($.JSNumber_methods.get$z(x));
     } else {
       $.doubleTypeCheck(x);
-      sy = $.doubleTypeCheck(y == null ? x : $.toDouble$0$n(y));
-      sz = $.doubleTypeCheck(z == null ? x : $.toDouble$0$n(z));
+      sy = $.doubleTypeCheck(y == null ? x : y);
+      sz = $.doubleTypeCheck(z == null ? x : z);
       sx = x;
     }
     t1 = this.storage;
@@ -9450,20 +10527,6 @@ $$.Vector3 = {"": "Object;storage",
     if (2 >= t1.length)
       throw $.ioore(2);
     return t2 + $.S(t1[2]) + "]";
-  },
-  $negate: function(_) {
-    var t1, t2, t3, t4;
-    t1 = this.storage;
-    t2 = t1.length;
-    if (0 >= t2)
-      throw $.ioore(0);
-    t3 = t1[0];
-    if (1 >= t2)
-      throw $.ioore(1);
-    t4 = t1[1];
-    if (2 >= t2)
-      throw $.ioore(2);
-    return $.Vector3$(-t3, -t4, -t1[2]);
   },
   $sub: function(_, other) {
     var t1, t2, t3, t4, t5, t6, t7, t8;
@@ -9864,27 +10927,6 @@ $$.Vector4 = {"": "Object;storage",
 };
 
 // Native classes
-$$._WorkerStub = {"": "Interceptor;",
-  get$id: function(receiver) {
-    return receiver.id;
-  },
-  set$id: function(receiver, i) {
-    receiver.id = i;
-  },
-  set$onmessage: function(receiver, f) {
-    receiver.onmessage = f;
-  },
-  postMessage$1: function(receiver, msg) {
-    receiver.postMessage(msg);
-  },
-  terminate$0: function(receiver) {
-    receiver.terminate();
-  },
-  $is_ManagerStub: true,
-  $as_ManagerStub: null,
-  $asObject: null
-};
-
 $$._HTMLElement = {"": "Element;"};
 
 $$.AbstractWorker = {"": "EventTarget;",
@@ -9957,6 +10999,8 @@ $$.ButtonElement = {"": "Element;",
 
 $$.CDataSection = {"": "Text;"};
 
+$$.Canvas2DContextAttributes = {"": "Interceptor;"};
+
 $$.CanvasElement = {"": "Element;height=,width=",
   set$height: function(receiver, v) {
     receiver.height = $.intTypeCheck(v);
@@ -9996,8 +11040,6 @@ $$.CanvasGradient = {"": "Interceptor;"};
 
 $$.CanvasPattern = {"": "Interceptor;"};
 
-$$.CanvasProxy = {"": "Interceptor;"};
-
 $$.CanvasRenderingContext = {"": "Interceptor;"};
 
 $$.CanvasRenderingContext2D = {"": "CanvasRenderingContext;"};
@@ -10008,6 +11050,8 @@ $$.CloseEvent = {"": "Event;"};
 
 $$.Comment = {"": "CharacterData;"};
 
+$$.Composition = {"": "Interceptor;", $isComposition: true, $asComposition: null};
+
 $$.CompositionEvent = {"": "UIEvent;"};
 
 $$.ContentElement = {"": "Element;"};
@@ -10015,6 +11059,8 @@ $$.ContentElement = {"": "Element;"};
 $$.Coordinates = {"": "Interceptor;", $isCoordinates: true, $asCoordinates: null};
 
 $$.Crypto = {"": "Interceptor;", $isCrypto: true, $asCrypto: null};
+
+$$.Css = {"": "Interceptor;", $isCss: true, $asCss: null};
 
 $$.CssCharsetRule = {"": "CssRule;"};
 
@@ -10045,6 +11091,8 @@ $$.CssStyleDeclaration = {"": "Interceptor;length=",
     var exception;
     $.stringTypeCheck(value);
     try {
+      if (priority == null)
+        priority = "";
       receiver.setProperty(propertyName, value, priority);
       if (!!receiver.setAttribute)
         receiver.setAttribute(propertyName, value);
@@ -10053,14 +11101,8 @@ $$.CssStyleDeclaration = {"": "Interceptor;length=",
     }
 
   },
-  set$backgroundColor: function(receiver, value) {
-    this.setProperty$3(receiver, "background-color", value, "");
-  },
   set$display: function(receiver, value) {
     this.setProperty$3(receiver, "display", value, "");
-  },
-  set$height: function(receiver, value) {
-    this.setProperty$3(receiver, "height", value, "");
   },
   $isCssStyleDeclaration: true,
   $asCssStyleDeclaration: null
@@ -10069,6 +11111,8 @@ $$.CssStyleDeclaration = {"": "Interceptor;length=",
 $$.CssStyleRule = {"": "CssRule;"};
 
 $$.CssStyleSheet = {"": "StyleSheet;", $isCssStyleSheet: true, $asCssStyleSheet: null};
+
+$$.CssSupportsRule = {"": "CssRule;"};
 
 $$.CssUnknownRule = {"": "CssRule;"};
 
@@ -10143,22 +11187,25 @@ $$.Document = {"": "Node;",
     return receiver.webkitRegister($name);
   },
   get$onFullscreenChange: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_webkitfullscreenchange.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_webkitfullscreenchange.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
   },
   get$onFullscreenError: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_webkitfullscreenerror.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_webkitfullscreenerror.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
   },
   get$onPointerLockChange: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_webkitpointerlockchange.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_webkitpointerlockchange.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
   },
   $isDocument: true,
   $asDocument: null
 };
 
 $$.DocumentFragment = {"": "Node;",
+  set$_children: function(receiver, v) {
+    receiver._children = $.listTypeCheck(v);
+  },
   get$children: function(receiver) {
     if (receiver._children == null)
-      receiver._children = $.listTypeCheck($.FilteredElementList$(receiver, null));
+      this.set$_children(receiver, $.FilteredElementList$(receiver, null));
     return $.listTypeCheck(receiver._children);
   },
   $isDocumentFragment: true,
@@ -10181,12 +11228,17 @@ $$.DomParser = {"": "Interceptor;"};
 
 $$.DomSettableTokenList = {"": "DomTokenList;", $isDomSettableTokenList: true, $asDomSettableTokenList: null};
 
-$$.DomStringList = {"": "Object_ListMixin_ImmutableListMixin;",
+$$.DomStringList = {"": "Interceptor_ListMixin_ImmutableListMixin;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -10196,6 +11248,17 @@ $$.DomStringList = {"": "Object_ListMixin_ImmutableListMixin;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isList: true,
   $asList: function() { return [$.JSString]; },
@@ -10222,23 +11285,20 @@ $$.Element = {"": "Node;$$dom_children:children=,id=",
   get$client: function(receiver) {
     return $.Rect$(receiver.clientLeft, receiver.clientTop, receiver.clientWidth, receiver.clientHeight);
   },
-  get$offset: function(receiver) {
-    return $.Rect$(receiver.offsetLeft, receiver.offsetTop, receiver.offsetWidth, receiver.offsetHeight);
-  },
   get$model: function(receiver) {
     return receiver._model;
   },
   get$onClick: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_click.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_click.forTarget$1(receiver), "$isStream", [$.MouseEvent], "$asStream");
   },
   get$onError: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_error.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_error.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
   },
   get$onLoad: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_load.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_load.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
   },
   get$onMouseDown: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_mousedown.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_mousedown.forTarget$1(receiver), "$isStream", [$.MouseEvent], "$asStream");
   },
   $isElement: true,
   $asElement: null,
@@ -10301,9 +11361,6 @@ $$.EventSource = {"": "EventTarget;",
 };
 
 $$.EventTarget = {"": "Interceptor;",
-  get$on: function(receiver) {
-    return $.Events$(receiver);
-  },
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.addEventListener($.stringTypeCheck(type), $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
   },
@@ -10328,12 +11385,17 @@ $$.FileException = {"": "Interceptor;",
   }
 };
 
-$$.FileList = {"": "Object_ListMixin_ImmutableListMixin0;",
+$$.FileList = {"": "Interceptor_ListMixin_ImmutableListMixin0;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -10343,6 +11405,17 @@ $$.FileList = {"": "Object_ListMixin_ImmutableListMixin0;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isFileList: true,
   $asFileList: null,
@@ -10411,12 +11484,17 @@ $$.HeadingElement = {"": "Element;"};
 
 $$.History = {"": "Interceptor;length=", $isHistory: true, $asHistory: null, $asObject: null};
 
-$$.HtmlAllCollection = {"": "Object_ListMixin_ImmutableListMixin1;",
+$$.HtmlAllCollection = {"": "Interceptor_ListMixin_ImmutableListMixin1;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -10426,6 +11504,17 @@ $$.HtmlAllCollection = {"": "Object_ListMixin_ImmutableListMixin1;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isList: true,
   $asList: function() { return [$.Node]; },
@@ -10436,12 +11525,17 @@ $$.HtmlAllCollection = {"": "Object_ListMixin_ImmutableListMixin1;",
   $asJavaScriptIndexingBehavior: null
 };
 
-$$.HtmlCollection = {"": "Object_ListMixin_ImmutableListMixin2;",
+$$.HtmlCollection = {"": "Interceptor_ListMixin_ImmutableListMixin2;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -10451,6 +11545,17 @@ $$.HtmlCollection = {"": "Object_ListMixin_ImmutableListMixin2;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isHtmlCollection: true,
   $asHtmlCollection: null,
@@ -10484,20 +11589,17 @@ $$.HttpRequest = {"": "EventTarget;responseText=",
   open$3$async: function($receiver, method, url, async) {
     return $receiver.open(method, url, async);
   },
+  overrideMimeType$1: function(receiver, override) {
+    return receiver.overrideMimeType(override);
+  },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener($.stringTypeCheck(type), $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
   },
   send$1: function(receiver, data) {
     return receiver.send(data);
   },
-  get$onError: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_error.forTarget$1(receiver), "$isStream");
-  },
-  get$onLoad: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_load.forTarget$1(receiver), "$isStream");
-  },
-  get$onProgress: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_progress.forTarget$1(receiver), "$isStream");
+  setRequestHeader$2: function(receiver, header, value) {
+    return receiver.setRequestHeader($.stringTypeCheck(header), $.stringTypeCheck(value));
   },
   $isHttpRequest: true,
   $asHttpRequest: null
@@ -10575,6 +11677,8 @@ $$.InputElement = {"": "Element;height=,width=",
   $asEventTarget: null
 };
 
+$$.InputMethodContext = {"": "Interceptor;"};
+
 $$.KeyboardEvent = {"": "UIEvent;",
   get$keyCode: function(receiver) {
     return receiver.keyCode;
@@ -10603,8 +11707,6 @@ $$.LinkElement = {"": "Element;",
     receiver.type = $.stringTypeCheck(v);
   }
 };
-
-$$.LocalMediaStream = {"": "MediaStream;", $isEventTarget: true, $asEventTarget: null, $asObject: null};
 
 $$.Location = {"": "Interceptor;",
   toString$0: function(receiver) {
@@ -10710,14 +11812,34 @@ $$.Metadata = {"": "Interceptor;"};
 
 $$.MeterElement = {"": "Element;"};
 
+$$.MidiConnectionEvent = {"": "Event;"};
+
+$$.MidiMessageEvent = {"": "Event;"};
+
+$$.MidiPort = {"": "EventTarget;id=",
+  $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
+    return receiver.addEventListener($.stringTypeCheck(type), $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
+  },
+  $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
+    return receiver.removeEventListener($.stringTypeCheck(type), $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
+  },
+  $isMidiPort: true,
+  $asMidiPort: null
+};
+
 $$.MimeType = {"": "Interceptor;", $isMimeType: true, $asMimeType: null};
 
-$$.MimeTypeArray = {"": "Object_ListMixin_ImmutableListMixin3;",
+$$.MimeTypeArray = {"": "Interceptor_ListMixin_ImmutableListMixin3;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -10727,6 +11849,17 @@ $$.MimeTypeArray = {"": "Object_ListMixin_ImmutableListMixin3;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isMimeTypeArray: true,
   $asMimeTypeArray: null,
@@ -10825,12 +11958,17 @@ $$.NodeFilter = {"": "Interceptor;", $isNodeFilter: true, $asNodeFilter: null};
 
 $$.NodeIterator = {"": "Interceptor;"};
 
-$$.NodeList = {"": "Object_ListMixin_ImmutableListMixin4;",
+$$.NodeList = {"": "Interceptor_ListMixin_ImmutableListMixin4;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -10840,6 +11978,17 @@ $$.NodeList = {"": "Object_ListMixin_ImmutableListMixin4;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isList: true,
   $asList: function() { return [$.Node]; },
@@ -10901,8 +12050,6 @@ $$.Performance = {"": "EventTarget;", $isPerformance: true, $asPerformance: null
 
 $$.PerformanceEntry = {"": "Interceptor;"};
 
-$$.PerformanceEntryList = {"": "Interceptor;length="};
-
 $$.PerformanceMark = {"": "PerformanceEntry;"};
 
 $$.PerformanceMeasure = {"": "PerformanceEntry;"};
@@ -10915,12 +12062,17 @@ $$.PerformanceTiming = {"": "Interceptor;", $isPerformanceTiming: true, $asPerfo
 
 $$.Plugin = {"": "Interceptor;length=", $isPlugin: true, $asPlugin: null};
 
-$$.PluginArray = {"": "Object_ListMixin_ImmutableListMixin5;",
+$$.PluginArray = {"": "Interceptor_ListMixin_ImmutableListMixin5;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -10930,6 +12082,17 @@ $$.PluginArray = {"": "Object_ListMixin_ImmutableListMixin5;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isPluginArray: true,
   $asPluginArray: null,
@@ -10959,7 +12122,9 @@ $$.QuoteElement = {"": "Element;"};
 $$.Range = {"": "Interceptor;",
   toString$0: function(receiver) {
     return receiver.toString();
-  }
+  },
+  $isRange: true,
+  $asRange: null
 };
 
 $$.RangeException = {"": "Interceptor;",
@@ -11064,7 +12229,12 @@ $$.SourceBufferList = {"": "EventTarget_ListMixin_ImmutableListMixin;",
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11074,6 +12244,17 @@ $$.SourceBufferList = {"": "EventTarget_ListMixin_ImmutableListMixin;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.addEventListener($.stringTypeCheck(type), $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
@@ -11105,12 +12286,17 @@ $$.SpanElement = {"": "Element;", $isSpanElement: true, $asSpanElement: null};
 
 $$.SpeechGrammar = {"": "Interceptor;", $isSpeechGrammar: true, $asSpeechGrammar: null};
 
-$$.SpeechGrammarList = {"": "Object_ListMixin_ImmutableListMixin6;",
+$$.SpeechGrammarList = {"": "Interceptor_ListMixin_ImmutableListMixin6;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11120,6 +12306,17 @@ $$.SpeechGrammarList = {"": "Object_ListMixin_ImmutableListMixin6;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isSpeechGrammarList: true,
   $asSpeechGrammarList: null,
@@ -11153,6 +12350,18 @@ $$.SpeechRecognitionEvent = {"": "Event;"};
 
 $$.SpeechRecognitionResult = {"": "Interceptor;length=", $isSpeechRecognitionResult: true, $asSpeechRecognitionResult: null};
 
+$$.SpeechSynthesis = {"": "Interceptor;", $isSpeechSynthesis: true, $asSpeechSynthesis: null};
+
+$$.SpeechSynthesisEvent = {"": "Event;"};
+
+$$.SpeechSynthesisUtterance = {"": "EventTarget;",
+  set$text: function(receiver, v) {
+    receiver.text = $.stringTypeCheck(v);
+  }
+};
+
+$$.SpeechSynthesisVoice = {"": "Interceptor;", $isSpeechSynthesisVoice: true, $asSpeechSynthesisVoice: null};
+
 $$.Storage = {"": "Interceptor;",
   $index: function(receiver, key) {
     return this.$$dom_getItem$1(receiver, $.stringTypeCheck(key));
@@ -11162,7 +12371,7 @@ $$.Storage = {"": "Interceptor;",
   },
   forEach$1: function(receiver, f) {
     var i, key;
-    $.functionTypeCheck(f);
+    $.propertyTypeCheck(f, "$isFunction");
     for (i = 0; true; ++i) {
       key = this.$$dom_key$1(receiver, i);
       if (key == null)
@@ -11262,12 +12471,17 @@ $$.TextTrackCue = {"": "EventTarget;id=",
   $asTextTrackCue: null
 };
 
-$$.TextTrackCueList = {"": "Object_ListMixin_ImmutableListMixin7;",
+$$.TextTrackCueList = {"": "Interceptor_ListMixin_ImmutableListMixin7;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11277,6 +12491,17 @@ $$.TextTrackCueList = {"": "Object_ListMixin_ImmutableListMixin7;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isTextTrackCueList: true,
   $asTextTrackCueList: null,
@@ -11294,7 +12519,12 @@ $$.TextTrackList = {"": "EventTarget_ListMixin_ImmutableListMixin0;",
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11304,6 +12534,17 @@ $$.TextTrackList = {"": "EventTarget_ListMixin_ImmutableListMixin0;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.addEventListener($.stringTypeCheck(type), $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
@@ -11336,12 +12577,17 @@ $$.Touch = {"": "Interceptor;",
 
 $$.TouchEvent = {"": "UIEvent;", $isTouchEvent: true, $asTouchEvent: null};
 
-$$.TouchList = {"": "Object_ListMixin_ImmutableListMixin8;",
+$$.TouchList = {"": "Interceptor_ListMixin_ImmutableListMixin8;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11351,6 +12597,17 @@ $$.TouchList = {"": "Object_ListMixin_ImmutableListMixin8;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isTouchList: true,
   $asTouchList: null,
@@ -11410,18 +12667,6 @@ $$.WebSocket = {"": "EventTarget;",
   },
   send$1: function(receiver, data) {
     return receiver.send(data);
-  },
-  get$onClose: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_close.forTarget$1(receiver), "$isStream");
-  },
-  get$onError: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_error.forTarget$1(receiver), "$isStream");
-  },
-  get$onMessage: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_message.forTarget$1(receiver), "$isStream");
-  },
-  get$onOpen: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_open.forTarget$1(receiver), "$isStream");
   },
   $isWebSocket: true,
   $asWebSocket: null
@@ -11520,43 +12765,39 @@ $$.Window = {"": "EventTarget;",
     return receiver.toString();
   },
   get$onKeyDown: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_keydown.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_keydown.forTarget$1(receiver), "$isStream", [$.KeyboardEvent], "$asStream");
   },
   get$onKeyUp: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_keyup.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_keyup.forTarget$1(receiver), "$isStream", [$.KeyboardEvent], "$asStream");
   },
   get$onMouseDown: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_mousedown.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_mousedown.forTarget$1(receiver), "$isStream", [$.MouseEvent], "$asStream");
   },
   get$onMouseMove: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_mousemove.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_mousemove.forTarget$1(receiver), "$isStream", [$.MouseEvent], "$asStream");
   },
   get$onMouseUp: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_mouseup.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_mouseup.forTarget$1(receiver), "$isStream", [$.MouseEvent], "$asStream");
   },
   get$onMouseWheel: function(receiver) {
-    return $.propertyTypeCheck($._CustomEventStreamProvider__determineMouseWheelEventType.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($._CustomEventStreamProvider__determineMouseWheelEventType.forTarget$1(receiver), "$isStream", [$.WheelEvent], "$asStream");
   },
   get$onResize: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_resize.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_resize.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
   },
   get$onTouchEnd: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_touchend.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_touchend.forTarget$1(receiver), "$isStream", [$.TouchEvent], "$asStream");
   },
   get$onTouchMove: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_touchmove.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_touchmove.forTarget$1(receiver), "$isStream", [$.TouchEvent], "$asStream");
   },
   get$onTouchStart: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_touchstart.forTarget$1(receiver), "$isStream");
+    return $.assertSubtype($.EventStreamProvider_touchstart.forTarget$1(receiver), "$isStream", [$.TouchEvent], "$asStream");
   },
   $asObject: null
 };
 
-$$.Worker = {"": "AbstractWorker;",
-  terminate$0: function(receiver) {
-    return receiver.terminate();
-  }
-};
+$$.Worker = {"": "AbstractWorker;"};
 
 $$.XPathEvaluator = {"": "Interceptor;"};
 
@@ -11610,20 +12851,22 @@ $$._ClientRect = {"": "Interceptor;height=,left=,top=,width=",
       t1 = false;
     return t1;
   },
-  toInt$0: function(receiver) {
-    return $.Rect$($.toInt$0$nx(receiver.left), $.toInt$0$nx(receiver.top), $.toInt$0$nx(receiver.width), $.toInt$0$nx(receiver.height));
-  },
   $isRect: true,
   $asRect: null,
   $asObject: null
 };
 
-$$._ClientRectList = {"": "Object_ListMixin_ImmutableListMixin9;",
+$$._ClientRectList = {"": "Interceptor_ListMixin_ImmutableListMixin9;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11634,6 +12877,17 @@ $$._ClientRectList = {"": "Object_ListMixin_ImmutableListMixin9;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
+  },
   $isList: true,
   $asList: function() { return [$.Rect]; },
   $isIterable: true,
@@ -11643,12 +12897,17 @@ $$._ClientRectList = {"": "Object_ListMixin_ImmutableListMixin9;",
   $asJavaScriptIndexingBehavior: null
 };
 
-$$._CssRuleList = {"": "Object_ListMixin_ImmutableListMixin10;",
+$$._CssRuleList = {"": "Interceptor_ListMixin_ImmutableListMixin10;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11658,6 +12917,17 @@ $$._CssRuleList = {"": "Object_ListMixin_ImmutableListMixin10;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isList: true,
   $asList: function() { return [$.CssRule]; },
@@ -11673,7 +12943,12 @@ $$._CssValueList = {"": "_CSSValue_ListMixin_ImmutableListMixin;",
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11683,6 +12958,17 @@ $$._CssValueList = {"": "_CSSValue_ListMixin_ImmutableListMixin;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isList: true,
   $asList: function() { return [$._CSSValue]; },
@@ -11695,12 +12981,17 @@ $$._CssValueList = {"": "_CSSValue_ListMixin_ImmutableListMixin;",
 
 $$._DomPoint = {"": "Interceptor;"};
 
-$$._EntryArray = {"": "Object_ListMixin_ImmutableListMixin11;",
+$$._EntryArray = {"": "Interceptor_ListMixin_ImmutableListMixin11;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11711,6 +13002,17 @@ $$._EntryArray = {"": "Object_ListMixin_ImmutableListMixin11;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
+  },
   $isList: true,
   $asList: function() { return [$.Entry]; },
   $isIterable: true,
@@ -11720,12 +13022,17 @@ $$._EntryArray = {"": "Object_ListMixin_ImmutableListMixin11;",
   $asJavaScriptIndexingBehavior: null
 };
 
-$$._EntryArraySync = {"": "Object_ListMixin_ImmutableListMixin12;",
+$$._EntryArraySync = {"": "Interceptor_ListMixin_ImmutableListMixin12;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11735,6 +13042,17 @@ $$._EntryArraySync = {"": "Object_ListMixin_ImmutableListMixin12;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isList: true,
   $asList: function() { return [$._EntrySync]; },
@@ -11747,12 +13065,17 @@ $$._EntryArraySync = {"": "Object_ListMixin_ImmutableListMixin12;",
 
 $$._EntrySync = {"": "Interceptor;", $is_EntrySync: true, $as_EntrySync: null};
 
-$$._GamepadList = {"": "Object_ListMixin_ImmutableListMixin13;",
+$$._GamepadList = {"": "Interceptor_ListMixin_ImmutableListMixin13;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11763,6 +13086,17 @@ $$._GamepadList = {"": "Object_ListMixin_ImmutableListMixin13;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
+  },
   $isList: true,
   $asList: function() { return [$.Gamepad]; },
   $isIterable: true,
@@ -11772,12 +13106,17 @@ $$._GamepadList = {"": "Object_ListMixin_ImmutableListMixin13;",
   $asJavaScriptIndexingBehavior: null
 };
 
-$$._NamedNodeMap = {"": "Object_ListMixin_ImmutableListMixin14;",
+$$._NamedNodeMap = {"": "Interceptor_ListMixin_ImmutableListMixin14;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11787,6 +13126,17 @@ $$._NamedNodeMap = {"": "Object_ListMixin_ImmutableListMixin14;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $is_NamedNodeMap: true,
   $as_NamedNodeMap: null,
@@ -11799,12 +13149,17 @@ $$._NamedNodeMap = {"": "Object_ListMixin_ImmutableListMixin14;",
   $asJavaScriptIndexingBehavior: null
 };
 
-$$._SpeechInputResultList = {"": "Object_ListMixin_ImmutableListMixin15;",
+$$._SpeechInputResultList = {"": "Interceptor_ListMixin_ImmutableListMixin15;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11815,6 +13170,17 @@ $$._SpeechInputResultList = {"": "Object_ListMixin_ImmutableListMixin15;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
+  },
   $isList: true,
   $asList: function() { return [$.SpeechInputResult]; },
   $isIterable: true,
@@ -11824,12 +13190,17 @@ $$._SpeechInputResultList = {"": "Object_ListMixin_ImmutableListMixin15;",
   $asJavaScriptIndexingBehavior: null
 };
 
-$$._SpeechRecognitionResultList = {"": "Object_ListMixin_ImmutableListMixin16;",
+$$._SpeechRecognitionResultList = {"": "Interceptor_ListMixin_ImmutableListMixin16;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11840,6 +13211,17 @@ $$._SpeechRecognitionResultList = {"": "Object_ListMixin_ImmutableListMixin16;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
+  },
   $isList: true,
   $asList: function() { return [$.SpeechRecognitionResult]; },
   $isIterable: true,
@@ -11849,12 +13231,17 @@ $$._SpeechRecognitionResultList = {"": "Object_ListMixin_ImmutableListMixin16;",
   $asJavaScriptIndexingBehavior: null
 };
 
-$$._StyleSheetList = {"": "Object_ListMixin_ImmutableListMixin17;",
+$$._StyleSheetList = {"": "Interceptor_ListMixin_ImmutableListMixin17;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return receiver[$.intTypeCheck(index)];
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return receiver[index];
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -11864,6 +13251,17 @@ $$._StyleSheetList = {"": "Object_ListMixin_ImmutableListMixin17;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   $isList: true,
   $asList: function() { return [$.StyleSheet]; },
@@ -11909,7 +13307,7 @@ $$.ObjectStore = {"": "Interceptor;",
     } catch (exception) {
       t1 = $.unwrapException(exception);
       e = t1;
-      stacktrace = $.getTraceFromException(exception);
+      stacktrace = $._StackTrace$(exception.stack);
       return $._FutureImpl$immediateError(e, stacktrace, null);
     }
 
@@ -11941,20 +13339,11 @@ $$.ObjectStore = {"": "Interceptor;",
 $$.OpenDBRequest = {"": "Request;", $isEventTarget: true, $asEventTarget: null, $asObject: null};
 
 $$.Request = {"": "EventTarget;",
-  get$result: function(receiver) {
-    return $._convertNativeToDart_IDBAny(receiver.result);
-  },
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.addEventListener($.stringTypeCheck(type), $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
   },
   $$dom_removeEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.removeEventListener($.stringTypeCheck(type), $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
-  },
-  get$onError: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_error.forTarget$1(receiver), "$isStream");
-  },
-  get$onSuccess: function(receiver) {
-    return $.propertyTypeCheck($.EventStreamProvider_success.forTarget$1(receiver), "$isStream");
   }
 };
 
@@ -12079,9 +13468,14 @@ $$.ImageElement0 = {"": "StyledElement;height=,width=", $asObject: null};
 
 $$.Length = {"": "Interceptor;", $isLength: true, $asLength: null};
 
-$$.LengthList = {"": "Object_ListMixin_ImmutableListMixin18;",
+$$.LengthList = {"": "Interceptor_ListMixin_ImmutableListMixin18;",
   $index: function(receiver, index) {
-    return this.getItem$1(receiver, $.intTypeCheck(index));
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return this.getItem$1(receiver, index);
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -12095,8 +13489,16 @@ $$.LengthList = {"": "Object_ListMixin_ImmutableListMixin18;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
-  clear$0: function(receiver) {
-    return receiver.clear();
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   getItem$1: function(receiver, index) {
     return receiver.getItem(index);
@@ -12126,9 +13528,14 @@ $$.MetadataElement = {"": "SvgElement;"};
 
 $$.Number = {"": "Interceptor;", $isNumber: true, $asNumber: null};
 
-$$.NumberList = {"": "Object_ListMixin_ImmutableListMixin19;",
+$$.NumberList = {"": "Interceptor_ListMixin_ImmutableListMixin19;",
   $index: function(receiver, index) {
-    return this.getItem$1(receiver, $.intTypeCheck(index));
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return this.getItem$1(receiver, index);
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -12142,8 +13549,16 @@ $$.NumberList = {"": "Object_ListMixin_ImmutableListMixin19;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
-  clear$0: function(receiver) {
-    return receiver.clear();
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   getItem$1: function(receiver, index) {
     return receiver.getItem(index);
@@ -12197,9 +13612,14 @@ $$.PathSegLinetoVerticalAbs = {"": "PathSeg;"};
 
 $$.PathSegLinetoVerticalRel = {"": "PathSeg;"};
 
-$$.PathSegList = {"": "Object_ListMixin_ImmutableListMixin20;",
+$$.PathSegList = {"": "Interceptor_ListMixin_ImmutableListMixin20;",
   $index: function(receiver, index) {
-    return this.getItem$1(receiver, $.intTypeCheck(index));
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return this.getItem$1(receiver, index);
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -12213,8 +13633,16 @@ $$.PathSegList = {"": "Object_ListMixin_ImmutableListMixin20;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
-  clear$0: function(receiver) {
-    return receiver.clear();
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   getItem$1: function(receiver, index) {
     return receiver.getItem(index);
@@ -12265,9 +13693,14 @@ $$.SetElement = {"": "AnimationElement;"};
 
 $$.StopElement = {"": "StyledElement;"};
 
-$$.StringList = {"": "Object_ListMixin_ImmutableListMixin21;",
+$$.StringList = {"": "Interceptor_ListMixin_ImmutableListMixin21;",
   $index: function(receiver, index) {
-    return this.getItem$1(receiver, $.intTypeCheck(index));
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return this.getItem$1(receiver, index);
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -12281,8 +13714,16 @@ $$.StringList = {"": "Object_ListMixin_ImmutableListMixin21;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
-  clear$0: function(receiver) {
-    return receiver.clear();
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   getItem$1: function(receiver, index) {
     return receiver.getItem(index);
@@ -12352,9 +13793,14 @@ $$.TitleElement0 = {"": "StyledElement;", $asObject: null};
 
 $$.Transform = {"": "Interceptor;", $isTransform: true, $asTransform: null};
 
-$$.TransformList = {"": "Object_ListMixin_ImmutableListMixin22;",
+$$.TransformList = {"": "Interceptor_ListMixin_ImmutableListMixin22;",
   $index: function(receiver, index) {
-    return this.getItem$1(receiver, $.intTypeCheck(index));
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return this.getItem$1(receiver, index);
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -12368,8 +13814,16 @@ $$.TransformList = {"": "Object_ListMixin_ImmutableListMixin22;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
-  clear$0: function(receiver) {
-    return receiver.clear();
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   getItem$1: function(receiver, index) {
     return receiver.getItem(index);
@@ -12395,12 +13849,17 @@ $$.ViewSpec = {"": "Interceptor;", $isViewSpec: true, $asViewSpec: null};
 
 $$.ZoomEvent = {"": "UIEvent;"};
 
-$$._ElementInstanceList = {"": "Object_ListMixin_ImmutableListMixin23;",
+$$._ElementInstanceList = {"": "Interceptor_ListMixin_ImmutableListMixin23;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return this.item$1(receiver, $.intTypeCheck(index));
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return this.item$1(receiver, index);
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -12410,6 +13869,17 @@ $$._ElementInstanceList = {"": "Object_ListMixin_ImmutableListMixin23;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   item$1: function(receiver, index) {
     return receiver.item(index);
@@ -12492,10 +13962,10 @@ $$.Float32List = {"": "TypedData;",
     receiver[index] = value;
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.JSNumber), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.JSNumber), "$isIterator", [$.JSNumber], "$asIterator");
   },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   toList$1$growable: function(receiver, growable) {
     return $.listTypeCheck($.List_List$from(receiver, growable, $.JSNumber));
@@ -12516,11 +13986,12 @@ $$.Float32List = {"": "TypedData;",
     $.numTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
-  clear$0: function(receiver) {
-    throw $.wrapException($.UnsupportedError$("Cannot clear immutable List."));
+  set$length: function(receiver, value) {
+    $.intTypeCheck(value);
+    throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Lists_indexOf(receiver, $.numTypeCheck(element), start, receiver.length));
+    return $.intTypeCheck($._Lists_indexOf(receiver, $.numTypeCheck(element), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
@@ -12544,7 +14015,7 @@ $$.Float32List = {"": "TypedData;",
     $.intTypeCheck(end);
     if (end == null)
       end = receiver.length;
-    return $.listTypeCheck($.Lists_getRange(receiver, start, end, []));
+    return $.listTypeCheck($._Lists_getRange(receiver, start, end, []));
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
@@ -12623,10 +14094,10 @@ $$.Float64List = {"": "TypedData;",
     receiver[index] = value;
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.JSNumber), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.JSNumber), "$isIterator", [$.JSNumber], "$asIterator");
   },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   toList$1$growable: function(receiver, growable) {
     return $.listTypeCheck($.List_List$from(receiver, growable, $.JSNumber));
@@ -12647,11 +14118,12 @@ $$.Float64List = {"": "TypedData;",
     $.numTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
-  clear$0: function(receiver) {
-    throw $.wrapException($.UnsupportedError$("Cannot clear immutable List."));
+  set$length: function(receiver, value) {
+    $.intTypeCheck(value);
+    throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Lists_indexOf(receiver, $.numTypeCheck(element), start, receiver.length));
+    return $.intTypeCheck($._Lists_indexOf(receiver, $.numTypeCheck(element), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
@@ -12675,7 +14147,7 @@ $$.Float64List = {"": "TypedData;",
     $.intTypeCheck(end);
     if (end == null)
       end = receiver.length;
-    return $.listTypeCheck($.Lists_getRange(receiver, start, end, []));
+    return $.listTypeCheck($._Lists_getRange(receiver, start, end, []));
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
@@ -12752,10 +14224,10 @@ $$.Int16List = {"": "TypedData;",
     receiver[index] = value;
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.JSInt), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.JSInt), "$isIterator", [$.JSInt], "$asIterator");
   },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   toList$1$growable: function(receiver, growable) {
     return $.listTypeCheck($.List_List$from(receiver, growable, $.JSInt));
@@ -12776,11 +14248,12 @@ $$.Int16List = {"": "TypedData;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
-  clear$0: function(receiver) {
-    throw $.wrapException($.UnsupportedError$("Cannot clear immutable List."));
+  set$length: function(receiver, value) {
+    $.intTypeCheck(value);
+    throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
+    return $.intTypeCheck($._Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
@@ -12804,7 +14277,7 @@ $$.Int16List = {"": "TypedData;",
     $.intTypeCheck(end);
     if (end == null)
       end = receiver.length;
-    return $.listTypeCheck($.Lists_getRange(receiver, start, end, []));
+    return $.listTypeCheck($._Lists_getRange(receiver, start, end, []));
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
@@ -12881,10 +14354,10 @@ $$.Int32List = {"": "TypedData;",
     receiver[index] = value;
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.JSInt), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.JSInt), "$isIterator", [$.JSInt], "$asIterator");
   },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   toList$1$growable: function(receiver, growable) {
     return $.listTypeCheck($.List_List$from(receiver, growable, $.JSInt));
@@ -12905,11 +14378,12 @@ $$.Int32List = {"": "TypedData;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
-  clear$0: function(receiver) {
-    throw $.wrapException($.UnsupportedError$("Cannot clear immutable List."));
+  set$length: function(receiver, value) {
+    $.intTypeCheck(value);
+    throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
+    return $.intTypeCheck($._Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
@@ -12933,7 +14407,7 @@ $$.Int32List = {"": "TypedData;",
     $.intTypeCheck(end);
     if (end == null)
       end = receiver.length;
-    return $.listTypeCheck($.Lists_getRange(receiver, start, end, []));
+    return $.listTypeCheck($._Lists_getRange(receiver, start, end, []));
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
@@ -13010,10 +14484,10 @@ $$.Int8List = {"": "TypedData;",
     receiver[index] = value;
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.JSInt), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.JSInt), "$isIterator", [$.JSInt], "$asIterator");
   },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   toList$1$growable: function(receiver, growable) {
     return $.listTypeCheck($.List_List$from(receiver, growable, $.JSInt));
@@ -13034,11 +14508,12 @@ $$.Int8List = {"": "TypedData;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
-  clear$0: function(receiver) {
-    throw $.wrapException($.UnsupportedError$("Cannot clear immutable List."));
+  set$length: function(receiver, value) {
+    $.intTypeCheck(value);
+    throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
+    return $.intTypeCheck($._Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
@@ -13062,7 +14537,7 @@ $$.Int8List = {"": "TypedData;",
     $.intTypeCheck(end);
     if (end == null)
       end = receiver.length;
-    return $.listTypeCheck($.Lists_getRange(receiver, start, end, []));
+    return $.listTypeCheck($._Lists_getRange(receiver, start, end, []));
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
@@ -13139,10 +14614,10 @@ $$.Uint16List = {"": "TypedData;",
     receiver[index] = value;
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.JSInt), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.JSInt), "$isIterator", [$.JSInt], "$asIterator");
   },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   toList$1$growable: function(receiver, growable) {
     return $.listTypeCheck($.List_List$from(receiver, growable, $.JSInt));
@@ -13163,11 +14638,12 @@ $$.Uint16List = {"": "TypedData;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
-  clear$0: function(receiver) {
-    throw $.wrapException($.UnsupportedError$("Cannot clear immutable List."));
+  set$length: function(receiver, value) {
+    $.intTypeCheck(value);
+    throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
+    return $.intTypeCheck($._Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
@@ -13191,7 +14667,7 @@ $$.Uint16List = {"": "TypedData;",
     $.intTypeCheck(end);
     if (end == null)
       end = receiver.length;
-    return $.listTypeCheck($.Lists_getRange(receiver, start, end, []));
+    return $.listTypeCheck($._Lists_getRange(receiver, start, end, []));
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
@@ -13268,10 +14744,10 @@ $$.Uint32List = {"": "TypedData;",
     receiver[index] = value;
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.JSInt), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.JSInt), "$isIterator", [$.JSInt], "$asIterator");
   },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   toList$1$growable: function(receiver, growable) {
     return $.listTypeCheck($.List_List$from(receiver, growable, $.JSInt));
@@ -13292,11 +14768,12 @@ $$.Uint32List = {"": "TypedData;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
-  clear$0: function(receiver) {
-    throw $.wrapException($.UnsupportedError$("Cannot clear immutable List."));
+  set$length: function(receiver, value) {
+    $.intTypeCheck(value);
+    throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
+    return $.intTypeCheck($._Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
@@ -13320,7 +14797,7 @@ $$.Uint32List = {"": "TypedData;",
     $.intTypeCheck(end);
     if (end == null)
       end = receiver.length;
-    return $.listTypeCheck($.Lists_getRange(receiver, start, end, []));
+    return $.listTypeCheck($._Lists_getRange(receiver, start, end, []));
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
@@ -13394,10 +14871,10 @@ $$.Uint8ClampedList = {"": "Uint8List;",
     receiver[index] = value;
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.JSInt), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.JSInt), "$isIterator", [$.JSInt], "$asIterator");
   },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   toList$1$growable: function(receiver, growable) {
     return $.listTypeCheck($.List_List$from(receiver, growable, $.JSInt));
@@ -13418,11 +14895,12 @@ $$.Uint8ClampedList = {"": "Uint8List;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
-  clear$0: function(receiver) {
-    throw $.wrapException($.UnsupportedError$("Cannot clear immutable List."));
+  set$length: function(receiver, value) {
+    $.intTypeCheck(value);
+    throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
+    return $.intTypeCheck($._Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
@@ -13446,7 +14924,7 @@ $$.Uint8ClampedList = {"": "Uint8List;",
     $.intTypeCheck(end);
     if (end == null)
       end = receiver.length;
-    return $.listTypeCheck($.Lists_getRange(receiver, start, end, []));
+    return $.listTypeCheck($._Lists_getRange(receiver, start, end, []));
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
@@ -13523,10 +15001,10 @@ $$.Uint8List = {"": "TypedData;",
     receiver[index] = value;
   },
   get$iterator: function(receiver) {
-    return $.propertyTypeCheck($.FixedSizeListIterator$(receiver, $.JSInt), "$isIterator");
+    return $.assertSubtype($.ListIterator$(receiver, $.JSInt), "$isIterator", [$.JSInt], "$asIterator");
   },
   forEach$1: function(receiver, f) {
-    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.functionTypeCheck(f)));
+    return $.voidTypeCheck($.IterableMixinWorkaround_forEach(receiver, $.propertyTypeCheck(f, "$isFunction")));
   },
   toList$1$growable: function(receiver, growable) {
     return $.listTypeCheck($.List_List$from(receiver, growable, $.JSInt));
@@ -13547,11 +15025,12 @@ $$.Uint8List = {"": "TypedData;",
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot add to immutable List."));
   },
-  clear$0: function(receiver) {
-    throw $.wrapException($.UnsupportedError$("Cannot clear immutable List."));
+  set$length: function(receiver, value) {
+    $.intTypeCheck(value);
+    throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
   },
   indexOf$2: function(receiver, element, start) {
-    return $.intTypeCheck($.Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
+    return $.intTypeCheck($._Lists_indexOf(receiver, $.intTypeCheck(element), start, receiver.length));
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
@@ -13575,7 +15054,7 @@ $$.Uint8List = {"": "TypedData;",
     $.intTypeCheck(end);
     if (end == null)
       end = receiver.length;
-    return $.listTypeCheck($.Lists_getRange(receiver, start, end, []));
+    return $.listTypeCheck($._Lists_getRange(receiver, start, end, []));
   },
   sublist$1: function($receiver, start) {
     return this.sublist$2($receiver, start, null);
@@ -13886,12 +15365,17 @@ $$.SqlException = {"": "Interceptor;"};
 
 $$.SqlResultSet = {"": "Interceptor;"};
 
-$$.SqlResultSetRowList = {"": "Object_ListMixin_ImmutableListMixin24;",
+$$.SqlResultSetRowList = {"": "Interceptor_ListMixin_ImmutableListMixin24;",
   get$length: function(receiver) {
     return receiver.length;
   },
   $index: function(receiver, index) {
-    return $.convertNativeToDart_Dictionary(this._item_1$1(receiver, $.intTypeCheck(index)));
+    var t1;
+    $.intTypeCheck(index);
+    t1 = receiver.length;
+    if (index >>> 0 !== index || index >= t1)
+      throw $.wrapException($.RangeError$range(index, 0, t1));
+    return $.convertNativeToDart_Dictionary(this._item_1$1(receiver, index));
   },
   $indexSet: function(receiver, index, value) {
     $.intTypeCheck(index);
@@ -13901,6 +15385,17 @@ $$.SqlResultSetRowList = {"": "Object_ListMixin_ImmutableListMixin24;",
   set$length: function(receiver, value) {
     $.intTypeCheck(value);
     throw $.wrapException($.UnsupportedError$("Cannot resize immutable List."));
+  },
+  get$first: function(receiver) {
+    if (receiver.length > 0)
+      return receiver[0];
+    throw $.wrapException($.StateError$("No elements"));
+  },
+  elementAt$1: function(receiver, index) {
+    $.intTypeCheck(index);
+    if (index >>> 0 !== index || index >= receiver.length)
+      throw $.ioore(index);
+    return receiver[index];
   },
   _item_1$1: function(receiver, index) {
     return receiver.item(index);
@@ -14084,11 +15579,43 @@ $$.Bound_children_ScriptProfileNode = {"": "Closure;self,target,receiver",
   $isVoidCallback: true
 };
 
+$$.Closure$_processWorkerMessage = {"": "Closure;call$2,$name", $isGameLoopTouchEventFunction: true};
+
+$$.Closure$_throwFormatException = {"": "Closure;call$1,$name", $is_FutureOnError: true};
+
+$$.Closure$wrapException = {"": "Closure;call$1,$name", $is_FutureOnError: true, $is_FutureErrorTest: true, $is_ErrorCallback: true, $isRequestAnimationFrameCallback: true, $isEventListener: true, $isGameLoopUpdateFunction: true, $isGameLoopRenderFunction: true, $isGameLoopResizeFunction: true, $isGameLoopFullscreenChangeFunction: true, $isGameLoopPointerLockChangeFunction: true};
+
+$$.Closure$toStringWrapper = {"": "Closure;call$0,$name", $isVoidCallback: true};
+
+$$.Closure$invokeClosure = {"": "Closure;call$5,$name"};
+
+$$.Closure$typeNameInChrome = {"": "Closure;call$1,$name", $is_FutureOnError: true, $is_ErrorCallback: true, $isRequestAnimationFrameCallback: true, $isEventListener: true, $isGameLoopUpdateFunction: true, $isGameLoopRenderFunction: true, $isGameLoopResizeFunction: true, $isGameLoopFullscreenChangeFunction: true, $isGameLoopPointerLockChangeFunction: true};
+
+$$.Closure$typeNameInSafari = {"": "Closure;call$1,$name", $is_FutureOnError: true, $is_ErrorCallback: true, $isRequestAnimationFrameCallback: true, $isEventListener: true, $isGameLoopUpdateFunction: true, $isGameLoopRenderFunction: true, $isGameLoopResizeFunction: true, $isGameLoopFullscreenChangeFunction: true, $isGameLoopPointerLockChangeFunction: true};
+
+$$.Closure$typeNameInOpera = {"": "Closure;call$1,$name", $is_FutureOnError: true, $is_ErrorCallback: true, $isRequestAnimationFrameCallback: true, $isEventListener: true, $isGameLoopUpdateFunction: true, $isGameLoopRenderFunction: true, $isGameLoopResizeFunction: true, $isGameLoopFullscreenChangeFunction: true, $isGameLoopPointerLockChangeFunction: true};
+
+$$.Closure$typeNameInFirefox = {"": "Closure;call$1,$name", $is_FutureOnError: true, $is_ErrorCallback: true, $isRequestAnimationFrameCallback: true, $isEventListener: true, $isGameLoopUpdateFunction: true, $isGameLoopRenderFunction: true, $isGameLoopResizeFunction: true, $isGameLoopFullscreenChangeFunction: true, $isGameLoopPointerLockChangeFunction: true};
+
+$$.Closure$typeNameInIE = {"": "Closure;call$1,$name", $is_FutureOnError: true, $is_ErrorCallback: true, $isRequestAnimationFrameCallback: true, $isEventListener: true, $isGameLoopUpdateFunction: true, $isGameLoopRenderFunction: true, $isGameLoopResizeFunction: true, $isGameLoopFullscreenChangeFunction: true, $isGameLoopPointerLockChangeFunction: true};
+
+$$.Closure$constructorNameFallback = {"": "Closure;call$1,$name", $is_FutureOnError: true, $is_ErrorCallback: true, $isRequestAnimationFrameCallback: true, $isEventListener: true, $isGameLoopUpdateFunction: true, $isGameLoopRenderFunction: true, $isGameLoopResizeFunction: true, $isGameLoopFullscreenChangeFunction: true, $isGameLoopPointerLockChangeFunction: true};
+
+$$.Closure$_asyncRunCallback = {"": "Closure;call$0,$name", $isVoidCallback: true};
+
+$$.Closure$_determineMouseWheelEventType = {"": "Closure;call$1,$name", $is_FutureOnError: true};
+
+$$.Closure$initContext = {"": "Closure;call$2,$name"};
+
+$$.Closure$main = {"": "Closure;call$0,$name", $isVoidCallback: true};
+
 Isolate.$finishClasses($$, $, null);
 $$ = null;
 
 $.Arrays_copy = function(src, srcStart, dst, dstStart, count) {
   var i, j, t1, t2, t3;
+  if (typeof src !== "string" && (typeof src !== "object" || src === null || src.constructor !== Array && !$.getInterceptor(src).$isJavaScriptIndexingBehavior))
+    return $.Arrays_copy$bailout(1, src, srcStart, dst, dstStart, count);
   if (srcStart !== (srcStart | 0))
     return $.Arrays_copy$bailout(1, src, srcStart, dst, dstStart, count);
   if (typeof dst !== "object" || dst === null || (dst.constructor !== Array || !!dst.immutable$list) && !$.getInterceptor(dst).$isJavaScriptIndexingBehavior)
@@ -14098,16 +15625,20 @@ $.Arrays_copy = function(src, srcStart, dst, dstStart, count) {
   if (count !== (count | 0))
     return $.Arrays_copy$bailout(1, src, srcStart, dst, dstStart, count);
   if (srcStart < dstStart)
-    for (i = srcStart + count - 1, j = dstStart + count - 1, t1 = $.getInterceptor$asx(src); t2 = $.getInterceptor$n(i), t2.$ge(i, srcStart); i = $.intTypeCheck(t2.$sub(i, 1)), --j) {
-      t3 = t1.$index(src, i);
-      if (j >>> 0 !== j || j >= dst.length)
+    for (i = srcStart + count - 1, j = dstStart + count - 1, t1 = src.length, t2 = dst.length; $.$ge$n(i, srcStart); --i, --j) {
+      if (i >>> 0 !== i || i >= t1)
+        throw $.ioore(i);
+      t3 = src[i];
+      if (j >>> 0 !== j || j >= t2)
         throw $.ioore(j);
       dst[j] = t3;
     }
   else
-    for (t1 = $.getInterceptor$asx(src), j = dstStart, i = srcStart; t2 = $.getInterceptor$n(i), t2.$lt(i, srcStart + count); i = $.intTypeCheck(t2.$add(i, 1)), ++j) {
-      t3 = t1.$index(src, i);
-      if (j >>> 0 !== j || j >= dst.length)
+    for (t1 = src.length, t2 = dst.length, j = dstStart, i = srcStart; $.$lt$n(i, srcStart + count); ++i, ++j) {
+      if (i >>> 0 !== i || i >= t1)
+        throw $.ioore(i);
+      t3 = src[i];
+      if (j >>> 0 !== j || j >= t2)
         throw $.ioore(j);
       dst[j] = t3;
     }
@@ -14152,7 +15683,7 @@ $.Arrays_indexOf = function(a, element, startIndex, endIndex) {
   for (i = startIndex; $.$lt$n(i, endIndex); ++i) {
     if (i < 0 || i >= a.length)
       throw $.ioore(i);
-    if ($.boolConversionCheck($.$eq(a[i], element)))
+    if ($.$eq(a[i], element))
       return i;
   }
   return -1;
@@ -14168,7 +15699,7 @@ $.ListIterator$ = function(iterable, E) {
   var t1;
   $.listSuperNativeTypeCheck(iterable, "$isIterable");
   t1 = $.get$length$asx(iterable);
-  t1 = new $.ListIterator($.listSuperNativeTypeCheck(iterable, "$isIterable"), $.intTypeCheck(t1), 0, null);
+  t1 = new $.ListIterator($.listSuperNativeTypeCheck(iterable, "$isIterable"), $.intTypeCheck(t1), 0, $.assertSubtypeOfRuntimeType(null, E));
   $.setRuntimeTypeInfo(t1, [E]);
   return t1;
 };
@@ -14180,7 +15711,7 @@ $.MappedIterable$ = function(_iterable, _f, S, T) {
 };
 
 $.MappedIterator$ = function(_iterator, _f, S, T) {
-  var t1 = new $.MappedIterator(null, $.propertyTypeCheck(_iterator, "$isIterator"), _f);
+  var t1 = new $.MappedIterator($.assertSubtypeOfRuntimeType(null, T), $.assertSubtype(_iterator, "$isIterator", [S], "$asIterator"), _f);
   $.setRuntimeTypeInfo(t1, [S, T]);
   return t1;
 };
@@ -14192,7 +15723,7 @@ $.WhereIterable$ = function(_iterable, _f, E) {
 };
 
 $.WhereIterator$ = function(_iterator, _f, E) {
-  var t1 = new $.WhereIterator($.propertyTypeCheck(_iterator, "$isIterator"), _f);
+  var t1 = new $.WhereIterator($.assertSubtype(_iterator, "$isIterator", [E], "$asIterator"), _f);
   $.setRuntimeTypeInfo(t1, [E]);
   return t1;
 };
@@ -14205,7 +15736,7 @@ $.SkipIterable$ = function(_iterable, _skipCount, E) {
 };
 
 $.SkipIterator$ = function(_iterator, _skipCount, E) {
-  var t1 = new $.SkipIterator($.propertyTypeCheck(_iterator, "$isIterator"), $.intTypeCheck(_skipCount));
+  var t1 = new $.SkipIterator($.assertSubtype(_iterator, "$isIterator", [E], "$asIterator"), $.intTypeCheck(_skipCount));
   $.setRuntimeTypeInfo(t1, [E]);
   t1.SkipIterator$2(_iterator, _skipCount, E);
   return t1;
@@ -14213,23 +15744,23 @@ $.SkipIterator$ = function(_iterator, _skipCount, E) {
 
 $.IterableMixinWorkaround_forEach = function(iterable, f) {
   var t1;
-  $.functionTypeCheck(f);
+  $.listSuperNativeTypeCheck(iterable, "$isIterable");
+  $.propertyTypeCheck(f, "$isFunction");
   for (t1 = $.get$iterator$ax(iterable); $.boolConversionCheck(t1.moveNext$0());)
     f.call$1(t1.get$current());
 };
 
 $.IterableMixinWorkaround__rangeCheck = function(list, start, end) {
   var t1 = $.getInterceptor$n(start);
-  if (t1.$lt(start, 0) || t1.$gt(start, $.get$length$asx(list)))
-    throw $.wrapException($.RangeError$range(start, 0, $.get$length$asx(list)));
+  if (t1.$lt(start, 0) || t1.$gt(start, list.length))
+    throw $.wrapException($.RangeError$range(start, 0, list.length));
   t1 = $.getInterceptor$n(end);
-  if (t1.$lt(end, start) || t1.$gt(end, $.get$length$asx(list)))
-    throw $.wrapException($.RangeError$range(end, start, $.get$length$asx(list)));
+  if (t1.$lt(end, start) || t1.$gt(end, list.length))
+    throw $.wrapException($.RangeError$range(end, start, list.length));
 };
 
 $.IterableMixinWorkaround_setRangeList = function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList, t1;
-  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = $.intTypeCheck($.$sub$n(end, start));
   if ($length === 0)
@@ -14309,7 +15840,7 @@ $.HashMap__findBucketIndex = function(bucket, key) {
     return -1;
   $length = bucket.length;
   for (i = 0; t1 = $.getInterceptor$n(i), t1.$lt(i, $length); i = $.intTypeCheck(t1.$add(i, 2)))
-    if ($.boolConversionCheck($.$eq(bucket[i], key)))
+    if ($.$eq(bucket[i], key))
       return i;
   return -1;
 };
@@ -14321,7 +15852,7 @@ $.HashMapKeyIterable$ = function(_map, E) {
 };
 
 $.HashMapKeyIterator$ = function(_map, _keys, E) {
-  var t1 = new $.HashMapKeyIterator(_map, _keys, 0, null);
+  var t1 = new $.HashMapKeyIterator(_map, _keys, 0, $.assertSubtypeOfRuntimeType(null, E));
   $.setRuntimeTypeInfo(t1, [E]);
   return t1;
 };
@@ -14332,7 +15863,7 @@ $.LinkedHashMap__findBucketIndex = function(bucket, key) {
     return -1;
   $length = bucket.length;
   for (i = 0; t1 = $.getInterceptor$n(i), t1.$lt(i, $length); i = $.intTypeCheck(t1.$add(i, 1)))
-    if ($.boolConversionCheck($.$eq($.propertyTypeCheck(bucket[i], "$isLinkedHashMapCell")._key, key)))
+    if ($.$eq($.propertyTypeCheck(bucket[i], "$isLinkedHashMapCell")._key, key))
       return i;
   return -1;
 };
@@ -14348,7 +15879,7 @@ $.LinkedHashMapKeyIterable$ = function(_map, E) {
 };
 
 $.LinkedHashMapKeyIterator$ = function(_map, _modifications, E) {
-  var t1 = new $.LinkedHashMapKeyIterator(_map, _modifications, null, null);
+  var t1 = new $.LinkedHashMapKeyIterator(_map, _modifications, null, $.assertSubtypeOfRuntimeType(null, E));
   $.setRuntimeTypeInfo(t1, [E]);
   t1.LinkedHashMapKeyIterator$2(_map, _modifications, E);
   return t1;
@@ -14424,20 +15955,9 @@ $.JsIsolateSink$fromPort = function(_port) {
   return new $.JsIsolateSink(false, $.propertyTypeCheck(_port, "$isSendPort"));
 };
 
-$._callInIsolate = function(isolate, $function) {
-  var result = $.propertyTypeCheck(isolate, "$is_IsolateContext").eval$1($function);
-  $globalState.topEventLoop.run$0();
-  return result;
-};
-
-$._currentIsolate = function() {
-  return $globalState.currentContext;
-};
-
 $.startRootIsolate = function(entry) {
-  var t1, rootContext;
-  t1 = $._Manager$();
-  $._globalState0(t1);
+  var rootContext;
+  $globalState = $._Manager$(entry);
   if ($.boolConversionCheck($globalState.isWorker))
     return;
   rootContext = $._IsolateContext$();
@@ -14451,13 +15971,9 @@ $._globalState = function() {
   return $globalState;
 };
 
-$._globalState0 = function(val) {
-  $globalState = val;
-};
-
-$._Manager$ = function() {
-  var t1 = new $._Manager(0, 0, 1, null, null, null, null, null, null, $.interceptedTypeCheck(null, "$isMap"), null, $.interceptedTypeCheck(null, "$isMap"));
-  t1._Manager$0();
+$._Manager$ = function(entry) {
+  var t1 = new $._Manager(0, 0, 1, null, null, null, null, null, null, $.interceptedTypeCheck(null, "$isMap"), null, $.interceptedTypeCheck(null, "$isMap"), $.propertyTypeCheck(entry, "$isFunction"));
+  t1._Manager$1(entry);
   return t1;
 };
 
@@ -14468,11 +15984,11 @@ $._IsolateContext$ = function() {
 };
 
 $._EventLoop$ = function() {
-  return new $._EventLoop($.propertyTypeCheck($.Queue_Queue($._IsolateEvent), "$isQueue"), 0);
+  return new $._EventLoop($.assertSubtype($.Queue_Queue($._IsolateEvent), "$isQueue", [$._IsolateEvent], "$asQueue"), 0);
 };
 
 $._IsolateEvent$ = function(isolate, fn, message) {
-  return new $._IsolateEvent($.propertyTypeCheck(isolate, "$is_IsolateContext"), $.functionTypeCheck(fn), message);
+  return new $._IsolateEvent($.propertyTypeCheck(isolate, "$is_IsolateContext"), $.propertyTypeCheck(fn, "$isFunction"), message);
 };
 
 $._MainManagerStub$ = function() {
@@ -14501,21 +16017,19 @@ $.IsolateNatives_computeGlobalThis = function() {
 };
 
 $.IsolateNatives__processWorkerMessage = function(sender, e) {
-  var msg, t1, t2, entryPoint, replyTo, context;
+  var msg, t1, functionName, entryPoint, replyTo, context, t2;
   msg = $._deserializeMessage(e.data);
   t1 = $.getInterceptor$asx(msg);
   switch (t1.$index(msg, "command")) {
     case "start":
       $globalState.currentManagerId = $.intTypeCheck(t1.$index(msg, "id"));
-      t2 = t1.$index(msg, "functionName");
-      $.stringTypeCheck(t2);
-      entryPoint = $.functionTypeCheck($[t2]);
+      functionName = $.stringTypeCheck(t1.$index(msg, "functionName"));
+      entryPoint = $.propertyTypeCheck(functionName == null ? $globalState.entry : $[functionName], "$isFunction");
       replyTo = $._deserializeMessage(t1.$index(msg, "replyTo"));
       context = $._IsolateContext$();
-      t1 = $globalState.topEventLoop.events;
-      t2 = $._IsolateEvent$(context, new $.IsolateNatives__processWorkerMessage_closure(entryPoint, replyTo), "worker-start");
-      t2;
-      t1._add$1(t1, t2);
+      t1 = $globalState.topEventLoop;
+      t1.enqueue$3;
+      t1.events.addLast$1($._IsolateEvent$(context, new $.IsolateNatives__processWorkerMessage_closure(entryPoint, replyTo), "worker-start"));
       $globalState.currentContext = context;
       $globalState.topEventLoop.run$0();
       break;
@@ -14528,11 +16042,10 @@ $.IsolateNatives__processWorkerMessage = function(sender, e) {
       $globalState.topEventLoop.run$0();
       break;
     case "close":
-      $.IsolateNatives__log("Closing Worker");
       t1 = $globalState.managers;
-      t2 = $.getInterceptor$x(sender);
-      t1.remove$1(t1, t2.get$id(sender));
-      t2.terminate$0(sender);
+      t2 = $.get$IsolateNatives_workerIds();
+      t1.remove$1(t1, t2.$index(t2, sender));
+      sender.terminate();
       $globalState.topEventLoop.run$0();
       break;
     case "log":
@@ -14540,9 +16053,10 @@ $.IsolateNatives__processWorkerMessage = function(sender, e) {
       break;
     case "print":
       if ($.boolConversionCheck($globalState.isWorker)) {
-        $globalState;
-        t1 = $._serializeMessage($.makeLiteralMap(["command", "print", "msg", msg]));
-        $.get$globalThis().postMessage(t1);
+        t1 = $globalState.mainManager;
+        t2 = $._serializeMessage($.makeLiteralMap(["command", "print", "msg", msg]));
+        t1.postMessage$1;
+        self.postMessage(t2);
       } else
         $.Primitives_printString($.toString$0(t1.$index(msg, "msg")));
       break;
@@ -14552,17 +16066,18 @@ $.IsolateNatives__processWorkerMessage = function(sender, e) {
 };
 
 $.IsolateNatives__log = function(msg) {
-  var trace, t1, exception;
+  var trace, t1, t2, exception;
   if ($.boolConversionCheck($globalState.isWorker)) {
-    $globalState;
-    t1 = $._serializeMessage($.makeLiteralMap(["command", "log", "msg", msg]));
-    $.get$globalThis().postMessage(t1);
+    t1 = $globalState.mainManager;
+    t2 = $._serializeMessage($.makeLiteralMap(["command", "log", "msg", msg]));
+    t1.postMessage$1;
+    self.postMessage(t2);
   } else
     try {
       $.get$globalThis().console.log(msg);
     } catch (exception) {
       $.unwrapException(exception);
-      trace = $.getTraceFromException(exception);
+      trace = $._StackTrace$(exception.stack);
       throw $.wrapException($._ExceptionImplementation$(trace));
     }
 
@@ -14570,16 +16085,15 @@ $.IsolateNatives__log = function(msg) {
 
 $.IsolateNatives__spawnWorker = function(functionName, uri, replyPort) {
   var worker, t1, workerId;
-  if (functionName == null)
-    functionName = "main";
   if (uri == null)
     uri = $.get$IsolateNatives_thisScript();
   worker = new Worker(uri);
-  $._WorkerStub_methods.set$onmessage(worker, function(e) { $.IsolateNatives__processWorkerMessage.call$2(worker, e); });
+  worker.onmessage = function(e) { $.IsolateNatives__processWorkerMessage$closure.call$2(worker, e); };
   t1 = $globalState;
   workerId = t1.nextManagerId;
   t1.nextManagerId = $.intTypeCheck(workerId + 1);
-  $._WorkerStub_methods.set$id(worker, workerId);
+  t1 = $.get$IsolateNatives_workerIds();
+  t1.$indexSet(t1, worker, workerId);
   t1 = $globalState.managers;
   t1.$indexSet(t1, workerId, worker);
   worker.postMessage($._serializeMessage($.makeLiteralMap(["command", "start", "id", workerId, "replyTo", $._serializeMessage(replyPort), "functionName", functionName])));
@@ -14605,12 +16119,12 @@ $.ReceivePortImpl$ = function() {
 
 $._waitForPendingPorts = function(message, callback) {
   var finder, t1;
-  $.functionTypeCheck(callback);
+  $.propertyTypeCheck(callback, "$isFunction");
   finder = $._PendingSendPortFinder$();
   finder.traverse$1(message);
   t1 = finder.ports;
   $.listSuperNativeTypeCheck(t1, "$isIterable");
-  $.propertyTypeCheck($._FutureImpl__FutureImpl$wait(t1, $.JSArray), "$isFuture").then$1(new $._waitForPendingPorts_closure(callback));
+  $.assertSubtype($._FutureImpl__FutureImpl$wait(t1, $.JSArray), "$isFuture", [$.JSArray], "$asFuture").then$1(new $._waitForPendingPorts_closure(callback));
 };
 
 $._PendingSendPortFinder$ = function() {
@@ -14660,7 +16174,7 @@ $._MessageTraverserVisitedMap$ = function() {
 
 $.TimerImpl$ = function(milliseconds, callback) {
   var t1 = new $.TimerImpl(true, false, null);
-  t1.TimerImpl$2(milliseconds, $.functionTypeCheck(callback));
+  t1.TimerImpl$2(milliseconds, $.propertyTypeCheck(callback, "$isFunction"));
   return t1;
 };
 
@@ -14725,10 +16239,10 @@ $.Primitives__throwFormatException = function(string) {
 };
 
 $.Primitives_parseInt = function(source, radix, handleError) {
-  var match, t1, maxCharCode, digitsPart, i;
-  $.functionTypeCheck(handleError);
+  var match, t1, maxCharCode, digitsPart, i, t2;
+  $.propertyTypeCheck(handleError, "$isFunction");
   if (handleError == null)
-    handleError = $.functionTypeCheck($.Primitives__throwFormatException);
+    handleError = $.propertyTypeCheck($.Primitives__throwFormatException$closure, "$isFunction");
   if (typeof source !== "string")
     $.throwExpression($.ArgumentError$(source));
   match = /^\s*[+-]?((0x[a-f0-9]+)|(\d+)|([a-z0-9]+))\s*$/i.exec(source);
@@ -14775,9 +16289,16 @@ $.Primitives_parseInt = function(source, radix, handleError) {
         if (1 >= match.length)
           throw $.ioore(1);
         digitsPart = $.toLowerCase$0$s(match[1]);
-        for (i = 0; t1 = $.getInterceptor$n(i), t1.$lt(i, digitsPart.length); i = $.intTypeCheck(t1.$add(i, 1)))
-          if ($.JSString_methods.codeUnitAt$1(digitsPart, i) > maxCharCode)
+        for (i = 0; t1 = digitsPart.length, t2 = $.getInterceptor$n(i), t2.$lt(i, t1); i = $.intTypeCheck(t2.$add(i, 1))) {
+          if (typeof i !== "number")
+            $.throwExpression($.ArgumentError$(i));
+          if (t2.$lt(i, 0))
+            $.throwExpression($.RangeError$value(i));
+          if (t2.$ge(i, t1))
+            $.throwExpression($.RangeError$value(i));
+          if (digitsPart.charCodeAt(i) > maxCharCode)
             return $.intTypeCheck(handleError.call$1(source));
+        }
       }
     }
   }
@@ -14789,14 +16310,14 @@ $.Primitives_parseInt = function(source, radix, handleError) {
 $.Primitives_parseInt$bailout = function(state0, source, handleError, radix, match, maxCharCode) {
   switch (state0) {
     case 0:
-      $.functionTypeCheck(handleError);
+      $.propertyTypeCheck(handleError, "$isFunction");
       if (handleError == null)
-        handleError = $.functionTypeCheck($.Primitives__throwFormatException);
+        handleError = $.propertyTypeCheck($.Primitives__throwFormatException$closure, "$isFunction");
       if (typeof source !== "string")
         $.throwExpression($.ArgumentError$(source));
       match = /^\s*[+-]?((0x[a-f0-9]+)|(\d+)|([a-z0-9]+))\s*$/i.exec(source);
     case 1:
-      var t1, digitsPart, i;
+      var t1, digitsPart, i, t2;
       if (state0 === 0 && radix == null) {
         if (match != null) {
           t1 = match.length;
@@ -14848,9 +16369,16 @@ $.Primitives_parseInt$bailout = function(state0, source, handleError, radix, mat
                         if (1 >= match.length)
                           throw $.ioore(1);
                         digitsPart = $.toLowerCase$0$s(match[1]);
-                        for (i = 0; t1 = $.getInterceptor$n(i), t1.$lt(i, digitsPart.length); i = $.intTypeCheck(t1.$add(i, 1)))
-                          if ($.JSInt_methods.$gt($.JSString_methods.codeUnitAt$1(digitsPart, i), maxCharCode))
+                        for (i = 0; t1 = digitsPart.length, t2 = $.getInterceptor$n(i), t2.$lt(i, t1); i = $.intTypeCheck(t2.$add(i, 1))) {
+                          if (typeof i !== "number")
+                            $.throwExpression($.ArgumentError$(i));
+                          if (t2.$lt(i, 0))
+                            $.throwExpression($.RangeError$value(i));
+                          if (t2.$ge(i, t1))
+                            $.throwExpression($.RangeError$value(i));
+                          if ($.JSInt_methods.$gt(digitsPart.charCodeAt(i), maxCharCode))
                             return $.intTypeCheck(handleError.call$1(source));
+                        }
                     }
               }
         }
@@ -14863,29 +16391,28 @@ $.Primitives_parseInt$bailout = function(state0, source, handleError, radix, mat
 $.Primitives_parseDouble = function(source, handleError) {
   var result;
   $.stringTypeCheck(source);
-  $.functionTypeCheck(handleError);
+  $.propertyTypeCheck(handleError, "$isFunction");
   if (typeof source !== "string")
     $.throwExpression($.ArgumentError$(source));
   if (handleError == null)
-    handleError = $.functionTypeCheck($.Primitives__throwFormatException);
+    handleError = $.propertyTypeCheck($.Primitives__throwFormatException$closure, "$isFunction");
   if (!/^\s*(?:NaN|[+-]?(?:Infinity|(?:\.\d+|\d+(?:\.\d+)?)(?:[eE][+-]?\d+)?))\s*$/.test(source))
     return $.doubleTypeCheck(handleError.call$1(source));
   result = parseFloat(source);
-  if ($.JSNumber_methods.get$isNaN(result) && source !== "NaN")
+  if (isNaN(result) && source !== "NaN")
     return $.doubleTypeCheck(handleError.call$1(source));
   return $.doubleTypeCheck(result);
 };
 
 $.Primitives_objectTypeName = function(object) {
-  var $name, decompiled, t1;
-  $name = $.stringTypeCheck($.constructorNameFallback(object));
+  var $name, decompiled;
+  $name = $.constructorNameFallback(object);
   if ($name === "Object") {
     decompiled = String(object.constructor).match(/^\s*function\s*(\S*)\s*\(/)[1];
     if (typeof decompiled === "string")
       $name = decompiled;
   }
-  t1 = $.getInterceptor$s($name);
-  return t1.codeUnitAt$1($name, 0) === 36 ? t1.substring$1($name, 1) : $name;
+  return $.JSString_methods.codeUnitAt$1($name, 0) === 36 ? $.JSString_methods.substring$1($name, 1) : $name;
 };
 
 $.Primitives_dateNow = function() {
@@ -14893,10 +16420,18 @@ $.Primitives_dateNow = function() {
 };
 
 $.Primitives_numMicroseconds = function() {
+  var performance, t1, truncated;
   if (typeof window != "undefined" && window !== null) {
-    var performance = window.performance;
-    if (performance != null && typeof performance.webkitNow == "function")
-      return $.JSNumber_methods.floor$0(1000 * performance.webkitNow());
+    performance = window.performance;
+    if (performance != null && typeof performance.webkitNow == "function") {
+      t1 = $.doubleTypeCheck(Math.floor(1000 * performance.webkitNow()));
+      if (isNaN(t1))
+        $.throwExpression($.UnsupportedError$("NaN"));
+      if (t1 == Infinity || t1 == -Infinity)
+        $.throwExpression($.UnsupportedError$("Infinity"));
+      truncated = $.$lt$n(t1, 0) ? $.doubleTypeCheck(Math.ceil(t1)) : $.doubleTypeCheck(Math.floor(t1));
+      return $.intTypeCheck(truncated == -0.0 ? 0 : truncated);
+    }
   }
   return 1000 * Date.now();
 };
@@ -15102,12 +16637,9 @@ $.ioore = function(index) {
 };
 
 $.wrapException = function(ex) {
-  var wrapper;
-  if (ex == null)
-    ex = $.C_NullThrownError;
-  wrapper = $.DartError$(ex);
+  var wrapper = $.DartError$(ex == null ? $.C_NullThrownError : ex);
   if (!!Error.captureStackTrace)
-    Error.captureStackTrace(wrapper, $.wrapException);
+    Error.captureStackTrace(wrapper, $.wrapException$closure);
   else
     wrapper.stack = $.stringTypeCheck(new Error().stack);
   return wrapper;
@@ -15138,12 +16670,12 @@ $.unwrapException = function(ex) {
     $.stringTypeCheck(message);
     if (message.indexOf("JSNull") === -1) {
       t1 = $.getInterceptor(type);
-      t1 = $.boolConversionCheck(t1.$eq(type, "property_not_function")) || $.boolConversionCheck(t1.$eq(type, "called_non_callable")) || $.boolConversionCheck(t1.$eq(type, "non_object_property_call")) || $.boolConversionCheck(t1.$eq(type, "non_object_property_load"));
+      t1 = t1.$eq(type, "property_not_function") || t1.$eq(type, "called_non_callable") || t1.$eq(type, "non_object_property_call") || t1.$eq(type, "non_object_property_load");
     } else
       t1 = true;
     if (t1)
       return $.NoSuchMethodError$(null, $name, [], $.makeLiteralMap([]), null);
-    else if ($.boolConversionCheck($.$eq(type, "undefined_method")))
+    else if ($.$eq(type, "undefined_method"))
       return $.NoSuchMethodError$("", $name, [], $.makeLiteralMap([]), null);
     ieErrorCode = ex.number & 0xffff;
     ieFacilityNumber = ex.number >> 16 & 0x1FFF;
@@ -15164,8 +16696,7 @@ $.unwrapException = function(ex) {
           return $.NoSuchMethodError$("", "<unknown>", [], $.makeLiteralMap([]), null);
       }
     }
-    t1 = t1 ? message : "";
-    return $._ExceptionImplementation$(t1);
+    return $._ExceptionImplementation$(t1 ? message : "");
   }
   if (ex instanceof RangeError) {
     if (typeof message === "string" && message.indexOf("call stack") !== -1)
@@ -15176,10 +16707,6 @@ $.unwrapException = function(ex) {
     if (typeof message === "string" && message === "too much recursion")
       return $.StackOverflowError$();
   return ex;
-};
-
-$.getTraceFromException = function(exception) {
-  return $._StackTrace$(exception.stack);
 };
 
 $._StackTrace$ = function(_stack) {
@@ -15199,15 +16726,25 @@ $.makeLiteralMap = function(keyValuePairs) {
 };
 
 $.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
-  $.functionTypeCheck(closure);
+  var result;
+  $.propertyTypeCheck(closure, "$isFunction");
   $.intTypeCheck(numberOfArguments);
-  if (numberOfArguments === 0)
-    return $._callInIsolate(isolate, new $.invokeClosure_closure(closure));
-  else if (numberOfArguments === 1)
-    return $._callInIsolate(isolate, new $.invokeClosure_closure0(closure, arg1));
-  else if (numberOfArguments === 2)
-    return $._callInIsolate(isolate, new $.invokeClosure_closure1(closure, arg1, arg2));
-  else
+  if (numberOfArguments === 0) {
+    $.propertyTypeCheck(isolate, "$is_IsolateContext");
+    result = isolate.eval$1(new $.invokeClosure_closure(closure));
+    $globalState.topEventLoop.run$0();
+    return result;
+  } else if (numberOfArguments === 1) {
+    $.propertyTypeCheck(isolate, "$is_IsolateContext");
+    result = isolate.eval$1(new $.invokeClosure_closure0(closure, arg1));
+    $globalState.topEventLoop.run$0();
+    return result;
+  } else if (numberOfArguments === 2) {
+    $.propertyTypeCheck(isolate, "$is_IsolateContext");
+    result = isolate.eval$1(new $.invokeClosure_closure1(closure, arg1, arg2));
+    $globalState.topEventLoop.run$0();
+    return result;
+  } else
     throw $.wrapException($._ExceptionImplementation$("Unsupported number of arguments for wrapped closure"));
 };
 
@@ -15218,7 +16755,7 @@ $.convertDartClosureToJS = function(closure, arity) {
   $function = closure.$identity;
   if (!!$function)
     return $function;
-  $function = (function ($2, $3) { return function($0, $1) { return $3(closure, $2, arity, $0, $1) }})($._currentIsolate(), $.invokeClosure.call$5);
+  $function = (function ($2, $3) { return function($0, $1) { return $3(closure, $2, arity, $0, $1) }})($globalState.currentContext, $.invokeClosure$closure.call$5);
   closure.$identity = $function;
   return $function;
 };
@@ -15259,14 +16796,6 @@ $.boolTypeCheck = function(value) {
   if (typeof value === "boolean")
     return value;
   throw $.wrapException($.TypeErrorImplementation$(value, "bool"));
-};
-
-$.functionTypeCheck = function(value) {
-  if (value == null)
-    return value;
-  if (typeof value === "function" || typeof value === "object" && value !== null && !!$.getInterceptor(value).$isFunction)
-    return value;
-  throw $.wrapException($.TypeErrorImplementation$(value, "Function"));
 };
 
 $.intTypeCheck = function(value) {
@@ -15344,15 +16873,15 @@ $.voidTypeCheck = function(value) {
 };
 
 $.TypeErrorImplementation$ = function(value, type) {
-  return new $.TypeErrorImplementation("type '" + $.S($.Primitives_objectTypeName(value)) + "' is not a subtype of type '" + type + "'");
+  return new $.TypeErrorImplementation("type '" + $.Primitives_objectTypeName(value) + "' is not a subtype of type '" + type + "'");
 };
 
 $.CastErrorImplementation$ = function(actualType, expectedType) {
-  return new $.CastErrorImplementation("CastError: Casting value of type " + $.S(actualType) + " to incompatible type " + expectedType);
+  return new $.CastErrorImplementation("CastError: Casting value of type " + actualType + " to incompatible type " + expectedType);
 };
 
 $.assertHelper = function(condition) {
-  if (typeof condition === "function" || typeof condition === "object" && condition !== null && !!$.getInterceptor(condition).$isFunction)
+  if (typeof condition === "object" && condition !== null && !!$.getInterceptor(condition).$isFunction)
     condition = condition.call$0();
   if (typeof condition !== "boolean")
     throw $.wrapException($.TypeErrorImplementation$(condition, "bool"));
@@ -15389,7 +16918,6 @@ $.runtimeTypeToString = function(type) {
   if (typeof type !== "string" && (typeof type !== "object" || type === null || type.constructor !== Array && !$.getInterceptor(type).$isJavaScriptIndexingBehavior))
     return $.runtimeTypeToString$bailout(1, type);
   if (type.constructor === Array) {
-    $.listTypeCheck(type);
     if (0 >= type.length)
       throw $.ioore(0);
     return type[0].builtin$cls + $.joinArguments(type, 1);
@@ -15452,11 +16980,11 @@ $.joinArguments$bailout = function(state0, types, startIndex) {
 $.checkSubtype = function(object, isField, checks, asField) {
   var $arguments, interceptor, isSubclass, substitution;
   if (object == null)
-    return false;
+    return true;
   $arguments = $.getRuntimeTypeInfo(object);
-  interceptor = typeof object == "function" ? object : $.getInterceptor(object);
+  interceptor = $.getInterceptor(object);
   isSubclass = $.boolTypeCheck(interceptor[isField]);
-  if (isSubclass == null || !$.boolConversionCheck(isSubclass))
+  if (isSubclass == null || !isSubclass)
     return false;
   substitution = interceptor[asField];
   if (substitution != null && substitution.constructor === Array)
@@ -15466,34 +16994,87 @@ $.checkSubtype = function(object, isField, checks, asField) {
   return $.areSubtypes($arguments, checks);
 };
 
+$.assertSubtype = function(object, isField, checks, asField) {
+  $.stringTypeCheck(isField);
+  $.listTypeCheck(checks);
+  if (!$.checkSubtype(object, isField, checks, $.stringTypeCheck(asField)))
+    throw $.wrapException($.TypeErrorImplementation$(object, $.substring$2$s(isField, 3, isField.length) + $.joinArguments(checks, 0)));
+  return object;
+};
+
 $.areSubtypes = function(s, t) {
-  var t1, t2, len, i, t3;
+  var len, i, t1;
   $.listTypeCheck(s);
+  if (typeof s !== "string" && (typeof s !== "object" || s === null || s.constructor !== Array && !$.getInterceptor(s).$isJavaScriptIndexingBehavior))
+    return $.areSubtypes$bailout(1, s, t);
   $.listTypeCheck(t);
-  t1 = $.getInterceptor(s);
-  t2 = s != null;
-  if (s == null || t == null)
+  if (typeof t !== "string" && (typeof t !== "object" || t === null || t.constructor !== Array && !$.getInterceptor(t).$isJavaScriptIndexingBehavior))
+    return $.areSubtypes$bailout(2, s, t);
+  if (false)
     return true;
-  $.assertHelper(t2 && s.constructor === Array);
-  t2 = $.getInterceptor(t);
-  $.assertHelper(t != null && t.constructor === Array);
-  $.assertHelper($.$eq(t1.get$length(s), t2.get$length(t)));
-  len = t1.get$length(s);
-  $.intTypeCheck(len);
-  if (len !== (len | 0))
-    return $.areSubtypes$bailout(1, s, t, t1, len, t2);
-  for (i = 0; t3 = $.getInterceptor$n(i), t3.$lt(i, len); i = $.intTypeCheck(t3.$add(i, 1)))
-    if (!$.isSubtype(t1.$index(s, i), t2.$index(t, i)))
+  $.assertHelper(s.constructor === Array);
+  $.assertHelper(t.constructor === Array);
+  $.assertHelper(s.length === t.length);
+  len = s.length;
+  for (i = 0; $.$lt$n(i, len); ++i) {
+    if (i >>> 0 !== i || i >= s.length)
+      throw $.ioore(i);
+    t1 = s[i];
+    if (i >= t.length)
+      throw $.ioore(i);
+    if (!$.isSubtype(t1, t[i]))
       return false;
+  }
   return true;
 };
 
-$.areSubtypes$bailout = function(state0, s, t, t1, len, t2) {
-  var i, t3;
-  for (i = 0; t3 = $.getInterceptor$n(i), t3.$lt(i, len); i = $.intTypeCheck(t3.$add(i, 1)))
-    if (!$.isSubtype(t1.$index(s, i), t2.$index(t, i)))
-      return false;
-  return true;
+$.areSubtypes$bailout = function(state0, s, t, t2, t1, len) {
+  switch (state0) {
+    case 0:
+      $.listTypeCheck(s);
+    case 1:
+      state0 = 0;
+      $.listTypeCheck(t);
+    case 2:
+      state0 = 0;
+      t1 = $.getInterceptor(s);
+      t2 = s != null;
+      if (s == null || t == null)
+        return true;
+      $.assertHelper(t2 && s.constructor === Array);
+      t2 = $.getInterceptor(t);
+      $.assertHelper(t != null && t.constructor === Array);
+      $.assertHelper($.$eq(t1.get$length(s), t2.get$length(t)));
+      len = t1.get$length(s);
+      $.intTypeCheck(len);
+    case 3:
+      var i, t3;
+      state0 = 0;
+      for (i = 0; t3 = $.getInterceptor$n(i), t3.$lt(i, len); i = $.intTypeCheck(t3.$add(i, 1)))
+        if (!$.isSubtype(t1.$index(s, i), t2.$index(t, i)))
+          return false;
+      return true;
+  }
+};
+
+$.checkSubtypeOfRuntimeType = function(o, t) {
+  var rti, type;
+  if (o == null || t == null)
+    return true;
+  rti = $.getRuntimeTypeInfo(o);
+  o = typeof o == "function" ? o : $.getInterceptor(o);
+  if (rti != null) {
+    type = rti.slice();
+    type.splice(0, 0, o);
+  } else
+    type = o;
+  return $.isSubtype(type, t);
+};
+
+$.assertSubtypeOfRuntimeType = function(object, type) {
+  if (!$.checkSubtypeOfRuntimeType(object, type))
+    throw $.wrapException($.TypeErrorImplementation$(object, $.runtimeTypeToString(type)));
+  return object;
 };
 
 $.isSubtype = function(s, t) {
@@ -15524,6 +17105,8 @@ $.isSubtype = function(s, t) {
     typeOfT = t1;
   } else
     typeOfT = t;
+  if (s.func || t.func)
+    return true;
   if (typeOfS["$is" + $.runtimeTypeToString(typeOfT)] == null)
     return false;
   substitution = typeOfT !== typeOfS ? typeOfS["$as" + $.runtimeTypeToString(typeOfT)] : null;
@@ -15576,6 +17159,8 @@ $.isSubtype$bailout = function(state0, s, t, t1, t2, typeOfS, t3) {
         }
       else
         typeOfT = t;
+      if (s.func || t.func)
+        return true;
       if (typeOfS["$is" + $.runtimeTypeToString(typeOfT)] == null)
         return false;
       substitution = typeOfT !== typeOfS ? typeOfS["$as" + $.runtimeTypeToString(typeOfT)] : null;
@@ -15597,7 +17182,7 @@ $.isSubtype$bailout = function(state0, s, t, t1, t2, typeOfS, t3) {
 
 $._convertJsonToDart = function(json, reviver) {
   var revive;
-  $.functionTypeCheck(reviver);
+  $.propertyTypeCheck(reviver, "$isFunction");
   revive = reviver == null ? new $._convertJsonToDart_closure() : reviver;
   return revive.call$2("", new $._convertJsonToDart_walk(revive).call$1(json));
 };
@@ -15721,20 +17306,20 @@ $.alternateTag = function(object, tag) {
 
 $.getFunctionForTypeNameOf = function() {
   if (typeof navigator !== "object")
-    return $.functionTypeCheck($.typeNameInChrome);
+    return $.propertyTypeCheck($.typeNameInChrome$closure, "$isFunction");
   var userAgent = navigator.userAgent;
   if (userAgent.indexOf("Chrome") !== -1 || userAgent.indexOf("DumpRenderTree") !== -1)
-    return $.functionTypeCheck($.typeNameInChrome);
+    return $.propertyTypeCheck($.typeNameInChrome$closure, "$isFunction");
   else if (userAgent.indexOf("Firefox") !== -1)
-    return $.functionTypeCheck($.typeNameInFirefox);
+    return $.propertyTypeCheck($.typeNameInFirefox$closure, "$isFunction");
   else if (userAgent.indexOf("MSIE") !== -1)
-    return $.functionTypeCheck($.typeNameInIE);
+    return $.propertyTypeCheck($.typeNameInIE$closure, "$isFunction");
   else if (userAgent.indexOf("Opera") !== -1)
-    return $.functionTypeCheck($.typeNameInOpera);
+    return $.propertyTypeCheck($.typeNameInOpera$closure, "$isFunction");
   else if (userAgent.indexOf("AppleWebKit") !== -1)
-    return $.functionTypeCheck($.typeNameInSafari);
+    return $.propertyTypeCheck($.typeNameInSafari$closure, "$isFunction");
   else
-    return $.functionTypeCheck($.constructorNameFallback);
+    return $.propertyTypeCheck($.constructorNameFallback$closure, "$isFunction");
 };
 
 $.toStringForNativeObject = function(obj) {
@@ -15834,21 +17419,20 @@ $._attachStackTrace = function(o, st) {
 };
 
 $.getAttachedStackTrace = function(o) {
-  var t1, values;
+  var t1;
   if (o == null || typeof o === "boolean" || typeof o === "number" || typeof o === "string")
     return;
   t1 = $.get$_stackTraceExpando();
-  values = $.Primitives_getProperty(o, "expando$values");
-  return values == null ? null : $.Primitives_getProperty(values, t1._getKey$0());
+  return t1.$index(t1, o);
 };
 
 $._asyncRunCallback = function() {
   var callbacks, i, callback, remainingCallbacks, newCallbacks, exception;
-  for (; !$.JSArray_methods.get$isEmpty($.get$_asyncCallbacks());) {
+  for (; $.get$_asyncCallbacks().length !== 0;) {
     callbacks = $.get$_asyncCallbacks();
     $._asyncCallbacks = $.listTypeCheck([]);
     for (i = 0; $.$lt$n(i, $.get$length$asx(callbacks)); i = $.intTypeCheck($.$add$ns(i, 1))) {
-      callback = $.functionTypeCheck($.$index$asx(callbacks, i));
+      callback = $.propertyTypeCheck($.$index$asx(callbacks, i), "$isFunction");
       $.$indexSet$ax(callbacks, i, null);
       try {
         callback.call$0();
@@ -15860,8 +17444,8 @@ $._asyncRunCallback = function() {
         $._asyncCallbacks = $.listTypeCheck([]);
         $.JSArray_methods.addAll$1($.get$_asyncCallbacks(), remainingCallbacks);
         $.JSArray_methods.addAll$1($.get$_asyncCallbacks(), newCallbacks);
-        $.functionTypeCheck($._asyncRunCallback);
-        $.Timer_run($._asyncRunCallback);
+        $.propertyTypeCheck($._asyncRunCallback$closure, "$isFunction");
+        $.Timer_run($._asyncRunCallback$closure);
         throw exception;
       }
 
@@ -15870,14 +17454,20 @@ $._asyncRunCallback = function() {
   $._callbacksAreEnqueued = false;
 };
 
+$.Future_Future$value = function(value, T) {
+  return $._FutureImpl$immediate($.assertSubtypeOfRuntimeType(value, T), T);
+};
+
 $._AsyncCompleter$ = function(T) {
-  var t1 = new $._AsyncCompleter($.propertyTypeCheck($._FutureImpl$(T), "$isFuture"), false);
+  var t1 = T;
+  t1 = new $._AsyncCompleter($.assertSubtype($._FutureImpl$(t1), "$isFuture", [t1], "$asFuture"), false);
   $.setRuntimeTypeInfo(t1, [T]);
   return t1;
 };
 
 $._SyncCompleter$ = function(T) {
-  var t1 = new $._SyncCompleter($.propertyTypeCheck($._FutureImpl$(T), "$isFuture"), false);
+  var t1 = T;
+  t1 = new $._SyncCompleter($.assertSubtype($._FutureImpl$(t1), "$isFuture", [t1], "$asFuture"), false);
   $.setRuntimeTypeInfo(t1, [T]);
   return t1;
 };
@@ -15896,7 +17486,7 @@ $._FutureImpl$ = function(T) {
 
 $._FutureImpl$immediate = function(value, T) {
   var t1;
-  value;
+  $.assertSubtypeOfRuntimeType(value, T);
   t1 = new $._FutureImpl(0, null);
   $.setRuntimeTypeInfo(t1, [T]);
   t1._FutureImpl$immediate$1(value, T);
@@ -15925,10 +17515,8 @@ $._FutureImpl__FutureImpl$wait = function(futures, T) {
     $.intTypeCheck(pos);
     future.catchError$1(t2).then$1(new $._FutureImpl__FutureImpl$wait_closure(t1, pos));
   }
-  if ($.boolConversionCheck($.$eq(t1.remaining_2, 0))) {
-    $.List_empty;
-    return $._FutureImpl$immediate($.List_empty, null);
-  }
+  if ($.$eq(t1.remaining_2, 0))
+    return $.Future_Future$value($.List_empty, null);
   t1.values_1 = $.List_List(t1.remaining_2, null);
   t1.completer_0 = $._AsyncCompleter$($.JSArray);
   return t1.completer_0.future;
@@ -15948,15 +17536,9 @@ $._CatchErrorFuture$ = function(_onError, _test, T) {
 
 $._SubscribeFuture$ = function(onValue, _onError, S, T) {
   var t1;
-  $.functionTypeCheck(onValue);
+  $.propertyTypeCheck(onValue, "$isFunction");
   t1 = new $._SubscribeFuture($.propertyTypeCheck(_onError, "$is_FutureOnError"), onValue, null, 0, null);
   $.setRuntimeTypeInfo(t1, [S, T]);
-  return t1;
-};
-
-$._FutureWrapper$ = function(_future, T) {
-  var t1 = new $._FutureWrapper($.propertyTypeCheck(_future, "$isFuture"));
-  $.setRuntimeTypeInfo(t1, [T]);
   return t1;
 };
 
@@ -15971,15 +17553,13 @@ $._asyncError = function(error, stackTrace) {
 
 $.Timer_run = function(callback) {
   var t1, milliseconds;
-  $.functionTypeCheck(callback);
+  $.propertyTypeCheck(callback, "$isFunction");
   $.JSArray_methods.add$1($.get$Timer__runCallbacks(), callback);
   if ($.get$Timer__runCallbacks().length === 1) {
     t1 = new $.Timer_run_closure();
-    $.functionTypeCheck(t1);
-    milliseconds = $.intTypeCheck($.Duration_0.get$inMilliseconds());
-    if ($.$lt$n(milliseconds, 0))
-      milliseconds = 0;
-    $.TimerImpl$(milliseconds, t1);
+    $.propertyTypeCheck(t1, "$isFunction");
+    milliseconds = $.intTypeCheck($.JSNumber_methods.$tdiv($.Duration_0._duration, 1000));
+    $.TimerImpl$($.$lt$n(milliseconds, 0) ? 0 : milliseconds, t1);
   }
 };
 
@@ -16027,7 +17607,7 @@ $._ListQueueIterator$ = function(queue, E) {
   t1 = queue._tail;
   t2 = queue._modificationCount;
   t3 = queue._head;
-  t3 = new $._ListQueueIterator(queue, t1, $.intTypeCheck(t2), t3, null);
+  t3 = new $._ListQueueIterator(queue, t1, $.intTypeCheck(t2), t3, $.assertSubtypeOfRuntimeType(null, E));
   $.setRuntimeTypeInfo(t3, [E]);
   return t3;
 };
@@ -16063,11 +17643,16 @@ $.Duration$ = function(days, hours, microseconds, milliseconds, minutes, seconds
 };
 
 $.Error_safeToString = function(object) {
+  var t1;
   if (typeof object === "number" && Math.floor(object) === object || typeof object === "number" || typeof object === "boolean" || null == object)
     return $.stringTypeCheck($.toString$0(object));
-  if (typeof object === "string")
-    return "\"" + $.JSString_methods.replaceAll$2($.JSString_methods.replaceAll$2($.JSString_methods.replaceAll$2($.JSString_methods.replaceAll$2(object, "\\", "\\\\"), "\n", "\\n"), "\r", "\\r"), "\"", "\\\"") + "\"";
-  return "Instance of '" + $.S($.Primitives_objectTypeName(object)) + "'";
+  if (typeof object === "string") {
+    t1 = $.JSString_methods.replaceAll$2(object, "\\", "\\\\");
+    t1 = $.stringReplaceAllUnchecked(t1, "\n", "\\n");
+    t1 = $.stringReplaceAllUnchecked(t1, "\r", "\\r");
+    return "\"" + $.stringReplaceAllUnchecked(t1, "\"", "\\\"") + "\"";
+  }
+  return "Instance of '" + $.Primitives_objectTypeName(object) + "'";
 };
 
 $.AssertionError$ = function() {
@@ -16147,24 +17732,30 @@ $.List_List = function($length, E) {
 };
 
 $.List_List$from = function(other, growable, E) {
-  var list, t1, t2, $length, fixedList, i;
+  var list, t1, t2, $length, fixedList, t3, i;
   $.listSuperNativeTypeCheck(other, "$isIterable");
   list = $.List_List($, E);
-  $.setRuntimeTypeInfo(list, [E]);
+  t1 = [E];
+  t2 = t1.constructor === Array;
+  $.assertHelper(t2);
+  list.$builtinTypeInfo = t1;
   $.listTypeCheck(list);
   for (t1 = $.get$iterator$ax(other), t2 = $.getInterceptor$ax(list); $.boolConversionCheck(t1.moveNext$0());)
-    t2.add$1(list, t1.get$current());
+    t2.add$1(list, $.assertSubtypeOfRuntimeType(t1.get$current(), E));
   if (growable)
     return list;
   $length = t2.get$length(list);
   $.intTypeCheck($length);
   if ($length !== ($length | 0))
-    return $.List_List$from$bailout(1, E, list, t2, $length);
+    return $.List_List$from$bailout(1, t2, list, $length, E);
   fixedList = $.List_List($length, E);
-  $.setRuntimeTypeInfo(fixedList, [E]);
+  t1 = [E];
+  t3 = t1.constructor === Array;
+  $.assertHelper(t3);
+  fixedList.$builtinTypeInfo = t1;
   $.listTypeCheck(fixedList);
   if (typeof fixedList !== "object" || fixedList === null || (fixedList.constructor !== Array || !!fixedList.immutable$list) && !$.getInterceptor(fixedList).$isJavaScriptIndexingBehavior)
-    return $.List_List$from$bailout(2, 0, list, t2, $length, fixedList);
+    return $.List_List$from$bailout(2, t2, list, $length, 0, fixedList);
   for (i = 0; $.$lt$n(i, $length); ++i) {
     t1 = t2.$index(list, i);
     if (i >>> 0 !== i || i >= fixedList.length)
@@ -16174,15 +17765,18 @@ $.List_List$from = function(other, growable, E) {
   return fixedList;
 };
 
-$.List_List$from$bailout = function(state0, E, list, t1, $length, fixedList) {
+$.List_List$from$bailout = function(state0, t1, list, $length, E, fixedList) {
   switch (state0) {
     case 0:
       $.listSuperNativeTypeCheck(other, "$isIterable");
       list = $.List_List($, E);
-      $.setRuntimeTypeInfo(list, [E]);
+      t1 = [E];
+      t2 = t1.constructor === Array;
+      $.assertHelper(t2);
+      list.$builtinTypeInfo = t1;
       $.listTypeCheck(list);
       for (t1 = $.get$iterator$ax(other), t2 = $.getInterceptor$ax(list); $.boolConversionCheck(t1.moveNext$0());)
-        t2.add$1(list, t1.get$current());
+        t2.add$1(list, $.assertSubtypeOfRuntimeType(t1.get$current(), E));
       if (growable)
         return list;
       t1 = $.getInterceptor$asx(list);
@@ -16191,10 +17785,13 @@ $.List_List$from$bailout = function(state0, E, list, t1, $length, fixedList) {
     case 1:
       state0 = 0;
       fixedList = $.List_List($length, E);
-      $.setRuntimeTypeInfo(fixedList, [E]);
+      t2 = [E];
+      t3 = t2.constructor === Array;
+      $.assertHelper(t3);
+      fixedList.$builtinTypeInfo = t2;
       $.listTypeCheck(fixedList);
     case 2:
-      var t2, i, t3;
+      var t2, t3, i;
       state0 = 0;
       for (t2 = $.getInterceptor$ax(fixedList), i = 0; t3 = $.getInterceptor$n(i), t3.$lt(i, $length); i = $.intTypeCheck(t3.$add(i, 1)))
         t2.$indexSet(fixedList, i, t1.$index(list, i));
@@ -16264,12 +17861,13 @@ $.Events$ = function(_ptr) {
 };
 
 $.HttpRequest_getString = function(url, onProgress, withCredentials) {
-  return $.propertyTypeCheck($.HttpRequest_request(url, null, $.functionTypeCheck(onProgress), null, null, withCredentials).then$1(new $.HttpRequest_getString_closure()), "$isFuture");
+  return $.assertSubtype($.HttpRequest_request(url, null, null, $.propertyTypeCheck(onProgress, "$isFunction"), null, null, null, withCredentials).then$1(new $.HttpRequest_getString_closure()), "$isFuture", [$.JSString], "$asFuture");
 };
 
-$.HttpRequest_request = function(url, method, onProgress, responseType, sendData, withCredentials) {
-  var completer, xhr, t1, t2, t3;
-  $.functionTypeCheck(onProgress);
+$.HttpRequest_request = function(url, method, mimeType, onProgress, requestHeaders, responseType, sendData, withCredentials) {
+  var completer, xhr, t1;
+  $.propertyTypeCheck(onProgress, "$isFunction");
+  $.interceptedTypeCheck(requestHeaders, "$isMap");
   completer = $._AsyncCompleter$($.HttpRequest);
   xhr = new XMLHttpRequest();
   if (method == null)
@@ -16280,28 +17878,19 @@ $.HttpRequest_request = function(url, method, onProgress, responseType, sendData
     xhr.withCredentials = withCredentials;
   if (responseType != null)
     xhr.responseType = responseType;
-  if (onProgress != null) {
-    t2 = t1.get$onProgress(xhr);
-    $.functionTypeCheck(onProgress);
-    $.functionTypeCheck(null);
-    $.functionTypeCheck(null);
-    $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, onProgress, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
-  }
-  t2 = t1.get$onLoad(xhr);
-  t3 = new $.HttpRequest_request_closure(completer, xhr);
-  $.functionTypeCheck(t3);
-  $.functionTypeCheck(null);
-  $.functionTypeCheck(null);
-  $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
-  t2 = t1.get$onError(xhr);
-  t3 = new $.HttpRequest_request_closure0(completer);
-  $.functionTypeCheck(t3);
-  $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
+  if (mimeType != null)
+    t1.overrideMimeType$1(xhr, mimeType);
+  if (requestHeaders != null)
+    $.forEach$1$ax(requestHeaders, new $.HttpRequest_request_closure(xhr));
+  if (onProgress != null)
+    $.assertSubtype($.EventStreamProvider_progress.forTarget$1(xhr), "$isStream", [$.ProgressEvent], "$asStream").listen$1(onProgress);
+  $.assertSubtype($.EventStreamProvider_load.forTarget$1(xhr), "$isStream", [$.ProgressEvent], "$asStream").listen$1(new $.HttpRequest_request_closure0(completer, xhr));
+  $.assertSubtype($.EventStreamProvider_error.forTarget$1(xhr), "$isStream", [$.ProgressEvent], "$asStream").listen$1(new $.HttpRequest_request_closure1(completer));
   if (sendData != null)
     t1.send$1(xhr, sendData);
   else
     xhr.send();
-  return $.propertyTypeCheck(completer.future, "$isFuture");
+  return $.assertSubtype(completer.future, "$isFuture", [$.HttpRequest], "$asFuture");
 };
 
 $.ImageElement_ImageElement = function(height, src, width) {
@@ -16375,14 +17964,14 @@ $.Point$ = function(x, y) {
 };
 
 $.Rect$ = function(left, $top, width, height) {
-  return new $.Rect(left, $top, $.numTypeCheck(width), $.numTypeCheck(height));
+  return new $.Rect(left, $top, width, height);
 };
 
 $.FixedSizeListIterator$ = function(array, T) {
   var t1;
   $.listTypeCheck(array);
   t1 = $.get$length$asx(array);
-  t1 = new $.FixedSizeListIterator($.listTypeCheck(array), $.intTypeCheck(t1), -1, null);
+  t1 = new $.FixedSizeListIterator($.listTypeCheck(array), $.intTypeCheck(t1), -1, $.assertSubtypeOfRuntimeType(null, T));
   $.setRuntimeTypeInfo(t1, [T]);
   return t1;
 };
@@ -16431,70 +18020,16 @@ $.FilteredElementList$ = function(node, T) {
   return t1;
 };
 
-$.Lists_indexOf = function(a, element, startIndex, endIndex) {
-  var t1, i, t2;
-  t1 = $.getInterceptor$asx(a);
-  if (startIndex >= t1.get$length(a))
-    return -1;
-  if (startIndex < 0)
-    startIndex = 0;
-  for (i = startIndex; t2 = $.getInterceptor$n(i), t2.$lt(i, endIndex); i = $.intTypeCheck(t2.$add(i, 1)))
-    if (t1.$index(a, i) === element)
-      return i;
-  return -1;
-};
-
-$.Lists_getRange = function(a, start, end, accumulator) {
-  var t1, i, t2;
-  if (start !== (start | 0))
-    return $.Lists_getRange$bailout(1, a, start, end, accumulator);
-  if (end !== (end | 0))
-    return $.Lists_getRange$bailout(1, a, start, end, accumulator);
-  if (start < 0)
-    throw $.wrapException($.RangeError$value(start));
-  if (end < start)
-    throw $.wrapException($.RangeError$value(end));
-  t1 = $.getInterceptor$asx(a);
-  if (end > t1.get$length(a))
-    throw $.wrapException($.RangeError$value(end));
-  for (i = start; t2 = $.getInterceptor$n(i), t2.$lt(i, end); i = $.intTypeCheck(t2.$add(i, 1)))
-    $.JSArray_methods.add$1(accumulator, t1.$index(a, i));
-  return accumulator;
-};
-
-$.Lists_getRange$bailout = function(state0, a, start, end, accumulator) {
-  var t1, t2, i;
-  if ($.$lt$n(start, 0))
-    throw $.wrapException($.RangeError$value(start));
-  t1 = $.getInterceptor$n(end);
-  if (t1.$lt(end, start))
-    throw $.wrapException($.RangeError$value(end));
-  t2 = $.getInterceptor$asx(a);
-  if (t1.$gt(end, t2.get$length(a)))
-    throw $.wrapException($.RangeError$value(end));
-  for (i = start; t1 = $.getInterceptor$n(i), t1.$lt(i, end); i = $.intTypeCheck(t1.$add(i, 1)))
-    $.JSArray_methods.add$1(accumulator, t2.$index(a, i));
-  return accumulator;
-};
-
 $._convertNativeToDart_IDBAny = function(object) {
   return $.convertNativeToDart_AcceptStructuredClone(object, false);
 };
 
 $._completeRequest = function(request) {
-  var completer, t1, t2, t3;
-  completer = $._SyncCompleter$(null);
-  t1 = $.getInterceptor$x(request);
-  t2 = t1.get$onSuccess(request);
-  t3 = new $._completeRequest_closure(request, completer);
-  $.functionTypeCheck(t3);
-  $.functionTypeCheck(null);
-  $.functionTypeCheck(null);
-  $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
-  t1 = t1.get$onError(request);
-  t2 = new $._completeRequest_closure0(completer);
-  $.functionTypeCheck(t2);
-  $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
+  var completer = $._SyncCompleter$(null);
+  request.get$onSuccess;
+  $.assertSubtype($.EventStreamProvider_success.forTarget$1(request), "$isStream", [$.Event], "$asStream").listen$1(new $._completeRequest_closure(request, completer));
+  request.get$onError;
+  $.assertSubtype($.EventStreamProvider_error.forTarget$1(request), "$isStream", [$.Event], "$asStream").listen$1(new $._completeRequest_closure0(completer));
   return completer.future;
 };
 
@@ -16519,7 +18054,7 @@ $.JsonCyclicError$ = function(object) {
 $.parse = function(json, reviver) {
   var parsed, e, t1, exception;
   $.stringTypeCheck(json);
-  $.functionTypeCheck(reviver);
+  $.propertyTypeCheck(reviver, "$isFunction");
   t1 = json;
   if (typeof t1 !== "string")
     throw $.wrapException($.ArgumentError$(json));
@@ -16540,11 +18075,14 @@ $._JsonStringifier$ = function(sb) {
 };
 
 $._JsonStringifier_escape = function(sb, s) {
-  var t1, $length, charCodes, needsEscape, i, t2, charCode, t3, str;
+  var t1, $length, charCodes, t2, t3, needsEscape, i, charCode, str;
   t1 = $.getInterceptor$asx(s);
   $length = s.length;
   charCodes = $.List_List($, $.JSInt);
-  $.setRuntimeTypeInfo(charCodes, [$.JSInt]);
+  t2 = [$.JSInt];
+  t3 = t2.constructor === Array;
+  $.assertHelper(t3);
+  charCodes.$builtinTypeInfo = t2;
   for (needsEscape = false, i = 0; t2 = $.getInterceptor$n(i), t2.$lt(i, $length); i = $.intTypeCheck(t2.$add(i, 1))) {
     charCode = t1.codeUnitAt$1(s, i);
     if (charCode < 32) {
@@ -16587,9 +18125,7 @@ $._JsonStringifier_escape = function(sb, s) {
   }
   if (needsEscape) {
     $.listSuperNativeTypeCheck(charCodes, "$isIterable");
-    if (!(charCodes.constructor === Array))
-      charCodes = $.listSuperNativeTypeCheck($.List_List$from(charCodes, true, null), "$isIterable");
-    t1 = $.Primitives_stringFromCharCodes(charCodes);
+    t1 = $.Primitives_stringFromCharCodes(!(charCodes.constructor === Array) ? $.listSuperNativeTypeCheck($.List_List$from(charCodes, true, null), "$isIterable") : charCodes);
     str = t1;
   } else
     str = s;
@@ -16598,54 +18134,51 @@ $._JsonStringifier_escape = function(sb, s) {
 };
 
 $.min = function(a, b) {
-  $.numTypeCheck(a);
-  if (typeof a === "number") {
-    a;
-    if (a > b)
-      return b;
-    if (a < b)
-      return a;
-    if (typeof b === "number") {
-      b;
-      if (typeof a === "number") {
-        a;
-        if (a === 0)
-          return (a + b) * a * b;
-      }
-      if (a === 0 && $.JSNumber_methods.get$isNegative(b) || $.JSNumber_methods.get$isNaN(b))
-        return b;
-      return a;
-    }
+  var t1;
+  if (a > b)
+    return b;
+  if (a < b)
     return a;
-    throw $.wrapException($.ArgumentError$(b));
+  if (typeof b === "number") {
+    b;
+    if (typeof a === "number") {
+      a;
+      if (a === 0)
+        return (a + b) * a * b;
+    }
+    if (a === 0)
+      t1 = b === 0 ? 1 / b < 0 : b < 0;
+    else
+      t1 = false;
+    if (t1 || isNaN(b))
+      return b;
+    return a;
   }
+  return a;
+  throw $.wrapException($.ArgumentError$(b));
   throw $.wrapException($.ArgumentError$(a));
 };
 
 $.max = function(a, b) {
-  $.numTypeCheck(a);
-  if (typeof a === "number") {
-    a;
-    if (a > b)
-      return a;
-    if (a < b)
-      return b;
-    if (typeof b === "number") {
-      b;
-      if (typeof a === "number") {
-        a;
-        if (a === 0)
-          return a + b;
-      }
-      if ($.JSNumber_methods.get$isNaN(b))
-        return b;
-      return a;
+  if (a > b)
+    return a;
+  if (a < b)
+    return b;
+  if (typeof b === "number") {
+    b;
+    if (typeof a === "number") {
+      a;
+      if (a === 0)
+        return a + b;
     }
-    if (b === 0 && $.JSNumber_methods.get$isNegative(a))
+    if (isNaN(b))
       return b;
     return a;
-    throw $.wrapException($.ArgumentError$(b));
   }
+  if (b === 0 && $.JSNumber_methods.get$isNegative(a))
+    return b;
+  return a;
+  throw $.wrapException($.ArgumentError$(b));
   throw $.wrapException($.ArgumentError$(a));
 };
 
@@ -16655,16 +18188,67 @@ $.sqrt = function(x) {
   return Math.sqrt(x);
 };
 
+$._Lists_indexOf = function(a, element, startIndex, endIndex) {
+  var t1, i, t2;
+  t1 = $.getInterceptor$asx(a);
+  if (startIndex >= t1.get$length(a))
+    return -1;
+  if (startIndex < 0)
+    startIndex = 0;
+  for (i = startIndex; t2 = $.getInterceptor$n(i), t2.$lt(i, endIndex); i = $.intTypeCheck(t2.$add(i, 1)))
+    if (t1.$index(a, i) === element)
+      return i;
+  return -1;
+};
+
+$._Lists_getRange = function(a, start, end, accumulator) {
+  var t1, i, t2;
+  if (start !== (start | 0))
+    return $._Lists_getRange$bailout(1, a, start, end, accumulator);
+  if (end !== (end | 0))
+    return $._Lists_getRange$bailout(1, a, start, end, accumulator);
+  if (start < 0)
+    throw $.wrapException($.RangeError$value(start));
+  if (end < start)
+    throw $.wrapException($.RangeError$value(end));
+  t1 = $.getInterceptor$asx(a);
+  if (end > t1.get$length(a))
+    throw $.wrapException($.RangeError$value(end));
+  for (i = start; t2 = $.getInterceptor$n(i), t2.$lt(i, end); i = $.intTypeCheck(t2.$add(i, 1)))
+    $.JSArray_methods.add$1(accumulator, t1.$index(a, i));
+  return accumulator;
+};
+
+$._Lists_getRange$bailout = function(state0, a, start, end, accumulator) {
+  var t1, t2, i;
+  if ($.$lt$n(start, 0))
+    throw $.wrapException($.RangeError$value(start));
+  t1 = $.getInterceptor$n(end);
+  if (t1.$lt(end, start))
+    throw $.wrapException($.RangeError$value(end));
+  t2 = $.getInterceptor$asx(a);
+  if (t1.$gt(end, t2.get$length(a)))
+    throw $.wrapException($.RangeError$value(end));
+  for (i = start; t1 = $.getInterceptor$n(i), t1.$lt(i, end); i = $.intTypeCheck(t1.$add(i, 1)))
+    $.JSArray_methods.add$1(accumulator, t2.$index(a, i));
+  return accumulator;
+};
+
 $.Float32List_Float32List = function($length) {
   return new Float32Array($length);
 };
 
 $._hexCharPairToByte = function(s, pos) {
-  var $byte, i, charCode;
+  var t1, $byte, i, t2, charCode;
   if (pos !== (pos | 0))
     return $._hexCharPairToByte$bailout(1, s, pos);
-  for ($byte = 0, i = 0; i < 2; ++i) {
-    charCode = $.JSString_methods.codeUnitAt$1(s, pos + i);
+  for (t1 = s.length, $byte = 0, i = 0; i < 2; ++i) {
+    t2 = pos + i;
+    if (t2 < 0)
+      $.throwExpression($.RangeError$value(t2));
+    if (t2 >= t1)
+      $.throwExpression($.RangeError$value(t2));
+    charCode = s.charCodeAt(t2);
     if (48 <= charCode && charCode <= 57)
       $byte = $byte * 16 + charCode - 48;
     else {
@@ -16678,24 +18262,31 @@ $._hexCharPairToByte = function(s, pos) {
   return $byte;
 };
 
-$._hexCharPairToByte$bailout = function(state0, s, pos, t1, i, $byte, t2) {
+$._hexCharPairToByte$bailout = function(state0, s, pos, t2, t1, $byte, i, t3) {
   switch (state0) {
     case 0:
     case 1:
       state0 = 0;
-      t1 = $.getInterceptor$ns(pos);
+      t1 = s.length;
+      t2 = $.getInterceptor$ns(pos);
       $byte = 0;
       i = 0;
     default:
-      var charCode;
+      var t4, charCode;
       L0:
         while (true)
           switch (state0) {
             case 0:
-              t2 = $.getInterceptor$n(i);
-              if (!t2.$lt(i, 2))
+              t3 = $.getInterceptor$n(i);
+              if (!t3.$lt(i, 2))
                 break L0;
-              charCode = $.JSString_methods.codeUnitAt$1(s, t1.$add(pos, i));
+              t4 = t2.$add(pos, i);
+              $.intTypeCheck(t4);
+              if (t4 < 0)
+                $.throwExpression($.RangeError$value(t4));
+              if (t4 >= t1)
+                $.throwExpression($.RangeError$value(t4));
+              charCode = s.charCodeAt(t4);
             default:
               if (state0 === 2 || state0 === 0 && 48 <= charCode && charCode <= 57)
                 switch (state0) {
@@ -16721,7 +18312,7 @@ $._hexCharPairToByte$bailout = function(state0, s, pos, t1, i, $byte, t2) {
                     else
                       throw $.wrapException($.ArgumentError$("Invalid URL encoding"));
                 }
-              i = t2.$add(i, 1);
+              i = t3.$add(i, 1);
               $.intTypeCheck(i);
             case 4:
               state0 = 0;
@@ -16734,9 +18325,12 @@ $._uriDecode = function(text) {
   var result, codepoints, t1, t2, t3, i, ch, t4, charCodes;
   result = $.StringBuffer$("");
   codepoints = $.List_List($, $.JSInt);
-  $.setRuntimeTypeInfo(codepoints, [$.JSInt]);
+  t1 = [$.JSInt];
+  t2 = t1.constructor === Array;
+  $.assertHelper(t2);
+  codepoints.$builtinTypeInfo = t1;
   $.listTypeCheck(codepoints);
-  for (t1 = text.length, t2 = $.getInterceptor$ax(codepoints), t3 = t1 - 2, i = 0; $.$lt$n(i, t1);) {
+  for (t1 = text.length, t2 = $.getInterceptor$asx(codepoints), t3 = t1 - 2, i = 0; $.$lt$n(i, t1);) {
     if (i >>> 0 !== i || i >= t1)
       throw $.ioore(i);
     ch = text[i];
@@ -16747,7 +18341,7 @@ $._uriDecode = function(text) {
         result._contents = result._contents + ch;
       ++i;
     } else {
-      t2.clear$0(codepoints);
+      t2.set$length(codepoints, 0);
       for (; ch === "%";) {
         i = $.intTypeCheck($.$add$ns(i, 1));
         t4 = $.getInterceptor$n(i);
@@ -16819,26 +18413,19 @@ $.Cookie__readCookie = function() {
 
 $.Cookie_getCookie = function($name) {
   var t = $.Cookie__readCookie();
-  if ($.boolConversionCheck(t.containsKey$1(t, $name)))
+  if (t.containsKey$1(t, $name))
     return $.stringTypeCheck(t.$index(t, $name));
   return;
 };
 
 $.initDebugLostContext = function(gl, canvas, gameLoop, initContextCall) {
-  var t1, t2, t3, ext, control, loseContextButton, restoreContextButton;
+  var ext, control, t1, loseContextButton, restoreContextButton;
   $.interceptedTypeCheck(canvas, "$isCanvasElement");
-  $.functionTypeCheck(initContextCall);
-  t1 = $.getInterceptor$x(canvas);
-  t2 = $._EventStream$(t1.get$on(canvas)._ptr, "webglcontextlost", false, null);
-  t3 = new $.initDebugLostContext_closure(new $.initDebugLostContext_onContextLost(gameLoop));
-  $.functionTypeCheck(t3);
-  $.functionTypeCheck(null);
-  $.functionTypeCheck(null);
-  $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
-  t1 = $._EventStream$(t1.get$on(canvas)._ptr, "webglcontextrestored", false, null);
-  t2 = new $.initDebugLostContext_closure0(new $.initDebugLostContext_onContextRestored(gl, gameLoop, initContextCall));
-  $.functionTypeCheck(t2);
-  $.propertyTypeCheck($._EventStreamSubscription$(t1._target, t1._eventType, t2, t1._useCapture, $.getRuntimeTypeArgument(t1, t1.$as_EventStream, 0)), "$isStreamSubscription");
+  $.propertyTypeCheck(initContextCall, "$isFunction");
+  canvas.get$on;
+  $._EventStream$($.Events$(canvas)._ptr, "webglcontextlost", false, null).listen$1(new $.initDebugLostContext_closure(new $.initDebugLostContext_onContextLost(gameLoop)));
+  canvas.get$on;
+  $._EventStream$($.Events$(canvas)._ptr, "webglcontextrestored", false, null).listen$1(new $.initDebugLostContext_closure0(new $.initDebugLostContext_onContextRestored(gl, gameLoop, initContextCall)));
   $.Primitives_printString("initDebugLostContext: webglcontextlost trapped");
   $.Primitives_printString("initDebugLostContext: webglcontextrestored trapped");
   ext = $.interceptedTypeCheck($.getExtension$1$x(gl, "WEBGL_lose_context"), "$isLoseContext");
@@ -16853,18 +18440,14 @@ $.initDebugLostContext = function(gl, canvas, gameLoop, initContextCall) {
   loseContextButton = $.interceptedTypeCheck($.InputElement_InputElement(null), "$isInputElement");
   loseContextButton.type = "button";
   loseContextButton.value = "lose context";
-  t2 = $.get$onClick$x(loseContextButton);
-  t3 = new $.initDebugLostContext_closure1(ext);
-  $.functionTypeCheck(t3);
-  $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
+  loseContextButton.get$onClick;
+  $.assertSubtype($.EventStreamProvider_click.forTarget$1(loseContextButton), "$isStream", [$.MouseEvent], "$asStream").listen$1(new $.initDebugLostContext_closure1(ext));
   t1.append$1(control, loseContextButton);
   restoreContextButton = $.interceptedTypeCheck($.InputElement_InputElement(null), "$isInputElement");
   restoreContextButton.type = "button";
   restoreContextButton.value = "restore context";
-  t2 = $.get$onClick$x(restoreContextButton);
-  t3 = new $.initDebugLostContext_closure2(ext);
-  $.functionTypeCheck(t3);
-  $.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription");
+  restoreContextButton.get$onClick;
+  $.assertSubtype($.EventStreamProvider_click.forTarget$1(restoreContextButton), "$isStream", [$.MouseEvent], "$asStream").listen$1(new $.initDebugLostContext_closure2(ext));
   t1.append$1(control, restoreContextButton);
 };
 
@@ -16896,6 +18479,7 @@ $.boot = function() {
   gl = $.interceptedTypeCheck($.initGL($.canvas), "$isRenderingContext");
   if (gl == null) {
     t2 = $.canvas;
+    t2.remove$0;
     t3 = t2.parentNode;
     if (t3 != null)
       $.$$dom_removeChild$1$x(t3, t2);
@@ -16906,7 +18490,9 @@ $.boot = function() {
     $.set$href$x(e, "http://get.webgl.org/");
     e.textContent = "Get more information";
     t1.append$1(canvasbox, e);
-    $.set$backgroundColor$x(canvasbox.style, "lightblue");
+    t1 = canvasbox.style;
+    t1.set$backgroundColor;
+    $.setProperty$3$x(t1, "background-color", "lightblue", "");
     return;
   }
   sid = $.Cookie_getCookie("sid");
@@ -16937,11 +18523,9 @@ $.initSquares = function(gl) {
   $.add$1$ax($.programList, squareProgram2);
   t1 = $.Duration$(0, 0, 0, 0, 0, 2);
   t2 = new $.initSquares_closure(squareProgram2);
-  $.functionTypeCheck(t2);
-  milliseconds = $.intTypeCheck(t1.get$inMilliseconds());
-  if ($.$lt$n(milliseconds, 0))
-    milliseconds = 0;
-  $.TimerImpl$(milliseconds, t2);
+  $.propertyTypeCheck(t2, "$isFunction");
+  milliseconds = $.intTypeCheck($.JSNumber_methods.$tdiv(t1._duration, 1000));
+  $.TimerImpl$($.$lt$n(milliseconds, 0) ? 0 : milliseconds, t2);
   squareModel2 = $.Model$fromJson(gl, squareProgram2, "/mesh/square2.json");
   $.JSArray_methods.add$1(squareProgram2.modelList, squareModel2);
   $.JSArray_methods.add$1(squareModel2.instanceList, $.Instance$(squareModel2, $.Vector3$(0, 0, 0), 1));
@@ -16997,11 +18581,14 @@ $.initAirshipTex = function(gl) {
 };
 
 $.initContext = function(gl, gameLoop) {
-  var t1, t2, before, i, duration;
+  var t1, t2, t3, before, i, duration;
   $.interceptedTypeCheck(gl, "$isRenderingContext");
   $.propertyTypeCheck(gameLoop, "$isGameLoopHtml");
   t1 = $.List_List($, $.ShaderProgram);
-  $.setRuntimeTypeInfo(t1, [$.ShaderProgram]);
+  t2 = [$.ShaderProgram];
+  t3 = t2.constructor === Array;
+  $.assertHelper(t3);
+  t1.$builtinTypeInfo = t2;
   $.programList = $.listTypeCheck(t1);
   $.shaderCache = $.interceptedTypeCheck($.HashMap$($.JSString, $.Shader), "$isMap");
   $.textureTable = $.interceptedTypeCheck($.HashMap$($.JSString, $.Texture), "$isMap");
@@ -17029,7 +18616,9 @@ $.initContext = function(gl, gameLoop) {
     $.Primitives_printString("firing " + t1 + " frames at full rate");
     before = $.DateTime$_now();
     for (i = 0; t1 = $.getInterceptor$n(i), t1.$lt(i, $.fullRateFrames); i = $.intTypeCheck(t1.$add(i, 1))) {
-      t2 = $.stats._timer;
+      t2 = $.stats;
+      t2.begin$0;
+      t2 = t2._timer;
       t2.start$0(t2);
       $.draw(gl, gameLoop);
       t2 = $.stats;
@@ -17037,7 +18626,9 @@ $.initContext = function(gl, gameLoop) {
     }
     duration = $.Duration$(0, 0, 0, $.$sub$n($.intTypeCheck($.DateTime$_now().millisecondsSinceEpoch), $.intTypeCheck(before.millisecondsSinceEpoch)), 0, 0);
     t1 = $.fullRateFrames;
-    t2 = duration.get$inSeconds();
+    t2 = $.intTypeCheck($.JSNumber_methods.$tdiv(duration._duration, 1000000));
+    if (typeof t2 !== "number")
+      throw $.iae(t2);
     $.Primitives_printString("duration = " + $.S(duration) + " framerate = " + $.S(t1 / t2) + " fps");
   }
   gameLoop.start$0(gameLoop);
@@ -17066,7 +18657,7 @@ $.main = function() {
   }
   gameLoop = $.GameLoopHtml$($.canvas);
   if ($.debugLostContext)
-    $.initDebugLostContext(gl, $.canvas, gameLoop, $.initContext);
+    $.initDebugLostContext(gl, $.canvas, gameLoop, $.initContext$closure);
   gameLoop.onUpdate = $.propertyTypeCheck(new $.main_closure(), "$isGameLoopUpdateFunction");
   gameLoop.onRender = $.propertyTypeCheck(new $.main_closure0(gl), "$isGameLoopRenderFunction");
   $.initContext(gl, gameLoop);
@@ -17101,7 +18692,7 @@ $.TexShaderProgram$ = function(gl) {
 
 $.TexModel$fromOBJ = function(gl, program, URL, onDone) {
   var t1, t2;
-  $.functionTypeCheck(onDone);
+  $.propertyTypeCheck(onDone, "$isFunction");
   t1 = $.List_List($, $.TextureInfo);
   $.setRuntimeTypeInfo(t1, [$.TextureInfo]);
   t2 = $.List_List($, $.Instance);
@@ -17141,7 +18732,7 @@ $.TextureInfo$ = function(gl, textureTable, indexOffset, indexNumber, textureNam
 };
 
 $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
-  var t1, t2, t3, t4;
+  var t1, t2, t3;
   t1 = {};
   t1.retrySeconds_0 = retrySeconds;
   $.stringTypeCheck(wsUri);
@@ -17160,26 +18751,20 @@ $.initWebSocket = function(wsUri, sid, retrySeconds, $status) {
   t1.subClose_3 = null;
   t1.subError_4 = null;
   t1.subMessage_5 = null;
-  t2 = $.get$onOpen$x(t1.w_1);
-  t3 = new $.initWebSocket_closure(t1, wsUri, sid, $status);
-  $.functionTypeCheck(t3);
-  $.functionTypeCheck(null);
-  $.functionTypeCheck(null);
-  t1.subOpen_2 = $.propertyTypeCheck($.propertyTypeCheck($._EventStreamSubscription$(t2._target, t2._eventType, t3, t2._useCapture, $.getRuntimeTypeArgument(t2, t2.$as_EventStream, 0)), "$isStreamSubscription"), "$isStreamSubscription");
+  t2 = t1.w_1;
+  t2.get$onOpen;
+  t1.subOpen_2 = $.assertSubtype($.assertSubtype($.EventStreamProvider_open.forTarget$1(t2), "$isStream", [$.Event], "$asStream").listen$1(new $.initWebSocket_closure(t1, wsUri, sid, $status)), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
   t1.reconnectScheduled_6 = false;
   t2 = new $.initWebSocket_scheduleReconnect(t1, wsUri, sid, $status);
-  t3 = $.get$onClose$x(t1.w_1);
-  t4 = new $.initWebSocket_closure0(wsUri, $status, t2);
-  $.functionTypeCheck(t4);
-  t1.subClose_3 = $.propertyTypeCheck($.propertyTypeCheck($._EventStreamSubscription$(t3._target, t3._eventType, t4, t3._useCapture, $.getRuntimeTypeArgument(t3, t3.$as_EventStream, 0)), "$isStreamSubscription"), "$isStreamSubscription");
-  t3 = $.get$onError$x(t1.w_1);
-  t2 = new $.initWebSocket_closure1(t2);
-  $.functionTypeCheck(t2);
-  t1.subError_4 = $.propertyTypeCheck($.propertyTypeCheck($._EventStreamSubscription$(t3._target, t3._eventType, t2, t3._useCapture, $.getRuntimeTypeArgument(t3, t3.$as_EventStream, 0)), "$isStreamSubscription"), "$isStreamSubscription");
-  t3 = $.get$onMessage$x(t1.w_1);
-  t2 = new $.initWebSocket_closure2(t1, $status);
-  $.functionTypeCheck(t2);
-  t1.subMessage_5 = $.propertyTypeCheck($.propertyTypeCheck($._EventStreamSubscription$(t3._target, t3._eventType, t2, t3._useCapture, $.getRuntimeTypeArgument(t3, t3.$as_EventStream, 0)), "$isStreamSubscription"), "$isStreamSubscription");
+  t3 = t1.w_1;
+  t3.get$onClose;
+  t1.subClose_3 = $.assertSubtype($.assertSubtype($.EventStreamProvider_close.forTarget$1(t3), "$isStream", [$.CloseEvent], "$asStream").listen$1(new $.initWebSocket_closure0(wsUri, $status, t2)), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
+  t3 = t1.w_1;
+  t3.get$onError;
+  t1.subError_4 = $.assertSubtype($.assertSubtype($.EventStreamProvider_error.forTarget$1(t3), "$isStream", [$.Event], "$asStream").listen$1(new $.initWebSocket_closure1(t2)), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
+  t2 = t1.w_1;
+  t2.get$onMessage;
+  t1.subMessage_5 = $.assertSubtype($.assertSubtype($.EventStreamProvider_message.forTarget$1(t2), "$isStream", [$.MessageEvent], "$asStream").listen$1(new $.initWebSocket_closure2(t1, $status)), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
 };
 
 $.GameLoop_timeStampToSeconds = function(timeStamp) {
@@ -17193,12 +18778,12 @@ $.GameLoop_timeStampToSeconds$bailout = function(state0, timeStamp) {
 };
 
 $.DigitalButton$ = function(buttonId) {
-  var t1 = $.doubleTypeCheck(0);
-  return new $.DigitalButton(buttonId, 0, 0, t1, t1);
+  $.doubleTypeCheck(0);
+  return new $.DigitalButton(buttonId, 0, 0, 0, 0);
 };
 
 $.DigitalButtonEvent$ = function(buttonId, down, frame, time) {
-  return new $.DigitalButtonEvent(down, $.intTypeCheck(frame), buttonId, time);
+  return new $.DigitalButtonEvent(down, frame, buttonId, time);
 };
 
 $.GameLoopGamepad$ = function(gameLoop) {
@@ -17206,7 +18791,7 @@ $.GameLoopGamepad$ = function(gameLoop) {
 };
 
 $.GameLoopHtml$ = function(element) {
-  var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
+  var t1, t2, t3, t4;
   t1 = $.List_List($, $._GameLoopTouchEvent);
   $.setRuntimeTypeInfo(t1, [$._GameLoopTouchEvent]);
   t2 = $.List_List($, $.KeyboardEvent);
@@ -17215,16 +18800,16 @@ $.GameLoopHtml$ = function(element) {
   $.setRuntimeTypeInfo(t3, [$.MouseEvent]);
   t4 = $.List_List($, $.GameLoopTimer);
   $.setRuntimeTypeInfo(t4, [$.GameLoopTimer]);
-  t5 = $.doubleTypeCheck(0);
+  $.doubleTypeCheck(0);
   $.listTypeCheck(t1);
   $.listTypeCheck(t2);
   $.listTypeCheck(t3);
-  t6 = $.propertyTypeCheck(null, "$isGameLoopRenderFunction");
-  t7 = $.propertyTypeCheck(null, "$isGameLoopResizeFunction");
-  t8 = $.propertyTypeCheck(null, "$isGameLoopFullscreenChangeFunction");
-  t9 = $.propertyTypeCheck(null, "$isGameLoopPointerLockChangeFunction");
-  t10 = $.propertyTypeCheck(null, "$isGameLoopTouchEventFunction");
-  t4 = new $.GameLoopHtml(element, 0, false, false, null, t5, false, t5, 0.03, t5, t5, t5, 0.05, null, null, null, null, null, t1, t2, t3, t6, t7, t8, t9, t10, t10, 0.015, 0.03, $.listTypeCheck(t4), $.propertyTypeCheck(null, "$isGameLoopUpdateFunction"));
+  $.propertyTypeCheck(null, "$isGameLoopRenderFunction");
+  $.propertyTypeCheck(null, "$isGameLoopResizeFunction");
+  $.propertyTypeCheck(null, "$isGameLoopFullscreenChangeFunction");
+  $.propertyTypeCheck(null, "$isGameLoopPointerLockChangeFunction");
+  $.propertyTypeCheck(null, "$isGameLoopTouchEventFunction");
+  t4 = new $.GameLoopHtml(element, 0, false, false, null, 0, false, 0, 0.03, 0, 0, 0, 0.05, null, null, null, null, null, t1, t2, t3, null, null, null, null, null, null, 0.015, 0.03, $.listTypeCheck(t4), $.propertyTypeCheck(null, "$isGameLoopUpdateFunction"));
   t4.GameLoopHtml$1(element);
   return t4;
 };
@@ -17236,7 +18821,7 @@ $.Keyboard$ = function(gameLoop) {
 };
 
 $.GameLoopMouseEvent$ = function(x, y, dx, dy, clampX, clampY, withinCanvas, time, frame) {
-  return new $.GameLoopMouseEvent(x, y, dx, dy, clampX, clampY, time, withinCanvas, $.intTypeCheck(frame));
+  return new $.GameLoopMouseEvent(x, y, dx, dy, clampX, clampY, time, withinCanvas, frame);
 };
 
 $.Mouse$ = function(gameLoop) {
@@ -17259,7 +18844,7 @@ $._GameLoopTouchEvent$ = function($event, type) {
 };
 
 $.GameLoopTouchPosition$ = function(x, y, dx, dy, time, frame) {
-  return new $.GameLoopTouchPosition($.intTypeCheck(x), $.intTypeCheck(y), dx, dy, $.doubleTypeCheck(time), $.intTypeCheck(frame));
+  return new $.GameLoopTouchPosition($.intTypeCheck(x), $.intTypeCheck(y), dx, dy, time, frame);
 };
 
 $.GameLoopTouch$ = function(id) {
@@ -17289,7 +18874,7 @@ $.Matrix4$identity = function() {
 };
 
 $.setViewMatrix = function(viewMatrix, cameraPosition, cameraFocusPosition, upDirection) {
-  var z, x, y, t1, t2, rotatedEye, t3;
+  var z, x, y, t1, t2, t3, t4, t5, rotatedEye;
   z = cameraPosition.$sub(cameraPosition, cameraFocusPosition);
   z.normalize$0(z);
   x = upDirection.cross$1(z);
@@ -17302,49 +18887,65 @@ $.setViewMatrix = function(viewMatrix, cameraPosition, cameraFocusPosition, upDi
   if (15 >= t1.length)
     throw $.ioore(15);
   t1[15] = 1;
-  t2 = x.get$x(x);
-  $.doubleTypeCheck(t2);
-  t1[0] = t2;
-  t2 = x.get$y(x);
-  $.doubleTypeCheck(t2);
-  t1[1] = t2;
-  t2 = x.get$z(x);
-  $.doubleTypeCheck(t2);
-  t1[2] = t2;
-  t2 = y.get$x(y);
-  $.doubleTypeCheck(t2);
-  t1[4] = t2;
-  t2 = y.get$y(y);
-  $.doubleTypeCheck(t2);
-  t1[5] = t2;
-  t2 = y.get$z(y);
-  $.doubleTypeCheck(t2);
-  t1[6] = t2;
-  t2 = z.get$x(z);
-  $.doubleTypeCheck(t2);
-  t1[8] = t2;
-  t2 = z.get$y(z);
-  $.doubleTypeCheck(t2);
-  t1[9] = t2;
-  t2 = z.get$z(z);
-  $.doubleTypeCheck(t2);
-  t1[10] = t2;
+  t2 = x.storage;
+  t3 = t2.length;
+  if (0 >= t3)
+    throw $.ioore(0);
+  t1[0] = $.doubleTypeCheck(t2[0]);
+  if (1 >= t3)
+    throw $.ioore(1);
+  t1[1] = $.doubleTypeCheck(t2[1]);
+  if (2 >= t3)
+    throw $.ioore(2);
+  t1[2] = $.doubleTypeCheck(t2[2]);
+  t2 = y.storage;
+  t3 = t2.length;
+  if (0 >= t3)
+    throw $.ioore(0);
+  t1[4] = $.doubleTypeCheck(t2[0]);
+  if (1 >= t3)
+    throw $.ioore(1);
+  t1[5] = $.doubleTypeCheck(t2[1]);
+  if (2 >= t3)
+    throw $.ioore(2);
+  t1[6] = $.doubleTypeCheck(t2[2]);
+  t2 = z.storage;
+  t3 = t2.length;
+  if (0 >= t3)
+    throw $.ioore(0);
+  t1[8] = $.doubleTypeCheck(t2[0]);
+  if (1 >= t3)
+    throw $.ioore(1);
+  t1[9] = $.doubleTypeCheck(t2[1]);
+  if (2 >= t3)
+    throw $.ioore(2);
+  t1[10] = $.doubleTypeCheck(t2[2]);
   viewMatrix.transpose$0();
-  rotatedEye = $.propertyTypeCheck(viewMatrix.$mul(viewMatrix, cameraPosition.$negate(cameraPosition)), "$isVector3");
+  t2 = cameraPosition.storage;
+  t3 = t2.length;
+  if (0 >= t3)
+    throw $.ioore(0);
+  t4 = t2[0];
+  if (1 >= t3)
+    throw $.ioore(1);
+  t5 = t2[1];
+  if (2 >= t3)
+    throw $.ioore(2);
+  rotatedEye = $.propertyTypeCheck(viewMatrix.$mul(viewMatrix, $.Vector3$(-t4, -t5, -t2[2])), "$isVector3");
   t2 = rotatedEye.get$x(rotatedEye);
   $.doubleTypeCheck(t2);
-  t3 = t1.length;
-  if (12 >= t3)
+  t5 = t1.length;
+  if (12 >= t5)
     throw $.ioore(12);
   t1[12] = t2;
   t2 = rotatedEye.get$y(rotatedEye);
   $.doubleTypeCheck(t2);
-  if (13 >= t3)
+  if (13 >= t5)
     throw $.ioore(13);
   t1[13] = t2;
   t2 = rotatedEye.get$z(rotatedEye);
   $.doubleTypeCheck(t2);
-  if (14 >= t3)
+  if (14 >= t5)
     throw $.ioore(14);
   t1[14] = t2;
 };
@@ -17352,23 +18953,17 @@ $.setViewMatrix = function(viewMatrix, cameraPosition, cameraFocusPosition, upDi
 $.setPerspectiveMatrix = function(perspectiveMatrix, fovYRadians, aspectRatio, zNear, zFar) {
   var t1, height, width;
   $.numTypeCheck(aspectRatio);
-  t1 = $.JSNumber_methods.toDouble$0(fovYRadians) * 0.5;
-  height = Math.tan(t1) * $.JSInt_methods.toDouble$0(zNear);
+  t1 = fovYRadians * 0.5;
+  height = Math.tan(t1) * zNear;
   width = height * $.toDouble$0$n(aspectRatio);
   $.setFrustumMatrix(perspectiveMatrix, -width, width, -height, height, zNear, zFar);
 };
 
 $.setFrustumMatrix = function(perspectiveMatrix, left, right, bottom, $top, near, far) {
   var two_near, right_minus_left, top_minus_bottom, far_minus_near, view, t1, t2, t3, t4;
-  left = $.JSDouble_methods.toDouble$0(left);
-  right = $.JSDouble_methods.toDouble$0(right);
-  bottom = $.JSDouble_methods.toDouble$0(bottom);
-  $top = $.JSDouble_methods.toDouble$0($top);
-  near = $.JSInt_methods.toDouble$0(near);
-  far = $.JSInt_methods.toDouble$0(far);
   two_near = $.doubleTypeCheck(2 * near);
-  right_minus_left = $.doubleTypeCheck(right - left);
-  top_minus_bottom = $.doubleTypeCheck($top - bottom);
+  right_minus_left = right - left;
+  top_minus_bottom = $top - bottom;
   far_minus_near = $.doubleTypeCheck(far - near);
   view = perspectiveMatrix.setZero$0();
   t1 = $.getInterceptor$n(two_near);
@@ -17384,13 +18979,9 @@ $.setFrustumMatrix = function(perspectiveMatrix, left, right, bottom, $top, near
   if (5 >= t4)
     throw $.ioore(5);
   t3[5] = t2;
-  if (typeof right_minus_left !== "number")
-    throw $.iae(right_minus_left);
   if (8 >= t4)
     throw $.ioore(8);
   t3[8] = (right + left) / right_minus_left;
-  if (typeof top_minus_bottom !== "number")
-    throw $.iae(top_minus_bottom);
   if (9 >= t4)
     throw $.ioore(9);
   t3[9] = ($top + bottom) / top_minus_bottom;
@@ -17429,217 +19020,89 @@ $.Vector4$zero = function() {
   return new $.Vector4($.interceptedTypeCheck($.Float32List_Float32List(4), "$isFloat32List"));
 };
 
-$.IsolateNatives__processWorkerMessage.call$2 = $.IsolateNatives__processWorkerMessage;
-$.IsolateNatives__processWorkerMessage.$name = "IsolateNatives__processWorkerMessage";
-$.IsolateNatives__processWorkerMessage.$isGameLoopTouchEventFunction = true;
-$.Primitives__throwFormatException.call$1 = $.Primitives__throwFormatException;
-$.Primitives__throwFormatException.$name = "Primitives__throwFormatException";
-$.Primitives__throwFormatException.$is_FutureOnError = true;
-$.wrapException.call$1 = $.wrapException;
-$.wrapException.$name = "wrapException";
-$.wrapException.$is_FutureOnError = true;
-$.wrapException.$is_FutureErrorTest = true;
-$.wrapException.$is_ErrorCallback = true;
-$.wrapException.$isRequestAnimationFrameCallback = true;
-$.wrapException.$isEventListener = true;
-$.wrapException.$isGameLoopUpdateFunction = true;
-$.wrapException.$isGameLoopRenderFunction = true;
-$.wrapException.$isGameLoopResizeFunction = true;
-$.wrapException.$isGameLoopFullscreenChangeFunction = true;
-$.wrapException.$isGameLoopPointerLockChangeFunction = true;
-$.DartError_toStringWrapper.call$0 = $.DartError_toStringWrapper;
-$.DartError_toStringWrapper.$name = "DartError_toStringWrapper";
-$.DartError_toStringWrapper.$isVoidCallback = true;
-$.invokeClosure.call$5 = $.invokeClosure;
-$.invokeClosure.$name = "invokeClosure";
-$.typeNameInChrome.call$1 = $.typeNameInChrome;
-$.typeNameInChrome.$name = "typeNameInChrome";
-$.typeNameInChrome.$is_FutureOnError = true;
-$.typeNameInChrome.$is_ErrorCallback = true;
-$.typeNameInChrome.$isRequestAnimationFrameCallback = true;
-$.typeNameInChrome.$isEventListener = true;
-$.typeNameInChrome.$isGameLoopUpdateFunction = true;
-$.typeNameInChrome.$isGameLoopRenderFunction = true;
-$.typeNameInChrome.$isGameLoopResizeFunction = true;
-$.typeNameInChrome.$isGameLoopFullscreenChangeFunction = true;
-$.typeNameInChrome.$isGameLoopPointerLockChangeFunction = true;
-$.typeNameInSafari.call$1 = $.typeNameInSafari;
-$.typeNameInSafari.$name = "typeNameInSafari";
-$.typeNameInSafari.$is_FutureOnError = true;
-$.typeNameInSafari.$is_ErrorCallback = true;
-$.typeNameInSafari.$isRequestAnimationFrameCallback = true;
-$.typeNameInSafari.$isEventListener = true;
-$.typeNameInSafari.$isGameLoopUpdateFunction = true;
-$.typeNameInSafari.$isGameLoopRenderFunction = true;
-$.typeNameInSafari.$isGameLoopResizeFunction = true;
-$.typeNameInSafari.$isGameLoopFullscreenChangeFunction = true;
-$.typeNameInSafari.$isGameLoopPointerLockChangeFunction = true;
-$.typeNameInOpera.call$1 = $.typeNameInOpera;
-$.typeNameInOpera.$name = "typeNameInOpera";
-$.typeNameInOpera.$is_FutureOnError = true;
-$.typeNameInOpera.$is_ErrorCallback = true;
-$.typeNameInOpera.$isRequestAnimationFrameCallback = true;
-$.typeNameInOpera.$isEventListener = true;
-$.typeNameInOpera.$isGameLoopUpdateFunction = true;
-$.typeNameInOpera.$isGameLoopRenderFunction = true;
-$.typeNameInOpera.$isGameLoopResizeFunction = true;
-$.typeNameInOpera.$isGameLoopFullscreenChangeFunction = true;
-$.typeNameInOpera.$isGameLoopPointerLockChangeFunction = true;
-$.typeNameInFirefox.call$1 = $.typeNameInFirefox;
-$.typeNameInFirefox.$name = "typeNameInFirefox";
-$.typeNameInFirefox.$is_FutureOnError = true;
-$.typeNameInFirefox.$is_ErrorCallback = true;
-$.typeNameInFirefox.$isRequestAnimationFrameCallback = true;
-$.typeNameInFirefox.$isEventListener = true;
-$.typeNameInFirefox.$isGameLoopUpdateFunction = true;
-$.typeNameInFirefox.$isGameLoopRenderFunction = true;
-$.typeNameInFirefox.$isGameLoopResizeFunction = true;
-$.typeNameInFirefox.$isGameLoopFullscreenChangeFunction = true;
-$.typeNameInFirefox.$isGameLoopPointerLockChangeFunction = true;
-$.typeNameInIE.call$1 = $.typeNameInIE;
-$.typeNameInIE.$name = "typeNameInIE";
-$.typeNameInIE.$is_FutureOnError = true;
-$.typeNameInIE.$is_ErrorCallback = true;
-$.typeNameInIE.$isRequestAnimationFrameCallback = true;
-$.typeNameInIE.$isEventListener = true;
-$.typeNameInIE.$isGameLoopUpdateFunction = true;
-$.typeNameInIE.$isGameLoopRenderFunction = true;
-$.typeNameInIE.$isGameLoopResizeFunction = true;
-$.typeNameInIE.$isGameLoopFullscreenChangeFunction = true;
-$.typeNameInIE.$isGameLoopPointerLockChangeFunction = true;
-$.constructorNameFallback.call$1 = $.constructorNameFallback;
-$.constructorNameFallback.$name = "constructorNameFallback";
-$.constructorNameFallback.$is_FutureOnError = true;
-$.constructorNameFallback.$is_ErrorCallback = true;
-$.constructorNameFallback.$isRequestAnimationFrameCallback = true;
-$.constructorNameFallback.$isEventListener = true;
-$.constructorNameFallback.$isGameLoopUpdateFunction = true;
-$.constructorNameFallback.$isGameLoopRenderFunction = true;
-$.constructorNameFallback.$isGameLoopResizeFunction = true;
-$.constructorNameFallback.$isGameLoopFullscreenChangeFunction = true;
-$.constructorNameFallback.$isGameLoopPointerLockChangeFunction = true;
-$._asyncRunCallback.call$0 = $._asyncRunCallback;
-$._asyncRunCallback.$name = "_asyncRunCallback";
-$._asyncRunCallback.$isVoidCallback = true;
-$.Element__determineMouseWheelEventType.call$1 = $.Element__determineMouseWheelEventType;
-$.Element__determineMouseWheelEventType.$name = "Element__determineMouseWheelEventType";
-$.Element__determineMouseWheelEventType.$is_FutureOnError = true;
-$.initContext.call$2 = $.initContext;
-$.initContext.$name = "initContext";
-$.ShaderProgram.$isObject = true;
-$.ShaderProgram.$isObject = true;
-$.ShaderProgram.$isShaderProgram = true;
-$.ShaderProgram.$isShaderProgram = true;
+$.IsolateNatives__processWorkerMessage$closure = new $.Closure$_processWorkerMessage($.IsolateNatives__processWorkerMessage, "IsolateNatives__processWorkerMessage$closure");
+$.Primitives__throwFormatException$closure = new $.Closure$_throwFormatException($.Primitives__throwFormatException, "Primitives__throwFormatException$closure");
+$.wrapException$closure = new $.Closure$wrapException($.wrapException, "wrapException$closure");
+$.DartError_toStringWrapper$closure = new $.Closure$toStringWrapper($.DartError_toStringWrapper, "DartError_toStringWrapper$closure");
+$.invokeClosure$closure = new $.Closure$invokeClosure($.invokeClosure, "invokeClosure$closure");
+$.typeNameInChrome$closure = new $.Closure$typeNameInChrome($.typeNameInChrome, "typeNameInChrome$closure");
+$.typeNameInSafari$closure = new $.Closure$typeNameInSafari($.typeNameInSafari, "typeNameInSafari$closure");
+$.typeNameInOpera$closure = new $.Closure$typeNameInOpera($.typeNameInOpera, "typeNameInOpera$closure");
+$.typeNameInFirefox$closure = new $.Closure$typeNameInFirefox($.typeNameInFirefox, "typeNameInFirefox$closure");
+$.typeNameInIE$closure = new $.Closure$typeNameInIE($.typeNameInIE, "typeNameInIE$closure");
+$.constructorNameFallback$closure = new $.Closure$constructorNameFallback($.constructorNameFallback, "constructorNameFallback$closure");
+$._asyncRunCallback$closure = new $.Closure$_asyncRunCallback($._asyncRunCallback, "_asyncRunCallback$closure");
+$.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseWheelEventType($.Element__determineMouseWheelEventType, "Element__determineMouseWheelEventType$closure");
+$.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
+$.main$closure = new $.Closure$main($.main, "main$closure");
 $.Gamepad.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Instance.$isObject = true;
-$.Instance.$isObject = true;
-$.Instance.$isInstance = true;
-$.Instance.$isInstance = true;
-$.Model.$isModel = true;
-$.Model.$isModel = true;
-$.Model.$isObject = true;
-$.Model.$isObject = true;
-$.TextureInfo.$isObject = true;
-$.TextureInfo.$isObject = true;
-$.TextureInfo.$isTextureInfo = true;
-$.TextureInfo.$isTextureInfo = true;
-$.HttpRequest.$isHttpRequest = true;
-$.HttpRequest.$isHttpRequest = true;
-$.HttpRequest.$isObject = true;
-$.HttpRequest.$isObject = true;
-$.ElementInstance.$isObject = true;
-$.ElementInstance.$isObject = true;
-$.ElementInstance.$isElementInstance = true;
-$.ElementInstance.$isElementInstance = true;
-$.SourceBuffer.$isObject = true;
-$.SourceBuffer.$isObject = true;
-$.ReceivePort.$isReceivePort = true;
-$.ReceivePort.$isReceivePort = true;
-$.ReceivePort.$isObject = true;
-$.ReceivePort.$isObject = true;
-$.SpeechGrammar.$isObject = true;
-$.SpeechGrammar.$isObject = true;
-$.Rect.$isObject = true;
-$.Rect.$isObject = true;
-$.SpeechInputResult.$isObject = true;
-$.SpeechInputResult.$isObject = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
-$.Duration.$isObject = true;
-$.Duration.$isObject = true;
-$.Duration.$isObject = true;
-$.Duration.$isObject = true;
-$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
-$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
-$.SpeechRecognitionResult.$isObject = true;
-$.SpeechRecognitionResult.$isObject = true;
-$.StyleSheet.$isStyleSheet = true;
-$.StyleSheet.$isStyleSheet = true;
-$.StyleSheet.$isObject = true;
-$.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isObject = true;
-$.KeyboardEvent.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
-$.KeyboardEvent.$isEvent = true;
-$.KeyboardEvent.$isEvent = true;
-$.TextTrack.$isObject = true;
-$.TextTrack.$isObject = true;
-$.Length.$isObject = true;
-$.Length.$isObject = true;
-$.TextTrackCue.$isObject = true;
-$.TextTrackCue.$isObject = true;
-$._IsolateContext.$is_IsolateContext = true;
-$._IsolateContext.$is_IsolateContext = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
-$.Touch.$isObject = true;
-$.Touch.$isObject = true;
-$._IsolateEvent.$is_IsolateEvent = true;
-$._IsolateEvent.$is_IsolateEvent = true;
-$._IsolateEvent.$isObject = true;
-$._IsolateEvent.$isObject = true;
-$._ManagerStub.$is_ManagerStub = true;
-$._ManagerStub.$is_ManagerStub = true;
-$._ManagerStub.$isObject = true;
-$._ManagerStub.$isObject = true;
-$.Map.$isObject = true;
-$.Map.$isObject = true;
-$.Number.$isObject = true;
-$.Number.$isObject = true;
-$.PathSeg.$isObject = true;
-$.PathSeg.$isObject = true;
-$.Shader.$isObject = true;
-$.Shader.$isObject = true;
-$.Shader.$isShader = true;
-$.Shader.$isShader = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
 $.CssRule.$isObject = true;
+$.Number.$isObject = true;
+$.Number.$isObject = true;
+$.PathSeg.$isObject = true;
+$.PathSeg.$isObject = true;
+$.ShaderProgram.$isShaderProgram = true;
+$.ShaderProgram.$isShaderProgram = true;
+$.ShaderProgram.$isObject = true;
+$.ShaderProgram.$isObject = true;
+$.Shader.$isShader = true;
+$.Shader.$isShader = true;
+$.Shader.$isObject = true;
+$.Shader.$isObject = true;
+$.Model.$isModel = true;
+$.Model.$isModel = true;
+$.Model.$isObject = true;
+$.Model.$isObject = true;
 $.Texture.$isTexture = true;
 $.Texture.$isTexture = true;
 $.Texture.$isObject = true;
 $.Texture.$isObject = true;
+$.Instance.$isInstance = true;
+$.Instance.$isInstance = true;
+$.Instance.$isObject = true;
+$.Instance.$isObject = true;
+$.TextureInfo.$isObject = true;
+$.TextureInfo.$isObject = true;
+$.TextureInfo.$isTextureInfo = true;
+$.TextureInfo.$isTextureInfo = true;
 $.MimeType.$isObject = true;
 $.MimeType.$isObject = true;
+$.HttpRequest.$isHttpRequest = true;
+$.HttpRequest.$isHttpRequest = true;
+$.HttpRequest.$isObject = true;
+$.HttpRequest.$isObject = true;
+$.SourceBuffer.$isObject = true;
+$.SourceBuffer.$isObject = true;
+$.MouseEvent.$isObject = true;
+$.MouseEvent.$isObject = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isMouseEvent = true;
-$.MouseEvent.$isObject = true;
-$.MouseEvent.$isObject = true;
+$.SpeechGrammar.$isObject = true;
+$.SpeechGrammar.$isObject = true;
+$.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isObject = true;
+$.ElementInstance.$isObject = true;
 $._CSSValue.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isNode = true;
-$.Node.$isNode = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
+$.SpeechInputResult.$isObject = true;
+$.SpeechInputResult.$isObject = true;
+$.Duration.$isObject = true;
+$.Duration.$isObject = true;
+$.Duration.$isObject = true;
+$.Duration.$isObject = true;
 $.Node.$isObject = true;
 $.Node.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
+$.Node.$isNode = true;
+$.Node.$isNode = true;
 $.JSArray.$isList = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
@@ -17648,20 +19111,14 @@ $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
-$._GameLoopTouchEvent.$isObject = true;
-$._GameLoopTouchEvent.$isObject = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouch.$isObject = true;
-$.GameLoopTouch.$isObject = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.Rect.$isObject = true;
+$.Rect.$isObject = true;
+$.SpeechRecognitionResult.$isObject = true;
+$.SpeechRecognitionResult.$isObject = true;
+$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
+$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
@@ -17670,26 +19127,34 @@ $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isnum = true;
-$._EntrySync.$isObject = true;
-$._EntrySync.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isnum = true;
+$.JSInt.$isnum = true;
+$.JSInt.$isint = true;
+$.JSInt.$isint = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSDouble.$isnum = true;
+$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isnum = true;
-$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
@@ -17698,90 +19163,129 @@ $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
-$.DigitalButton.$isDigitalButton = true;
-$.DigitalButton.$isDigitalButton = true;
-$.DigitalButton.$isObject = true;
-$.DigitalButton.$isObject = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
-$.GameLoopTimer.$isObject = true;
-$.GameLoopTimer.$isObject = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$._GameLoopTouchEvent.$isObject = true;
+$._GameLoopTouchEvent.$isObject = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $.Element.$isElement = true;
 $.Element.$isElement = true;
 $.Element.$isNode = true;
 $.Element.$isNode = true;
 $.Element.$isObject = true;
 $.Element.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isnum = true;
-$.JSInt.$isnum = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isint = true;
-$.JSInt.$isint = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
+$._EntrySync.$isObject = true;
+$._EntrySync.$isObject = true;
+$.GameLoopTouch.$isObject = true;
+$.GameLoopTouch.$isObject = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
+$.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
+$.StyleSheet.$isObject = true;
+$.StyleSheet.$isObject = true;
+$.StyleSheet.$isStyleSheet = true;
+$.StyleSheet.$isStyleSheet = true;
 $.Entry.$isEntry = true;
 $.Entry.$isEntry = true;
 $.Entry.$isObject = true;
 $.Entry.$isObject = true;
-$.Transform.$isObject = true;
-$.Transform.$isObject = true;
-$.Plugin.$isObject = true;
-$.Plugin.$isObject = true;
+$.DigitalButton.$isObject = true;
+$.DigitalButton.$isObject = true;
+$.DigitalButton.$isDigitalButton = true;
+$.DigitalButton.$isDigitalButton = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTimer.$isObject = true;
+$.GameLoopTimer.$isObject = true;
+$.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
+$.KeyboardEvent.$isEvent = true;
+$.KeyboardEvent.$isEvent = true;
+$.ReceivePort.$isReceivePort = true;
+$.ReceivePort.$isReceivePort = true;
+$.ReceivePort.$isObject = true;
+$.ReceivePort.$isObject = true;
 $.File.$isFile = true;
 $.File.$isFile = true;
 $.File.$isObject = true;
 $.File.$isObject = true;
+$.Plugin.$isObject = true;
+$.Plugin.$isObject = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$is_IsolateContext = true;
+$._IsolateContext.$is_IsolateContext = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
+$._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateEvent.$isObject = true;
+$._IsolateEvent.$isObject = true;
+$.TextTrack.$isObject = true;
+$.TextTrack.$isObject = true;
+$.TextTrackCue.$isObject = true;
+$.TextTrackCue.$isObject = true;
+$.Transform.$isObject = true;
+$.Transform.$isObject = true;
+$.Length.$isObject = true;
+$.Length.$isObject = true;
+$.Map.$isObject = true;
+$.Map.$isObject = true;
+$.Touch.$isObject = true;
+$.Touch.$isObject = true;
 Isolate.makeConstantList = function(list) {
   list.immutable$list = true;
   list.fixed$length = true;
   return list;
 };
 $.List_empty = Isolate.makeConstantList([]);
-$.EventStreamProvider_load = new $.EventStreamProvider("load");
-$.HtmlDocument_methods = $.HtmlDocument.prototype;
-$.JSNull_methods = $.JSNull.prototype;
-$.JSDouble_methods = $.JSDouble.prototype;
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType);
-$.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
-$.EventStreamProvider_webkitfullscreenchange = new $.EventStreamProvider("webkitfullscreenchange");
-$.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
-$.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
-$.EventStreamProvider_open = new $.EventStreamProvider("open");
-$.EventStreamProvider_resize = new $.EventStreamProvider("resize");
-$.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
-$.Duration_0 = new $.Duration(0);
 $.EventStreamProvider_success = new $.EventStreamProvider("success");
 $.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
-$.NodeList_methods = $.NodeList.prototype;
-$.C_NullThrownError = new $.NullThrownError();
-$.JSInt_methods = $.JSInt.prototype;
-$.EventStreamProvider_error = new $.EventStreamProvider("error");
-$.EventStreamProvider_close = new $.EventStreamProvider("close");
-$._WorkerStub_methods = $._WorkerStub.prototype;
-$.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.Window_methods = $.Window.prototype;
-$.Float32List_methods = $.Float32List.prototype;
 $.HttpRequest_methods = $.HttpRequest.prototype;
-$.JSArray_methods = $.JSArray.prototype;
-$.C_CloseToken = new $.CloseToken();
-$.EventStreamProvider_click = new $.EventStreamProvider("click");
+$.EventStreamProvider_resize = new $.EventStreamProvider("resize");
+$.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.JSNumber_methods = $.JSNumber.prototype;
 $.JSString_methods = $.JSString.prototype;
-$.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
+$.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
+$.EventStreamProvider_webkitfullscreenchange = new $.EventStreamProvider("webkitfullscreenchange");
+$.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
+$.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
+$.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
+$.HtmlDocument_methods = $.HtmlDocument.prototype;
+$.Float32List_methods = $.Float32List.prototype;
+$.Duration_0 = new $.Duration(0);
+$.JSNull_methods = $.JSNull.prototype;
+$.C_NullThrownError = new $.NullThrownError();
+$.JSDouble_methods = $.JSDouble.prototype;
+$.EventStreamProvider_progress = new $.EventStreamProvider("progress");
+$.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
 $.EventStreamProvider_touchend = new $.EventStreamProvider("touchend");
+$.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.EventStreamProvider_keyup = new $.EventStreamProvider("keyup");
 $.EventStreamProvider_message = new $.EventStreamProvider("message");
-$.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
-$.EventStreamProvider_progress = new $.EventStreamProvider("progress");
+$.EventStreamProvider_click = new $.EventStreamProvider("click");
+$.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
+$.C_CloseToken = new $.CloseToken();
+$.NodeList_methods = $.NodeList.prototype;
+$.JSArray_methods = $.JSArray.prototype;
+$.JSInt_methods = $.JSInt.prototype;
+$.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
+$.EventStreamProvider_close = new $.EventStreamProvider("close");
+$.EventStreamProvider_error = new $.EventStreamProvider("error");
 $.Expando__keyCount = 0;
 $.dispatchPropertyName = null;
 $.lazyPort = null;
@@ -17867,13 +19371,15 @@ $.$lt$n = function(receiver, a0) {
     return receiver < a0;
   return $.getInterceptor$n(receiver).$lt(receiver, a0);
 };
-$.$mod$n = function(receiver, a0) {
-  return $.getInterceptor$n(receiver).$mod(receiver, a0);
-};
 $.$mul$n = function(receiver, a0) {
   if (typeof receiver == "number" && typeof a0 == "number")
     return receiver * a0;
   return $.getInterceptor$n(receiver).$mul(receiver, a0);
+};
+$.$negate$n = function(receiver) {
+  if (typeof receiver == "number")
+    return -receiver;
+  return $.getInterceptor$n(receiver).$negate(receiver);
 };
 $.$shl$n = function(receiver, a0) {
   return $.getInterceptor$n(receiver).$shl(receiver, a0);
@@ -17919,9 +19425,6 @@ $.get$$$dom_children$x = function(receiver) {
 $.get$children$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$children(receiver);
 };
-$.get$client$x = function(receiver) {
-  return $.getInterceptor$x(receiver).get$client(receiver);
-};
 $.get$first$ax = function(receiver) {
   return $.getInterceptor$ax(receiver).get$first(receiver);
 };
@@ -17955,23 +19458,8 @@ $.get$nodes$x = function(receiver) {
 $.get$onClick$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$onClick(receiver);
 };
-$.get$onClose$x = function(receiver) {
-  return $.getInterceptor$x(receiver).get$onClose(receiver);
-};
-$.get$onError$x = function(receiver) {
-  return $.getInterceptor$x(receiver).get$onError(receiver);
-};
-$.get$onMessage$x = function(receiver) {
-  return $.getInterceptor$x(receiver).get$onMessage(receiver);
-};
-$.get$onOpen$x = function(receiver) {
-  return $.getInterceptor$x(receiver).get$onOpen(receiver);
-};
 $.get$responseText$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$responseText(receiver);
-};
-$.get$result$x = function(receiver) {
-  return $.getInterceptor$x(receiver).get$result(receiver);
 };
 $.get$values$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$values(receiver);
@@ -18009,9 +19497,6 @@ $.linkProgram$1$x = function(receiver, a0) {
 $.loseContext$0$x = function(receiver) {
   return $.getInterceptor$x(receiver).loseContext$0(receiver);
 };
-$.postMessage$1$x = function(receiver, a0) {
-  return $.getInterceptor$x(receiver).postMessage$1(receiver, a0);
-};
 $.register$2$x = function(receiver, a0, a1) {
   return $.getInterceptor$x(receiver).register$2(receiver, a0, a1);
 };
@@ -18029,9 +19514,6 @@ $.send$1$x = function(receiver, a0) {
 };
 $.send$2$x = function(receiver, a0, a1) {
   return $.getInterceptor$x(receiver).send$2(receiver, a0, a1);
-};
-$.set$backgroundColor$x = function(receiver, value) {
-  return $.getInterceptor$x(receiver).set$backgroundColor(receiver, value);
 };
 $.set$display$x = function(receiver, value) {
   return $.getInterceptor$x(receiver).set$display(receiver, value);
@@ -18057,6 +19539,9 @@ $.set$type$x = function(receiver, value) {
 $.set$width$x = function(receiver, value) {
   return $.getInterceptor$x(receiver).set$width(receiver, value);
 };
+$.setProperty$3$x = function(receiver, a0, a1, a2) {
+  return $.getInterceptor$x(receiver).setProperty$3(receiver, a0, a1, a2);
+};
 $.setRange$3$ax = function(receiver, a0, a1, a2) {
   return $.getInterceptor$ax(receiver).setRange$3(receiver, a0, a1, a2);
 };
@@ -18075,11 +19560,11 @@ $.startsWith$1$s = function(receiver, a0) {
 $.sublist$1$ax = function(receiver, a0) {
   return $.getInterceptor$ax(receiver).sublist$1(receiver, a0);
 };
+$.substring$2$s = function(receiver, a0, a1) {
+  return $.getInterceptor$s(receiver).substring$2(receiver, a0, a1);
+};
 $.toDouble$0$n = function(receiver) {
   return $.getInterceptor$n(receiver).toDouble$0(receiver);
-};
-$.toInt$0$nx = function(receiver) {
-  return $.getInterceptor$nx(receiver).toInt$0(receiver);
 };
 $.toList$0$ax = function(receiver) {
   return $.getInterceptor$ax(receiver).toList$0(receiver);
@@ -18109,8 +19594,6 @@ $.getInterceptor = function(receiver) {
     return $.JSString.prototype;
   if (receiver == null)
     return $.JSNull.prototype;
-  if (typeof receiver == "function")
-    return $.JSFunction.prototype;
   if (typeof receiver == "boolean")
     return $.JSBool.prototype;
   if (receiver.constructor == Array)
@@ -18167,19 +19650,6 @@ $.getInterceptor$ns = function(receiver) {
     return receiver;
   return receiver;
 };
-$.getInterceptor$nx = function(receiver) {
-  if (typeof receiver == "number")
-    return $.JSNumber.prototype;
-  if (receiver == null)
-    return receiver;
-  if (typeof receiver != "object")
-    return receiver;
-  if (receiver instanceof $.Object)
-    return receiver;
-  if (Object.getPrototypeOf(receiver) === Object.prototype)
-    return $.Interceptor.prototype;
-  return $.getNativeInterceptor(receiver);
-};
 $.getInterceptor$s = function(receiver) {
   if (typeof receiver == "string")
     return $.JSString.prototype;
@@ -18213,6 +19683,9 @@ Isolate.$lazy($, "globalPostMessageDefined", "globalPostMessageDefined", "get$gl
 Isolate.$lazy($, "thisScript", "IsolateNatives_thisScript", "get$IsolateNatives_thisScript", function() {
   return $.IsolateNatives_computeThisScript();
 });
+Isolate.$lazy($, "workerIds", "IsolateNatives_workerIds", "get$IsolateNatives_workerIds", function() {
+  return $.assertSubtype($.Expando$(null, $.JSInt), "$isExpando", [$.JSInt], "$asExpando");
+});
 Isolate.$lazy($, "_stackTraceExpando", "_stackTraceExpando", "get$_stackTraceExpando", function() {
   return $.Expando$("asynchronous error", null);
 });
@@ -18235,8 +19708,6 @@ Isolate.$lazy($, "_buttonIds", "Mouse__buttonIds", "get$Mouse__buttonIds", funct
   return $.listTypeCheck([0, 1, 2]);
 });
 // Native classes
-$.defineNativeMethods("Worker", $._WorkerStub);
-
 $.defineNativeMethodsNonleaf("HTMLElement", $._HTMLElement);
 
 $.defineNativeMethodsNonleaf("AbstractWorker", $.AbstractWorker);
@@ -18271,13 +19742,13 @@ $.defineNativeMethods("HTMLButtonElement", $.ButtonElement);
 
 $.defineNativeMethods("CDATASection", $.CDataSection);
 
+$.defineNativeMethods("Canvas2DContextAttributes", $.Canvas2DContextAttributes);
+
 $.defineNativeMethods("HTMLCanvasElement", $.CanvasElement);
 
 $.defineNativeMethods("CanvasGradient", $.CanvasGradient);
 
 $.defineNativeMethods("CanvasPattern", $.CanvasPattern);
-
-$.defineNativeMethods("CanvasProxy", $.CanvasProxy);
 
 $.defineNativeMethodsNonleaf("CanvasRenderingContext", $.CanvasRenderingContext);
 
@@ -18289,6 +19760,8 @@ $.defineNativeMethods("CloseEvent", $.CloseEvent);
 
 $.defineNativeMethods("Comment", $.Comment);
 
+$.defineNativeMethods("Composition", $.Composition);
+
 $.defineNativeMethods("CompositionEvent", $.CompositionEvent);
 
 $.defineNativeMethods("HTMLContentElement", $.ContentElement);
@@ -18296,6 +19769,8 @@ $.defineNativeMethods("HTMLContentElement", $.ContentElement);
 $.defineNativeMethods("Coordinates", $.Coordinates);
 
 $.defineNativeMethods("Crypto", $.Crypto);
+
+$.defineNativeMethods("CSS", $.Css);
 
 $.defineNativeMethods("CSSCharsetRule", $.CssCharsetRule);
 
@@ -18326,6 +19801,8 @@ $.defineNativeMethods("CSSStyleDeclaration", $.CssStyleDeclaration);
 $.defineNativeMethods("CSSStyleRule", $.CssStyleRule);
 
 $.defineNativeMethods("CSSStyleSheet", $.CssStyleSheet);
+
+$.defineNativeMethods("CSSSupportsRule", $.CssSupportsRule);
 
 $.defineNativeMethods("CSSUnknownRule", $.CssUnknownRule);
 
@@ -18467,6 +19944,8 @@ $.defineNativeMethods("HTMLImageElement", $.ImageElement);
 
 $.defineNativeMethods("HTMLInputElement", $.InputElement);
 
+$.defineNativeMethods("InputMethodContext", $.InputMethodContext);
+
 $.defineNativeMethods("KeyboardEvent", $.KeyboardEvent);
 
 $.defineNativeMethods("HTMLKeygenElement", $.KeygenElement);
@@ -18478,8 +19957,6 @@ $.defineNativeMethods("HTMLLabelElement", $.LabelElement);
 $.defineNativeMethods("HTMLLegendElement", $.LegendElement);
 
 $.defineNativeMethods("HTMLLinkElement", $.LinkElement);
-
-$.defineNativeMethods("LocalMediaStream", $.LocalMediaStream);
 
 $.defineNativeMethods("Location", $.Location);
 
@@ -18501,7 +19978,7 @@ $.defineNativeMethods("MediaQueryList", $.MediaQueryList);
 
 $.defineNativeMethods("MediaSource", $.MediaSource);
 
-$.defineNativeMethodsNonleaf("MediaStream", $.MediaStream);
+$.defineNativeMethods("MediaStream", $.MediaStream);
 
 $.defineNativeMethods("MediaStreamEvent", $.MediaStreamEvent);
 
@@ -18524,6 +20001,12 @@ $.defineNativeMethods("HTMLMetaElement", $.MetaElement);
 $.defineNativeMethods("Metadata", $.Metadata);
 
 $.defineNativeMethods("HTMLMeterElement", $.MeterElement);
+
+$.defineNativeMethods("MIDIConnectionEvent", $.MidiConnectionEvent);
+
+$.defineNativeMethods("MIDIMessageEvent", $.MidiMessageEvent);
+
+$.defineNativeMethods("MIDIPort", $.MidiPort);
 
 $.defineNativeMethods("MimeType", $.MimeType);
 
@@ -18584,8 +20067,6 @@ $.defineNativeMethods("Path", $.Path);
 $.defineNativeMethods("Performance", $.Performance);
 
 $.defineNativeMethodsNonleaf("PerformanceEntry", $.PerformanceEntry);
-
-$.defineNativeMethods("PerformanceEntryList", $.PerformanceEntryList);
 
 $.defineNativeMethods("PerformanceMark", $.PerformanceMark);
 
@@ -18684,6 +20165,14 @@ $.defineNativeMethods("SpeechRecognitionError", $.SpeechRecognitionError);
 $.defineNativeMethods("SpeechRecognitionEvent", $.SpeechRecognitionEvent);
 
 $.defineNativeMethods("SpeechRecognitionResult", $.SpeechRecognitionResult);
+
+$.defineNativeMethods("SpeechSynthesis", $.SpeechSynthesis);
+
+$.defineNativeMethods("SpeechSynthesisEvent", $.SpeechSynthesisEvent);
+
+$.defineNativeMethods("SpeechSynthesisUtterance", $.SpeechSynthesisUtterance);
+
+$.defineNativeMethods("SpeechSynthesisVoice", $.SpeechSynthesisVoice);
 
 $.defineNativeMethods("Storage", $.Storage);
 
@@ -19227,7 +20716,6 @@ $.defineNativeMethods("SQLTransaction", $.SqlTransaction);
 var $ = null;
 Isolate = Isolate.$finishIsolateConstructor(Isolate);
 var $ = new Isolate();
-$.main.call$0 = $.main;
 $.initializeDispatchProperty(function(a) {
   $.getDispatchProperty = a;
 }, "___dart_dispatch_record_ZxYxX_0_", $.Interceptor.prototype);
@@ -19236,17 +20724,17 @@ if (typeof document !== "undefined" && document.readyState !== "complete") {
   document.addEventListener("readystatechange", function () {
     if (document.readyState == "complete") {
       if (typeof dartMainRunner === "function") {
-        dartMainRunner(function() { $.startRootIsolate($.main); });
+        dartMainRunner(function() { $.startRootIsolate($.main$closure); });
       } else {
-        $.startRootIsolate($.main);
+        $.startRootIsolate($.main$closure);
       }
     }
   }, false);
 } else {
   if (typeof dartMainRunner === "function") {
-    dartMainRunner(function() { $.startRootIsolate($.main); });
+    dartMainRunner(function() { $.startRootIsolate($.main$closure); });
   } else {
-    $.startRootIsolate($.main);
+    $.startRootIsolate($.main$closure);
   }
 }
 // END invoke [main].
@@ -19291,10 +20779,10 @@ function init() {
       for (var i = 0; i < fields.length; i++) {
         if (i != 0)
           str += ", ";
-        var field = fields[i];
-        field = generateAccessor(field, prototype);
-        str += field;
-        body += "this." + field + " = " + field + ";\n";
+        var field = generateAccessor(fields[i], prototype);
+        var parameter = "parameter_" + field;
+        str += parameter;
+        body += "this." + field + " = " + parameter + ";\n";
       }
       str += ") {" + body + "}\nreturn " + cls;
       constructor = new Function(str)();
@@ -19430,6 +20918,7 @@ function init() {
     newIsolate.prototype = isolatePrototype;
     isolatePrototype.constructor = newIsolate;
     newIsolate.$isolateProperties = isolateProperties;
+    newIsolate.makeConstantList = oldIsolate.makeConstantList;
     newIsolate.$finishClasses = oldIsolate.$finishClasses;
     return newIsolate;
   };
