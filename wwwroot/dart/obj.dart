@@ -1,4 +1,4 @@
-library skybox;
+library obj;
 
 class Obj {
   
