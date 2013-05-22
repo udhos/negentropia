@@ -7640,7 +7640,7 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
       v = $.listTypeCheck(line.split(" "));
       t2 = $.getInterceptor$asx(v);
       if (!$.$eq(t2.get$length(v), 4)) {
-        $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + $.S($.$sub$n(t2.get$length(v), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+        $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + $.S($.$sub$n(t2.get$length(v), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
         return;
       }
       t1 = this._vertCoord_4;
@@ -7660,7 +7660,7 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
       t = $.listTypeCheck(line.split(" "));
       t2 = $.getInterceptor$asx(t);
       if (!$.$eq(t2.get$length(t), 3)) {
-        $.Primitives_printString("OBJ: wrong number of texture coordinates (" + $.S($.$sub$n(t2.get$length(t), 1)) + " != 2) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+        $.Primitives_printString("OBJ: wrong number of texture coordinates (" + $.S($.$sub$n(t2.get$length(t), 1)) + " != 2) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
         return;
       }
       t1 = this._textCoord_5;
@@ -7679,10 +7679,10 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
       f = line.split(" ");
       $.listTypeCheck(f);
       if (typeof f !== "string" && (typeof f !== "object" || f === null || f.constructor !== Array && !$.getInterceptor(f).$isJavaScriptIndexingBehavior))
-        return this.call$1$bailout(1, rawLine, f, t1);
+        return this.call$1$bailout(1, line, f, t1);
       t2 = f.length;
       if (t2 !== 4) {
-        $.Primitives_printString("OBJ: wrong number of face indices (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+        $.Primitives_printString("OBJ: wrong number of face indices (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
         return;
       }
       for (t2 = this.this_1, t3 = this.indexTable_3, t4 = this._textCoord_5, t5 = this._vertCoord_4, i = 1; t6 = f.length, $.$lt$n(i, t6); ++i) {
@@ -7749,9 +7749,9 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
       }
       return;
     }
-    $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+    $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
   },
-  call$1$bailout: function(state0, rawLine, f, t1) {
+  call$1$bailout: function(state0, line, f, t1) {
     switch (state0) {
       case 0:
         $.stringTypeCheck(rawLine);
@@ -7768,7 +7768,7 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
           v = $.listTypeCheck(line.split(" "));
           t2 = $.getInterceptor$asx(v);
           if (!$.$eq(t2.get$length(v), 4)) {
-            $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + $.S($.$sub$n(t2.get$length(v), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+            $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + $.S($.$sub$n(t2.get$length(v), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
             return;
           }
           t1 = this._vertCoord_4;
@@ -7788,7 +7788,7 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
           t = $.listTypeCheck(line.split(" "));
           t2 = $.getInterceptor$asx(t);
           if (!$.$eq(t2.get$length(t), 3)) {
-            $.Primitives_printString("OBJ: wrong number of texture coordinates (" + $.S($.$sub$n(t2.get$length(t), 1)) + " != 2) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+            $.Primitives_printString("OBJ: wrong number of texture coordinates (" + $.S($.$sub$n(t2.get$length(t), 1)) + " != 2) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
             return;
           }
           t1 = this._textCoord_5;
@@ -7804,7 +7804,7 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
         if ($.JSString_methods.startsWith$1(line, "vn "))
           return;
       case 1:
-        var line, v, t2, t3, t, t4, t5, t6, i, t7, ind, index, t8, vi, vIndex, vOffset, t9, t10, t11, ti, tIndex, tOffset, ni;
+        var v, t2, t3, t, t4, t5, t6, i, t7, ind, index, t8, vi, vIndex, vOffset, t9, t10, t11, ti, tIndex, tOffset, ni;
         if (state0 === 1 || state0 === 0 && $.JSString_methods.startsWith$1(line, "f "))
           switch (state0) {
             case 0:
@@ -7814,7 +7814,7 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
               state0 = 0;
               t2 = $.getInterceptor$asx(f);
               if (!$.$eq(t2.get$length(f), 4)) {
-                $.Primitives_printString("OBJ: wrong number of face indices (" + $.S($.$sub$n(t2.get$length(f), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+                $.Primitives_printString("OBJ: wrong number of face indices (" + $.S($.$sub$n(t2.get$length(f), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
                 return;
               }
               for (t3 = this.this_1, t4 = this.indexTable_3, t5 = this._textCoord_5, t6 = this._vertCoord_4, i = 1; t7 = $.getInterceptor$n(i), t7.$lt(i, t2.get$length(f)); i = $.intTypeCheck(t7.$add(i, 1))) {
@@ -7879,7 +7879,7 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
               }
               return;
           }
-        $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + $.S(rawLine) + "]");
+        $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
     }
   },
   $isFunction: true,
@@ -19045,30 +19045,30 @@ $.Number.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
 $.PathSeg.$isObject = true;
-$.ShaderProgram.$isShaderProgram = true;
-$.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isObject = true;
+$.ShaderProgram.$isShaderProgram = true;
+$.ShaderProgram.$isShaderProgram = true;
 $.Shader.$isShader = true;
 $.Shader.$isShader = true;
 $.Shader.$isObject = true;
 $.Shader.$isObject = true;
-$.Model.$isModel = true;
-$.Model.$isModel = true;
 $.Model.$isObject = true;
 $.Model.$isObject = true;
+$.Model.$isModel = true;
+$.Model.$isModel = true;
 $.Texture.$isTexture = true;
 $.Texture.$isTexture = true;
 $.Texture.$isObject = true;
 $.Texture.$isObject = true;
-$.Instance.$isInstance = true;
-$.Instance.$isInstance = true;
 $.Instance.$isObject = true;
 $.Instance.$isObject = true;
-$.TextureInfo.$isObject = true;
-$.TextureInfo.$isObject = true;
+$.Instance.$isInstance = true;
+$.Instance.$isInstance = true;
 $.TextureInfo.$isTextureInfo = true;
 $.TextureInfo.$isTextureInfo = true;
+$.TextureInfo.$isObject = true;
+$.TextureInfo.$isObject = true;
 $.MimeType.$isObject = true;
 $.MimeType.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
@@ -19079,10 +19079,10 @@ $.SourceBuffer.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.MouseEvent.$isObject = true;
 $.MouseEvent.$isObject = true;
-$.MouseEvent.$isEvent = true;
-$.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isMouseEvent = true;
+$.MouseEvent.$isEvent = true;
+$.MouseEvent.$isEvent = true;
 $.SpeechGrammar.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.ElementInstance.$isElementInstance = true;
@@ -19091,10 +19091,10 @@ $.ElementInstance.$isObject = true;
 $.ElementInstance.$isObject = true;
 $._CSSValue.$isObject = true;
 $._CSSValue.$isObject = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isObject = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
@@ -19103,10 +19103,10 @@ $.Node.$isObject = true;
 $.Node.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isNode = true;
-$.JSArray.$isList = true;
-$.JSArray.$isList = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
+$.JSArray.$isList = true;
+$.JSArray.$isList = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
@@ -19129,54 +19129,54 @@ $.JSNumber.$isnum = true;
 $.JSNumber.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isnum = true;
-$.JSInt.$isnum = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isint = true;
 $.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSDouble.$isnum = true;
-$.JSDouble.$isnum = true;
+$.JSInt.$isnum = true;
+$.JSInt.$isnum = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isdouble = true;
+$.JSDouble.$isnum = true;
+$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
 $.JSString.$isString = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$.Element.$isElement = true;
-$.Element.$isElement = true;
 $.Element.$isNode = true;
 $.Element.$isNode = true;
 $.Element.$isObject = true;
 $.Element.$isObject = true;
+$.Element.$isElement = true;
+$.Element.$isElement = true;
 $.Element.$isObject = true;
 $.Element.$isObject = true;
 $._EntrySync.$isObject = true;
@@ -19191,10 +19191,10 @@ $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.StyleSheet.$isObject = true;
-$.StyleSheet.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isStyleSheet = true;
+$.StyleSheet.$isObject = true;
+$.StyleSheet.$isObject = true;
 $.Entry.$isEntry = true;
 $.Entry.$isEntry = true;
 $.Entry.$isObject = true;
@@ -19207,32 +19207,32 @@ $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isObject = true;
-$.KeyboardEvent.$isObject = true;
-$.KeyboardEvent.$isObject = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isEvent = true;
-$.ReceivePort.$isReceivePort = true;
-$.ReceivePort.$isReceivePort = true;
+$.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isObject = true;
 $.ReceivePort.$isObject = true;
 $.ReceivePort.$isObject = true;
-$.File.$isFile = true;
-$.File.$isFile = true;
+$.ReceivePort.$isReceivePort = true;
+$.ReceivePort.$isReceivePort = true;
 $.File.$isObject = true;
 $.File.$isObject = true;
+$.File.$isFile = true;
+$.File.$isFile = true;
 $.Plugin.$isObject = true;
 $.Plugin.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
-$._IsolateContext.$is_IsolateContext = true;
-$._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
-$._IsolateEvent.$is_IsolateEvent = true;
-$._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateContext.$is_IsolateContext = true;
+$._IsolateContext.$is_IsolateContext = true;
 $._IsolateEvent.$isObject = true;
 $._IsolateEvent.$isObject = true;
+$._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateEvent.$is_IsolateEvent = true;
 $.TextTrack.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;

@@ -21,6 +21,14 @@ var neg = {
 };
 var gl = null;
 var websocket = null;
+var assetRoot = "/";
+var assetPath = {
+	mesh:    assetRoot + "mesh/",
+	mtl:     assetRoot + "mtl/",
+	obj:     assetRoot + "obj/",
+	shader:  assetRoot + "shader/",
+	texture: assetRoot + "texture/",
+}
 
 // Stats.js
 function initStats() {
@@ -154,9 +162,9 @@ function backfaceCulling(gl, enable) {
 }
 
 function initSquareWhite() {
-	var squareProgram = new Program("/shader/clip_vs.txt", "/shader/clip_fs.txt");
+	var squareProgram = new Program(assetPath.shader + "clip_vs.txt", assetPath.shader + "clip_fs.txt");
 	neg.programList.push(squareProgram);
-	var squareModel = new Model(squareProgram, "/mesh/square.json");
+	var squareModel = new Model(squareProgram, assetPath.mesh + "square.json");
 	squareProgram.addModel(squareModel);
 	var squareInstance = new Instance(squareModel, [0.0, 0.0, 0.0]);
 	squareModel.addInstance(squareInstance);
@@ -164,9 +172,9 @@ function initSquareWhite() {
 }
 
 function initSquareBlue() {
-	var squareProgram2 = new Program("/shader/clip_vs.txt", "/shader/clip2_fs.txt");
+	var squareProgram2 = new Program(assetPath.shader + "clip_vs.txt", assetPath.shader + "clip2_fs.txt");
 	neg.programList.push(squareProgram2);		
-	var squareModel2 = new Model(squareProgram2, "/mesh/square2.json");
+	var squareModel2 = new Model(squareProgram2, assetPath.mesh + "square2.json");
 	squareProgram2.addModel(squareModel2);
 	var squareInstance2 = new Instance(squareModel2, [0.0, 0.0, 0.0]);
 	squareModel2.addInstance(squareInstance2);
@@ -174,9 +182,9 @@ function initSquareBlue() {
 }
 
 function initSquareRed() {
-	var squareProgram3 = new Program("/shader/clip_vs.txt", "/shader/clip3_fs.txt");
+	var squareProgram3 = new Program(assetPath.shader + "clip_vs.txt", assetPath.shader + "clip3_fs.txt");
 	neg.programList.push(squareProgram3);
-	var squareModel3 = new Model(squareProgram3, "/mesh/square3.json");
+	var squareModel3 = new Model(squareProgram3, assetPath.mesh + "square3.json");
 	squareProgram3.addModel(squareModel3);
 	var squareInstance3 = new Instance(squareModel3);
 	squareModel3.addInstance(squareInstance3);
@@ -199,15 +207,15 @@ function initSquares() {
 }
 
 function initSkybox() {
-	var skyboxProgram = new SkyboxProgram("/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
+	var skyboxProgram = new SkyboxProgram(assetPath.shader + "skybox_vs.txt", assetPath.shader + "skybox_fs.txt");
 	neg.programList.push(skyboxProgram);
-	var skyboxModel = new SkyboxModel(skyboxProgram, "/mesh/cube.json", true, 0);
-	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
-	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
-	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, '/texture/space_up.jpg');
-	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, '/texture/space_dn.jpg');
-	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
-	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');	
+	var skyboxModel = new SkyboxModel(skyboxProgram, assetPath.mesh + "cube.json", true, 0);
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_X, assetPath.texture + 'space_rt.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, assetPath.texture + 'space_lf.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, assetPath.texture + 'space_up.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, assetPath.texture + 'space_dn.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, assetPath.texture + 'space_fr.jpg');
+	skyboxModel.addCubemapFace(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, assetPath.texture + 'space_bk.jpg');	
 	skyboxProgram.addModel(skyboxModel);
 	var skyboxInstance = new SkyboxInstance(skyboxModel, [0, 0, 0], 1.0);
 	skyboxModel.addInstance(skyboxInstance);
@@ -233,11 +241,11 @@ function onObjDone(opaque, response) {
 }
 
 function initAirship() {
-	var prog = new Program("/shader/simple_vs.txt", "/shader/simple_fs.txt");
+	var prog = new Program(assetPath.shader + "simple_vs.txt", assetPath.shader + "simple_fs.txt");
 	neg.programList.push(prog);
 	prog.fetch();
 
-	var objURL = "/obj/airship.obj";
+	var objURL = assetPath.obj + "airship.obj";
 	var opaque = {
 		URL: objURL,
 		program: prog,
@@ -265,7 +273,7 @@ function onMaterialDone(opaque, response) {
 
 	var map_Kd = mtllib[usemtl].map_Kd;
 	
-	var textureName = "/texture/" + map_Kd;
+	var textureName = assetPath.texture + map_Kd;
 
 	console.log("onMaterialDone textureName = " + textureName);
 	
@@ -307,7 +315,7 @@ function onTexObjDone(opaque, response) {
 	if ('mtllib' in obj_airship) {
 		console.log("onTexObjDone: mtllib FOUND: " + obj_airship.mtllib);
 		var opaqueMaterial = {
-			URL: "/mtl/" + obj_airship.mtllib,
+			URL: assetPath.mtl + obj_airship.mtllib,
 			airship: obj_airship,
 			mod: mod
 		};
@@ -323,12 +331,12 @@ function onTexObjDone(opaque, response) {
 }
 
 function initAirshipTex() {
-	var prog = new TexProgram("/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
+	var prog = new TexProgram(assetPath.shader + "simpleTex_vs.txt", assetPath.shader + "simpleTex_fs.txt");
 	neg.programList.push(prog);
 	prog.fetch();
 
-	var objURL = "/obj/airship.obj"; 
-	var texURL = "/texture/airship_all_diffuse.jpg";
+	var objURL = assetPath.obj + "airship.obj"; 
+	var texURL = assetPath.texture + "airship_all_diffuse.jpg";
 	var opaque = {
 		URL: objURL,
 		textureURL: texURL,

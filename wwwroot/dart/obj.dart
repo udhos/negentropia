@@ -35,7 +35,7 @@ class Obj {
         // vertex coord
         List<String> v = line.split(' ');
         if (v.length != 4) {
-          print("OBJ: wrong number of vertex coordinates (${v.length - 1} != 3) at line=$lineNum from url=$url: [$rawLine]");
+          print("OBJ: wrong number of vertex coordinates (${v.length - 1} != 3) at line=$lineNum from url=$url: [$line]");
           return;
         }
         _vertCoord.add(double.parse(v[1])); // x
@@ -48,7 +48,7 @@ class Obj {
         // texture coord
         List<String> t = line.split(' ');
         if (t.length != 3) {
-          print("OBJ: wrong number of texture coordinates (${t.length - 1} != 2) at line=$lineNum from url=$url: [$rawLine]");
+          print("OBJ: wrong number of texture coordinates (${t.length - 1} != 2) at line=$lineNum from url=$url: [$line]");
           return;
         }
         _textCoord.add(double.parse(t[1])); // u
@@ -65,7 +65,7 @@ class Obj {
         // face
         List<String> f = line.split(' ');
         if (f.length != 4) {
-          print("OBJ: wrong number of face indices (${f.length - 1} != 3) at line=$lineNum from url=$url: [$rawLine]");
+          print("OBJ: wrong number of face indices (${f.length - 1} != 3) at line=$lineNum from url=$url: [$line]");
           return;
         }
         for (int i = 1; i < f.length; ++i) {
@@ -113,7 +113,7 @@ class Obj {
         return;
       }
 
-      print("OBJ: unknown pattern at line=$lineNum from url=$url: [$rawLine]");
+      print("OBJ: unknown pattern at line=$lineNum from url=$url: [$line]");
     }
     
     List<String> lines = str.split('\n');
