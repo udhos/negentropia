@@ -2246,9 +2246,6 @@ $$.JSString = {"": "String/Interceptor;",
   substring$1: function($receiver, startIndex) {
     return this.substring$2($receiver, startIndex, null);
   },
-  toLowerCase$0: function(receiver) {
-    return receiver.toLowerCase();
-  },
   trim$0: function(receiver) {
     return receiver.trim();
   },
@@ -2264,9 +2261,6 @@ $$.JSString = {"": "String/Interceptor;",
   },
   indexOf$1: function($receiver, other) {
     return this.indexOf$2($receiver, other, 0);
-  },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
   },
   toString$0: function(receiver) {
     return receiver;
@@ -2872,6 +2866,41 @@ $$.Stream = {"": "Object;",
     t1.subscription_0 = this.listen$4$cancelOnError$onDone$onError(new $.Stream_first_closure(t1, future), true, new $.Stream_first_closure0(future), future.get$_setError());
     return $.assertSubtype(future, "$isFuture", [$.getRuntimeTypeArgument(this, this.$asStream, 0)], "$asFuture");
   },
+  elementAt$1: function(_, index) {
+    var t1, t2, $arguments, arguments0, future;
+    t1 = {};
+    t1.index_0 = index;
+    $.intTypeCheck(index);
+    t2 = t1.index_0;
+    if (typeof t2 !== "number" || Math.floor(t2) !== t2 || $.$lt$n(t2, 0))
+      throw $.wrapException($.ArgumentError$(t2));
+    $arguments = this.$asStream;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    future = $._FutureImpl$(t2);
+    $arguments = this.$asStream;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    $.assertSubtype(future, "$is_FutureImpl", [t2], "$as_FutureImpl");
+    t1.subscription_1 = null;
+    t1.subscription_1 = this.listen$4$cancelOnError$onDone$onError(new $.Stream_elementAt_closure(t1, future), true, new $.Stream_elementAt_closure0(future), future.get$_setError());
+    $arguments = this.$asStream;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if ($arguments != null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t1 = $arguments == null ? null : $arguments[0];
+    return $.assertSubtype(future, "$isFuture", [t1], "$asFuture");
+  },
   $isStream: true
 };
 
@@ -2927,6 +2956,40 @@ $$.Stream_first_closure = {"": "Closure;box_0,future_1",
 $$.Stream_first_closure0 = {"": "Closure;future_2",
   call$0: function() {
     this.future_2._setError$1($.StateError$("No elements"));
+  },
+  $isFunction: true,
+  $asObject: null,
+  $isVoidCallback: true
+};
+
+$$.Stream_elementAt_closure = {"": "Closure;box_0,future_1",
+  call$1: function(value) {
+    var t1 = this.box_0;
+    if ($.$eq(t1.index_0, 0)) {
+      t1 = t1.subscription_1;
+      t1.cancel$0(t1);
+      this.future_1._setValue$1(value);
+      return;
+    }
+    t1.index_0 = $.intTypeCheck($.$sub$n(t1.index_0, 1));
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $is_FutureErrorTest: true,
+  $is_ErrorCallback: true,
+  $isRequestAnimationFrameCallback: true,
+  $isEventListener: true,
+  $isGameLoopUpdateFunction: true,
+  $isGameLoopRenderFunction: true,
+  $isGameLoopResizeFunction: true,
+  $isGameLoopFullscreenChangeFunction: true,
+  $isGameLoopPointerLockChangeFunction: true
+};
+
+$$.Stream_elementAt_closure0 = {"": "Closure;future_2",
+  call$0: function() {
+    this.future_2._setError$1($.StateError$("Not enough elements for elementAt"));
   },
   $isFunction: true,
   $asObject: null,
@@ -7195,36 +7258,38 @@ $$.Instance = {"": "Object;model>,center,scale,MV",
     $.propertyTypeCheck(gameLoop, "$isGameLoopHtml");
   },
   draw$2: function(gameLoop, cam) {
-    var t1, t2, t3, t4, t5, prog, gl;
+    var t1, t2, t3, t4, t5, t6, prog, gl;
     $.propertyTypeCheck(gameLoop, "$isGameLoopHtml");
-    t1 = this.MV;
-    $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
-    t2 = this.center.storage;
-    t3 = t2.length;
-    if (0 >= t3)
+    t1 = this.model;
+    if (t1.vertexPositionBufferItemSize == null)
+      return;
+    t2 = this.MV;
+    $.setViewMatrix(t2, cam.eye, cam.center, cam.up);
+    t3 = this.center.storage;
+    t4 = t3.length;
+    if (0 >= t4)
       throw $.ioore(0);
-    t4 = $.doubleTypeCheck(t2[0]);
-    if (1 >= t3)
+    t5 = $.doubleTypeCheck(t3[0]);
+    if (1 >= t4)
       throw $.ioore(1);
-    t5 = $.doubleTypeCheck(t2[1]);
-    if (2 >= t3)
+    t6 = $.doubleTypeCheck(t3[1]);
+    if (2 >= t4)
       throw $.ioore(2);
-    t1.translate$3(t1, t4, t5, $.doubleTypeCheck(t2[2]));
-    t2 = this.scale;
-    t1.scale$3(t1, t2, t2, t2);
-    t2 = this.model;
-    prog = t2.program;
+    t2.translate$3(t2, t5, t6, $.doubleTypeCheck(t3[2]));
+    t3 = this.scale;
+    t2.scale$3(t2, t3, t3, t3);
+    prog = t1.program;
     gl = prog.gl;
-    t5 = $.getInterceptor$x(gl);
-    t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.storage);
-    t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
-    t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
-    t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
-    t1 = t2.vertexIndexLength;
-    t2 = t2.vertexIndexBufferItemSize;
-    if (typeof t2 !== "number")
-      throw $.iae(t2);
-    t5.drawElements$4(gl, 4, t1, 5123, 0 * t2);
+    t3 = $.getInterceptor$x(gl);
+    t3.uniformMatrix4fv$3(gl, prog.u_MV, false, t2.storage);
+    t3.bindBuffer$2(gl, 34962, t1.vertexPositionBuffer);
+    t3.vertexAttribPointer$6(gl, prog.a_Position, t1.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t3.bindBuffer$2(gl, 34963, t1.vertexIndexBuffer);
+    t2 = t1.vertexIndexLength;
+    t1 = t1.vertexIndexBufferItemSize;
+    if (typeof t1 !== "number")
+      throw $.iae(t1);
+    t3.drawElements$4(gl, 4, t2, 5123, 0 * t1);
   },
   $isInstance: true
 };
@@ -7602,7 +7667,7 @@ $$.main_closure0 = {"": "Closure;gl_0",
   $isGameLoopPointerLockChangeFunction: true
 };
 
-$$.Obj = {"": "Object;indices<,vertCoord<,textCoord<,normCoord",
+$$.Obj = {"": "Object;indices,vertCoord,textCoord,normCoord",
   Obj$fromString$2: function(url, str, box_0) {
     var indexTable, _vertCoord, _textCoord;
     $.stringTypeCheck(str);
@@ -7625,7 +7690,7 @@ $$.Obj = {"": "Object;indices<,vertCoord<,textCoord<,normCoord",
 
 $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoord_4,_textCoord_5",
   call$1: function(rawLine) {
-    var t1, line, v, t2, t3, t, f, t4, t5, i, t6, ind, index, vi, vIndex, vOffset, t7, t8, t9, ti, tIndex, tOffset, ni;
+    var t1, line, v, t2, t3, t;
     $.stringTypeCheck(rawLine);
     t1 = this.box_0;
     t1.lineNum_1 = $.intTypeCheck($.$add$ns(t1.lineNum_1, 1));
@@ -7675,212 +7740,7 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
     }
     if ($.JSString_methods.startsWith$1(line, "vn "))
       return;
-    if ($.JSString_methods.startsWith$1(line, "f ")) {
-      f = line.split(" ");
-      $.listTypeCheck(f);
-      if (typeof f !== "string" && (typeof f !== "object" || f === null || f.constructor !== Array && !$.getInterceptor(f).$isJavaScriptIndexingBehavior))
-        return this.call$1$bailout(1, line, f, t1);
-      t2 = f.length;
-      if (t2 !== 4) {
-        $.Primitives_printString("OBJ: wrong number of face indices (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
-        return;
-      }
-      for (t2 = this.this_1, t3 = this.indexTable_3, t4 = this._textCoord_5, t5 = this._vertCoord_4, i = 1; t6 = f.length, $.$lt$n(i, t6); ++i) {
-        if (i >>> 0 !== i || i >= t6)
-          throw $.ioore(i);
-        ind = $.stringTypeCheck(f[i]);
-        index = $.intTypeCheck(t3.$index(t3, ind));
-        if (index != null) {
-          $.JSArray_methods.add$1(t2.get$indices(), index);
-          continue;
-        }
-        v = $.listTypeCheck($.split$1$s(ind, "/"));
-        t6 = $.getInterceptor$asx(v);
-        vi = $.stringTypeCheck(t6.$index(v, 0));
-        $.propertyTypeCheck(null, "$isFunction");
-        vIndex = $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(vi, null, null)), 1));
-        if (typeof vIndex !== "number")
-          throw $.iae(vIndex);
-        vOffset = $.intTypeCheck(3 * vIndex);
-        t7 = t2.get$vertCoord();
-        t8 = $.getInterceptor$ns(vOffset);
-        t9 = t8.$add(vOffset, 0);
-        if (t9 >>> 0 !== t9 || t9 >= t5.length)
-          throw $.ioore(t9);
-        $.JSArray_methods.add$1(t7, t5[t9]);
-        t9 = t2.get$vertCoord();
-        t7 = t8.$add(vOffset, 1);
-        if (t7 >>> 0 !== t7 || t7 >= t5.length)
-          throw $.ioore(t7);
-        $.JSArray_methods.add$1(t9, t5[t7]);
-        t7 = t2.get$vertCoord();
-        t8 = t8.$add(vOffset, 2);
-        if (t8 >>> 0 !== t8 || t8 >= t5.length)
-          throw $.ioore(t8);
-        $.JSArray_methods.add$1(t7, t5[t8]);
-        if ($.$gt$n(t6.get$length(v), 1)) {
-          ti = $.stringTypeCheck(t6.$index(v, 1));
-          if (ti != null && !$.get$isEmpty$asx(ti)) {
-            tIndex = $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(ti, null, null)), 1));
-            if (typeof tIndex !== "number")
-              throw $.iae(tIndex);
-            tOffset = $.intTypeCheck(2 * tIndex);
-            t7 = t2.get$textCoord();
-            t8 = $.getInterceptor$ns(tOffset);
-            t9 = t8.$add(tOffset, 0);
-            if (t9 >>> 0 !== t9 || t9 >= t4.length)
-              throw $.ioore(t9);
-            $.JSArray_methods.add$1(t7, t4[t9]);
-            t9 = t2.get$textCoord();
-            t8 = t8.$add(tOffset, 1);
-            if (t8 >>> 0 !== t8 || t8 >= t4.length)
-              throw $.ioore(t8);
-            $.JSArray_methods.add$1(t9, t4[t8]);
-          }
-        }
-        if ($.$gt$n(t6.get$length(v), 2)) {
-          ni = $.stringTypeCheck(t6.$index(v, 2));
-          if (ni != null && !$.get$isEmpty$asx(ni))
-            $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(ni, null, null)), 1));
-        }
-        $.JSArray_methods.add$1(t2.get$indices(), t1.indexCounter_0);
-        t3.$indexSet(t3, ind, t1.indexCounter_0);
-        t1.indexCounter_0 = $.intTypeCheck($.$add$ns(t1.indexCounter_0, 1));
-      }
-      return;
-    }
-    $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
-  },
-  call$1$bailout: function(state0, line, f, t1) {
-    switch (state0) {
-      case 0:
-        $.stringTypeCheck(rawLine);
-        t1 = this.box_0;
-        t1.lineNum_1 = $.intTypeCheck($.$add$ns(t1.lineNum_1, 1));
-        line = $.trim$0$s(rawLine);
-        if (line.length === 0)
-          return;
-        if (0 >= line.length)
-          throw $.ioore(0);
-        if (line[0] === "#")
-          return;
-        if ($.JSString_methods.startsWith$1(line, "v ")) {
-          v = $.listTypeCheck(line.split(" "));
-          t2 = $.getInterceptor$asx(v);
-          if (!$.$eq(t2.get$length(v), 4)) {
-            $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + $.S($.$sub$n(t2.get$length(v), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
-            return;
-          }
-          t1 = this._vertCoord_4;
-          t3 = t2.$index(v, 1);
-          $.stringTypeCheck(t3);
-          $.propertyTypeCheck(null, "$isFunction");
-          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t3, null)));
-          t3 = t2.$index(v, 2);
-          $.stringTypeCheck(t3);
-          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t3, null)));
-          t2 = t2.$index(v, 3);
-          $.stringTypeCheck(t2);
-          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t2, null)));
-          return;
-        }
-        if ($.JSString_methods.startsWith$1(line, "vt ")) {
-          t = $.listTypeCheck(line.split(" "));
-          t2 = $.getInterceptor$asx(t);
-          if (!$.$eq(t2.get$length(t), 3)) {
-            $.Primitives_printString("OBJ: wrong number of texture coordinates (" + $.S($.$sub$n(t2.get$length(t), 1)) + " != 2) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
-            return;
-          }
-          t1 = this._textCoord_5;
-          t3 = t2.$index(t, 1);
-          $.stringTypeCheck(t3);
-          $.propertyTypeCheck(null, "$isFunction");
-          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t3, null)));
-          t2 = t2.$index(t, 2);
-          $.stringTypeCheck(t2);
-          $.JSArray_methods.add$1(t1, $.doubleTypeCheck($.Primitives_parseDouble(t2, null)));
-          return;
-        }
-        if ($.JSString_methods.startsWith$1(line, "vn "))
-          return;
-      case 1:
-        var v, t2, t3, t, t4, t5, t6, i, t7, ind, index, t8, vi, vIndex, vOffset, t9, t10, t11, ti, tIndex, tOffset, ni;
-        if (state0 === 1 || state0 === 0 && $.JSString_methods.startsWith$1(line, "f "))
-          switch (state0) {
-            case 0:
-              f = line.split(" ");
-              $.listTypeCheck(f);
-            case 1:
-              state0 = 0;
-              t2 = $.getInterceptor$asx(f);
-              if (!$.$eq(t2.get$length(f), 4)) {
-                $.Primitives_printString("OBJ: wrong number of face indices (" + $.S($.$sub$n(t2.get$length(f), 1)) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
-                return;
-              }
-              for (t3 = this.this_1, t4 = this.indexTable_3, t5 = this._textCoord_5, t6 = this._vertCoord_4, i = 1; t7 = $.getInterceptor$n(i), t7.$lt(i, t2.get$length(f)); i = $.intTypeCheck(t7.$add(i, 1))) {
-                ind = $.stringTypeCheck(t2.$index(f, i));
-                index = $.intTypeCheck(t4.$index(t4, ind));
-                if (index != null) {
-                  $.JSArray_methods.add$1(t3.get$indices(), index);
-                  continue;
-                }
-                v = $.listTypeCheck($.split$1$s(ind, "/"));
-                t8 = $.getInterceptor$asx(v);
-                vi = $.stringTypeCheck(t8.$index(v, 0));
-                $.propertyTypeCheck(null, "$isFunction");
-                vIndex = $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(vi, null, null)), 1));
-                if (typeof vIndex !== "number")
-                  throw $.iae(vIndex);
-                vOffset = $.intTypeCheck(3 * vIndex);
-                t9 = t3.get$vertCoord();
-                t10 = $.getInterceptor$ns(vOffset);
-                t11 = t10.$add(vOffset, 0);
-                if (t11 >>> 0 !== t11 || t11 >= t6.length)
-                  throw $.ioore(t11);
-                $.JSArray_methods.add$1(t9, t6[t11]);
-                t11 = t3.get$vertCoord();
-                t9 = t10.$add(vOffset, 1);
-                if (t9 >>> 0 !== t9 || t9 >= t6.length)
-                  throw $.ioore(t9);
-                $.JSArray_methods.add$1(t11, t6[t9]);
-                t9 = t3.get$vertCoord();
-                t10 = t10.$add(vOffset, 2);
-                if (t10 >>> 0 !== t10 || t10 >= t6.length)
-                  throw $.ioore(t10);
-                $.JSArray_methods.add$1(t9, t6[t10]);
-                if ($.$gt$n(t8.get$length(v), 1)) {
-                  ti = $.stringTypeCheck(t8.$index(v, 1));
-                  if (ti != null && !$.get$isEmpty$asx(ti)) {
-                    tIndex = $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(ti, null, null)), 1));
-                    if (typeof tIndex !== "number")
-                      throw $.iae(tIndex);
-                    tOffset = $.intTypeCheck(2 * tIndex);
-                    t9 = t3.get$textCoord();
-                    t10 = $.getInterceptor$ns(tOffset);
-                    t11 = t10.$add(tOffset, 0);
-                    if (t11 >>> 0 !== t11 || t11 >= t5.length)
-                      throw $.ioore(t11);
-                    $.JSArray_methods.add$1(t9, t5[t11]);
-                    t11 = t3.get$textCoord();
-                    t10 = t10.$add(tOffset, 1);
-                    if (t10 >>> 0 !== t10 || t10 >= t5.length)
-                      throw $.ioore(t10);
-                    $.JSArray_methods.add$1(t11, t5[t10]);
-                  }
-                }
-                if ($.$gt$n(t8.get$length(v), 2)) {
-                  ni = $.stringTypeCheck(t8.$index(v, 2));
-                  if (ni != null && !$.get$isEmpty$asx(ni))
-                    $.intTypeCheck($.$sub$n($.intTypeCheck($.Primitives_parseInt(ni, null, null)), 1));
-                }
-                $.JSArray_methods.add$1(t3.get$indices(), t1.indexCounter_0);
-                t4.$indexSet(t4, ind, t1.indexCounter_0);
-                t1.indexCounter_0 = $.intTypeCheck($.$add$ns(t1.indexCounter_0, 1));
-              }
-              return;
-          }
-        $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
-    }
+    return;
   },
   $isFunction: true,
   $asObject: null,
@@ -7939,6 +7799,8 @@ $$.ShaderProgram = {"": "Object;program<,gl<,a_Position,u_MV,u_P,modelList",
   drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2;
     $.propertyTypeCheck(gameLoop, "$isGameLoopHtml");
+    if (this.a_Position == null)
+      return;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
     t2.useProgram$1(t1, this.program);
@@ -7964,7 +7826,7 @@ $$.ShaderProgram_fetch_compileShader = {"": "Closure;this_1,shaderCache_2",
     shader = $.createShader$1$x(t1.get$gl(), shaderType);
     $.shaderSource$2$x(t1.get$gl(), shader, shaderSource);
     $.compileShader$1$x(t1.get$gl(), shader);
-    if (!$.boolConversionCheck($.getShaderParameter$2$x(t1.get$gl(), shader, 35713)) && !$.boolConversionCheck($.isContextLost$0$x(t1.get$gl()))) {
+    if ($.getShaderParameter$2$x(t1.get$gl(), shader, 35713) == null && !$.boolConversionCheck($.isContextLost$0$x(t1.get$gl()))) {
       $.Primitives_printString($.JSString_methods.$add($.JSString_methods.$add($.JSString_methods.$add("compileShader: compilation FAILURE: ", shaderURL), ": "), $.getShaderInfoLog$1$x(t1.get$gl(), shader)));
       return;
     }
@@ -16238,156 +16100,6 @@ $.Primitives__throwFormatException = function(string) {
   throw $.wrapException($.FormatException$($.stringTypeCheck(string)));
 };
 
-$.Primitives_parseInt = function(source, radix, handleError) {
-  var match, t1, maxCharCode, digitsPart, i, t2;
-  $.propertyTypeCheck(handleError, "$isFunction");
-  if (handleError == null)
-    handleError = $.propertyTypeCheck($.Primitives__throwFormatException$closure, "$isFunction");
-  if (typeof source !== "string")
-    $.throwExpression($.ArgumentError$(source));
-  match = /^\s*[+-]?((0x[a-f0-9]+)|(\d+)|([a-z0-9]+))\s*$/i.exec(source);
-  if (radix == null) {
-    if (match != null) {
-      t1 = match.length;
-      if (2 >= t1)
-        throw $.ioore(2);
-      if (match[2] != null)
-        return $.intTypeCheck(parseInt(source, 16));
-      if (3 >= t1)
-        throw $.ioore(3);
-      if (match[3] != null)
-        return $.intTypeCheck(parseInt(source, 10));
-      return $.intTypeCheck(handleError.call$1(source));
-    }
-    radix = 10;
-  } else {
-    throw $.wrapException($.ArgumentError$("Radix is not an integer"));
-    if ($.JSNull_methods.$lt(radix, 2) || $.JSNull_methods.$gt(radix, 36))
-      throw $.wrapException($.RangeError$("Radix " + $.S(radix) + " not in range 2..36"));
-    if (match != null) {
-      t1 = false;
-      if (t1)
-        return $.intTypeCheck(parseInt(source, 10));
-      if (!$.JSNull_methods.$lt(radix, 10)) {
-        if (3 >= match.length)
-          throw $.ioore(3);
-        t1 = match[3] == null;
-      } else
-        t1 = true;
-      if (t1) {
-        if ($.JSNull_methods.$le(radix, 10)) {
-          if (typeof radix !== "number")
-            throw $.iae(radix);
-          maxCharCode = $.intTypeCheck(48 + radix - 1);
-        } else {
-          if (typeof radix !== "number")
-            throw $.iae(radix);
-          maxCharCode = $.intTypeCheck(97 + radix - 10 - 1);
-        }
-        if (maxCharCode !== (maxCharCode | 0))
-          return $.Primitives_parseInt$bailout(1, source, handleError, radix, match, maxCharCode);
-        if (1 >= match.length)
-          throw $.ioore(1);
-        digitsPart = $.toLowerCase$0$s(match[1]);
-        for (i = 0; t1 = digitsPart.length, t2 = $.getInterceptor$n(i), t2.$lt(i, t1); i = $.intTypeCheck(t2.$add(i, 1))) {
-          if (typeof i !== "number")
-            $.throwExpression($.ArgumentError$(i));
-          if (t2.$lt(i, 0))
-            $.throwExpression($.RangeError$value(i));
-          if (t2.$ge(i, t1))
-            $.throwExpression($.RangeError$value(i));
-          if (digitsPart.charCodeAt(i) > maxCharCode)
-            return $.intTypeCheck(handleError.call$1(source));
-        }
-      }
-    }
-  }
-  if (match == null)
-    return $.intTypeCheck(handleError.call$1(source));
-  return $.intTypeCheck(parseInt(source, radix));
-};
-
-$.Primitives_parseInt$bailout = function(state0, source, handleError, radix, match, maxCharCode) {
-  switch (state0) {
-    case 0:
-      $.propertyTypeCheck(handleError, "$isFunction");
-      if (handleError == null)
-        handleError = $.propertyTypeCheck($.Primitives__throwFormatException$closure, "$isFunction");
-      if (typeof source !== "string")
-        $.throwExpression($.ArgumentError$(source));
-      match = /^\s*[+-]?((0x[a-f0-9]+)|(\d+)|([a-z0-9]+))\s*$/i.exec(source);
-    case 1:
-      var t1, digitsPart, i, t2;
-      if (state0 === 0 && radix == null) {
-        if (match != null) {
-          t1 = match.length;
-          if (2 >= t1)
-            throw $.ioore(2);
-          if (match[2] != null)
-            return $.intTypeCheck(parseInt(source, 16));
-          if (3 >= t1)
-            throw $.ioore(3);
-          if (match[3] != null)
-            return $.intTypeCheck(parseInt(source, 10));
-          return $.intTypeCheck(handleError.call$1(source));
-        }
-        radix = 10;
-      } else
-        switch (state0) {
-          case 0:
-            throw $.wrapException($.ArgumentError$("Radix is not an integer"));
-            if ($.JSNull_methods.$lt(radix, 2) || $.JSNull_methods.$gt(radix, 36))
-              throw $.wrapException($.RangeError$("Radix " + $.S(radix) + " not in range 2..36"));
-          case 1:
-            if (state0 === 1 || state0 === 0 && match != null)
-              switch (state0) {
-                case 0:
-                  t1 = false;
-                  if (t1)
-                    return $.intTypeCheck(parseInt(source, 10));
-                  if (!$.JSNull_methods.$lt(radix, 10)) {
-                    if (3 >= match.length)
-                      throw $.ioore(3);
-                    t1 = match[3] == null;
-                  } else
-                    t1 = true;
-                case 1:
-                  if (state0 === 1 || state0 === 0 && t1)
-                    switch (state0) {
-                      case 0:
-                        if ($.JSNull_methods.$le(radix, 10)) {
-                          if (typeof radix !== "number")
-                            throw $.iae(radix);
-                          maxCharCode = $.intTypeCheck(48 + radix - 1);
-                        } else {
-                          if (typeof radix !== "number")
-                            throw $.iae(radix);
-                          maxCharCode = $.intTypeCheck(97 + radix - 10 - 1);
-                        }
-                      case 1:
-                        state0 = 0;
-                        if (1 >= match.length)
-                          throw $.ioore(1);
-                        digitsPart = $.toLowerCase$0$s(match[1]);
-                        for (i = 0; t1 = digitsPart.length, t2 = $.getInterceptor$n(i), t2.$lt(i, t1); i = $.intTypeCheck(t2.$add(i, 1))) {
-                          if (typeof i !== "number")
-                            $.throwExpression($.ArgumentError$(i));
-                          if (t2.$lt(i, 0))
-                            $.throwExpression($.RangeError$value(i));
-                          if (t2.$ge(i, t1))
-                            $.throwExpression($.RangeError$value(i));
-                          if ($.JSInt_methods.$gt(digitsPart.charCodeAt(i), maxCharCode))
-                            return $.intTypeCheck(handleError.call$1(source));
-                        }
-                    }
-              }
-        }
-      if (match == null)
-        return $.intTypeCheck(handleError.call$1(source));
-      return $.intTypeCheck(parseInt(source, radix));
-  }
-};
-
 $.Primitives_parseDouble = function(source, handleError) {
   var result;
   $.stringTypeCheck(source);
@@ -17663,10 +17375,6 @@ $.ArgumentError$ = function(message) {
   return new $.ArgumentError(message);
 };
 
-$.RangeError$ = function(message) {
-  return new $.RangeError(message);
-};
-
 $.RangeError$value = function(value) {
   return new $.RangeError("value " + $.S($.numTypeCheck(value)));
 };
@@ -17733,7 +17441,6 @@ $.List_List = function($length, E) {
 
 $.List_List$from = function(other, growable, E) {
   var list, t1, t2, $length, fixedList, t3, i;
-  $.listSuperNativeTypeCheck(other, "$isIterable");
   list = $.List_List($, E);
   t1 = [E];
   t2 = t1.constructor === Array;
@@ -17768,7 +17475,6 @@ $.List_List$from = function(other, growable, E) {
 $.List_List$from$bailout = function(state0, t1, list, $length, E, fixedList) {
   switch (state0) {
     case 0:
-      $.listSuperNativeTypeCheck(other, "$isIterable");
       list = $.List_List($, E);
       t1 = [E];
       t2 = t1.constructor === Array;
@@ -19037,10 +18743,10 @@ $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$cl
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.Gamepad.$isObject = true;
 $.Gamepad.$isObject = true;
-$.CssRule.$isCssRule = true;
-$.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
 $.CssRule.$isObject = true;
+$.CssRule.$isCssRule = true;
+$.CssRule.$isCssRule = true;
 $.Number.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
@@ -19049,18 +18755,18 @@ $.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isShaderProgram = true;
-$.Shader.$isShader = true;
-$.Shader.$isShader = true;
 $.Shader.$isObject = true;
 $.Shader.$isObject = true;
-$.Model.$isObject = true;
-$.Model.$isObject = true;
+$.Shader.$isShader = true;
+$.Shader.$isShader = true;
 $.Model.$isModel = true;
 $.Model.$isModel = true;
-$.Texture.$isTexture = true;
-$.Texture.$isTexture = true;
+$.Model.$isObject = true;
+$.Model.$isObject = true;
 $.Texture.$isObject = true;
 $.Texture.$isObject = true;
+$.Texture.$isTexture = true;
+$.Texture.$isTexture = true;
 $.Instance.$isObject = true;
 $.Instance.$isObject = true;
 $.Instance.$isInstance = true;
@@ -19077,38 +18783,38 @@ $.HttpRequest.$isObject = true;
 $.HttpRequest.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SourceBuffer.$isObject = true;
-$.MouseEvent.$isObject = true;
-$.MouseEvent.$isObject = true;
-$.MouseEvent.$isMouseEvent = true;
-$.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isEvent = true;
+$.MouseEvent.$isMouseEvent = true;
+$.MouseEvent.$isMouseEvent = true;
+$.MouseEvent.$isObject = true;
+$.MouseEvent.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.SpeechGrammar.$isObject = true;
-$.ElementInstance.$isElementInstance = true;
-$.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isObject = true;
 $.ElementInstance.$isObject = true;
+$.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isElementInstance = true;
 $._CSSValue.$isObject = true;
 $._CSSValue.$isObject = true;
-$.SpeechInputResult.$isObject = true;
-$.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
+$.SpeechInputResult.$isObject = true;
+$.SpeechInputResult.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
-$.Node.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isNode = true;
+$.Node.$isObject = true;
+$.Node.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isList = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
@@ -19135,48 +18841,48 @@ $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isint = true;
-$.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isnum = true;
+$.JSInt.$isint = true;
+$.JSInt.$isint = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isdouble = true;
-$.JSDouble.$isdouble = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
+$.JSDouble.$isdouble = true;
+$.JSDouble.$isdouble = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
 $.JSString.$isString = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$.Element.$isNode = true;
-$.Element.$isNode = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
 $.Element.$isElement = true;
 $.Element.$isElement = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
+$.Element.$isNode = true;
+$.Element.$isNode = true;
 $.Element.$isObject = true;
 $.Element.$isObject = true;
 $._EntrySync.$isObject = true;
@@ -19185,12 +18891,12 @@ $.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
@@ -19203,20 +18909,20 @@ $.DigitalButton.$isObject = true;
 $.DigitalButton.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $.DigitalButton.$isDigitalButton = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
 $.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isObject = true;
 $.KeyboardEvent.$isObject = true;
-$.ReceivePort.$isObject = true;
-$.ReceivePort.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.ReceivePort.$isReceivePort = true;
 $.ReceivePort.$isReceivePort = true;
+$.ReceivePort.$isObject = true;
+$.ReceivePort.$isObject = true;
 $.File.$isObject = true;
 $.File.$isObject = true;
 $.File.$isFile = true;
@@ -19229,10 +18935,10 @@ $._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$is_IsolateContext = true;
-$._IsolateEvent.$isObject = true;
-$._IsolateEvent.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateEvent.$isObject = true;
+$._IsolateEvent.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
@@ -19282,9 +18988,9 @@ $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 $.C_CloseToken = new $.CloseToken();
 $.NodeList_methods = $.NodeList.prototype;
 $.JSArray_methods = $.JSArray.prototype;
-$.JSInt_methods = $.JSInt.prototype;
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
+$.JSInt_methods = $.JSInt.prototype;
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
 $.Expando__keyCount = 0;
 $.dispatchPropertyName = null;
@@ -19437,9 +19143,6 @@ $.get$height$x = function(receiver) {
 $.get$id$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$id(receiver);
 };
-$.get$isEmpty$asx = function(receiver) {
-  return $.getInterceptor$asx(receiver).get$isEmpty(receiver);
-};
 $.get$iterator$ax = function(receiver) {
   return $.getInterceptor$ax(receiver).get$iterator(receiver);
 };
@@ -19568,9 +19271,6 @@ $.toDouble$0$n = function(receiver) {
 };
 $.toList$0$ax = function(receiver) {
   return $.getInterceptor$ax(receiver).toList$0(receiver);
-};
-$.toLowerCase$0$s = function(receiver) {
-  return $.getInterceptor$s(receiver).toLowerCase$0(receiver);
 };
 $.toString$0 = function(receiver) {
   return $.getInterceptor(receiver).toString$0(receiver);

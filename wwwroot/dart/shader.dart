@@ -44,7 +44,8 @@ class ShaderProgram {
       Shader shader = gl.createShader(shaderType);
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS) && !gl.isContextLost()) { 
+      var parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
+      if ((parameter == null) && !gl.isContextLost()) { 
         print("compileShader: compilation FAILURE: " + shaderURL + ": " + gl.getShaderInfoLog(shader));
         return null;
       }
@@ -141,6 +142,11 @@ class ShaderProgram {
   }
   
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
+    
+    if (a_Position == null) {
+      // shader isn't ready
+      return;
+    }
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);

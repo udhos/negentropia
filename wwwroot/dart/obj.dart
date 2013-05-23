@@ -12,6 +12,7 @@ class Obj {
     Map<String,int> indexTable = new Map<String,int>();
     List<double> _vertCoord = new List<double>();   
     List<double> _textCoord = new List<double>();
+    //List<num> _textCoord = new List<num>();
     int indexCounter = 0;
 
     int lineNum = 0;
@@ -22,7 +23,7 @@ class Obj {
       //print("line: $lineNum [$rawLine]");
       
       String line = rawLine.trim();
-      
+
       if (line.isEmpty) {
         return;
       }
@@ -30,7 +31,7 @@ class Obj {
       if (line[0] == '#') {
         return;
       }
-      
+
       if (line.startsWith("v ")) {
         // vertex coord
         List<String> v = line.split(' ');
@@ -60,7 +61,9 @@ class Obj {
         // normal
         return;
       }
-      
+
+      return; // FIXME ERASEME
+
       if (line.startsWith("f ")) {
         // face
         List<String> f = line.split(' ');

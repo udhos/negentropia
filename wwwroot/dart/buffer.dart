@@ -28,6 +28,11 @@ class Instance {
   
   void draw(GameLoopHtml gameLoop, Camera cam) {
 
+    if (model.vertexPositionBufferItemSize == null) {
+      // model isn't ready
+      return;  
+    }
+    
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
     MV.translate(center[0], center[1], center[2]);
@@ -61,7 +66,7 @@ class Model {
   void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
         
     vertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, this.vertexPositionBuffer);
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
     gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
     vertexPositionBufferItemSize = 3; // coord x,y,z
     
