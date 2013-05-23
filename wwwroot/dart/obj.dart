@@ -3,15 +3,15 @@ library obj;
 class Obj {
   
   List<int> indices = new List<int>();
-  List<num> vertCoord = new List<num>();   
-  List<num> textCoord = new List<num>();
-  List<num> normCoord = new List<num>();
+  List<double> vertCoord = new List<double>();   
+  List<double> textCoord = new List<double>();
+  List<double> normCoord = new List<double>();
 
   Obj.fromString(String url, String str) {
   
     Map<String,int> indexTable = new Map<String,int>();
-    List<num> _vertCoord = new List<num>();
-    List<num> _textCoord = new List<num>();
+    List<double> _vertCoord = new List<double>();
+    List<double> _textCoord = new List<double>();
     int indexCounter = 0;
 
     int lineNum = 0;

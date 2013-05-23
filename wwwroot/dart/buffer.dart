@@ -71,7 +71,7 @@ class Model {
     vertexPositionBufferItemSize = 3; // coord x,y,z
     
     vertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, this.vertexIndexBuffer);
+    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
     gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
     vertexIndexBufferItemSize = 2; // size of Uint16Array
     
@@ -86,7 +86,7 @@ class Model {
   
   Model();
   
-  Model.fromLists(RenderingContext gl, ShaderProgram this.program, List<num> vertCoord, List<int> vertInd) {
+  Model.fromLists(RenderingContext gl, ShaderProgram this.program, List<double> vertCoord, List<int> vertInd) {
     _createBuffers(gl, vertInd, vertCoord, null, null);
   }
   
