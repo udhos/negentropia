@@ -62,8 +62,6 @@ class Obj {
         return;
       }
 
-      return; // FIXME ERASEME
-
       if (line.startsWith("f ")) {
         // face
         List<String> f = line.split(' ');
