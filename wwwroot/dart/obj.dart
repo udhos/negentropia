@@ -3,16 +3,15 @@ library obj;
 class Obj {
   
   List<int> indices = new List<int>();
-  List<double> vertCoord = new List<double>();   
-  List<double> textCoord = new List<double>();
-  List<double> normCoord = new List<double>();
+  List<num> vertCoord = new List<num>();   
+  List<num> textCoord = new List<num>();
+  List<num> normCoord = new List<num>();
 
   Obj.fromString(String url, String str) {
   
     Map<String,int> indexTable = new Map<String,int>();
-    List<double> _vertCoord = new List<double>();   
-    List<double> _textCoord = new List<double>();
-    //List<num> _textCoord = new List<num>();
+    List<num> _vertCoord = new List<num>();
+    List<num> _textCoord = new List<num>();
     int indexCounter = 0;
 
     int lineNum = 0;
@@ -61,7 +60,7 @@ class Obj {
         // normal
         return;
       }
-
+      
       if (line.startsWith("f ")) {
         // face
         List<String> f = line.split(' ');
