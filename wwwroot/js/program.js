@@ -55,6 +55,10 @@ Program.prototype.animate = function() {
 }
 
 Program.prototype.drawModels = function() {
+
+	if (!('a_Position' in this)) {
+		return;
+	}
 	
     gl.useProgram(this.shaderProgram);
     gl.enableVertexAttribArray(this.a_Position);
