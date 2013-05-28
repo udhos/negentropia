@@ -336,10 +336,8 @@ function initAirshipTex() {
 	prog.fetch();
 
 	var objURL = assetPath.obj + "airship.obj"; 
-	var texURL = assetPath.texture + "airship_all_diffuse.jpg";
 	var opaque = {
 		URL: objURL,
-		textureURL: texURL,
 		program: prog,
 		center: [0.0, 0.0, 0.0]
 	};
@@ -348,7 +346,6 @@ function initAirshipTex() {
 	
 	var opaque2 = {
 		URL: objURL,
-		textureURL: "INTENTIONAL-BAD-TEXTURE-NAME",
 		forceSolidColor: true,
 		program: prog,
 		center: [8.0, 0.0, 0.0]
