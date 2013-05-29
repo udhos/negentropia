@@ -2,10 +2,17 @@ library obj;
 
 class Obj {
   
+  static final String prefix_mtllib = "mtllib ";
+  static final String prefix_usemtl = "usemtl ";
+  static final int prefix_mtllib_len = prefix_mtllib.length;
+  static final int prefix_usemtl_len = prefix_usemtl.length;
+  
   List<int> indices = new List<int>();
   List<double> vertCoord = new List<double>();   
   List<double> textCoord = new List<double>();
   List<double> normCoord = new List<double>();
+  String mtllib;
+  String usemtl;
 
   Obj.fromString(String url, String str) {
   
@@ -112,6 +119,20 @@ class Obj {
         }
         return;
       }
+      
+      if (line.startsWith(prefix_mtllib)) {
+        mtllib = line.substring(prefix_mtllib_len);
+        return;
+      }
+
+      if (line.startsWith(prefix_usemtl)) {
+        String new_usemtl = line.substring(prefix_usemtl_len);
+        if (usemtl != null) {
+          print("OBJ: usemtl redefinition: from usemtl=$usemtl to usemtl=$new_usemtl");          
+        }
+        usemtl = new_usemtl;
+        return;
+      }
 
       print("OBJ: unknown pattern at line=$lineNum from url=$url: [$line]");
     }
@@ -123,5 +144,7 @@ class Obj {
     print("Obj.fromString: vertCoord.length = ${vertCoord.length}");
     print("Obj.fromString: textCoord.length = ${textCoord.length}");
     print("Obj.fromString: normCoord.length = ${normCoord.length}");
+    print("Obj.fromString: mtllib = $mtllib");
+    print("Obj.fromString: usemtl = $usemtl");
   }
 }

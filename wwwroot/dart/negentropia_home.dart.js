@@ -5009,9 +5009,16 @@ $$.Cookie__readCookie_closure = {"": "Closure;cookie_0",
 
 $$.initDebugLostContext_onContextLost = {"": "Closure;gameLoop_0",
   call$1: function(e) {
+    var t1, t2;
     $.Primitives_printString("webgl context: lost");
     $.preventDefault$0$x(e);
-    this.gameLoop_0._interrupt = true;
+    t1 = this.gameLoop_0;
+    t2 = t1._rafId;
+    if (t2 != null) {
+      $.Window_methods.cancelAnimationFrame$1(window, t2);
+      t1._rafId = null;
+    }
+    t1._interrupt = true;
   }
 };
 
@@ -5100,7 +5107,7 @@ $$.main_closure0 = {"": "Closure;gl_0",
   }
 };
 
-$$.Obj = {"": "Object;indices<,vertCoord<,textCoord<,normCoord",
+$$.Obj = {"": "Object;indices<,vertCoord<,textCoord<,normCoord,mtllib?,usemtl@",
   Obj$fromString$2: function(url, str, box_0) {
     var indexTable, _vertCoord, _textCoord;
     indexTable = $.Map_Map($.JSString, $.JSInt);
@@ -5115,12 +5122,14 @@ $$.Obj = {"": "Object;indices<,vertCoord<,textCoord<,normCoord",
     $.print("Obj.fromString: vertCoord.length = " + this.vertCoord.length);
     $.print("Obj.fromString: textCoord.length = " + this.textCoord.length);
     $.print("Obj.fromString: normCoord.length = " + this.normCoord.length);
+    $.print("Obj.fromString: mtllib = " + $.S(this.mtllib));
+    $.print("Obj.fromString: usemtl = " + $.S(this.usemtl));
   }
 };
 
 $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoord_4,_textCoord_5",
   call$1: function(rawLine) {
-    var t1, line, t2, v, t, f, t3, t4, t5, i, ind, index, vIndex, vOffset, t6, t7, ti, tIndex, tOffset, ni;
+    var t1, line, t2, v, t, f, t3, t4, t5, i, ind, index, vIndex, vOffset, t6, t7, ti, tIndex, tOffset, ni, new_usemtl;
     t1 = this.box_0;
     t1.lineNum_1 = $.$add$ns(t1.lineNum_1, 1);
     line = $.trim$0$s(rawLine);
@@ -5232,6 +5241,19 @@ $$.Obj$fromString_parseLine = {"": "Closure;box_0,this_1,url_2,indexTable_3,_ver
         t3.$indexSet(t3, ind, t1.indexCounter_0);
         t1.indexCounter_0 = $.$add$ns(t1.indexCounter_0, 1);
       }
+      return;
+    }
+    if ($.JSString_methods.startsWith$1(line, "mtllib ")) {
+      this.this_1.set$mtllib($.JSString_methods.substring$1(line, $.get$Obj_prefix_mtllib_len()));
+      return;
+    }
+    if ($.JSString_methods.startsWith$1(line, "usemtl ")) {
+      new_usemtl = $.JSString_methods.substring$1(line, $.get$Obj_prefix_usemtl_len());
+      t1 = this.this_1;
+      t2 = t1.get$usemtl();
+      if (t2 != null)
+        $.Primitives_printString("OBJ: usemtl redefinition: from usemtl=" + $.S(t2) + " to usemtl=" + new_usemtl);
+      t1.set$usemtl(new_usemtl);
       return;
     }
     $.Primitives_printString("OBJ: unknown pattern at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
@@ -5686,7 +5708,7 @@ $$.SkyboxInstance = {"": "Instance;model,center,scale,MV",
   }
 };
 
-$$.TextureInfo = {"": "Object;indexOffset<,indexNumber<,textureName<,texture<",
+$$.TextureInfo = {"": "Object;indexOffset<,indexNumber<,textureName<,texture<,temporaryColor",
   loadTexture2D$6: function(gl, textureTable, textureName, temporaryColor, handleDone, handleError) {
     var image, t1, t2, fail, e;
     image = $.ImageElement_ImageElement(null, null, null);
@@ -5701,7 +5723,7 @@ $$.TextureInfo = {"": "Object;indexOffset<,indexNumber<,textureName<,texture<",
       handleError.call$1(e);
       return;
     }
-    textureTable.$indexSet(textureTable, textureName, t2);
+    $.$indexSet$ax(textureTable, textureName, t2);
     t1.bindTexture$2(gl, 3553, this.texture);
     t1.texImage2D$9(gl, 3553, 0, 6408, 1, 1, 0, 6408, 5121, new Uint8Array(temporaryColor));
     t1.texParameteri$3(gl, 3553, 10240, 9728);
@@ -5715,8 +5737,8 @@ $$.TextureInfo = {"": "Object;indexOffset<,indexNumber<,textureName<,texture<",
     t1.get$onError(image).listen$1(handleError);
     t1.set$src(image, textureName);
   },
-  forceCreateTexture$3: function(gl, textureTable, temporaryColor) {
-    this.loadTexture2D$6(gl, textureTable, this.textureName, temporaryColor, new $.TextureInfo_forceCreateTexture_handleDone(this), new $.TextureInfo_forceCreateTexture_handleError(this));
+  forceCreateTexture$2: function(gl, textureTable) {
+    this.loadTexture2D$6(gl, textureTable, this.textureName, this.temporaryColor, new $.TextureInfo_forceCreateTexture_handleDone(this), new $.TextureInfo_forceCreateTexture_handleError(this));
   },
   TextureInfo$6: function(gl, textureTable, indexOffset, indexNumber, textureName, temporaryColor) {
     var t1 = this.textureName;
@@ -5725,7 +5747,7 @@ $$.TextureInfo = {"": "Object;indexOffset<,indexNumber<,textureName<,texture<",
       $.print("TextureInfo: texture table HIT: " + t1);
       return;
     }
-    this.forceCreateTexture$3(gl, textureTable, temporaryColor);
+    this.forceCreateTexture$2(gl, textureTable);
   }
 };
 
@@ -5921,7 +5943,7 @@ $$.GameLoopTimer = {"": "Object;gameLoop<"};
 
 $$.GameLoopGamepad = {"": "Object;gameLoop<,buttons,sticks"};
 
-$$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_previousFrameTime,_frameTime,_resizePending,_nextResize,maxAccumulatedTime,_accumulatedTime,_gameTime,_renderInterpolationFactor,resizeLimit,_pointerLock,_keyboard,_mouse,_gamepad0,_touchSet,_touchEvents,_keyboardEvents,_mouseEvents,onRender,onResize,onFullscreenChange,onPointerLockChange,onTouchStart,onTouchEnd,updateTimeStep,lib5$GameLoop$maxAccumulatedTime,_timers,onUpdate",
+$$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_previousFrameTime,_frameTime,_resizePending,_nextResize,maxAccumulatedTime,_accumulatedTime,_gameTime,_renderInterpolationFactor,resizeLimit,_pointerLock,_keyboard,_mouse,_gamepad0,_touchSet,_rafId,_touchEvents,_keyboardEvents,_mouseEvents,onRender,onResize,onFullscreenChange,onPointerLockChange,onTouchStart,onTouchEnd,updateTimeStep,lib5$GameLoop$maxAccumulatedTime,_timers,onUpdate",
   get$gameTime: function() {
     return this._gameTime;
   },
@@ -6027,12 +6049,14 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
       this._frameTime = $.GameLoop_timeStampToSeconds($.DateTime_DateTime$now().get$millisecondsSinceEpoch());
       this._previousFrameTime = this._frameTime;
       this._processInputEvents$0();
-      $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
+      this._rafId = $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
       return;
     }
-    if (this._interrupt)
+    if (this._interrupt) {
+      this._rafId = null;
       return;
-    $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
+    }
+    this._rafId = $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
     this._frameCounter = this._frameCounter + 1;
     this._previousFrameTime = this._frameTime;
     this._frameTime = $.GameLoop_timeStampToSeconds($.DateTime_DateTime$now().get$millisecondsSinceEpoch());
@@ -6088,12 +6112,14 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
           this._frameTime = $.GameLoop_timeStampToSeconds($.DateTime_DateTime$now().get$millisecondsSinceEpoch());
           this._previousFrameTime = this._frameTime;
           this._processInputEvents$0();
-          $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
+          this._rafId = $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
           return;
         }
-        if (this._interrupt)
+        if (this._interrupt) {
+          this._rafId = null;
           return;
-        $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
+        }
+        this._rafId = $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
         this._frameCounter = this._frameCounter + 1;
         this._previousFrameTime = this._frameTime;
         this._frameTime = $.GameLoop_timeStampToSeconds($.DateTime_DateTime$now().get$millisecondsSinceEpoch());
@@ -6270,7 +6296,7 @@ $$.GameLoopHtml = {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_
       this._initialized = true;
     }
     this._interrupt = false;
-    $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
+    this._rafId = $.Window_methods.requestAnimationFrame$1(window, this.get$_requestAnimationFrame(this));
   },
   onRender$1: function(arg0) {
     return this.onRender.call$1(arg0);
@@ -9807,6 +9833,10 @@ $$.Window = {"": "EventTarget;event=",
   requestAnimationFrame$1: function(receiver, callback) {
     this._ensureRequestAnimationFrame$0(receiver);
     return this._liblib$_requestAnimationFrame$1(receiver, callback);
+  },
+  cancelAnimationFrame$1: function(receiver, id) {
+    this._ensureRequestAnimationFrame$0(receiver);
+    receiver.cancelAnimationFrame(id);
   },
   _liblib$_requestAnimationFrame$1: function(receiver, callback) {
     return receiver.requestAnimationFrame($.convertDartClosureToJS(callback, 1));
@@ -14762,7 +14792,7 @@ $.Obj$fromString = function(url, str) {
   $.setRuntimeTypeInfo(t3, [$.JSDouble]);
   t4 = $.List_List($, $.JSDouble);
   $.setRuntimeTypeInfo(t4, [$.JSDouble]);
-  t4 = new $.Obj(t1, t2, t3, t4);
+  t4 = new $.Obj(t1, t2, t3, t4, null, null);
   t4.Obj$fromString$2(url, str, {});
   return t4;
 };
@@ -14814,7 +14844,7 @@ $.SkyboxInstance$ = function(model, center, scale) {
 };
 
 $.TextureInfo$ = function(gl, textureTable, indexOffset, indexNumber, textureName, temporaryColor) {
-  var t1 = new $.TextureInfo(indexOffset, indexNumber, textureName, null);
+  var t1 = new $.TextureInfo(indexOffset, indexNumber, textureName, null, temporaryColor);
   t1.TextureInfo$6(gl, textureTable, indexOffset, indexNumber, textureName, temporaryColor);
   return t1;
 };
@@ -14887,7 +14917,7 @@ $.GameLoopHtml$ = function(element) {
   $.setRuntimeTypeInfo(t3, [$.MouseEvent]);
   t4 = $.List_List($, $.GameLoopTimer);
   $.setRuntimeTypeInfo(t4, [$.GameLoopTimer]);
-  t4 = new $.GameLoopHtml(element, 0, false, false, null, 0, false, 0, 0.03, 0, 0, 0, 0.05, null, null, null, null, null, t1, t2, t3, null, null, null, null, null, null, 0.015, 0.03, t4, null);
+  t4 = new $.GameLoopHtml(element, 0, false, false, null, 0, false, 0, 0.03, 0, 0, 0, 0.05, null, null, null, null, null, null, t1, t2, t3, null, null, null, null, null, null, 0.015, 0.03, t4, null);
   t4.GameLoopHtml$1(element);
   return t4;
 };
@@ -15557,6 +15587,12 @@ Isolate.$lazy($, "pMatrix", "pMatrix", "get$pMatrix", function() {
 });
 Isolate.$lazy($, "cam", "cam", "get$cam", function() {
   return $.Camera$($.Vector3$(0, 0, 15), $.Vector3$(0, 0, -1), $.Vector3$(0, 1, 0));
+});
+Isolate.$lazy($, "prefix_mtllib_len", "Obj_prefix_mtllib_len", "get$Obj_prefix_mtllib_len", function() {
+  return 7;
+});
+Isolate.$lazy($, "prefix_usemtl_len", "Obj_prefix_usemtl_len", "get$Obj_prefix_usemtl_len", function() {
+  return 7;
 });
 Isolate.$lazy($, "_buttonIds", "Keyboard__buttonIds", "get$Keyboard__buttonIds", function() {
   return [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 16, 17, 18, 32, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 192, 13, 38, 40, 37, 39];

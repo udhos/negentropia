@@ -11,6 +11,7 @@ class TextureInfo {
   int indexNumber;
   String textureName;
   Texture texture;
+  List<int> temporaryColor;
 
   void loadTexture2D(RenderingContext gl, Map<String,Texture> textureTable, String textureName, List<int> temporaryColor,
                      void handleDone(Event e), void handleError(Event e)) {
@@ -61,7 +62,7 @@ class TextureInfo {
     ..src = textureName;
   }
 
-  void forceCreateTexture(RenderingContext gl, Map<String,Texture> textureTable, List<int> temporaryColor) {
+  void forceCreateTexture(RenderingContext gl, Map<String,Texture> textureTable) {
     
     void handleDone(Event e) {
       print("TextureInfo: handleDone: loaded image from URL: $textureName");
@@ -75,7 +76,7 @@ class TextureInfo {
   }
   
   TextureInfo(RenderingContext gl, Map<String,Texture> textureTable, this.indexOffset, this.indexNumber, this.textureName,
-              List<int> temporaryColor) {
+              List<int> this.temporaryColor) {
     
     //print("TextureInfo: indexOffset=$indexOffset indexNumber=$indexNumber");
     
@@ -85,6 +86,6 @@ class TextureInfo {
       return;
     }
 
-    forceCreateTexture(gl, textureTable, temporaryColor);    
+    forceCreateTexture(gl, textureTable);    
   }
 }
