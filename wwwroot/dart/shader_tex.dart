@@ -62,8 +62,20 @@ class TexModel extends Model {
     
   }
   
+  // redefine _createBuffers() used by Model's constructor
   void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
-        
+            
+    textureCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
+    gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(textCoord), RenderingContext.STATIC_DRAW);
+    textureCoordBufferItemSize = 2; // coord s,t
+
+    super._createBuffers(gl, indices, vertCoord, textCoord, normCoord);
+}
+
+  /*
+  void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
+    
     vertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
     gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
@@ -87,12 +99,14 @@ class TexModel extends Model {
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
   }
+  */
 
   /*
   TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL) :
     super.fromOBJ(gl, program, URL);
   */  
 
+  /*
   TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL, void onDone(RenderingContext gl, TexModel model)) {
 
     this.program = program;
@@ -115,6 +129,10 @@ class TexModel extends Model {
     .then(handleResponse)
     .catchError(handleError);    
   }
+  */
+
+  TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL,
+      void onDone(RenderingContext gl, TexModel model)) : super.fromOBJ(gl, program, URL, onDone);
 
   void addTexture(TextureInfo tex) {
     textureInfoList.add(tex); 

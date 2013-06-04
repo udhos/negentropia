@@ -1,18 +1,22 @@
 library shader;
 
 import 'dart:html';
+import 'dart:async';
+import 'dart:json';
+import 'dart:math' as math;
 import 'dart:web_gl';
 import 'dart:typed_data';
 
 import 'package:vector_math/vector_math.dart';
 import 'package:game_loop/game_loop_html.dart';
 
-import 'buffer.dart';
+//import 'buffer.dart';
 import 'camera.dart';
 import 'texture.dart';
 import 'obj.dart';
 
 part 'shader_tex.dart';
+part 'buffer.dart';
 
 class ShaderProgram {
   

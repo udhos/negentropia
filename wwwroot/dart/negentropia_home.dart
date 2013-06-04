@@ -12,7 +12,7 @@ import 'cookies/cookies.dart';
 import 'ws.dart';
 import 'shader.dart';
 import 'skybox.dart';
-import 'buffer.dart';
+//import 'buffer.dart';
 import 'lost_context.dart';
 import 'camera.dart';
 import 'texture.dart';
@@ -169,14 +169,16 @@ void initAirshipTex(RenderingContext gl) {
   programList.add(prog);
   prog.fetch(shaderCache, "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
   
-  List<int> temporaryColor = [0, 255, 0, 255]; // green
-
+  List<int> temporaryColor = [25, 175, 25, 255]; // green
+  
   void onModelDone(RenderingContext gl, TexModel airshipModel) {
     TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg", temporaryColor);
     airshipModel.addTexture(texInfo);  
   }
+  
+  String objURL = "/obj/airship.obj"; 
 
-  TexModel airshipModel = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj", onModelDone);
+  TexModel airshipModel = new TexModel.fromOBJ(gl, prog, objURL, onModelDone);
   prog.addModel(airshipModel);
   TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
@@ -186,7 +188,7 @@ void initAirshipTex(RenderingContext gl) {
     airshipModel.addTexture(texInfo);  
   }
 
-  TexModel airshipModel2 = new TexModel.fromOBJ(gl, prog, "/obj/airship.obj", onModelDone2);
+  TexModel airshipModel2 = new TexModel.fromOBJ(gl, prog, objURL, onModelDone2);
   prog.addModel(airshipModel2);
   TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0);
   airshipModel2.addInstance(airshipInstance2);

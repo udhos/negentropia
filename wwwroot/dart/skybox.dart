@@ -8,7 +8,7 @@ import 'package:vector_math/vector_math.dart';
 import 'package:game_loop/game_loop_html.dart';
 
 import 'shader.dart';
-import 'buffer.dart';
+//import 'buffer.dart';
 import 'camera.dart';
 
 class SkyboxProgram extends ShaderProgram {

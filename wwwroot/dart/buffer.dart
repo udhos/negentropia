@@ -1,3 +1,6 @@
+part of shader;
+
+/*
 library buffer;
 
 import 'dart:html';
@@ -13,6 +16,7 @@ import 'package:game_loop/game_loop_html.dart';
 import 'shader.dart';
 import 'camera.dart';
 import 'obj.dart';
+*/
 
 class Instance {
   
@@ -84,11 +88,13 @@ class Model {
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
   }
   
-  Model();
+  //Model();
   
+  /*
   Model.fromLists(RenderingContext gl, ShaderProgram this.program, List<double> vertCoord, List<int> vertInd) {
-    _createBuffers(gl, vertInd, vertCoord, null, null);
+    _createBuffersFromLists(gl, vertInd, vertCoord);
   }
+  */
   
   Model.fromJson(RenderingContext gl, ShaderProgram this.program, String URL) {
 
@@ -141,6 +147,30 @@ class Model {
     .catchError(handleError);
   }
 
+  Model.fromOBJ(RenderingContext gl, ShaderProgram this.program, String URL, [void onDone(RenderingContext gl, Model model)]) {
+
+    void handleResponse(String response) {
+      print("Model.fromOBJ: fetched OBJ from URL: $URL");
+      
+      Obj obj = new Obj.fromString(URL, response);
+      
+      _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
+
+      if (?onDone) {
+        onDone(gl, this);
+      }
+    }
+
+    void handleError(Object err) {
+      print("Model.fromOBJ: failure fetching OBJ from URL: $URL: $err");
+    }
+
+    HttpRequest.getString(URL)
+    .then(handleResponse)
+    .catchError(handleError);    
+  }
+
+  /*
   Model.fromOBJ(RenderingContext gl, ShaderProgram this.program, String URL) {
 
     void handleResponse(String response) {
@@ -159,6 +189,7 @@ class Model {
     .then(handleResponse)
     .catchError(handleError);    
   }
+  */
 
   void addInstance(Instance i) {
     this.instanceList.add(i);
