@@ -1,7 +1,6 @@
 library cookies;
 
 import 'dart:html';
-import 'dart:uri';
 
 class Cookie {
   static _readCookie() {
@@ -9,9 +8,8 @@ class Cookie {
     var c = document.cookie;
     c.split(';').forEach((t) {
       var k = t.indexOf('=');
-      if (k > 0)
-      {
-        cookie[decodeUriComponent(t.substring(0, k))] = decodeUriComponent(t.substring(k + 1));
+      if (k > 0) {
+        cookie[Uri.decodeComponent(t.substring(0, k))] = Uri.decodeComponent(t.substring(k + 1));
       }
     });
     return cookie;
@@ -22,10 +20,10 @@ class Cookie {
     var t = m.keys.iterator;
     if (!t.moveNext()) {
       var k = t.current;
-      sb = '${encodeUriComponent(k)}=${encodeUriComponent(m[k])}';
+      sb = '${Uri.encodeComponent(k)}=${Uri.encodeComponent(m[k])}';
       while (t.moveNext()) {
         k = t.current;
-        sb = '${sb};${encodeUriComponent(k)}=${encodeUriComponent(m[k])}';
+        sb = '${sb};${Uri.encodeComponent(k)}=${Uri.encodeComponent(m[k])}';
       }
     }
     document.cookie = sb.toString();
