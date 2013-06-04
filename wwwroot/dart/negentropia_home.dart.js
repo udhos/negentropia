@@ -11375,14 +11375,14 @@ initSquares_closure: {"": "Closure;squareProgram2_0",
 },
 
 initAirshipTex_onModelDone: {"": "Closure;temporaryColor_0",
-  call$2: function(gl, airshipModel) {
-    airshipModel.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, airshipModel.get$vertexIndexLength(), "/texture/airship_all_diffuse.jpg", this.temporaryColor_0));
+  call$2: function(gl, mod) {
+    mod.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, mod.get$vertexIndexLength(), "/texture/airship_all_diffuse.jpg", this.temporaryColor_0));
   }
 },
 
 initAirshipTex_onModelDone2: {"": "Closure;temporaryColor_1",
-  call$2: function(gl, airshipModel) {
-    airshipModel.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, airshipModel.get$vertexIndexLength(), "INTENTIONAL-BAD-TEXTURE-NAME", this.temporaryColor_1));
+  call$2: function(gl, mod) {
+    mod.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, mod.get$vertexIndexLength(), "INTENTIONAL-BAD-TEXTURE-NAME", this.temporaryColor_1));
   }
 },
 
@@ -14683,6 +14683,7 @@ Isolate.makeConstantList = function(list) {
 };
 $.List_empty = Isolate.makeConstantList([]);
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.JSNumber_methods = $.JSNumber.prototype;
@@ -14700,9 +14701,8 @@ $.C_JSUnknown = new $.JSUnknown();
 $.Duration_0 = new $.Duration(0);
 $.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.C_NullThrownError = new $.NullThrownError();
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
-$.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
+$.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");

@@ -12,21 +12,19 @@ import 'cookies/cookies.dart';
 import 'ws.dart';
 import 'shader.dart';
 import 'skybox.dart';
-//import 'buffer.dart';
 import 'lost_context.dart';
 import 'camera.dart';
 import 'texture.dart';
 
-int requestId;
 CanvasElement canvas;
-num canvasAspect;
+double canvasAspect;
 ShaderProgram shaderProgram;
 bool debugLostContext = true;
 List<ShaderProgram> programList;
 Map<String,Shader> shaderCache;
 Map<String,Texture> textureTable;
 Matrix4 pMatrix = new Matrix4.zero();
-num fieldOfViewYRadians = 45 * math.PI / 180;
+double fieldOfViewYRadians = 45 * math.PI / 180;
 Camera cam = new Camera(new Vector3(0.0,0.0,15.0), new Vector3(0.0,0.0,-1.0), new Vector3(0.0,1.0,0.0));
 bool backfaceCulling = false;
 
@@ -171,9 +169,10 @@ void initAirshipTex(RenderingContext gl) {
   
   List<int> temporaryColor = [25, 175, 25, 255]; // green
   
-  void onModelDone(RenderingContext gl, TexModel airshipModel) {
-    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, airshipModel.vertexIndexLength, "/texture/airship_all_diffuse.jpg", temporaryColor);
-    airshipModel.addTexture(texInfo);  
+  void onModelDone(RenderingContext gl, TexModel mod) {
+    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.vertexIndexLength,
+        "/texture/airship_all_diffuse.jpg", temporaryColor);
+    mod.addTexture(texInfo);  
   }
   
   String objURL = "/obj/airship.obj"; 
@@ -183,9 +182,10 @@ void initAirshipTex(RenderingContext gl) {
   TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
 
-  void onModelDone2(RenderingContext gl, TexModel airshipModel) {
-    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, airshipModel.vertexIndexLength, "INTENTIONAL-BAD-TEXTURE-NAME", temporaryColor);
-    airshipModel.addTexture(texInfo);  
+  void onModelDone2(RenderingContext gl, TexModel mod) {
+    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.vertexIndexLength,
+        "INTENTIONAL-BAD-TEXTURE-NAME", temporaryColor);
+    mod.addTexture(texInfo);  
   }
 
   TexModel airshipModel2 = new TexModel.fromOBJ(gl, prog, objURL, onModelDone2);
@@ -271,45 +271,6 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   
   programList.forEach((ShaderProgram p) => p.drawModels(gameLoop, cam, pMatrix));
 }
-
-/*
-void render(RenderingContext gl) {
-  
-  if (fullRateFrames > 0) {
-    
-    print("render: firing $fullRateFrames frames at full rate");
-    
-    var before = new DateTime.now();
-        
-    for (int i = 0; i < fullRateFrames; ++i) {
-      stats.begin();      
-      update();    // update state
-      draw(gl);   // draw
-      stats.end();      
-    };
-
-    var after = new DateTime.now();
-    var duration = after.difference(before);
-    var rate = fullRateFrames / duration.inSeconds;
-    
-    print("render: duration = $duration framerate = $rate fps");
-
-    return;
-  }
-
-  stats.begin();      
-
-  requestId = window.requestAnimationFrame((num time) { render(gl); });
-  if (requestId == 0) {
-    print("render: could not obtain requestId from requestAnimationFrame");
-  }
-
-  update();    // update state
-  draw(gl);   // draw
-  
-  stats.end();
-}
-*/
 
 void render(RenderingContext gl, GameLoopHtml gameLoop) {
   stats.begin();
