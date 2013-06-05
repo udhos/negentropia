@@ -6161,6 +6161,19 @@ stringReplaceAllUnchecked: function(receiver, from, to) {
   else
     return receiver.replace(new RegExp(from.replace(new RegExp("[-[\\]{}()*+?.,\\\\^$|#\\s]", 'g'), "\\$&"), 'g'), to.replace("$", "$$$$"));
 }}],
+["asset", "asset.dart", , {
+Asset: {"": "Object;_mesh,_mtl,_obj,_shader,_texture",
+  get$texture: function() {
+    return this._texture;
+  },
+  setRoot$1: function(root) {
+    this._mesh = root + "mesh";
+    this._mtl = root + "mtl";
+    this._obj = root + "obj";
+    this._shader = root + "shader";
+    this._texture = root + "texture";
+  }
+}}],
 ["camera", "camera.dart", , {
 Camera: {"": "Object;degreesPerSec,camOrbitRadius,eye,center,up,oldAngle,angle",
   getRad$1: function(interpolation) {
@@ -6278,9 +6291,6 @@ ListIterator: {"": "Object;_iterable,_liblib0$_length,_index,_current",
 },
 
 MappedIterable: {"": "IterableBase;_iterable,_f",
-  _f$1: function(arg0) {
-    return this._f.call$1(arg0);
-  },
   get$iterator: function(_) {
     var t1 = this._iterable;
     return new $.MappedIterator(null, t1.get$iterator(t1), this._f);
@@ -6292,10 +6302,6 @@ MappedIterable: {"": "IterableBase;_iterable,_f",
   get$isEmpty: function(_) {
     var t1 = this._iterable;
     return t1.get$isEmpty(t1);
-  },
-  elementAt$1: function(_, index) {
-    var t1 = this._iterable;
-    return this._f$1(t1.elementAt$1(t1, index));
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterable: function (S, T) { return [T]; }
@@ -7725,21 +7731,6 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
-  elementAt$1: function(_, index) {
-    var t1, t2, t3;
-    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
-      t1 = this._tail;
-      t2 = this._head;
-      t3 = this._table;
-      throw $.wrapException(new $.RangeError("value " + $.S(index) + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
-    }
-    t1 = this._table;
-    t2 = t1.length;
-    t3 = (this._head + index & t2 - 1) >>> 0;
-    if (t3 < 0 || t3 >= t2)
-      throw $.ioore(t3);
-    return t1[t3];
-  },
   add$1: function(_, element) {
     this._add$1(this, element);
   },
@@ -8201,7 +8192,10 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
+    var t1 = this.modifiedObject;
+    if (t1 == null)
+      return "Concurrent modification during iteration.";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
   }
 },
 
@@ -11389,19 +11383,18 @@ initDebugLostContext: function(gl, canvas, gameLoop, initContextCall) {
 ["negentropia_home.dart", "negentropia_home.dart", , {
 initSquares_closure: {"": "Closure;squareProgram2_0",
   call$0: function() {
-    this.squareProgram2_0.fetch$3($.shaderCache, "/shader/clip_vs.txt", "/shader/clip2_fs.txt");
+    this.squareProgram2_0.fetch$3($.shaderCache, $.S($.get$asset()._shader) + "/clip_vs.txt", $.S($.get$asset()._shader) + "/clip2_fs.txt");
   }
 },
 
 initAirshipTex_onModelDone: {"": "Closure;temporaryColor_0",
   call$4: function(gl, mod, obj, oURL) {
-    var t1, mtlURL;
-    t1 = obj.get$mtllib();
-    if (t1 == null) {
+    var mtlURL;
+    if (obj.get$mtllib() == null) {
       $.Primitives_printString("initAirshipTex: onModelDone: " + $.S(oURL) + ": mtllib NOT FOUND");
       return;
     }
-    mtlURL = "/mtl/" + $.S(t1);
+    mtlURL = $.S($.get$asset()._mtl) + "/" + $.S(obj.get$mtllib());
     $.HttpRequest_getString(mtlURL, null, null).then$1(new $.initAirshipTex_onModelDone_onMtlLibLoaded(this.temporaryColor_0, gl, mod, obj, mtlURL)).catchError$1(new $.initAirshipTex_onModelDone_closure(mtlURL));
   }
 },
@@ -11414,7 +11407,7 @@ initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,m
     $.Primitives_printString("onMtlLibLoaded: usemtl=" + $.S(usemtl));
     map_Kd = lib.$index(lib, usemtl).get$map_Kd();
     $.Primitives_printString("onMtlLibLoaded: map_Kd=" + map_Kd);
-    textureURL = "/texture/" + map_Kd;
+    textureURL = $.S($.get$asset()._texture) + "/" + map_Kd;
     $.Primitives_printString("onMtlLibLoaded: textureURL=" + textureURL);
     t1 = this.mod_3;
     t1.addTexture$1($.TextureInfo$(this.gl_2, $.textureTable, 0, t1.get$vertexIndexLength(), textureURL, this.temporaryColor_1));
@@ -11527,8 +11520,8 @@ initSquares: function(gl) {
   t1.$builtinTypeInfo = [$.Model];
   squareProgram = new $.ShaderProgram(null, gl, null, null, null, t1);
   $.programList.push(squareProgram);
-  squareProgram.fetch$3($.shaderCache, "/shader/clip_vs.txt", "/shader/clip_fs.txt");
-  squareModel = $.Model$fromJson(gl, squareProgram, "/mesh/square.json");
+  squareProgram.fetch$3($.shaderCache, $.S($.get$asset()._shader) + "/clip_vs.txt", $.S($.get$asset()._shader) + "/clip_fs.txt");
+  squareModel = $.Model$fromJson(gl, squareProgram, $.S($.get$asset()._mesh) + "/square.json");
   squareProgram.modelList.push(squareModel);
   t1 = new $.Vector3(new Float32Array(3));
   t2 = t1.storage;
@@ -11553,7 +11546,7 @@ initSquares: function(gl) {
   if (milliseconds < 0)
     milliseconds = 0;
   $.TimerImpl$(milliseconds, new $.initSquares_closure(squareProgram2));
-  squareModel2 = $.Model$fromJson(gl, squareProgram2, "/mesh/square2.json");
+  squareModel2 = $.Model$fromJson(gl, squareProgram2, $.S($.get$asset()._mesh) + "/square2.json");
   squareProgram2.modelList.push(squareModel2);
   t1 = new $.Vector3(new Float32Array(3));
   t2 = t1.storage;
@@ -11574,8 +11567,8 @@ initSquares: function(gl) {
   t2.$builtinTypeInfo = [$.Model];
   squareProgram3 = new $.ShaderProgram(null, gl, null, null, null, t2);
   $.programList.push(squareProgram3);
-  squareProgram3.fetch$3($.shaderCache, "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
-  squareModel3 = $.Model$fromJson(gl, squareProgram3, "/mesh/square3.json");
+  squareProgram3.fetch$3($.shaderCache, $.S($.get$asset()._shader) + "/clip_vs.txt", $.S($.get$asset()._shader) + "/clip3_fs.txt");
+  squareModel3 = $.Model$fromJson(gl, squareProgram3, $.S($.get$asset()._mesh) + "/square3.json");
   squareProgram3.modelList.push(squareModel3);
   t1 = new $.Vector3(new Float32Array(3));
   t2 = t1.storage;
@@ -11600,7 +11593,7 @@ initSkybox: function(gl) {
   t1.$builtinTypeInfo = [$.Model];
   skyboxProgram = new $.SkyboxProgram(null, null, gl, null, null, null, t1);
   $.programList.push(skyboxProgram);
-  $.ShaderProgram.prototype.fetch$3.call(skyboxProgram, $.shaderCache, "/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
+  $.ShaderProgram.prototype.fetch$3.call(skyboxProgram, $.shaderCache, $.S($.get$asset()._shader) + "/skybox_vs.txt", $.S($.get$asset()._shader) + "/skybox_fs.txt");
   t1 = $.List_List($, $.Instance);
   t1.$builtinTypeInfo = [$.Instance];
   skyboxModel = new $.SkyboxModel(null, null, null, null, null, null, t1, skyboxProgram);
@@ -11636,8 +11629,8 @@ initAirship: function(gl) {
   t1.$builtinTypeInfo = [$.Model];
   prog = new $.ShaderProgram(null, gl, null, null, null, t1);
   $.programList.push(prog);
-  prog.fetch$3($.shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
-  airshipModel = $.Model$fromOBJ(gl, prog, "/obj/airship.obj", $);
+  prog.fetch$3($.shaderCache, $.S($.get$asset()._shader) + "/simple_vs.txt", $.S($.get$asset()._shader) + "/simple_fs.txt");
+  airshipModel = $.Model$fromOBJ(gl, prog, $.S($.get$asset()._obj) + "/airship.obj", $);
   prog.modelList.push(airshipModel);
   t1 = new $.Vector3(new Float32Array(3));
   t2 = t1.storage;
@@ -11657,14 +11650,15 @@ initAirship: function(gl) {
 },
 
 initAirshipTex: function(gl) {
-  var t1, prog, temporaryColor, onDone, t2, t3, airshipModel, t4, airshipModel2;
+  var t1, prog, temporaryColor, onDone, objURL, t2, t3, airshipModel, t4, airshipModel2;
   t1 = $.List_List($, $.Model);
   t1.$builtinTypeInfo = [$.Model];
   prog = new $.TexShaderProgram(null, null, null, gl, null, null, null, t1);
   $.programList.push(prog);
-  prog.fetch$3($.shaderCache, "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
+  prog.fetch$3($.shaderCache, $.S($.get$asset()._shader) + "/simpleTex_vs.txt", $.S($.get$asset()._shader) + "/simpleTex_fs.txt");
   temporaryColor = [25, 175, 25, 255];
   onDone = new $.initAirshipTex_onModelDone(temporaryColor);
+  objURL = $.S($.get$asset()._obj) + "/airship.obj";
   t1 = $.List_List($, $.TextureInfo);
   t1.$builtinTypeInfo = [$.TextureInfo];
   t2 = $.List_List($, $.Instance);
@@ -11673,7 +11667,7 @@ initAirshipTex: function(gl) {
   if (t3)
     onDone = null;
   airshipModel = new $.TexModel(null, null, t1, null, null, null, null, null, t2, prog);
-  airshipModel.Model$fromOBJ$4(gl, prog, "/obj/airship.obj", onDone, !t3);
+  airshipModel.Model$fromOBJ$4(gl, prog, objURL, onDone, !t3);
   t1 = prog.modelList;
   t1.push(airshipModel);
   t2 = new $.Vector3(new Float32Array(3));
@@ -11700,7 +11694,7 @@ initAirshipTex: function(gl) {
   if (t4)
     onDone = null;
   airshipModel2 = new $.TexModel(null, null, t3, null, null, null, null, null, t2, prog);
-  airshipModel2.Model$fromOBJ$4(gl, prog, "/obj/airship.obj", onDone, !t4);
+  airshipModel2.Model$fromOBJ$4(gl, prog, objURL, onDone, !t4);
   t1.push(airshipModel2);
   t1 = new $.Vector3(new Float32Array(3));
   t2 = t1.storage;
@@ -14785,6 +14779,7 @@ $.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.JSNumber_methods = $.JSNumber.prototype;
 $.JSString_methods = $.JSString.prototype;
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.C_CloseToken = new $.CloseToken();
 $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 $.NodeList_methods = $.NodeList.prototype;
@@ -14798,9 +14793,8 @@ $.C_JSUnknown = new $.JSUnknown();
 $.Duration_0 = new $.Duration(0);
 $.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.C_NullThrownError = new $.NullThrownError();
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
-$.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
+$.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
@@ -15269,6 +15263,11 @@ Isolate.$lazy($, "cam", "cam", "get$cam", function() {
     throw $.ioore(2);
   t4[2] = 0;
   return new $.Camera(30, 15, t1, t2, t3, null, null);
+});
+Isolate.$lazy($, "asset", "asset", "get$asset", function() {
+  var t1 = new $.Asset(null, null, null, null, null);
+  t1.setRoot$1("/");
+  return t1;
 });
 Isolate.$lazy($, "prefix_mtllib_len", "Obj_prefix_mtllib_len", "get$Obj_prefix_mtllib_len", function() {
   return 7;

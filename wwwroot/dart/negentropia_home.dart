@@ -16,6 +16,7 @@ import 'lost_context.dart';
 import 'camera.dart';
 import 'texture.dart';
 import 'obj.dart';
+import 'asset.dart';
 
 CanvasElement canvas;
 double canvasAspect;
@@ -28,6 +29,7 @@ Matrix4 pMatrix = new Matrix4.zero();
 double fieldOfViewYRadians = 45 * math.PI / 180;
 Camera cam = new Camera(new Vector3(0.0,0.0,15.0), new Vector3(0.0,0.0,-1.0), new Vector3(0.0,1.0,0.0));
 bool backfaceCulling = false;
+Asset asset = new Asset("/");
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -110,8 +112,8 @@ RenderingContext boot() {
 void initSquares(RenderingContext gl) {
   ShaderProgram squareProgram = new ShaderProgram(gl);
   programList.add(squareProgram);
-  squareProgram.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip_fs.txt");
-  Model squareModel = new Model.fromJson(gl, squareProgram, "/mesh/square.json");
+  squareProgram.fetch(shaderCache, "${asset.shader}/clip_vs.txt", "${asset.shader}/clip_fs.txt");
+  Model squareModel = new Model.fromJson(gl, squareProgram, "${asset.mesh}/square.json");
   squareProgram.addModel(squareModel);
   Instance squareInstance = new Instance(squareModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel.addInstance(squareInstance);
@@ -120,17 +122,17 @@ void initSquares(RenderingContext gl) {
   programList.add(squareProgram2);
   // execute after 2 secs, giving time to first program populate shadeCache
   new Timer(new Duration(seconds:2), () {
-    squareProgram2.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip2_fs.txt");
+    squareProgram2.fetch(shaderCache, "${asset.shader}/clip_vs.txt", "${asset.shader}/clip2_fs.txt");
   });
-  Model squareModel2 = new Model.fromJson(gl, squareProgram2, "/mesh/square2.json");
+  Model squareModel2 = new Model.fromJson(gl, squareProgram2, "${asset.mesh}/square2.json");
   squareProgram2.addModel(squareModel2);
   Instance squareInstance2 = new Instance(squareModel2, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel2.addInstance(squareInstance2);
   
   ShaderProgram squareProgram3 = new ShaderProgram(gl);
   programList.add(squareProgram3);
-  squareProgram3.fetch(shaderCache, "/shader/clip_vs.txt", "/shader/clip3_fs.txt");
-  Model squareModel3 = new Model.fromJson(gl, squareProgram3, "/mesh/square3.json");
+  squareProgram3.fetch(shaderCache, "${asset.shader}/clip_vs.txt", "${asset.shader}/clip3_fs.txt");
+  Model squareModel3 = new Model.fromJson(gl, squareProgram3, "${asset.mesh}/square3.json");
   squareProgram3.addModel(squareModel3);
   Instance squareInstance3 = new Instance(squareModel3, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel3.addInstance(squareInstance3);  
@@ -139,7 +141,7 @@ void initSquares(RenderingContext gl) {
 void initSkybox(RenderingContext gl) {
   SkyboxProgram skyboxProgram = new SkyboxProgram(gl);
   programList.add(skyboxProgram);
-  skyboxProgram.fetch(shaderCache, "/shader/skybox_vs.txt", "/shader/skybox_fs.txt");
+  skyboxProgram.fetch(shaderCache, "${asset.shader}/skybox_vs.txt", "${asset.shader}/skybox_fs.txt");
   SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, skyboxProgram, "/mesh/cube.json", true, 0);
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
   skyboxModel.addCubemapFace(RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
@@ -155,8 +157,8 @@ void initSkybox(RenderingContext gl) {
 void initAirship(RenderingContext gl) {
   ShaderProgram prog = new ShaderProgram(gl);
   programList.add(prog);
-  prog.fetch(shaderCache, "/shader/simple_vs.txt", "/shader/simple_fs.txt");
-  Model airshipModel = new Model.fromOBJ(gl, prog, "/obj/airship.obj");
+  prog.fetch(shaderCache, "${asset.shader}/simple_vs.txt", "${asset.shader}/simple_fs.txt");
+  Model airshipModel = new Model.fromOBJ(gl, prog, "${asset.obj}/airship.obj");
   prog.addModel(airshipModel);
   Instance airshipInstance = new Instance(airshipModel, new Vector3(-8.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);  
@@ -166,7 +168,7 @@ void initAirship(RenderingContext gl) {
 void initAirshipTex(RenderingContext gl) {
   TexShaderProgram prog = new TexShaderProgram(gl);
   programList.add(prog);
-  prog.fetch(shaderCache, "/shader/simpleTex_vs.txt", "/shader/simpleTex_fs.txt");
+  prog.fetch(shaderCache, "${asset.shader}/simpleTex_vs.txt", "${asset.shader}/simpleTex_fs.txt");
   
   List<int> temporaryColor = [25, 175, 25, 255]; // green
   
@@ -177,7 +179,7 @@ void initAirshipTex(RenderingContext gl) {
       return;
     }
     
-    String mtlURL = "/mtl/${obj.mtllib}";
+    String mtlURL = "${asset.mtl}/${obj.mtllib}";
     
     void onMtlLibLoaded(String response) {
       
@@ -191,7 +193,7 @@ void initAirshipTex(RenderingContext gl) {
 
       print("onMtlLibLoaded: map_Kd=$map_Kd");
 
-      String textureURL = "/texture/$map_Kd";
+      String textureURL = "${asset.texture}/$map_Kd";
 
       print("onMtlLibLoaded: textureURL=$textureURL");
       
@@ -205,7 +207,7 @@ void initAirshipTex(RenderingContext gl) {
     .catchError((err) { print("initAirshipTex: onModelDone: failure fetching mtllib: $mtlURL: $err"); });    
   }
   
-  String objURL = "/obj/airship.obj"; 
+  String objURL = "${asset.obj}/airship.obj"; 
 
   TexModel airshipModel = new TexModel.fromOBJ(gl, prog, objURL, onModelDone);
   prog.addModel(airshipModel);
