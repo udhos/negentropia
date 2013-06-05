@@ -193,9 +193,7 @@ Map<String,Material> mtllib_parse(String str, String url) {
       }     
       
       lib[currMaterialName] = new Material(map_Kd);
-      
-      currMaterialName = null;
-      
+            
       return;
     }
     

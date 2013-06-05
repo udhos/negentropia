@@ -11979,7 +11979,7 @@ Material: {"": "Object;map_Kd<"},
 
 mtllib_parse_parseLine: {"": "Closure;box_0,url_1,lib_2",
   call$1: function(rawLine) {
-    var t1, line, t2, map_Kd, t3;
+    var t1, line, t2, map_Kd;
     t1 = this.box_0;
     t1.lineNum_1 = $.$add$ns(t1.lineNum_1, 1);
     line = $.trim$0$s(rawLine);
@@ -12001,9 +12001,8 @@ mtllib_parse_parseLine: {"": "Closure;box_0,url_1,lib_2",
         $.Primitives_printString("mtllib_parse: url=" + this.url_1 + ": line=" + $.S(t1.lineNum_1) + ": map_Kd=" + map_Kd + " found for undefined material: [" + line + "]");
         return;
       }
-      t3 = this.lib_2;
-      t3.$indexSet(t3, t2, new $.Material(map_Kd));
-      t1.currMaterialName_0 = null;
+      t1 = this.lib_2;
+      t1.$indexSet(t1, t2, new $.Material(map_Kd));
       return;
     }
     $.Primitives_printString("mtllib_parse: url=" + this.url_1 + ": line=" + $.S(t1.lineNum_1) + ": unknown pattern: [" + line + "]");
