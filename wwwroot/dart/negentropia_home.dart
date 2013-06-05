@@ -181,7 +181,7 @@ void initAirshipTex(RenderingContext gl) {
     
     void onMtlLibLoaded(String response) {
       
-      Map<String,Material> lib = mtllib_parse(response);
+      Map<String,Material> lib = mtllib_parse(response, mtlURL);
       
       String usemtl = obj.usemtl;
       

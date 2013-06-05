@@ -150,15 +150,60 @@ class Obj {
 }
 
 class Material {
+
+  static final String prefix_newmtl = "newmtl ";
+  static final String prefix_map_Kd = "map_Kd ";
+  static final int prefix_newmtl_len = prefix_newmtl.length;
+  static final int prefix_map_Kd_len = prefix_map_Kd.length;
+
   String map_Kd;
   Material(this.map_Kd);
 }
 
-Map<String,Material> mtllib_parse(String data) {
-  print("mtllib_parse: FIXME WRITEME");
+Map<String,Material> mtllib_parse(String str, String url) {
   
   Map<String,Material> lib = new Map<String,Material>();
-  lib["Baked_spec_y_normal"] = new Material("airship_all_diffuse.jpg");
+  String currMaterialName;
+  int lineNum = 0;
   
+  void parseLine(String rawLine) {
+    ++lineNum;
+    
+    String line = rawLine.trim();
+
+    if (line.isEmpty) {
+      return;
+    }
+    
+    if (line[0] == '#') {
+      return;
+    }
+    
+    if (line.startsWith(Material.prefix_newmtl)) {
+      currMaterialName = line.substring(Material.prefix_newmtl_len);
+      return;
+    }
+
+    if (line.startsWith(Material.prefix_map_Kd)) {
+      String map_Kd = line.substring(Material.prefix_map_Kd_len);
+      
+      if (currMaterialName == null) {
+        print("mtllib_parse: url=$url: line=$lineNum: map_Kd=$map_Kd found for undefined material: [$line]");
+        return;
+      }     
+      
+      lib[currMaterialName] = new Material(map_Kd);
+      
+      currMaterialName = null;
+      
+      return;
+    }
+    
+    print("mtllib_parse: url=$url: line=$lineNum: unknown pattern: [$line]");    
+  }
+  
+  List<String> lines = str.split('\n');
+  lines.forEach((String line) => parseLine(line));
+
   return lib;
 }

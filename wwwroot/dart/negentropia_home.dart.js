@@ -11402,17 +11402,14 @@ initAirshipTex_onModelDone: {"": "Closure;temporaryColor_0",
       return;
     }
     mtlURL = "/mtl/" + $.S(t1);
-    $.HttpRequest_getString(mtlURL, null, null).then$1(new $.initAirshipTex_onModelDone_onMtlLibLoaded(this.temporaryColor_0, gl, mod, obj)).catchError$1(new $.initAirshipTex_onModelDone_closure(mtlURL));
+    $.HttpRequest_getString(mtlURL, null, null).then$1(new $.initAirshipTex_onModelDone_onMtlLibLoaded(this.temporaryColor_0, gl, mod, obj, mtlURL)).catchError$1(new $.initAirshipTex_onModelDone_closure(mtlURL));
   }
 },
 
-initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,mod_3,obj_4",
+initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,mod_3,obj_4,mtlURL_5",
   call$1: function(response) {
     var lib, usemtl, map_Kd, textureURL, t1;
-    $.Primitives_printString("mtllib_parse: FIXME WRITEME");
-    lib = new $.HashMap(0, null, null, null, null);
-    lib.$builtinTypeInfo = [$.JSString, $.Material];
-    lib.$indexSet(lib, "Baked_spec_y_normal", new $.Material("airship_all_diffuse.jpg"));
+    lib = $.mtllib_parse(response, this.mtlURL_5);
     usemtl = this.obj_4.get$usemtl();
     $.Primitives_printString("onMtlLibLoaded: usemtl=" + $.S(usemtl));
     map_Kd = lib.$index(lib, usemtl).get$map_Kd();
@@ -11424,15 +11421,15 @@ initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,m
   }
 },
 
-initAirshipTex_onModelDone_closure: {"": "Closure;mtlURL_5",
+initAirshipTex_onModelDone_closure: {"": "Closure;mtlURL_6",
   call$1: function(err) {
-    $.Primitives_printString("initAirshipTex: onModelDone: failure fetching mtllib: " + this.mtlURL_5 + ": " + $.S(err));
+    $.Primitives_printString("initAirshipTex: onModelDone: failure fetching mtllib: " + this.mtlURL_6 + ": " + $.S(err));
   }
 },
 
-initAirshipTex_onModelDone2: {"": "Closure;temporaryColor_6",
+initAirshipTex_onModelDone2: {"": "Closure;temporaryColor_7",
   call$4: function(gl, mod, obj, oURL) {
-    mod.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, mod.get$vertexIndexLength(), "INTENTIONAL-BAD-TEXTURE-NAME", this.temporaryColor_6));
+    mod.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, mod.get$vertexIndexLength(), "INTENTIONAL-BAD-TEXTURE-NAME", this.temporaryColor_7));
   }
 },
 
@@ -11980,6 +11977,45 @@ Obj$fromString_closure: {"": "Closure;parseLine_6",
 
 Material: {"": "Object;map_Kd<"},
 
+mtllib_parse_parseLine: {"": "Closure;box_0,url_1,lib_2",
+  call$1: function(rawLine) {
+    var t1, line, t2, map_Kd, t3;
+    t1 = this.box_0;
+    t1.lineNum_1 = $.$add$ns(t1.lineNum_1, 1);
+    line = $.trim$0$s(rawLine);
+    t2 = line.length;
+    if (t2 === 0)
+      return;
+    if (0 >= t2)
+      throw $.ioore(0);
+    if (line[0] === "#")
+      return;
+    if ($.JSString_methods.startsWith$1(line, "newmtl ")) {
+      t1.currMaterialName_0 = $.JSString_methods.substring$1(line, $.get$Material_prefix_newmtl_len());
+      return;
+    }
+    if ($.JSString_methods.startsWith$1(line, "map_Kd ")) {
+      map_Kd = $.JSString_methods.substring$1(line, $.get$Material_prefix_map_Kd_len());
+      t2 = t1.currMaterialName_0;
+      if (t2 == null) {
+        $.Primitives_printString("mtllib_parse: url=" + this.url_1 + ": line=" + $.S(t1.lineNum_1) + ": map_Kd=" + map_Kd + " found for undefined material: [" + line + "]");
+        return;
+      }
+      t3 = this.lib_2;
+      t3.$indexSet(t3, t2, new $.Material(map_Kd));
+      t1.currMaterialName_0 = null;
+      return;
+    }
+    $.Primitives_printString("mtllib_parse: url=" + this.url_1 + ": line=" + $.S(t1.lineNum_1) + ": unknown pattern: [" + line + "]");
+  }
+},
+
+mtllib_parse_closure: {"": "Closure;parseLine_3",
+  call$1: function(line) {
+    return this.parseLine_3.call$1(line);
+  }
+},
+
 Obj$fromString: function(url, str) {
   var t1, t2, t3, t4;
   t1 = $.List_List($, $.JSInt);
@@ -11993,6 +12029,17 @@ Obj$fromString: function(url, str) {
   t1 = new $.Obj(t1, t2, t3, t4, null, null);
   t1.Obj$fromString$2(url, str, {});
   return t1;
+},
+
+mtllib_parse: function(str, url) {
+  var t1, lib;
+  t1 = {};
+  lib = new $.HashMap(0, null, null, null, null);
+  lib.$builtinTypeInfo = [$.JSString, $.Material];
+  t1.currMaterialName_0 = null;
+  t1.lineNum_1 = 0;
+  $.IterableMixinWorkaround_forEach($.split$1$s(str, "\n"), new $.mtllib_parse_closure(new $.mtllib_parse_parseLine(t1, url, lib)));
+  return lib;
 }}],
 ["shader", "shader.dart", , {
 Instance: {"": "Object;model>,center,scale,MV",
@@ -15228,6 +15275,12 @@ Isolate.$lazy($, "prefix_mtllib_len", "Obj_prefix_mtllib_len", "get$Obj_prefix_m
   return 7;
 });
 Isolate.$lazy($, "prefix_usemtl_len", "Obj_prefix_usemtl_len", "get$Obj_prefix_usemtl_len", function() {
+  return 7;
+});
+Isolate.$lazy($, "prefix_newmtl_len", "Material_prefix_newmtl_len", "get$Material_prefix_newmtl_len", function() {
+  return 7;
+});
+Isolate.$lazy($, "prefix_map_Kd_len", "Material_prefix_map_Kd_len", "get$Material_prefix_map_Kd_len", function() {
   return 7;
 });
 // Native classes
