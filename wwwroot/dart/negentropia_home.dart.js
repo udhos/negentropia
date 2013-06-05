@@ -6278,6 +6278,9 @@ ListIterator: {"": "Object;_iterable,_liblib0$_length,_index,_current",
 },
 
 MappedIterable: {"": "IterableBase;_iterable,_f",
+  _f$1: function(arg0) {
+    return this._f.call$1(arg0);
+  },
   get$iterator: function(_) {
     var t1 = this._iterable;
     return new $.MappedIterator(null, t1.get$iterator(t1), this._f);
@@ -6289,6 +6292,10 @@ MappedIterable: {"": "IterableBase;_iterable,_f",
   get$isEmpty: function(_) {
     var t1 = this._iterable;
     return t1.get$isEmpty(t1);
+  },
+  elementAt$1: function(_, index) {
+    var t1 = this._iterable;
+    return this._f$1(t1.elementAt$1(t1, index));
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterable: function (S, T) { return [T]; }
@@ -7718,6 +7725,21 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
+  elementAt$1: function(_, index) {
+    var t1, t2, t3;
+    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
+      t1 = this._tail;
+      t2 = this._head;
+      t3 = this._table;
+      throw $.wrapException(new $.RangeError("value " + $.S(index) + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
+    }
+    t1 = this._table;
+    t2 = t1.length;
+    t3 = (this._head + index & t2 - 1) >>> 0;
+    if (t3 < 0 || t3 >= t2)
+      throw $.ioore(t3);
+    return t1[t3];
+  },
   add$1: function(_, element) {
     this._add$1(this, element);
   },
@@ -8179,10 +8201,7 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    var t1 = this.modifiedObject;
-    if (t1 == null)
-      return "Concurrent modification during iteration.";
-    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
   }
 },
 
@@ -11375,14 +11394,45 @@ initSquares_closure: {"": "Closure;squareProgram2_0",
 },
 
 initAirshipTex_onModelDone: {"": "Closure;temporaryColor_0",
-  call$2: function(gl, mod) {
-    mod.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, mod.get$vertexIndexLength(), "/texture/airship_all_diffuse.jpg", this.temporaryColor_0));
+  call$4: function(gl, mod, obj, oURL) {
+    var t1, mtlURL;
+    t1 = obj.get$mtllib();
+    if (t1 == null) {
+      $.Primitives_printString("initAirshipTex: onModelDone: " + $.S(oURL) + ": mtllib NOT FOUND");
+      return;
+    }
+    mtlURL = "/mtl/" + $.S(t1);
+    $.HttpRequest_getString(mtlURL, null, null).then$1(new $.initAirshipTex_onModelDone_onMtlLibLoaded(this.temporaryColor_0, gl, mod, obj)).catchError$1(new $.initAirshipTex_onModelDone_closure(mtlURL));
   }
 },
 
-initAirshipTex_onModelDone2: {"": "Closure;temporaryColor_1",
-  call$2: function(gl, mod) {
-    mod.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, mod.get$vertexIndexLength(), "INTENTIONAL-BAD-TEXTURE-NAME", this.temporaryColor_1));
+initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,mod_3,obj_4",
+  call$1: function(response) {
+    var lib, usemtl, map_Kd, textureURL, t1;
+    $.Primitives_printString("mtllib_parse: FIXME WRITEME");
+    lib = new $.HashMap(0, null, null, null, null);
+    lib.$builtinTypeInfo = [$.JSString, $.Material];
+    lib.$indexSet(lib, "Baked_spec_y_normal", new $.Material("airship_all_diffuse.jpg"));
+    usemtl = this.obj_4.get$usemtl();
+    $.Primitives_printString("onMtlLibLoaded: usemtl=" + $.S(usemtl));
+    map_Kd = lib.$index(lib, usemtl).get$map_Kd();
+    $.Primitives_printString("onMtlLibLoaded: map_Kd=" + map_Kd);
+    textureURL = "/texture/" + map_Kd;
+    $.Primitives_printString("onMtlLibLoaded: textureURL=" + textureURL);
+    t1 = this.mod_3;
+    t1.addTexture$1($.TextureInfo$(this.gl_2, $.textureTable, 0, t1.get$vertexIndexLength(), textureURL, this.temporaryColor_1));
+  }
+},
+
+initAirshipTex_onModelDone_closure: {"": "Closure;mtlURL_5",
+  call$1: function(err) {
+    $.Primitives_printString("initAirshipTex: onModelDone: failure fetching mtllib: " + this.mtlURL_5 + ": " + $.S(err));
+  }
+},
+
+initAirshipTex_onModelDone2: {"": "Closure;temporaryColor_6",
+  call$4: function(gl, mod, obj, oURL) {
+    mod.addTexture$1($.TextureInfo$(gl, $.textureTable, 0, mod.get$vertexIndexLength(), "INTENTIONAL-BAD-TEXTURE-NAME", this.temporaryColor_6));
   }
 },
 
@@ -11768,7 +11818,7 @@ main: function() {
   $.initContext(gl, gameLoop);
 }}],
 ["obj", "obj.dart", , {
-Obj: {"": "Object;indices<,vertCoord<,textCoord<,normCoord,mtllib?,usemtl@",
+Obj: {"": "Object;indices<,vertCoord<,textCoord<,normCoord,mtllib@,usemtl@",
   Obj$fromString$2: function(url, str, box_0) {
     var indexTable, _vertCoord, _textCoord;
     indexTable = new $.HashMap(0, null, null, null, null);
@@ -11928,6 +11978,8 @@ Obj$fromString_closure: {"": "Closure;parseLine_6",
   }
 },
 
+Material: {"": "Object;map_Kd<"},
+
 Obj$fromString: function(url, str) {
   var t1, t2, t3, t4;
   t1 = $.List_List($, $.JSInt);
@@ -12036,15 +12088,15 @@ Model$fromJson_handleError: {"": "Closure;URL_2",
 
 Model$fromOBJ_handleResponse: {"": "Closure;this_0,gl_1,URL_2,onDone_3,onDone_check_4",
   call$1: function(response) {
-    var t1, obj, t2;
+    var t1, obj, t2, t3;
     t1 = this.URL_2;
     $.Primitives_printString("Model.fromOBJ: fetched OBJ from URL: " + t1);
     obj = $.Obj$fromString(t1, response);
-    t1 = this.this_0;
-    t2 = this.gl_1;
-    t1._createBuffers$5(t2, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
+    t2 = this.this_0;
+    t3 = this.gl_1;
+    t2._createBuffers$5(t3, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
     if (this.onDone_check_4 === true)
-      this.onDone_3.call$2(t2, t1);
+      this.onDone_3.call$4(t3, t2, obj, t1);
   }
 },
 
@@ -14683,7 +14735,6 @@ Isolate.makeConstantList = function(list) {
 };
 $.List_empty = Isolate.makeConstantList([]);
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.JSNumber_methods = $.JSNumber.prototype;
@@ -14701,8 +14752,9 @@ $.C_JSUnknown = new $.JSUnknown();
 $.Duration_0 = new $.Duration(0);
 $.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.C_NullThrownError = new $.NullThrownError();
-$.EventStreamProvider_progress = new $.EventStreamProvider("progress");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.HttpRequest_methods = $.HttpRequest.prototype;
+$.EventStreamProvider_progress = new $.EventStreamProvider("progress");
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");

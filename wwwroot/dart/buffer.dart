@@ -1,23 +1,5 @@
 part of shader;
 
-/*
-library buffer;
-
-import 'dart:html';
-import 'dart:async';
-import 'dart:json';
-import 'dart:web_gl';
-import 'dart:typed_data';
-import 'dart:math' as math;
-
-import 'package:vector_math/vector_math.dart';
-import 'package:game_loop/game_loop_html.dart';
-
-import 'shader.dart';
-import 'camera.dart';
-import 'obj.dart';
-*/
-
 class Instance {
   
   Model model;
@@ -146,8 +128,9 @@ class Model {
     .then(handleResponse)
     .catchError(handleError);
   }
-
-  Model.fromOBJ(RenderingContext gl, ShaderProgram this.program, String URL, [void onDone(RenderingContext gl, Model model)]) {
+  
+  Model.fromOBJ(RenderingContext gl, this.program, String URL,
+      [void onDone(RenderingContext gl, Model m, Obj o, String u)]) {
 
     void handleResponse(String response) {
       print("Model.fromOBJ: fetched OBJ from URL: $URL");
@@ -155,9 +138,9 @@ class Model {
       Obj obj = new Obj.fromString(URL, response);
       
       _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
-
+      
       if (?onDone) {
-        onDone(gl, this);
+        onDone(gl, this, obj, URL);
       }
     }
 

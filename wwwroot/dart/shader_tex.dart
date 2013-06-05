@@ -132,8 +132,8 @@ class TexModel extends Model {
   */
 
   TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL,
-      void onDone(RenderingContext gl, TexModel model)) : super.fromOBJ(gl, program, URL, onDone);
-
+      void onDone(RenderingContext gl, TexModel m, Obj o, String u)) : super.fromOBJ(gl, program, URL, onDone);
+  
   void addTexture(TextureInfo tex) {
     textureInfoList.add(tex); 
   }

@@ -148,3 +148,17 @@ class Obj {
     print("Obj.fromString: usemtl = $usemtl");
   }
 }
+
+class Material {
+  String map_Kd;
+  Material(this.map_Kd);
+}
+
+Map<String,Material> mtllib_parse(String data) {
+  print("mtllib_parse: FIXME WRITEME");
+  
+  Map<String,Material> lib = new Map<String,Material>();
+  lib["Baked_spec_y_normal"] = new Material("airship_all_diffuse.jpg");
+  
+  return lib;
+}

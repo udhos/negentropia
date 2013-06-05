@@ -15,6 +15,7 @@ import 'skybox.dart';
 import 'lost_context.dart';
 import 'camera.dart';
 import 'texture.dart';
+import 'obj.dart';
 
 CanvasElement canvas;
 double canvasAspect;
@@ -169,10 +170,39 @@ void initAirshipTex(RenderingContext gl) {
   
   List<int> temporaryColor = [25, 175, 25, 255]; // green
   
-  void onModelDone(RenderingContext gl, TexModel mod) {
-    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.vertexIndexLength,
-        "/texture/airship_all_diffuse.jpg", temporaryColor);
-    mod.addTexture(texInfo);  
+  void onModelDone(RenderingContext gl, TexModel mod, Obj obj, String oURL) {
+    
+    if (obj.mtllib == null) {
+      print("initAirshipTex: onModelDone: $oURL: mtllib NOT FOUND");
+      return;
+    }
+    
+    String mtlURL = "/mtl/${obj.mtllib}";
+    
+    void onMtlLibLoaded(String response) {
+      
+      Map<String,Material> lib = mtllib_parse(response);
+      
+      String usemtl = obj.usemtl;
+      
+      print("onMtlLibLoaded: usemtl=$usemtl");
+      
+      String map_Kd = lib[usemtl].map_Kd;
+
+      print("onMtlLibLoaded: map_Kd=$map_Kd");
+
+      String textureURL = "/texture/$map_Kd";
+
+      print("onMtlLibLoaded: textureURL=$textureURL");
+      
+      TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.vertexIndexLength,
+          textureURL, temporaryColor);
+      mod.addTexture(texInfo);
+    }
+    
+    HttpRequest.getString(mtlURL)
+    .then(onMtlLibLoaded)
+    .catchError((err) { print("initAirshipTex: onModelDone: failure fetching mtllib: $mtlURL: $err"); });    
   }
   
   String objURL = "/obj/airship.obj"; 
@@ -182,7 +212,7 @@ void initAirshipTex(RenderingContext gl) {
   TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
 
-  void onModelDone2(RenderingContext gl, TexModel mod) {
+  void onModelDone2(RenderingContext gl, TexModel mod, Obj obj, String oURL) {
     TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.vertexIndexLength,
         "INTENTIONAL-BAD-TEXTURE-NAME", temporaryColor);
     mod.addTexture(texInfo);  
