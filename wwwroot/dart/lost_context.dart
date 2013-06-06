@@ -9,14 +9,14 @@ void initDebugLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHtm
                           void initContextCall(RenderingContext gl, GameLoopHtml gameLoop)) {
   
   void onContextLost(Event e) {
-    print("webgl context: lost");
     e.preventDefault();
     gameLoop.stop();
+    print("webgl context: lost");
   }
 
   void onContextRestored(Event e) {
-    print("webgl context: restored");
     initContextCall(gl, gameLoop); // recreate resources and restart gameLoop
+    print("webgl context: restored");
   }
 
   canvas.on['webglcontextlost'].listen((Event e) => onContextLost(e));

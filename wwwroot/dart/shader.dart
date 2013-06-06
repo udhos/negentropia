@@ -10,7 +10,6 @@ import 'dart:typed_data';
 import 'package:vector_math/vector_math.dart';
 import 'package:game_loop/game_loop_html.dart';
 
-//import 'buffer.dart';
 import 'camera.dart';
 import 'texture.dart';
 import 'obj.dart';
@@ -25,6 +24,7 @@ class ShaderProgram {
   int a_Position;
   UniformLocation u_MV;
   UniformLocation u_P;
+  bool shaderReady = false;
   
   List<Model> modelList = new List<Model>();  
  
@@ -49,8 +49,12 @@ class ShaderProgram {
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
       var parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
-      if ((parameter == null) && !gl.isContextLost()) { 
-        print("compileShader: compilation FAILURE: " + shaderURL + ": " + gl.getShaderInfoLog(shader));
+      if (parameter == null) {
+        String infoLog = gl.getShaderInfoLog(shader);
+        print("compileShader: compilation FAILURE: $shaderURL: $infoLog");
+        if (gl.isContextLost()) {
+          print("compileShader: compilation FAILURE: $shaderURL: $infoLog: context is lost");
+        }
         return null;
       }
       
@@ -64,7 +68,7 @@ class ShaderProgram {
     
     void tryLink() {
       if (vertexShader == null || fragmentShader == null) {
-        // not ready
+        // not ready to link
         return;
       }
       
@@ -72,15 +76,23 @@ class ShaderProgram {
       gl.attachShader(p, vertexShader);
       gl.attachShader(p, fragmentShader);
       gl.linkProgram(p);
-      if (!gl.getProgramParameter(p, RenderingContext.LINK_STATUS) && !gl.isContextLost()) { 
-        print(gl.getProgramInfoLog(p));
+      var parameter = gl.getProgramParameter(p, RenderingContext.LINK_STATUS);
+      if (parameter == null) {
+        String infoLog = gl.getProgramInfoLog(p);
+        print("tryLink: shader program link FAILURE: $infoLog");
+        if (gl.isContextLost()) {
+          print("tryLink: shader program link FAILURE: $infoLog: context is lost");          
+        }
+        return;
       }
 
-      print("ShaderProgram: program ready");      
+      print("ShaderProgram: program linked");      
 
       this.program = p;
       
       getLocations();
+      
+      shaderReady = true;
     }
     
     void fetchVertexShader() {      
@@ -147,8 +159,7 @@ class ShaderProgram {
   
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
     
-    if (a_Position == null) {
-      // shader isn't ready
+    if (!shaderReady) {
       return;
     }
     

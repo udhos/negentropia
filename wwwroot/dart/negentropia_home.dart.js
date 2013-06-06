@@ -6291,6 +6291,9 @@ ListIterator: {"": "Object;_iterable,_liblib0$_length,_index,_current",
 },
 
 MappedIterable: {"": "IterableBase;_iterable,_f",
+  _f$1: function(arg0) {
+    return this._f.call$1(arg0);
+  },
   get$iterator: function(_) {
     var t1 = this._iterable;
     return new $.MappedIterator(null, t1.get$iterator(t1), this._f);
@@ -6302,6 +6305,10 @@ MappedIterable: {"": "IterableBase;_iterable,_f",
   get$isEmpty: function(_) {
     var t1 = this._iterable;
     return t1.get$isEmpty(t1);
+  },
+  elementAt$1: function(_, index) {
+    var t1 = this._iterable;
+    return this._f$1(t1.elementAt$1(t1, index));
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterable: function (S, T) { return [T]; }
@@ -7731,6 +7738,21 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
+  elementAt$1: function(_, index) {
+    var t1, t2, t3;
+    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
+      t1 = this._tail;
+      t2 = this._head;
+      t3 = this._table;
+      throw $.wrapException(new $.RangeError("value " + $.S(index) + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
+    }
+    t1 = this._table;
+    t2 = t1.length;
+    t3 = (this._head + index & t2 - 1) >>> 0;
+    if (t3 < 0 || t3 >= t2)
+      throw $.ioore(t3);
+    return t1[t3];
+  },
   add$1: function(_, element) {
     this._add$1(this, element);
   },
@@ -8192,10 +8214,7 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    var t1 = this.modifiedObject;
-    if (t1 == null)
-      return "Concurrent modification during iteration.";
-    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
   }
 },
 
@@ -11289,7 +11308,6 @@ convertNativeToDart_AcceptStructuredClone: function(object, mustCopy) {
 initDebugLostContext_onContextLost: {"": "Closure;gameLoop_0",
   call$1: function(e) {
     var t1, t2, t3;
-    $.Primitives_printString("webgl context: lost");
     $.preventDefault$0$x(e);
     t1 = this.gameLoop_0;
     t2 = t1._rafId;
@@ -11300,13 +11318,14 @@ initDebugLostContext_onContextLost: {"": "Closure;gameLoop_0",
       t1._rafId = null;
     }
     t1._interrupt = true;
+    $.Primitives_printString("webgl context: lost");
   }
 },
 
 initDebugLostContext_onContextRestored: {"": "Closure;gl_1,gameLoop_2,initContextCall_3",
   call$1: function(e) {
-    $.Primitives_printString("webgl context: restored");
     this.initContextCall_3.call$2(this.gl_1, this.gameLoop_2);
+    $.Primitives_printString("webgl context: restored");
   }
 },
 
@@ -11518,7 +11537,7 @@ initSquares: function(gl) {
   var t1, squareProgram, squareModel, t2, t3, squareProgram2, milliseconds, squareModel2, squareProgram3, squareModel3;
   t1 = $.List_List($, $.Model);
   t1.$builtinTypeInfo = [$.Model];
-  squareProgram = new $.ShaderProgram(null, gl, null, null, null, t1);
+  squareProgram = new $.ShaderProgram(null, gl, null, null, null, false, t1);
   $.programList.push(squareProgram);
   squareProgram.fetch$3($.shaderCache, $.S($.get$asset()._shader) + "/clip_vs.txt", $.S($.get$asset()._shader) + "/clip_fs.txt");
   squareModel = $.Model$fromJson(gl, squareProgram, $.S($.get$asset()._mesh) + "/square.json");
@@ -11540,7 +11559,7 @@ initSquares: function(gl) {
   squareModel.instanceList.push(new $.Instance(squareModel, t1, 1, t2));
   t2 = $.List_List($, $.Model);
   t2.$builtinTypeInfo = [$.Model];
-  squareProgram2 = new $.ShaderProgram(null, gl, null, null, null, t2);
+  squareProgram2 = new $.ShaderProgram(null, gl, null, null, null, false, t2);
   $.programList.push(squareProgram2);
   milliseconds = $.JSNumber_methods.$tdiv($.Duration$(0, 0, 0, 0, 0, 2)._duration, 1000);
   if (milliseconds < 0)
@@ -11565,7 +11584,7 @@ initSquares: function(gl) {
   squareModel2.instanceList.push(new $.Instance(squareModel2, t1, 1, t2));
   t2 = $.List_List($, $.Model);
   t2.$builtinTypeInfo = [$.Model];
-  squareProgram3 = new $.ShaderProgram(null, gl, null, null, null, t2);
+  squareProgram3 = new $.ShaderProgram(null, gl, null, null, null, false, t2);
   $.programList.push(squareProgram3);
   squareProgram3.fetch$3($.shaderCache, $.S($.get$asset()._shader) + "/clip_vs.txt", $.S($.get$asset()._shader) + "/clip3_fs.txt");
   squareModel3 = $.Model$fromJson(gl, squareProgram3, $.S($.get$asset()._mesh) + "/square3.json");
@@ -11591,7 +11610,7 @@ initSkybox: function(gl) {
   var t1, skyboxProgram, skyboxModel, t2, t3;
   t1 = $.List_List($, $.Model);
   t1.$builtinTypeInfo = [$.Model];
-  skyboxProgram = new $.SkyboxProgram(null, null, gl, null, null, null, t1);
+  skyboxProgram = new $.SkyboxProgram(null, null, gl, null, null, null, false, t1);
   $.programList.push(skyboxProgram);
   $.ShaderProgram.prototype.fetch$3.call(skyboxProgram, $.shaderCache, $.S($.get$asset()._shader) + "/skybox_vs.txt", $.S($.get$asset()._shader) + "/skybox_fs.txt");
   t1 = $.List_List($, $.Instance);
@@ -11627,7 +11646,7 @@ initAirship: function(gl) {
   var t1, prog, airshipModel, t2, t3;
   t1 = $.List_List($, $.Model);
   t1.$builtinTypeInfo = [$.Model];
-  prog = new $.ShaderProgram(null, gl, null, null, null, t1);
+  prog = new $.ShaderProgram(null, gl, null, null, null, false, t1);
   $.programList.push(prog);
   prog.fetch$3($.shaderCache, $.S($.get$asset()._shader) + "/simple_vs.txt", $.S($.get$asset()._shader) + "/simple_fs.txt");
   airshipModel = $.Model$fromOBJ(gl, prog, $.S($.get$asset()._obj) + "/airship.obj", $);
@@ -11653,7 +11672,7 @@ initAirshipTex: function(gl) {
   var t1, prog, temporaryColor, onDone, objURL, t2, t3, airshipModel, t4, airshipModel2;
   t1 = $.List_List($, $.Model);
   t1.$builtinTypeInfo = [$.Model];
-  prog = new $.TexShaderProgram(null, null, null, gl, null, null, null, t1);
+  prog = new $.TexShaderProgram(null, null, null, gl, null, null, null, false, t1);
   $.programList.push(prog);
   prog.fetch$3($.shaderCache, $.S($.get$asset()._shader) + "/simpleTex_vs.txt", $.S($.get$asset()._shader) + "/simpleTex_fs.txt");
   temporaryColor = [25, 175, 25, 255];
@@ -12158,7 +12177,7 @@ Model_update_closure: {"": "Closure;gameLoop_0",
   }
 },
 
-ShaderProgram: {"": "Object;program@,gl<,a_Position,u_MV,u_P,modelList",
+ShaderProgram: {"": "Object;program@,gl<,a_Position,u_MV,u_P,shaderReady?,modelList",
   initContext$2: function(gl, textureTable) {
   },
   getLocations$0: function() {
@@ -12193,7 +12212,7 @@ ShaderProgram: {"": "Object;program@,gl<,a_Position,u_MV,u_P,modelList",
   },
   drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2;
-    if (this.a_Position == null)
+    if (!this.shaderReady)
       return;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
@@ -12211,13 +12230,16 @@ ShaderProgram: {"": "Object;program@,gl<,a_Position,u_MV,u_P,modelList",
 
 ShaderProgram_fetch_compileShader: {"": "Closure;this_1,shaderCache_2",
   call$3: function(shaderURL, shaderSource, shaderType) {
-    var t1, shader;
+    var t1, shader, infoLog;
     t1 = this.this_1;
     shader = $.createShader$1$x(t1.get$gl(), shaderType);
     $.shaderSource$2$x(t1.get$gl(), shader, shaderSource);
     $.compileShader$1$x(t1.get$gl(), shader);
-    if ($.getShaderParameter$2$x(t1.get$gl(), shader, 35713) == null && $.isContextLost$0$x(t1.get$gl()) !== true) {
-      $.Primitives_printString($.JSString_methods.$add($.JSString_methods.$add($.JSString_methods.$add("compileShader: compilation FAILURE: ", shaderURL), ": "), $.getShaderInfoLog$1$x(t1.get$gl(), shader)));
+    if ($.getShaderParameter$2$x(t1.get$gl(), shader, 35713) == null) {
+      infoLog = $.getShaderInfoLog$1$x(t1.get$gl(), shader);
+      $.Primitives_printString("compileShader: compilation FAILURE: " + $.S(shaderURL) + ": " + $.S(infoLog));
+      if ($.isContextLost$0$x(t1.get$gl()) === true)
+        $.Primitives_printString("compileShader: compilation FAILURE: " + $.S(shaderURL) + ": " + $.S(infoLog) + ": context is lost");
       return;
     }
     t1 = this.shaderCache_2;
@@ -12229,7 +12251,7 @@ ShaderProgram_fetch_compileShader: {"": "Closure;this_1,shaderCache_2",
 
 ShaderProgram_fetch_tryLink: {"": "Closure;box_0,this_3",
   call$0: function() {
-    var t1, t2, p;
+    var t1, t2, p, infoLog;
     t1 = this.box_0;
     if (t1.vertexShader_0 == null || t1.fragmentShader_1 == null)
       return;
@@ -12238,11 +12260,17 @@ ShaderProgram_fetch_tryLink: {"": "Closure;box_0,this_3",
     $.attachShader$2$x(t2.get$gl(), p, t1.vertexShader_0);
     $.attachShader$2$x(t2.get$gl(), p, t1.fragmentShader_1);
     $.linkProgram$1$x(t2.get$gl(), p);
-    if ($.getProgramParameter$2$x(t2.get$gl(), p, 35714) !== true && $.isContextLost$0$x(t2.get$gl()) !== true)
-      $.Primitives_printString($.toString$0($.getProgramInfoLog$1$x(t2.get$gl(), p)));
-    $.Primitives_printString("ShaderProgram: program ready");
+    if ($.getProgramParameter$2$x(t2.get$gl(), p, 35714) == null) {
+      infoLog = $.getProgramInfoLog$1$x(t2.get$gl(), p);
+      $.Primitives_printString("tryLink: shader program link FAILURE: " + $.S(infoLog));
+      if ($.isContextLost$0$x(t2.get$gl()) === true)
+        $.Primitives_printString("tryLink: shader program link FAILURE: " + $.S(infoLog) + ": context is lost");
+      return;
+    }
+    $.Primitives_printString("ShaderProgram: program linked");
     t2.set$program(p);
     t2.getLocations$0();
+    t2.set$shaderReady(true);
   }
 },
 
@@ -12338,7 +12366,7 @@ ShaderProgram_update_closure: {"": "Closure;gameLoop_0",
   }
 },
 
-TexShaderProgram: {"": "ShaderProgram;a_TextureCoord,u_Sampler,program,gl,a_Position,u_MV,u_P,modelList",
+TexShaderProgram: {"": "ShaderProgram;a_TextureCoord,u_Sampler,program,gl,a_Position,u_MV,u_P,shaderReady,modelList",
   initContext$2: function(gl, textureTable) {
     $.IterableMixinWorkaround_forEach(this.modelList, new $.TexShaderProgram_initContext_closure(gl, textureTable));
   },
@@ -12353,6 +12381,8 @@ TexShaderProgram: {"": "ShaderProgram;a_TextureCoord,u_Sampler,program,gl,a_Posi
   },
   drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2;
+    if (!this.shaderReady)
+      return;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
     t2.useProgram$1(t1, this.program);
@@ -12483,7 +12513,7 @@ Model$fromOBJ: function(gl, program, URL, onDone) {
   return t2;
 }}],
 ["skybox", "skybox.dart", , {
-SkyboxProgram: {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,modelList",
+SkyboxProgram: {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,shaderReady,modelList",
   getLocations$0: function() {
     $.ShaderProgram.prototype.getLocations$0.call(this);
     this.u_Skybox = $.getUniformLocation$2$x(this.gl, this.program, "u_Skybox");
