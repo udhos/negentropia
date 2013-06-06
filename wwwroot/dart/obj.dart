@@ -41,13 +41,21 @@ class Obj {
       if (line.startsWith("v ")) {
         // vertex coord
         List<String> v = line.split(' ');
-        if (v.length != 4) {
-          print("OBJ: wrong number of vertex coordinates (${v.length - 1} != 3) at line=$lineNum from url=$url: [$line]");
+        if (v.length == 4) {
+          _vertCoord.add(double.parse(v[1])); // x
+          _vertCoord.add(double.parse(v[2])); // y
+          _vertCoord.add(double.parse(v[3])); // z
           return;
         }
-        _vertCoord.add(double.parse(v[1])); // x
-        _vertCoord.add(double.parse(v[2])); // y
-        _vertCoord.add(double.parse(v[3])); // z
+        if (v.length == 5) {
+          double w = double.parse(v[4]);
+          _vertCoord.add(double.parse(v[1]) / w); // x
+          _vertCoord.add(double.parse(v[2]) / w); // y
+          _vertCoord.add(double.parse(v[3]) / w); // z
+          return;
+        }
+        
+        print("OBJ: wrong number of vertex coordinates: ${v.length - 1} at line=$lineNum from url=$url: [$line]");
         return;
       }
 

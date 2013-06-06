@@ -6291,9 +6291,6 @@ ListIterator: {"": "Object;_iterable,_liblib0$_length,_index,_current",
 },
 
 MappedIterable: {"": "IterableBase;_iterable,_f",
-  _f$1: function(arg0) {
-    return this._f.call$1(arg0);
-  },
   get$iterator: function(_) {
     var t1 = this._iterable;
     return new $.MappedIterator(null, t1.get$iterator(t1), this._f);
@@ -6305,10 +6302,6 @@ MappedIterable: {"": "IterableBase;_iterable,_f",
   get$isEmpty: function(_) {
     var t1 = this._iterable;
     return t1.get$isEmpty(t1);
-  },
-  elementAt$1: function(_, index) {
-    var t1 = this._iterable;
-    return this._f$1(t1.elementAt$1(t1, index));
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterable: function (S, T) { return [T]; }
@@ -7738,21 +7731,6 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
-  elementAt$1: function(_, index) {
-    var t1, t2, t3;
-    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
-      t1 = this._tail;
-      t2 = this._head;
-      t3 = this._table;
-      throw $.wrapException(new $.RangeError("value " + $.S(index) + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
-    }
-    t1 = this._table;
-    t2 = t1.length;
-    t3 = (this._head + index & t2 - 1) >>> 0;
-    if (t3 < 0 || t3 >= t2)
-      throw $.ioore(t3);
-    return t1[t3];
-  },
   add$1: function(_, element) {
     this._add$1(this, element);
   },
@@ -8214,7 +8192,10 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
+    var t1 = this.modifiedObject;
+    if (t1 == null)
+      return "Concurrent modification during iteration.";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
   }
 },
 
@@ -11420,8 +11401,9 @@ initAirshipTex_onModelDone: {"": "Closure;temporaryColor_0",
 
 initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,mod_3,obj_4,mtlURL_5",
   call$1: function(response) {
-    var lib, usemtl, map_Kd, textureURL, t1;
-    lib = $.mtllib_parse(response, this.mtlURL_5);
+    var t1, lib, usemtl, map_Kd, textureURL;
+    t1 = this.mtlURL_5;
+    lib = $.mtllib_parse(response, t1);
     usemtl = this.obj_4.get$usemtl();
     $.Primitives_printString("onMtlLibLoaded: usemtl=" + $.S(usemtl));
     map_Kd = lib.$index(lib, usemtl).get$map_Kd();
@@ -11669,7 +11651,7 @@ initAirship: function(gl) {
 },
 
 initAirshipTex: function(gl) {
-  var t1, prog, temporaryColor, onDone, objURL, t2, t3, airshipModel, t4, airshipModel2;
+  var t1, prog, temporaryColor, onDone, objURL, t2, t3, onDone0, t4, airshipModel, t5, t6, airshipModel2, colonyShipModel;
   t1 = $.List_List($, $.Model);
   t1.$builtinTypeInfo = [$.Model];
   prog = new $.TexShaderProgram(null, null, null, gl, null, null, null, false, t1);
@@ -11683,53 +11665,78 @@ initAirshipTex: function(gl) {
   t2 = $.List_List($, $.Instance);
   t2.$builtinTypeInfo = [$.Instance];
   t3 = $ === onDone;
+  onDone0 = t3 ? null : onDone;
+  t4 = !t3;
+  airshipModel = new $.TexModel(null, null, t1, null, null, null, null, null, t2, prog);
+  airshipModel.Model$fromOBJ$4(gl, prog, objURL, onDone0, t4);
+  t2 = prog.modelList;
+  t2.push(airshipModel);
+  t1 = new $.Vector3(new Float32Array(3));
+  t5 = t1.storage;
+  t6 = t5.length;
+  if (0 >= t6)
+    throw $.ioore(0);
+  t5[0] = 0;
+  if (1 >= t6)
+    throw $.ioore(1);
+  t5[1] = 0;
+  if (2 >= t6)
+    throw $.ioore(2);
+  t5[2] = 0;
+  t5 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
+  t5.setIdentity$0();
+  airshipModel.instanceList.push(new $.TexInstance(airshipModel, t1, 1, t5));
+  onDone0 = new $.initAirshipTex_onModelDone2(temporaryColor);
+  t5 = $.List_List($, $.TextureInfo);
+  t5.$builtinTypeInfo = [$.TextureInfo];
+  t1 = $.List_List($, $.Instance);
+  t1.$builtinTypeInfo = [$.Instance];
+  t6 = $ === onDone0;
+  if (t6)
+    onDone0 = null;
+  airshipModel2 = new $.TexModel(null, null, t5, null, null, null, null, null, t1, prog);
+  airshipModel2.Model$fromOBJ$4(gl, prog, objURL, onDone0, !t6);
+  t2.push(airshipModel2);
+  t1 = new $.Vector3(new Float32Array(3));
+  t5 = t1.storage;
+  t6 = t5.length;
+  if (0 >= t6)
+    throw $.ioore(0);
+  t5[0] = 8;
+  if (1 >= t6)
+    throw $.ioore(1);
+  t5[1] = 0;
+  if (2 >= t6)
+    throw $.ioore(2);
+  t5[2] = 0;
+  t5 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
+  t5.setIdentity$0();
+  airshipModel2.instanceList.push(new $.TexInstance(airshipModel2, t1, 1, t5));
+  t5 = $.S($.get$asset()._obj) + "/Colony Ship Ogame Fleet.obj";
+  t1 = $.List_List($, $.TextureInfo);
+  t1.$builtinTypeInfo = [$.TextureInfo];
+  t6 = $.List_List($, $.Instance);
+  t6.$builtinTypeInfo = [$.Instance];
   if (t3)
     onDone = null;
-  airshipModel = new $.TexModel(null, null, t1, null, null, null, null, null, t2, prog);
-  airshipModel.Model$fromOBJ$4(gl, prog, objURL, onDone, !t3);
-  t1 = prog.modelList;
-  t1.push(airshipModel);
-  t2 = new $.Vector3(new Float32Array(3));
-  t3 = t2.storage;
-  t4 = t3.length;
-  if (0 >= t4)
-    throw $.ioore(0);
-  t3[0] = 0;
-  if (1 >= t4)
-    throw $.ioore(1);
-  t3[1] = 0;
-  if (2 >= t4)
-    throw $.ioore(2);
-  t3[2] = 0;
-  t3 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
-  t3.setIdentity$0();
-  airshipModel.instanceList.push(new $.TexInstance(airshipModel, t2, 1, t3));
-  onDone = new $.initAirshipTex_onModelDone2(temporaryColor);
-  t3 = $.List_List($, $.TextureInfo);
-  t3.$builtinTypeInfo = [$.TextureInfo];
-  t2 = $.List_List($, $.Instance);
-  t2.$builtinTypeInfo = [$.Instance];
-  t4 = $ === onDone;
-  if (t4)
-    onDone = null;
-  airshipModel2 = new $.TexModel(null, null, t3, null, null, null, null, null, t2, prog);
-  airshipModel2.Model$fromOBJ$4(gl, prog, objURL, onDone, !t4);
-  t1.push(airshipModel2);
+  colonyShipModel = new $.TexModel(null, null, t1, null, null, null, null, null, t6, prog);
+  colonyShipModel.Model$fromOBJ$4(gl, prog, t5, onDone, t4);
+  t2.push(colonyShipModel);
   t1 = new $.Vector3(new Float32Array(3));
   t2 = t1.storage;
   t3 = t2.length;
   if (0 >= t3)
     throw $.ioore(0);
-  t2[0] = 8;
+  t2[0] = 0;
   if (1 >= t3)
     throw $.ioore(1);
-  t2[1] = 0;
+  t2[1] = 3;
   if (2 >= t3)
     throw $.ioore(2);
-  t2[2] = 0;
+  t2[2] = -5;
   t2 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t2.setIdentity$0();
-  airshipModel2.instanceList.push(new $.TexInstance(airshipModel2, t1, 1, t2));
+  colonyShipModel.instanceList.push(new $.TexInstance(colonyShipModel, t1, 1, t2));
 },
 
 initContext: function(gl, gameLoop) {
@@ -11851,7 +11858,7 @@ Obj: {"": "Object;indices<,vertCoord<,textCoord<,normCoord,mtllib@,usemtl@",
 
 Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoord_4,_textCoord_5",
   call$1: function(rawLine) {
-    var t1, line, t2, v, t, f, t3, t4, t5, i, ind, index, vIndex, vOffset, t6, t7, ti, tIndex, tOffset, ni, new_usemtl;
+    var t1, line, t2, v, w, t, f, t3, t4, t5, i, ind, index, vIndex, vOffset, t6, t7, ti, tIndex, tOffset, ni, new_usemtl;
     t1 = this.box_0;
     t1.lineNum_1 = $.$add$ns(t1.lineNum_1, 1);
     line = $.trim$0$s(rawLine);
@@ -11865,20 +11872,36 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
     if ($.JSString_methods.startsWith$1(line, "v ")) {
       v = line.split(" ");
       t2 = v.length;
-      if (t2 !== 4) {
-        $.Primitives_printString("OBJ: wrong number of vertex coordinates (" + (t2 - 1) + " != 3) at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
+      if (t2 === 4) {
+        t1 = this._vertCoord_4;
+        if (1 >= t2)
+          throw $.ioore(1);
+        t1.push($.Primitives_parseDouble(v[1], null));
+        if (2 >= v.length)
+          throw $.ioore(2);
+        t1.push($.Primitives_parseDouble(v[2], null));
+        if (3 >= v.length)
+          throw $.ioore(3);
+        t1.push($.Primitives_parseDouble(v[3], null));
         return;
       }
-      t1 = this._vertCoord_4;
-      if (1 >= t2)
-        throw $.ioore(1);
-      t1.push($.Primitives_parseDouble(v[1], null));
-      if (2 >= v.length)
-        throw $.ioore(2);
-      t1.push($.Primitives_parseDouble(v[2], null));
-      if (3 >= v.length)
-        throw $.ioore(3);
-      t1.push($.Primitives_parseDouble(v[3], null));
+      if (t2 === 5) {
+        if (4 >= t2)
+          throw $.ioore(4);
+        w = $.Primitives_parseDouble(v[4], null);
+        t1 = this._vertCoord_4;
+        if (1 >= v.length)
+          throw $.ioore(1);
+        t1.push($.$div$n($.Primitives_parseDouble(v[1], null), w));
+        if (2 >= v.length)
+          throw $.ioore(2);
+        t1.push($.$div$n($.Primitives_parseDouble(v[2], null), w));
+        if (3 >= v.length)
+          throw $.ioore(3);
+        t1.push($.$div$n($.Primitives_parseDouble(v[3], null), w));
+        return;
+      }
+      $.Primitives_printString("OBJ: wrong number of vertex coordinates: " + (t2 - 1) + " at line=" + $.S(t1.lineNum_1) + " from url=" + this.url_2 + ": [" + line + "]");
       return;
     }
     if ($.JSString_methods.startsWith$1(line, "vt ")) {
@@ -14059,6 +14082,8 @@ Vector3: {"": "Object;storage<",
   },
   $div: function(_, scale) {
     var o, t1, t2, t3, t4, t5, t6;
+    if (typeof scale !== "number")
+      throw $.iae(scale);
     o = 1 / scale;
     t1 = this.storage;
     t2 = t1.length;
@@ -14351,6 +14376,8 @@ Vector4: {"": "Object;storage<",
   },
   $div: function(_, scale) {
     var o, t1, t2, t3, t4, t5, t6;
+    if (typeof scale !== "number")
+      throw $.iae(scale);
     o = 1 / scale;
     t1 = this.storage;
     t2 = t1.length;

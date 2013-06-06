@@ -164,7 +164,6 @@ void initAirship(RenderingContext gl) {
   airshipModel.addInstance(airshipInstance);  
 }
 
-
 void initAirshipTex(RenderingContext gl) {
   TexShaderProgram prog = new TexShaderProgram(gl);
   programList.add(prog);
@@ -190,6 +189,10 @@ void initAirshipTex(RenderingContext gl) {
       print("onMtlLibLoaded: usemtl=$usemtl");
       
       String map_Kd = lib[usemtl].map_Kd;
+      if (map_Kd == null) {
+        print("onMtlLibLoaded: material usemtl=$usemtl NOT FOUND on mtllib=$mtlURL");
+        return;
+      }
 
       print("onMtlLibLoaded: map_Kd=$map_Kd");
 
@@ -224,6 +227,11 @@ void initAirshipTex(RenderingContext gl) {
   prog.addModel(airshipModel2);
   TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0);
   airshipModel2.addInstance(airshipInstance2);
+  
+  TexModel colonyShipModel = new TexModel.fromOBJ(gl, prog, "${asset.obj}/Colony Ship Ogame Fleet.obj", onModelDone);
+  prog.addModel(colonyShipModel);
+  TexInstance colonyShipInstance = new TexInstance(colonyShipModel, new Vector3(0.0, 3.0, -5.0), 1.0);
+  colonyShipModel.addInstance(colonyShipInstance);
 }
 
 void initShips(RenderingContext gl) {
