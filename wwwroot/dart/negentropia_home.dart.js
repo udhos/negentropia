@@ -6291,6 +6291,9 @@ ListIterator: {"": "Object;_iterable,_liblib0$_length,_index,_current",
 },
 
 MappedIterable: {"": "IterableBase;_iterable,_f",
+  _f$1: function(arg0) {
+    return this._f.call$1(arg0);
+  },
   get$iterator: function(_) {
     var t1 = this._iterable;
     return new $.MappedIterator(null, t1.get$iterator(t1), this._f);
@@ -6302,6 +6305,10 @@ MappedIterable: {"": "IterableBase;_iterable,_f",
   get$isEmpty: function(_) {
     var t1 = this._iterable;
     return t1.get$isEmpty(t1);
+  },
+  elementAt$1: function(_, index) {
+    var t1 = this._iterable;
+    return this._f$1(t1.elementAt$1(t1, index));
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterable: function (S, T) { return [T]; }
@@ -7731,6 +7738,21 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
+  elementAt$1: function(_, index) {
+    var t1, t2, t3;
+    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
+      t1 = this._tail;
+      t2 = this._head;
+      t3 = this._table;
+      throw $.wrapException(new $.RangeError("value " + $.S(index) + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
+    }
+    t1 = this._table;
+    t2 = t1.length;
+    t3 = (this._head + index & t2 - 1) >>> 0;
+    if (t3 < 0 || t3 >= t2)
+      throw $.ioore(t3);
+    return t1[t3];
+  },
   add$1: function(_, element) {
     this._add$1(this, element);
   },
@@ -8192,10 +8214,7 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    var t1 = this.modifiedObject;
-    if (t1 == null)
-      return "Concurrent modification during iteration.";
-    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
   }
 },
 
@@ -11401,14 +11420,19 @@ initAirshipTex_onModelDone: {"": "Closure;temporaryColor_0",
 
 initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,mod_3,obj_4,mtlURL_5",
   call$1: function(response) {
-    var t1, lib, usemtl, map_Kd, textureURL;
+    var t1, lib, usemtl, mtl, texFile, textureURL;
     t1 = this.mtlURL_5;
     lib = $.mtllib_parse(response, t1);
     usemtl = this.obj_4.get$usemtl();
     $.Primitives_printString("onMtlLibLoaded: usemtl=" + $.S(usemtl));
-    map_Kd = lib.$index(lib, usemtl).get$map_Kd();
-    $.Primitives_printString("onMtlLibLoaded: map_Kd=" + map_Kd);
-    textureURL = $.S($.get$asset()._texture) + "/" + map_Kd;
+    mtl = lib.$index(lib, usemtl);
+    if (mtl == null) {
+      $.Primitives_printString("onMtlLibLoaded: material usemtl=" + $.S(usemtl) + " NOT FOUND on mtllib=" + t1);
+      return;
+    }
+    texFile = mtl.get$map_Kd();
+    $.Primitives_printString("onMtlLibLoaded: map_Kd=" + texFile);
+    textureURL = $.S($.get$asset()._texture) + "/" + texFile;
     $.Primitives_printString("onMtlLibLoaded: textureURL=" + textureURL);
     t1 = this.mod_3;
     t1.addTexture$1($.TextureInfo$(this.gl_2, $.textureTable, 0, t1.get$vertexIndexLength(), textureURL, this.temporaryColor_1));
@@ -11858,7 +11882,7 @@ Obj: {"": "Object;indices<,vertCoord<,textCoord<,normCoord,mtllib@,usemtl@",
 
 Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoord_4,_textCoord_5",
   call$1: function(rawLine) {
-    var t1, line, t2, v, w, t, f, t3, t4, t5, i, ind, index, vIndex, vOffset, t6, t7, ti, tIndex, tOffset, ni, new_usemtl;
+    var t1, line, t2, v, w, t, f, t3, t4, t5, i, ind, index, vIndex, vOffset, t6, t7, ti, tIndex, tOffset, ni, new_mtllib, new_usemtl;
     t1 = this.box_0;
     t1.lineNum_1 = $.$add$ns(t1.lineNum_1, 1);
     line = $.trim$0$s(rawLine);
@@ -11989,7 +12013,12 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
       return;
     }
     if ($.JSString_methods.startsWith$1(line, "mtllib ")) {
-      this.this_1.set$mtllib($.JSString_methods.substring$1(line, $.get$Obj_prefix_mtllib_len()));
+      new_mtllib = $.JSString_methods.substring$1(line, $.get$Obj_prefix_mtllib_len());
+      t1 = this.this_1;
+      t2 = t1.get$mtllib();
+      if (t2 != null)
+        $.Primitives_printString("OBJ: mtllib redefinition: from mtllib=" + $.S(t2) + " to mtllib=" + new_mtllib);
+      t1.set$mtllib(new_mtllib);
       return;
     }
     if ($.JSString_methods.startsWith$1(line, "usemtl ")) {

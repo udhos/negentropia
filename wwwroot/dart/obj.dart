@@ -129,7 +129,11 @@ class Obj {
       }
       
       if (line.startsWith(prefix_mtllib)) {
-        mtllib = line.substring(prefix_mtllib_len);
+        String new_mtllib = line.substring(prefix_mtllib_len);
+        if (mtllib != null) {
+          print("OBJ: mtllib redefinition: from mtllib=$mtllib to mtllib=$new_mtllib");
+        }
+        mtllib = new_mtllib;
         return;
       }
 

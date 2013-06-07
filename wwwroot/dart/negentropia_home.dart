@@ -183,20 +183,29 @@ void initAirshipTex(RenderingContext gl) {
     void onMtlLibLoaded(String response) {
       
       Map<String,Material> lib = mtllib_parse(response, mtlURL);
+      assert(lib != null);
+      /*
+      if (lib == null) {
+        print("onMtlLibLoaded: mtllib_parse() failure: mtllib=$mtlURL");
+        return;
+      }
+      */
       
       String usemtl = obj.usemtl;
       
       print("onMtlLibLoaded: usemtl=$usemtl");
       
-      String map_Kd = lib[usemtl].map_Kd;
-      if (map_Kd == null) {
+      Material mtl = lib[usemtl];
+      if (mtl == null) {
         print("onMtlLibLoaded: material usemtl=$usemtl NOT FOUND on mtllib=$mtlURL");
         return;
       }
+      
+      String texFile = mtl.map_Kd;
 
-      print("onMtlLibLoaded: map_Kd=$map_Kd");
+      print("onMtlLibLoaded: map_Kd=$texFile");
 
-      String textureURL = "${asset.texture}/$map_Kd";
+      String textureURL = "${asset.texture}/$texFile";
 
       print("onMtlLibLoaded: textureURL=$textureURL");
       
