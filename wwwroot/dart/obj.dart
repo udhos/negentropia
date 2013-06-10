@@ -1,11 +1,18 @@
 library obj;
 
+class _Object {
+  String name;
+  _Object(this.name);
+}
+
 class Obj {
-  
+    
   static final String prefix_mtllib = "mtllib ";
   static final String prefix_usemtl = "usemtl ";
   static final int prefix_mtllib_len = prefix_mtllib.length;
   static final int prefix_usemtl_len = prefix_usemtl.length;
+  
+  Map<String,_Object> _objTable = new Map<String,_Object>();  
   
   List<int> indices = new List<int>();
   List<double> vertCoord = new List<double>();   
@@ -13,15 +20,15 @@ class Obj {
   List<double> normCoord = new List<double>();
   String mtllib;
   String usemtl;
-
+  
   Obj.fromString(String url, String str) {
   
     Map<String,int> indexTable = new Map<String,int>();
     List<double> _vertCoord = new List<double>();
     List<double> _textCoord = new List<double>();
     int indexCounter = 0;
-
     int lineNum = 0;
+    _Object currObj;
     
     void parseLine(String rawLine) {
       ++lineNum;
@@ -35,6 +42,33 @@ class Obj {
       }
       
       if (line[0] == '#') {
+        return;
+      }
+      
+      if (line.startsWith(prefix_mtllib)) {
+        String new_mtllib = line.substring(prefix_mtllib_len);
+        if (mtllib != null) {
+          print("OBJ: mtllib redefinition: from mtllib=$mtllib to mtllib=$new_mtllib");
+        }
+        mtllib = new_mtllib;
+        return;
+      }      
+      
+      if (line.startsWith('o ')) {
+        String objName = line.substring(2);
+        currObj = _objTable[objName];
+        if (currObj == null) {
+          currObj = new _Object(objName);
+          _objTable[objName] = currObj;
+        }
+        else {
+          print("OBJ: redefining object $objName at line=$lineNum from url=$url: [$line]");          
+        }
+        return;
+      }
+      
+      if (currObj == null) {
+        print("OBJ: non-object pattern at line=$lineNum from url=$url: [$line]");
         return;
       }
 
@@ -128,15 +162,6 @@ class Obj {
         return;
       }
       
-      if (line.startsWith(prefix_mtllib)) {
-        String new_mtllib = line.substring(prefix_mtllib_len);
-        if (mtllib != null) {
-          print("OBJ: mtllib redefinition: from mtllib=$mtllib to mtllib=$new_mtllib");
-        }
-        mtllib = new_mtllib;
-        return;
-      }
-
       if (line.startsWith(prefix_usemtl)) {
         String new_usemtl = line.substring(prefix_usemtl_len);
         if (usemtl != null) {
