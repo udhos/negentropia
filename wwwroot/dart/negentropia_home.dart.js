@@ -6326,7 +6326,7 @@ Cookie_getCookie: function($name) {
   return;
 }}],
 ["dart._collection.dev", "dart:_collection-dev", , {
-ListIterator: {"": "Object;_iterable,_liblib1$_length,_index,_current",
+ListIterator: {"": "Object;_iterable,_liblib1$_length,_index,_current<",
   get$current: function() {
     return this._current;
   },
@@ -6399,7 +6399,7 @@ MappedIterable: {"": "IterableBase;_iterable,_f",
   $asIterable: function (S, T) { return [T]; }
 },
 
-MappedIterator: {"": "Iterator;_current,_iterator,_f",
+MappedIterator: {"": "Iterator;_current<,_iterator,_f",
   _f$1: function(arg0) {
     return this._f.call$1(arg0);
   },
@@ -6514,8 +6514,8 @@ Arrays_indexOf: function(a, element, startIndex, endIndex) {
 
 IterableMixinWorkaround_forEach: function(iterable, f) {
   var t1;
-  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();)
-    f.call$1(t1._current);
+  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0() === true;)
+    f.call$1(t1.get$_current());
 },
 
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
@@ -7067,16 +7067,6 @@ HashMapKeyIterable: {"": "IterableBase;_map",
     var t1 = this._map;
     return new $.HashMapKeyIterator(t1, t1._computeKeys$0(), 0, null);
   },
-  forEach$1: function(_, f) {
-    var t1, keys, $length, i;
-    t1 = this._map;
-    keys = t1._computeKeys$0();
-    for ($length = keys.length, i = 0; i < $length; ++i) {
-      f.call$1(keys[i]);
-      if (keys !== t1._keys)
-        throw $.wrapException(new $.ConcurrentModificationError(t1));
-    }
-  },
   $asIterableBase: null,
   $asIterable: null
 },
@@ -7330,6 +7320,9 @@ HashMap: {"": "Object;_length,_strings,_nums,_rest,_keys",
       this._keys = null;
       return bucket.splice(index, 2)[1];
     }
+  },
+  get$remove: function(_receiver) {
+    return new $.BoundClosure$i1(this, "remove$1", _receiver);
   },
   forEach$1: function(_, action) {
     var keys, $length, i, key;
@@ -11981,7 +11974,7 @@ Obj: {"": "Object;_objTable<,vertCoord<,textCoord<,normCoord,mtllib@",
     return t1._f$1(t2.get$first(t2)).get$usemtl();
   },
   Obj$fromString$2: function(url, str, box_0) {
-    var indexTable, _vertCoord, _textCoord, emptyList, t1, $arguments, arguments0, t2, t3;
+    var indexTable, _vertCoord, _textCoord, t1, $arguments, arguments0, t2, t3;
     indexTable = new $.HashMap(0, null, null, null, null);
     indexTable.$builtinTypeInfo = [$.JSString, $.JSInt];
     _vertCoord = $.List_List($, $.JSDouble);
@@ -11992,8 +11985,6 @@ Obj: {"": "Object;_objTable<,vertCoord<,textCoord<,normCoord,mtllib@",
     box_0.lineNum_1 = 0;
     box_0.currObj_2 = null;
     $.IterableMixinWorkaround_forEach($.split$1$s(str, "\n"), new $.Obj$fromString_closure(new $.Obj$fromString_parseLine(box_0, this, url, indexTable, _vertCoord, _textCoord)));
-    emptyList = $.List_List($, $.JSString);
-    emptyList.$builtinTypeInfo = [$.JSString];
     t1 = this._objTable;
     $arguments = t1.$asHashMap;
     arguments0 = $.getRuntimeTypeInfo(t1);
@@ -12004,8 +11995,23 @@ Obj: {"": "Object;_objTable<,vertCoord<,textCoord<,normCoord,mtllib@",
     t2 = $arguments == null ? null : $arguments[0];
     t3 = new $.HashMapKeyIterable(t1);
     t3.$builtinTypeInfo = [t2];
-    t3.forEach$1(t3, new $.Obj$fromString_closure0(this, url, emptyList));
-    $.IterableMixinWorkaround_forEach(emptyList, new $.Obj$fromString_closure1(this));
+    $arguments = t3.$asIterableBase;
+    arguments0 = $.getRuntimeTypeInfo(t3);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    t3 = new $.WhereIterable(t3, new $.Obj$fromString_closure0(this, url));
+    t3.$builtinTypeInfo = [t2];
+    $arguments = t3.$asIterableBase;
+    arguments0 = $.getRuntimeTypeInfo(t3);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t2 = $arguments == null ? null : $arguments[0];
+    $.IterableMixinWorkaround_forEach($.List_List$from(t3, true, t2), t1.get$remove(t1));
     $arguments = t1.$asHashMap;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -12216,20 +12222,14 @@ Obj$fromString_closure: {"": "Closure;parseLine_6",
   }
 },
 
-Obj$fromString_closure0: {"": "Closure;this_7,url_8,emptyList_9",
+Obj$fromString_closure0: {"": "Closure;this_7,url_8",
   call$1: function($name) {
     var t1 = this.this_7.get$_objTable();
     if ($.get$isEmpty$asx(t1.$index(t1, $name).get$indices()) === true) {
-      this.emptyList_9.push($name);
       $.Primitives_printString("OBJ: deleting empty object=" + $.S($name) + " loaded from url=" + this.url_8);
+      return true;
     }
-  }
-},
-
-Obj$fromString_closure1: {"": "Closure;this_10",
-  call$1: function($name) {
-    var t1 = this.this_10.get$_objTable();
-    return t1.remove$1(t1, $name);
+    return false;
   }
 },
 

@@ -207,6 +207,7 @@ class Obj {
     List<String> lines = str.split('\n');
     lines.forEach((String line) => parseLine(line));
     
+    /*
     List<String> emptyList = new List<String>();
     _objTable.keys.forEach((String name) { 
       if (_objTable[name].indices.isEmpty) {
@@ -215,6 +216,17 @@ class Obj {
       } 
     });
     emptyList.forEach((String name) => _objTable.remove(name));
+    */
+    _objTable.keys
+      .where((name) { // where: filter keys
+      if (_objTable[name].indices.isEmpty) {
+        print("OBJ: deleting empty object=$name loaded from url=$url");
+        return true;
+      }       
+      return false;
+    })
+      .toList() // create a copy to avoid concurrent modifications
+      .forEach(_objTable.remove); // remove selected keys
     
     print("Obj.fromString: objects = ${_objTable.keys.length}");
     print("Obj.fromString: vertCoord.length = ${vertCoord.length}");
