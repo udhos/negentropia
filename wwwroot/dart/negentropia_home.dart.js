@@ -12224,12 +12224,12 @@ Obj$fromString_closure: {"": "Closure;parseLine_6",
 
 Obj$fromString_closure0: {"": "Closure;this_7,url_8",
   call$1: function($name) {
-    var t1 = this.this_7.get$_objTable();
-    if ($.get$isEmpty$asx(t1.$index(t1, $name).get$indices()) === true) {
+    var t1, empty;
+    t1 = this.this_7.get$_objTable();
+    empty = $.get$isEmpty$asx(t1.$index(t1, $name).get$indices());
+    if (empty === true)
       $.Primitives_printString("OBJ: deleting empty object=" + $.S($name) + " loaded from url=" + this.url_8);
-      return true;
-    }
-    return false;
+    return empty;
   }
 },
 

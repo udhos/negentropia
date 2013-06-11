@@ -219,12 +219,12 @@ class Obj {
     */
     _objTable.keys
       .where((name) { // where: filter keys
-      if (_objTable[name].indices.isEmpty) {
-        print("OBJ: deleting empty object=$name loaded from url=$url");
-        return true;
-      }       
-      return false;
-    })
+        bool empty = _objTable[name].indices.isEmpty;
+        if (empty) {
+          print("OBJ: deleting empty object=$name loaded from url=$url");
+        }       
+        return empty;
+      })
       .toList() // create a copy to avoid concurrent modifications
       .forEach(_objTable.remove); // remove selected keys
     
