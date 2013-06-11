@@ -1,7 +1,11 @@
 library obj;
 
 class _Object {
-  String name;
+  String    name;
+  bool      smooth;
+  String    usemtl;
+  List<int> indices = new List<int>();
+  
   _Object(this.name);
 }
 
@@ -12,14 +16,24 @@ class Obj {
   static final int prefix_mtllib_len = prefix_mtllib.length;
   static final int prefix_usemtl_len = prefix_usemtl.length;
   
-  Map<String,_Object> _objTable = new Map<String,_Object>();  
+  Map<String,_Object> _objTable = new Map<String,_Object>();
   
-  List<int> indices = new List<int>();
+  List<int> get indices {
+    if (_objTable.isEmpty)
+      return null;
+    return _objTable.values.first.indices;
+  }
+  
+  String get usemtl {
+    if (_objTable.isEmpty)
+      return null;
+    return _objTable.values.first.usemtl;
+  }
+  
   List<double> vertCoord = new List<double>();   
   List<double> textCoord = new List<double>();
   List<double> normCoord = new List<double>();
   String mtllib;
-  String usemtl;
   
   Obj.fromString(String url, String str) {
   
@@ -72,6 +86,17 @@ class Obj {
         return;
       }
 
+      if (line.startsWith('s ')) {
+        String smooth = line.substring(2);
+        if (smooth == "0" || smooth.toLowerCase().startsWith("f")) {
+          currObj.smooth = false;
+        }
+        else {
+          currObj.smooth = true;
+        }
+        return;
+      }
+      
       if (line.startsWith("v ")) {
         // vertex coord
         List<String> v = line.split(' ');
@@ -123,11 +148,14 @@ class Obj {
           // known unified index?
           int index = indexTable[ind];
           if (index != null) {
-            indices.add(index);
+            //indices.add(index);
+            currObj.indices.add(index);
             continue;
           }
           
           List<String> v = ind.split('/');
+          
+          // coord index
           String vi = v[0];
           int vIndex = int.parse(vi) - 1;
           int vOffset = 3 * vIndex; 
@@ -151,11 +179,12 @@ class Obj {
             String ni = v[2];
             if (ni != null && !ni.isEmpty) {
               int nIndex = int.parse(ni) - 1;
+              // FIXME WRITEME
             }
           }
           
           // add unified index
-          indices.add(indexCounter);
+          currObj.indices.add(indexCounter);
           indexTable[ind] = indexCounter;      
           ++indexCounter;
         }
@@ -164,10 +193,11 @@ class Obj {
       
       if (line.startsWith(prefix_usemtl)) {
         String new_usemtl = line.substring(prefix_usemtl_len);
-        if (usemtl != null) {
-          print("OBJ: usemtl redefinition: from usemtl=$usemtl to usemtl=$new_usemtl");          
+        if (currObj.usemtl != null) {
+          print("OBJ: object=${currObj.name} usemtl redefinition: from usemtl=${currObj.usemtl} to usemtl=$new_usemtl");          
         }
-        usemtl = new_usemtl;
+        //usemtl = new_usemtl;
+        currObj.usemtl = new_usemtl;
         return;
       }
 
@@ -177,12 +207,22 @@ class Obj {
     List<String> lines = str.split('\n');
     lines.forEach((String line) => parseLine(line));
     
-    print("Obj.fromString: indices.length = ${indices.length}");
+    List<String> emptyList = new List<String>();
+    _objTable.keys.forEach((String name) { 
+      if (_objTable[name].indices.isEmpty) {
+        emptyList.add(name);
+        print("OBJ: deleting empty object=$name loaded from url=$url");
+      } 
+    });
+    emptyList.forEach((String name) => _objTable.remove(name));
+    
+    print("Obj.fromString: objects = ${_objTable.keys.length}");
     print("Obj.fromString: vertCoord.length = ${vertCoord.length}");
     print("Obj.fromString: textCoord.length = ${textCoord.length}");
     print("Obj.fromString: normCoord.length = ${normCoord.length}");
     print("Obj.fromString: mtllib = $mtllib");
-    print("Obj.fromString: usemtl = $usemtl");
+    print("Obj.fromString: first=${_objTable.values.first.name} indices.length = ${indices.length}");
+    print("Obj.fromString: first=${_objTable.values.first.name} usemtl = $usemtl");
   }
 }
 
