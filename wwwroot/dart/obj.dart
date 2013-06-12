@@ -240,21 +240,71 @@ class Obj {
 
 class Material {
 
+  
   static final String prefix_newmtl = "newmtl ";
   static final String prefix_map_Kd = "map_Kd ";
   static final int prefix_newmtl_len = prefix_newmtl.length;
   static final int prefix_map_Kd_len = prefix_map_Kd.length;
-
+  
+  String name;
   String map_Kd;
-  Material(this.map_Kd);
+  List<double> Kd = new List<double>(3);
+  Material(this.name);
 }
 
+typedef void field_parser(String field, String param, String line, int lineNum, String url);
+
 Map<String,Material> mtllib_parse(String str, String url) {
-  
+
   Map<String,Material> lib = new Map<String,Material>();
-  String currMaterialName;
+  Material currMaterial;
+
+  void _parse_newmtl(String field, String param, String line, int lineNum, String url) {
+    String mtl = param;
+    currMaterial = lib[mtl];
+    if (currMaterial == null) {
+      currMaterial = new Material(mtl);
+      lib[mtl] = currMaterial;
+    }
+  }
+
+  void _parse_map_Kd(String field, String param, String line, int lineNum, String url) {
+    String map_Kd = param;
+    if (currMaterial == null) {
+      print("mtllib_parse: url=$url: line=$lineNum: map_Kd=$map_Kd found for undefined material: [$line]");
+      return;
+    }
+    currMaterial.map_Kd = map_Kd;
+  }
+
+  void _parse_Kd(String field, String param, String line, int lineNum, String url) { 
+    String Kd = param;
+    if (currMaterial == null) {
+      print("mtllib_parse: url=$url: line=$lineNum: Kd=$Kd found for undefined material: [$line]");
+      return;
+    }
+    List<String> rgb = Kd.split(' ');
+    currMaterial.Kd[0] = double.parse(rgb[0]);
+    currMaterial.Kd[1] = double.parse(rgb[1]);
+    currMaterial.Kd[2] = double.parse(rgb[2]);
+  }
+
+  void _parse_noop(String field, String param, String line, int lineNum, String url) {
+  }
+
   int lineNum = 0;
-  
+  Map<String,field_parser> parserTable = {
+    "newmtl": _parse_newmtl,
+    "map_Kd": _parse_map_Kd,
+    "Kd":     _parse_Kd,
+    "Ns":     _parse_noop,
+    "Ka":     _parse_noop,
+    "Ks":     _parse_noop,
+    "Ni":     _parse_noop,
+    "d":      _parse_noop,
+    "illum":  _parse_noop
+  };
+
   void parseLine(String rawLine) {
     ++lineNum;
     
@@ -268,29 +318,53 @@ Map<String,Material> mtllib_parse(String str, String url) {
       return;
     }
     
+    int paramIndex = line.indexOf(' ');
+    if (paramIndex > 0) {
+      String field = line.substring(0, paramIndex);
+      String param = line.substring(paramIndex).trim();
+      field_parser parser = parserTable[field];
+      if (parser == null) {
+        print("mtllib_parse: unknown field=[$field] on line=$lineNum from url=$url: [$line]");
+      }
+      else {
+        parser(field, param, line, lineNum, url);
+        return;
+      }
+    }
+    
+    /*
     if (line.startsWith(Material.prefix_newmtl)) {
-      currMaterialName = line.substring(Material.prefix_newmtl_len);
+      String name = line.substring(Material.prefix_newmtl_len);
+      currMaterial = lib[name];
+      if (currMaterial == null) {
+        currMaterial = new Material(name);
+        lib[name] = currMaterial;
+      }
       return;
     }
 
     if (line.startsWith(Material.prefix_map_Kd)) {
       String map_Kd = line.substring(Material.prefix_map_Kd_len);
       
-      if (currMaterialName == null) {
+      if (currMaterial == null) {
         print("mtllib_parse: url=$url: line=$lineNum: map_Kd=$map_Kd found for undefined material: [$line]");
         return;
       }     
       
-      lib[currMaterialName] = new Material(map_Kd);
-            
+      currMaterial.map_Kd = map_Kd;            
       return;
     }
+    */
+    //print("mtllib_parse: url=$url: line=$lineNum: unknown pattern: [$line]");    
     
-    print("mtllib_parse: url=$url: line=$lineNum: unknown pattern: [$line]");    
   }
   
   List<String> lines = str.split('\n');
   lines.forEach((String line) => parseLine(line));
+  
+  print("mtllib_parse: url=$url: materials: ${lib.length}");
+  
+  //lib.forEach((name, material) { print("mtllib_parse: url=$url material=$name: Kd=${material.Kd} map_Kd=${material.map_Kd}"); });
 
   return lib;
 }

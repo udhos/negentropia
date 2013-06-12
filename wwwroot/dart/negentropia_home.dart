@@ -173,6 +173,7 @@ void initAirshipTex(RenderingContext gl) {
   
   void onModelDone(RenderingContext gl, TexModel mod, Obj obj, String oURL) {
     
+    print("initAirshipTex: onModelDone: $oURL");
     if (obj.mtllib == null) {
       print("initAirshipTex: onModelDone: $oURL: mtllib NOT FOUND");
       return;

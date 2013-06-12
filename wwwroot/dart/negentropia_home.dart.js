@@ -11502,6 +11502,7 @@ initSquares_closure: {"": "Closure;squareProgram2_0",
 initAirshipTex_onModelDone: {"": "Closure;temporaryColor_0",
   call$4: function(gl, mod, obj, oURL) {
     var mtlURL;
+    $.Primitives_printString("initAirshipTex: onModelDone: " + $.S(oURL));
     if (obj.get$mtllib() == null) {
       $.Primitives_printString("initAirshipTex: onModelDone: " + $.S(oURL) + ": mtllib NOT FOUND");
       return;
@@ -11524,8 +11525,8 @@ initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,m
       return;
     }
     texFile = mtl.get$map_Kd();
-    $.Primitives_printString("onMtlLibLoaded: map_Kd=" + texFile);
-    textureURL = $.S($.get$asset()._texture) + "/" + texFile;
+    $.Primitives_printString("onMtlLibLoaded: map_Kd=" + $.S(texFile));
+    textureURL = $.S($.get$asset()._texture) + "/" + $.S(texFile);
     $.Primitives_printString("onMtlLibLoaded: textureURL=" + textureURL);
     t1 = this.mod_3;
     t1.addTexture$1($.TextureInfo$(this.gl_2, $.textureTable, 0, t1.get$vertexIndexLength(), textureURL, this.temporaryColor_1));
@@ -12233,11 +12234,75 @@ Obj$fromString_closure0: {"": "Closure;this_7,url_8",
   }
 },
 
-Material: {"": "Object;map_Kd<"},
+Material: {"": "Object;name>,map_Kd@,Kd<"},
 
-mtllib_parse_parseLine: {"": "Closure;box_0,url_1,lib_2",
+mtllib_parse__parse_newmtl: {"": "Closure;box_0,lib_1",
+  call$5: function(field, param, line, lineNum, url) {
+    var t1, t2, t3;
+    t1 = this.lib_1;
+    t2 = this.box_0;
+    t2.currMaterial_0 = t1.$index(t1, param);
+    if (t2.currMaterial_0 == null) {
+      t3 = $.List_List(3, $.JSDouble);
+      t3.$builtinTypeInfo = [$.JSDouble];
+      t2.currMaterial_0 = new $.Material(param, null, t3);
+      t1.$indexSet(t1, param, t2.currMaterial_0);
+    }
+  }
+},
+
+mtllib_parse__parse_map_Kd: {"": "Closure;box_0",
+  call$5: function(field, param, line, lineNum, url) {
+    var t1 = this.box_0.currMaterial_0;
+    if (t1 == null) {
+      $.Primitives_printString("mtllib_parse: url=" + $.S(url) + ": line=" + $.S(lineNum) + ": map_Kd=" + $.S(param) + " found for undefined material: [" + $.S(line) + "]");
+      return;
+    }
+    t1.set$map_Kd(param);
+  }
+},
+
+mtllib_parse__parse_Kd: {"": "Closure;box_0",
+  call$5: function(field, param, line, lineNum, url) {
+    var t1, rgb, t2, t3;
+    t1 = this.box_0;
+    if (t1.currMaterial_0 == null) {
+      $.Primitives_printString("mtllib_parse: url=" + $.S(url) + ": line=" + $.S(lineNum) + ": Kd=" + $.S(param) + " found for undefined material: [" + $.S(line) + "]");
+      return;
+    }
+    rgb = $.split$1$s(param, " ");
+    t2 = t1.currMaterial_0.get$Kd();
+    if (0 >= rgb.length)
+      throw $.ioore(0);
+    t3 = $.Primitives_parseDouble(rgb[0], null);
+    if (0 >= t2.length)
+      throw $.ioore(0);
+    t2[0] = t3;
+    t3 = t1.currMaterial_0.get$Kd();
+    if (1 >= rgb.length)
+      throw $.ioore(1);
+    t2 = $.Primitives_parseDouble(rgb[1], null);
+    if (1 >= t3.length)
+      throw $.ioore(1);
+    t3[1] = t2;
+    t1 = t1.currMaterial_0.get$Kd();
+    if (2 >= rgb.length)
+      throw $.ioore(2);
+    t2 = $.Primitives_parseDouble(rgb[2], null);
+    if (2 >= t1.length)
+      throw $.ioore(2);
+    t1[2] = t2;
+  }
+},
+
+mtllib_parse__parse_noop: {"": "Closure;",
+  call$5: function(field, param, line, lineNum, url) {
+  }
+},
+
+mtllib_parse_parseLine: {"": "Closure;box_0,url_2,parserTable_3",
   call$1: function(rawLine) {
-    var t1, line, t2, map_Kd;
+    var t1, line, t2, paramIndex, field, param, parser;
     t1 = this.box_0;
     t1.lineNum_1 = $.$add$ns(t1.lineNum_1, 1);
     line = $.trim$0$s(rawLine);
@@ -12248,28 +12313,27 @@ mtllib_parse_parseLine: {"": "Closure;box_0,url_1,lib_2",
       throw $.ioore(0);
     if (line[0] === "#")
       return;
-    if ($.JSString_methods.startsWith$1(line, "newmtl ")) {
-      t1.currMaterialName_0 = $.JSString_methods.substring$1(line, $.get$Material_prefix_newmtl_len());
-      return;
-    }
-    if ($.JSString_methods.startsWith$1(line, "map_Kd ")) {
-      map_Kd = $.JSString_methods.substring$1(line, $.get$Material_prefix_map_Kd_len());
-      t2 = t1.currMaterialName_0;
-      if (t2 == null) {
-        $.Primitives_printString("mtllib_parse: url=" + this.url_1 + ": line=" + $.S(t1.lineNum_1) + ": map_Kd=" + map_Kd + " found for undefined material: [" + line + "]");
+    paramIndex = $.JSString_methods.indexOf$1(line, " ");
+    if (paramIndex > 0) {
+      field = $.JSString_methods.substring$2(line, 0, paramIndex);
+      param = $.JSString_methods.trim$0($.JSString_methods.substring$1(line, paramIndex));
+      t2 = this.parserTable_3;
+      parser = t2.$index(t2, field);
+      t1 = t1.lineNum_1;
+      t2 = this.url_2;
+      if (parser == null)
+        $.Primitives_printString("mtllib_parse: unknown field=[" + field + "] on line=" + $.S(t1) + " from url=" + t2 + ": [" + line + "]");
+      else {
+        parser.call$5(field, param, line, t1, t2);
         return;
       }
-      t1 = this.lib_2;
-      t1.$indexSet(t1, t2, new $.Material(map_Kd));
-      return;
     }
-    $.Primitives_printString("mtllib_parse: url=" + this.url_1 + ": line=" + $.S(t1.lineNum_1) + ": unknown pattern: [" + line + "]");
   }
 },
 
-mtllib_parse_closure: {"": "Closure;parseLine_3",
+mtllib_parse_closure: {"": "Closure;parseLine_4",
   call$1: function(line) {
-    return this.parseLine_3.call$1(line);
+    return this.parseLine_4.call$1(line);
   }
 },
 
@@ -12289,13 +12353,16 @@ Obj$fromString: function(url, str) {
 },
 
 mtllib_parse: function(str, url) {
-  var t1, lib;
+  var t1, lib, t2, parserTable;
   t1 = {};
   lib = new $.HashMap(0, null, null, null, null);
   lib.$builtinTypeInfo = [$.JSString, $.Material];
-  t1.currMaterialName_0 = null;
+  t1.currMaterial_0 = null;
+  t2 = new $.mtllib_parse__parse_noop();
   t1.lineNum_1 = 0;
-  $.IterableMixinWorkaround_forEach($.split$1$s(str, "\n"), new $.mtllib_parse_closure(new $.mtllib_parse_parseLine(t1, url, lib)));
+  parserTable = $.makeLiteralMap(["newmtl", new $.mtllib_parse__parse_newmtl(t1, lib), "map_Kd", new $.mtllib_parse__parse_map_Kd(t1), "Kd", new $.mtllib_parse__parse_Kd(t1), "Ns", t2, "Ka", t2, "Ks", t2, "Ni", t2, "d", t2, "illum", t2]);
+  $.IterableMixinWorkaround_forEach($.split$1$s(str, "\n"), new $.mtllib_parse_closure(new $.mtllib_parse_parseLine(t1, url, parserTable)));
+  $.Primitives_printString("mtllib_parse: url=" + url + ": materials: " + $.S(lib._length));
   return lib;
 }}],
 ["shader", "shader.dart", , {
@@ -14678,7 +14745,6 @@ $.JSArray_methods = $.JSArray.prototype;
 $.C_NullThrownError = new $.NullThrownError();
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
 $.Window_methods = $.Window.prototype;
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.NodeList_methods = $.NodeList.prototype;
 $.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
@@ -14686,6 +14752,7 @@ $.EventStreamProvider_success = new $.EventStreamProvider("success");
 $.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.JSNull_methods = $.JSNull.prototype;
 $.JSInt_methods = $.JSInt.prototype;
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
@@ -15163,12 +15230,6 @@ Isolate.$lazy($, "prefix_mtllib_len", "Obj_prefix_mtllib_len", "get$Obj_prefix_m
   return 7;
 });
 Isolate.$lazy($, "prefix_usemtl_len", "Obj_prefix_usemtl_len", "get$Obj_prefix_usemtl_len", function() {
-  return 7;
-});
-Isolate.$lazy($, "prefix_newmtl_len", "Material_prefix_newmtl_len", "get$Material_prefix_newmtl_len", function() {
-  return 7;
-});
-Isolate.$lazy($, "prefix_map_Kd_len", "Material_prefix_map_Kd_len", "get$Material_prefix_map_Kd_len", function() {
   return 7;
 });
 // Native classes
