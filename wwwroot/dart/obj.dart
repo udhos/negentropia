@@ -292,8 +292,7 @@ Map<String,Material> mtllib_parse(String str, String url) {
   void _parse_noop(String field, String param, String line, int lineNum, String url) {
   }
 
-  int lineNum = 0;
-  Map<String,field_parser> parserTable = {
+  final Map<String,field_parser> parserTable = {
     "newmtl": _parse_newmtl,
     "map_Kd": _parse_map_Kd,
     "Kd":     _parse_Kd,
@@ -305,6 +304,8 @@ Map<String,Material> mtllib_parse(String str, String url) {
     "illum":  _parse_noop
   };
 
+  int lineNum = 0;
+  
   void parseLine(String rawLine) {
     ++lineNum;
     
