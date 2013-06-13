@@ -31,6 +31,10 @@ class SkyboxProgram extends ShaderProgram {
   }
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
+
+    if (!shaderReady) {
+      return;
+    }
     
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);

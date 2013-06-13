@@ -14,10 +14,12 @@ class Instance {
   
   void draw(GameLoopHtml gameLoop, Camera cam) {
 
+    /*
     if (model.vertexPositionBufferItemSize == null) {
       // model isn't ready
       return;  
     }
+    */
     
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     

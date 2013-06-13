@@ -16332,33 +16332,31 @@ mtllib_parse: function(str, url) {
 ["shader", "shader.dart", , {
 Instance: {"": "Object;model>,center,scale,MV",
   draw$2: function(gameLoop, cam) {
-    var t1, t2, t3, t4, t5, t6, prog, gl;
-    t1 = this.model;
-    if (t1.vertexPositionBufferItemSize == null)
-      return;
-    t2 = this.MV;
-    $.setViewMatrix(t2, cam.eye, cam.center, cam.up);
-    t3 = this.center.storage;
-    t4 = t3.length;
-    if (0 >= t4)
+    var t1, t2, t3, t4, t5, prog, gl;
+    t1 = this.MV;
+    $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
+    t2 = this.center.storage;
+    t3 = t2.length;
+    if (0 >= t3)
       throw $.ioore(0);
-    t5 = $.doubleTypeCheck(t3[0]);
-    if (1 >= t4)
+    t4 = $.doubleTypeCheck(t2[0]);
+    if (1 >= t3)
       throw $.ioore(1);
-    t6 = $.doubleTypeCheck(t3[1]);
-    if (2 >= t4)
+    t5 = $.doubleTypeCheck(t2[1]);
+    if (2 >= t3)
       throw $.ioore(2);
-    t2.translate$3(t2, t5, t6, $.doubleTypeCheck(t3[2]));
-    t3 = this.scale;
-    t2.scale$3(t2, t3, t3, t3);
-    prog = t1.program;
+    t1.translate$3(t1, t4, t5, $.doubleTypeCheck(t2[2]));
+    t2 = this.scale;
+    t1.scale$3(t1, t2, t2, t2);
+    t2 = this.model;
+    prog = t2.program;
     gl = prog.gl;
-    t3 = $.getInterceptor$x(gl);
-    t3.uniformMatrix4fv$3(gl, prog.u_MV, false, t2.storage);
-    t3.bindBuffer$2(gl, 34962, t1.vertexPositionBuffer);
-    t3.vertexAttribPointer$6(gl, prog.a_Position, t1.vertexPositionBufferItemSize, 5126, false, 0, 0);
-    t3.bindBuffer$2(gl, 34963, t1.vertexIndexBuffer);
-    t3.drawElements$4(gl, 4, t1.vertexIndexLength, 5123, $.JSInt_methods.$mul(0, t1.vertexIndexBufferItemSize));
+    t5 = $.getInterceptor$x(gl);
+    t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.storage);
+    t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
+    t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
+    t5.drawElements$4(gl, 4, t2.vertexIndexLength, 5123, $.JSInt_methods.$mul(0, t2.vertexIndexBufferItemSize));
   },
   $isInstance: true
 },
@@ -17044,6 +17042,8 @@ SkyboxProgram: {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,shade
   },
   drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2, t3;
+    if (!this.shaderReady)
+      return;
     t1 = this.gl;
     t2 = $.getInterceptor$x(t1);
     t2.useProgram$1(t1, this.program);
@@ -18421,20 +18421,20 @@ $.main$closure = new $.Closure$main($.main, "main$closure");
 $._CSSValue.$isObject = true;
 $.Node.$isObject = true;
 $.Node.$isNode = true;
-$.Element.$isObject = true;
 $.Element.$isNode = true;
 $.Element.$isElement = true;
 $.Element.$isObject = true;
-$.Entry.$isObject = true;
+$.Element.$isObject = true;
 $.Entry.$isEntry = true;
+$.Entry.$isObject = true;
 $._EntrySync.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$._IsolateContext.$is_IsolateContext = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $._IsolateContext.$isObject = true;
+$._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$isObject = true;
 $.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
@@ -18442,8 +18442,8 @@ $._IsolateEvent.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $.File.$isObject = true;
 $.File.$isFile = true;
-$.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTimer.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $.DigitalButton.$isObject = true;
 $.Duration.$isObject = true;
@@ -18455,62 +18455,62 @@ $.Transform.$isObject = true;
 $.Gamepad.$isObject = true;
 $.Instance.$isInstance = true;
 $.Instance.$isObject = true;
-$.Model.$isObject = true;
 $.Model.$isModel = true;
+$.Model.$isObject = true;
 $.TextureInfo.$isObject = true;
 $.TextureInfo.$isTextureInfo = true;
-$._Object.$is_Object = true;
 $._Object.$isObject = true;
+$._Object.$is_Object = true;
 $.Material.$isMaterial = true;
 $.Material.$isObject = true;
 $.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
-$.HttpRequest.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
+$.HttpRequest.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.Map.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
-$.ElementInstance.$isObject = true;
 $.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.SpeechRecognitionResult.$isObject = true;
 $.Rect.$isObject = true;
 $.StyleSheet.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
-$.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isList = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
 $.Length.$isObject = true;
 $.Touch.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isnum = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isint = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
+$.JSInt.$isnum = true;
+$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
-$.JSDouble.$isnum = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
@@ -18521,14 +18521,14 @@ $.CssRule.$isObject = true;
 $.CssRule.$isCssRule = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
-$.Shader.$isShader = true;
 $.Shader.$isObject = true;
+$.Shader.$isShader = true;
 $.MimeType.$isObject = true;
-$.Texture.$isObject = true;
 $.Texture.$isTexture = true;
-$.MouseEvent.$isObject = true;
+$.Texture.$isObject = true;
 $.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isEvent = true;
+$.MouseEvent.$isObject = true;
 $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 Isolate.makeConstantList = function(list) {
   list.immutable$list = true;
