@@ -185,15 +185,8 @@ void initAirshipTex(RenderingContext gl) {
       
       Map<String,Material> lib = mtllib_parse(response, mtlURL);
       assert(lib != null);
-      /*
-      if (lib == null) {
-        print("onMtlLibLoaded: mtllib_parse() failure: mtllib=$mtlURL");
-        return;
-      }
-      */
       
-      String usemtl = obj.usemtl;
-      
+      String usemtl = obj.usemtl;      
       print("onMtlLibLoaded: usemtl=$usemtl");
       
       Material mtl = lib[usemtl];
@@ -203,11 +196,9 @@ void initAirshipTex(RenderingContext gl) {
       }
       
       String texFile = mtl.map_Kd;
-
       print("onMtlLibLoaded: map_Kd=$texFile");
 
       String textureURL = "${asset.texture}/$texFile";
-
       print("onMtlLibLoaded: textureURL=$textureURL");
       
       TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.vertexIndexLength,
@@ -238,7 +229,9 @@ void initAirshipTex(RenderingContext gl) {
   TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0);
   airshipModel2.addInstance(airshipInstance2);
   
-  TexModel colonyShipModel = new TexModel.fromOBJ(gl, prog, "${asset.obj}/Colony Ship Ogame Fleet.obj", onModelDone);
+  String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";
+  
+  TexModel colonyShipModel = new TexModel.fromOBJ(gl, prog, colonyShipURL, onModelDone);
   prog.addModel(colonyShipModel);
   TexInstance colonyShipInstance = new TexInstance(colonyShipModel, new Vector3(0.0, 3.0, -5.0), 1.0);
   colonyShipModel.addInstance(colonyShipInstance);

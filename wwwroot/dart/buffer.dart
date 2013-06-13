@@ -14,13 +14,6 @@ class Instance {
   
   void draw(GameLoopHtml gameLoop, Camera cam) {
 
-    /*
-    if (model.vertexPositionBufferItemSize == null) {
-      // model isn't ready
-      return;  
-    }
-    */
-    
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
     MV.translate(center[0], center[1], center[2]);
@@ -71,15 +64,7 @@ class Model {
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
   }
-  
-  //Model();
-  
-  /*
-  Model.fromLists(RenderingContext gl, ShaderProgram this.program, List<double> vertCoord, List<int> vertInd) {
-    _createBuffersFromLists(gl, vertInd, vertCoord);
-  }
-  */
-  
+    
   Model.fromJson(RenderingContext gl, ShaderProgram this.program, String URL) {
 
     /*
