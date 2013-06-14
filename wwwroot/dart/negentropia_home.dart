@@ -338,6 +338,8 @@ void main() {
   }
   
   GameLoopHtml gameLoop = new GameLoopHtml(canvas);
+  
+  print("gameLoop updateStep = ${gameLoop.updateTimeStep} seconds");
 
   if (debugLostContext) {
     initDebugLostContext(gl, canvas, gameLoop, initContext);

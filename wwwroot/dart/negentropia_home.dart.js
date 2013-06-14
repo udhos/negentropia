@@ -10839,10 +10839,7 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    var t1 = this.modifiedObject;
-    if (t1 == null)
-      return "Concurrent modification during iteration.";
-    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
   },
   $asObject: null
 },
@@ -11031,8 +11028,7 @@ StringBuffer: {"": "Object;_contents",
 
 Duration$: function(days, hours, microseconds, milliseconds, minutes, seconds) {
   $.intTypeCheck(microseconds);
-  $.intTypeCheck(milliseconds);
-  return new $.Duration($.JSInt_methods.$add(days * 86400000000 + hours * 3600000000 + minutes * 60000000 + $.$mul$n(seconds, 1000000) + $.$mul$n(milliseconds, 1000), microseconds));
+  return new $.Duration($.JSInt_methods.$add(days * 86400000000 + hours * 3600000000 + minutes * 60000000 + seconds * 1000000 + $.$mul$n($.intTypeCheck(milliseconds), 1000), microseconds));
 },
 
 Error_safeToString: function(object) {
@@ -11092,7 +11088,6 @@ List_List$filled$bailout: function(state0, $length, result, fill, E) {
 
 List_List$from: function(other, growable, E) {
   var list, t1, t2, $length, fixedList, i;
-  $.listSuperNativeTypeCheck(other, "$isIterable");
   list = $.List_List($, E);
   $.assertHelper(true);
   list.$builtinTypeInfo = [E];
@@ -11122,7 +11117,6 @@ List_List$from: function(other, growable, E) {
 List_List$from$bailout: function(state0, list, t2, E, $length, fixedList) {
   switch (state0) {
     case 0:
-      $.listSuperNativeTypeCheck(other, "$isIterable");
       list = $.List_List($, E);
       $.assertHelper(true);
       list.$builtinTypeInfo = [E];
@@ -15545,6 +15539,7 @@ main: function() {
     return;
   }
   gameLoop = $.GameLoopHtml$($.canvas);
+  $.Primitives_printString("gameLoop updateStep = " + $.S(gameLoop.updateTimeStep) + " seconds");
   if ($.debugLostContext)
     $.initDebugLostContext(gl, $.canvas, gameLoop, $.initContext$closure);
   gameLoop.onUpdate = $.propertyTypeCheck(new $.main_closure(), "$isGameLoopUpdateFunction");
@@ -18450,8 +18445,8 @@ $.main$closure = new $.Closure$main($.main, "main$closure");
 $._CSSValue.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isObject = true;
-$.Element.$isElement = true;
 $.Element.$isObject = true;
+$.Element.$isElement = true;
 $.Element.$isObject = true;
 $.Element.$isNode = true;
 $.Entry.$isEntry = true;
@@ -18459,84 +18454,84 @@ $.Entry.$isObject = true;
 $._EntrySync.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isObject = true;
-$._IsolateContext.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
-$.GameLoopTouch.$isObject = true;
+$._IsolateContext.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouch.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
 $.File.$isFile = true;
 $.File.$isObject = true;
-$.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTimer.$isObject = true;
 $.DigitalButton.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.Plugin.$isObject = true;
-$.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isShaderProgram = true;
+$.ShaderProgram.$isObject = true;
 $.Transform.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Instance.$isInstance = true;
 $.Instance.$isObject = true;
-$.Model.$isModel = true;
+$.Instance.$isInstance = true;
 $.Model.$isObject = true;
-$.Piece.$isObject = true;
+$.Model.$isModel = true;
 $.Piece.$isPiece = true;
-$.TextureInfo.$isTextureInfo = true;
+$.Piece.$isObject = true;
 $.TextureInfo.$isObject = true;
-$.Part.$isPart = true;
+$.TextureInfo.$isTextureInfo = true;
 $.Part.$isObject = true;
-$.Material.$isMaterial = true;
+$.Part.$isPart = true;
 $.Material.$isObject = true;
+$.Material.$isMaterial = true;
 $.ReceivePort.$isReceivePort = true;
 $.ReceivePort.$isObject = true;
-$.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
+$.HttpRequest.$isHttpRequest = true;
 $.SourceBuffer.$isObject = true;
 $.Map.$isObject = true;
 $.SpeechGrammar.$isObject = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
 $.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isObject = true;
-$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.SpeechRecognitionResult.$isObject = true;
+$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.Rect.$isObject = true;
-$.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
+$.StyleSheet.$isStyleSheet = true;
 $.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isEvent = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
-$.JSArray.$isList = true;
 $.JSArray.$isObject = true;
+$.JSArray.$isList = true;
 $.JSArray.$isObject = true;
 $.Length.$isObject = true;
 $.Touch.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
 $.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
-$.JSDouble.$isnum = true;
+$.JSInt.$isObject = true;
 $.JSDouble.$isObject = true;
+$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
@@ -18544,22 +18539,22 @@ $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
 $.JSString.$isString = true;
-$.CssRule.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.CssRule.$isCssRule = true;
+$.CssRule.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
 $.Shader.$isShader = true;
 $.Shader.$isObject = true;
 $.MimeType.$isObject = true;
-$.Texture.$isTexture = true;
 $.Texture.$isObject = true;
-$.MouseEvent.$isMouseEvent = true;
-$.MouseEvent.$isEvent = true;
+$.Texture.$isTexture = true;
 $.MouseEvent.$isObject = true;
+$.MouseEvent.$isEvent = true;
+$.MouseEvent.$isMouseEvent = true;
 $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 Isolate.makeConstantList = function(list) {
   list.immutable$list = true;
