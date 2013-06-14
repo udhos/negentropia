@@ -1,12 +1,13 @@
 library obj;
 
-class _Object {
+class Part {
   String    name;
   bool      smooth;
   String    usemtl;
-  List<int> indices = new List<int>();
+  int       indexFirst;
+  int       indexListSize = 0;
   
-  _Object(this.name);
+  Part(this.name, this.indexFirst);
 }
 
 class Obj {
@@ -16,23 +17,26 @@ class Obj {
   static final int prefix_mtllib_len = prefix_mtllib.length;
   static final int prefix_usemtl_len = prefix_usemtl.length;
   
-  Map<String,_Object> _objTable = new Map<String,_Object>();
+  Map<String,Part> partTable = new Map<String,Part>();
   
+  /*
   List<int> get indices {
     if (_objTable.isEmpty)
       return null;
     return _objTable.values.first.indices;
   }
+  */
   
   String get usemtl {
-    if (_objTable.isEmpty)
+    if (partTable.isEmpty)
       return null;
-    return _objTable.values.first.usemtl;
+    return partTable.values.first.usemtl;
   }
   
   List<double> vertCoord = new List<double>();   
   List<double> textCoord = new List<double>();
   List<double> normCoord = new List<double>();
+  List<int> indices = new List<int>();
   String mtllib;
   
   Obj.fromString(String url, String str) {
@@ -42,7 +46,7 @@ class Obj {
     List<double> _textCoord = new List<double>();
     int indexCounter = 0;
     int lineNum = 0;
-    _Object currObj;
+    Part currObj;
     
     void parseLine(String rawLine) {
       ++lineNum;
@@ -70,10 +74,10 @@ class Obj {
       
       if (line.startsWith('o ')) {
         String objName = line.substring(2);
-        currObj = _objTable[objName];
+        currObj = partTable[objName];
         if (currObj == null) {
-          currObj = new _Object(objName);
-          _objTable[objName] = currObj;
+          currObj = new Part(objName, indices.length);
+          partTable[objName] = currObj;
         }
         else {
           print("OBJ: redefining object $objName at line=$lineNum from url=$url: [$line]");          
@@ -148,8 +152,8 @@ class Obj {
           // known unified index?
           int index = indexTable[ind];
           if (index != null) {
-            //indices.add(index);
-            currObj.indices.add(index);
+            indices.add(index);
+            currObj.indexListSize++;
             continue;
           }
           
@@ -184,7 +188,8 @@ class Obj {
           }
           
           // add unified index
-          currObj.indices.add(indexCounter);
+          indices.add(indexCounter);
+          currObj.indexListSize++;
           indexTable[ind] = indexCounter;      
           ++indexCounter;
         }
@@ -207,6 +212,7 @@ class Obj {
     List<String> lines = str.split('\n');
     lines.forEach((String line) => parseLine(line));
     
+    // remove empty objects
     /*
     List<String> emptyList = new List<String>();
     _objTable.keys.forEach((String name) { 
@@ -217,24 +223,24 @@ class Obj {
     });
     emptyList.forEach((String name) => _objTable.remove(name));
     */
-    _objTable.keys
+    partTable.keys
       .where((name) { // where: filter keys
-        bool empty = _objTable[name].indices.isEmpty;
+        bool empty = partTable[name].indexListSize < 1;
         if (empty) {
           print("OBJ: deleting empty object=$name loaded from url=$url");
         }       
         return empty;
       })
       .toList() // create a copy to avoid concurrent modifications
-      .forEach(_objTable.remove); // remove selected keys
+      .forEach(partTable.remove); // remove selected keys
     
-    print("Obj.fromString: objects = ${_objTable.keys.length}");
+    print("Obj.fromString: objects = ${partTable.keys.length}");
     print("Obj.fromString: vertCoord.length = ${vertCoord.length}");
     print("Obj.fromString: textCoord.length = ${textCoord.length}");
     print("Obj.fromString: normCoord.length = ${normCoord.length}");
     print("Obj.fromString: mtllib = $mtllib");
-    print("Obj.fromString: first=${_objTable.values.first.name} indices.length = ${indices.length}");
-    print("Obj.fromString: first=${_objTable.values.first.name} usemtl = $usemtl");
+    print("Obj.fromString: first=${partTable.values.first.name} indices.length = ${indices.length}");
+    print("Obj.fromString: first=${partTable.values.first.name} usemtl = $usemtl");
   }
 }
 
@@ -331,33 +337,7 @@ Map<String,Material> mtllib_parse(String str, String url) {
         parser(field, param, line, lineNum, url);
         return;
       }
-    }
-    
-    /*
-    if (line.startsWith(Material.prefix_newmtl)) {
-      String name = line.substring(Material.prefix_newmtl_len);
-      currMaterial = lib[name];
-      if (currMaterial == null) {
-        currMaterial = new Material(name);
-        lib[name] = currMaterial;
-      }
-      return;
-    }
-
-    if (line.startsWith(Material.prefix_map_Kd)) {
-      String map_Kd = line.substring(Material.prefix_map_Kd_len);
-      
-      if (currMaterial == null) {
-        print("mtllib_parse: url=$url: line=$lineNum: map_Kd=$map_Kd found for undefined material: [$line]");
-        return;
-      }     
-      
-      currMaterial.map_Kd = map_Kd;            
-      return;
-    }
-    */
-    //print("mtllib_parse: url=$url: line=$lineNum: unknown pattern: [$line]");    
-    
+    }    
   }
   
   List<String> lines = str.split('\n');

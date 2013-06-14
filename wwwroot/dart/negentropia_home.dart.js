@@ -2931,9 +2931,6 @@ $$.Float32List = {"": "TypedData;",
   toList$1$growable: function(receiver, growable) {
     return $.interceptedTypeCheck($.List_List$from(receiver, $.boolTypeCheck(growable), $.JSNumber), "$isList");
   },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
-  },
   skip$1: function(receiver, n) {
     var t1 = new $.SubListIterable($.listSuperNativeTypeCheck(receiver, "$isIterable"), n, null);
     $.assertHelper(true);
@@ -3039,9 +3036,6 @@ $$.Float64List = {"": "TypedData;",
   toList$1$growable: function(receiver, growable) {
     return $.interceptedTypeCheck($.List_List$from(receiver, $.boolTypeCheck(growable), $.JSNumber), "$isList");
   },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
-  },
   skip$1: function(receiver, n) {
     var t1 = new $.SubListIterable($.listSuperNativeTypeCheck(receiver, "$isIterable"), n, null);
     $.assertHelper(true);
@@ -3144,9 +3138,6 @@ $$.Int16List = {"": "TypedData;",
   },
   toList$1$growable: function(receiver, growable) {
     return $.interceptedTypeCheck($.List_List$from(receiver, $.boolTypeCheck(growable), $.JSInt), "$isList");
-  },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     var t1 = new $.SubListIterable($.listSuperNativeTypeCheck(receiver, "$isIterable"), n, null);
@@ -3251,9 +3242,6 @@ $$.Int32List = {"": "TypedData;",
   toList$1$growable: function(receiver, growable) {
     return $.interceptedTypeCheck($.List_List$from(receiver, $.boolTypeCheck(growable), $.JSInt), "$isList");
   },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
-  },
   skip$1: function(receiver, n) {
     var t1 = new $.SubListIterable($.listSuperNativeTypeCheck(receiver, "$isIterable"), n, null);
     $.assertHelper(true);
@@ -3356,9 +3344,6 @@ $$.Int8List = {"": "TypedData;",
   },
   toList$1$growable: function(receiver, growable) {
     return $.interceptedTypeCheck($.List_List$from(receiver, $.boolTypeCheck(growable), $.JSInt), "$isList");
-  },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     var t1 = new $.SubListIterable($.listSuperNativeTypeCheck(receiver, "$isIterable"), n, null);
@@ -3463,9 +3448,6 @@ $$.Uint16List = {"": "TypedData;",
   toList$1$growable: function(receiver, growable) {
     return $.interceptedTypeCheck($.List_List$from(receiver, $.boolTypeCheck(growable), $.JSInt), "$isList");
   },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
-  },
   skip$1: function(receiver, n) {
     var t1 = new $.SubListIterable($.listSuperNativeTypeCheck(receiver, "$isIterable"), n, null);
     $.assertHelper(true);
@@ -3569,9 +3551,6 @@ $$.Uint32List = {"": "TypedData;",
   toList$1$growable: function(receiver, growable) {
     return $.interceptedTypeCheck($.List_List$from(receiver, $.boolTypeCheck(growable), $.JSInt), "$isList");
   },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
-  },
   skip$1: function(receiver, n) {
     var t1 = new $.SubListIterable($.listSuperNativeTypeCheck(receiver, "$isIterable"), n, null);
     $.assertHelper(true);
@@ -3671,9 +3650,6 @@ $$.Uint8ClampedList = {"": "Uint8List;",
   },
   toList$1$growable: function(receiver, growable) {
     return $.interceptedTypeCheck($.List_List$from(receiver, $.boolTypeCheck(growable), $.JSInt), "$isList");
-  },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     var t1 = new $.SubListIterable($.listSuperNativeTypeCheck(receiver, "$isIterable"), n, null);
@@ -3777,9 +3753,6 @@ $$.Uint8List = {"": "TypedData;",
   },
   toList$1$growable: function(receiver, growable) {
     return $.interceptedTypeCheck($.List_List$from(receiver, $.boolTypeCheck(growable), $.JSInt), "$isList");
-  },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
   },
   skip$1: function(receiver, n) {
     var t1 = new $.SubListIterable($.listSuperNativeTypeCheck(receiver, "$isIterable"), n, null);
@@ -4230,9 +4203,6 @@ JSArray: {"": "List/Interceptor;",
   },
   indexOf$1: function($receiver, element) {
     return this.indexOf$2($receiver, element, 0);
-  },
-  get$isEmpty: function(receiver) {
-    return receiver.length === 0;
   },
   toString$0: function(receiver) {
     var result = new $.StringBuffer("");
@@ -9760,9 +9730,6 @@ ListMixin: {"": "Object;",
         }
     }
   },
-  get$isEmpty: function(receiver) {
-    return this.get$length(receiver) === 0;
-  },
   get$last: function(receiver) {
     var t1, $arguments, arguments0;
     if (this.get$length(receiver) === 0)
@@ -10872,7 +10839,10 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
+    var t1 = this.modifiedObject;
+    if (t1 == null)
+      return "Concurrent modification during iteration.";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
   },
   $asObject: null
 },
@@ -11122,6 +11092,7 @@ List_List$filled$bailout: function(state0, $length, result, fill, E) {
 
 List_List$from: function(other, growable, E) {
   var list, t1, t2, $length, fixedList, i;
+  $.listSuperNativeTypeCheck(other, "$isIterable");
   list = $.List_List($, E);
   $.assertHelper(true);
   list.$builtinTypeInfo = [E];
@@ -11151,6 +11122,7 @@ List_List$from: function(other, growable, E) {
 List_List$from$bailout: function(state0, list, t2, E, $length, fixedList) {
   switch (state0) {
     case 0:
+      $.listSuperNativeTypeCheck(other, "$isIterable");
       list = $.List_List($, E);
       $.assertHelper(true);
       list.$builtinTypeInfo = [E];
@@ -11256,9 +11228,6 @@ Interceptor_ListMixin: {"": "Interceptor+ListMixin;", $isList: true, $asList: fu
 Interceptor_ListMixin_ImmutableListMixin: {"": "Interceptor_ListMixin+ImmutableListMixin;", $isList: true, $asList: function() { return [$.JSString]; }, $isIterable: true, $asIterable: function() { return [$.JSString]; }, $asObject: null},
 
 _ChildrenElementList: {"": "ListBase;_element<,_childElements<",
-  get$isEmpty: function(_) {
-    return this._element.firstElementChild == null;
-  },
   get$length: function(_) {
     return this._childElements.length;
   },
@@ -15004,7 +14973,7 @@ initAirshipTex_onModelDone: {"": "Closure;temporaryColor_0",
 
 initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,mod_3,obj_4,mtlURL_5",
   call$1: function(response) {
-    var t1, lib, usemtl, mtl, texFile, textureURL, texInfo;
+    var t1, lib, usemtl, mtl, texFile, textureURL, t2, t3, texInfo;
     t1 = this.mtlURL_5;
     lib = $.interceptedTypeCheck($.mtllib_parse($.stringTypeCheck(response), t1), "$isMap");
     $.assertHelper(lib != null);
@@ -15019,10 +14988,14 @@ initAirshipTex_onModelDone_onMtlLibLoaded: {"": "Closure;temporaryColor_1,gl_2,m
     $.Primitives_printString("onMtlLibLoaded: map_Kd=" + $.S(texFile));
     textureURL = $.S($.get$asset()._texture) + "/" + $.S(texFile);
     $.Primitives_printString("onMtlLibLoaded: textureURL=" + textureURL);
-    t1 = this.mod_3;
-    texInfo = $.TextureInfo$(this.gl_2, $.textureTable, 0, t1.vertexIndexLength, textureURL, this.temporaryColor_1);
-    t1.addTexture$1;
-    $.JSArray_methods.add$1(t1.textureInfoList, texInfo);
+    t1 = $.textureTable;
+    t2 = this.mod_3;
+    t3 = t2.pieceList;
+    if (0 >= t3.length)
+      throw $.ioore(0);
+    texInfo = $.TextureInfo$(this.gl_2, t1, 0, t3[0].get$vertexIndexLength(), textureURL, this.temporaryColor_1);
+    t2.addTexture$1;
+    $.JSArray_methods.add$1(t2.textureInfoList, texInfo);
   },
   $isFunction: true,
   $asObject: null,
@@ -15049,12 +15022,16 @@ initAirshipTex_onModelDone_closure: {"": "Closure;mtlURL_6",
 
 initAirshipTex_onModelDone2: {"": "Closure;temporaryColor_7",
   call$4: function(gl, mod, obj, oURL) {
-    var texInfo;
+    var t1, t2, texInfo;
     $.interceptedTypeCheck(gl, "$isRenderingContext");
     $.propertyTypeCheck(mod, "$isTexModel");
     $.propertyTypeCheck(obj, "$isObj");
     $.stringTypeCheck(oURL);
-    texInfo = $.TextureInfo$(gl, $.textureTable, 0, mod.vertexIndexLength, "INTENTIONAL-BAD-TEXTURE-NAME", this.temporaryColor_7);
+    t1 = $.textureTable;
+    t2 = mod.pieceList;
+    if (0 >= t2.length)
+      throw $.ioore(0);
+    texInfo = $.TextureInfo$(gl, t1, 0, t2[0].get$vertexIndexLength(), "INTENTIONAL-BAD-TEXTURE-NAME", this.temporaryColor_7);
     mod.addTexture$1;
     $.JSArray_methods.add$1(mod.textureInfoList, texInfo);
   },
@@ -15287,10 +15264,13 @@ initSkybox: function(gl) {
   t3 = $.S($.get$asset()._shader) + "/skybox_fs.txt";
   $.interceptedTypeCheck(t1, "$isMap");
   $.ShaderProgram.prototype.fetch$3.call(skyboxProgram, t1, t2, t3);
-  t3 = $.List_List($, $.Instance);
+  t3 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t3.$builtinTypeInfo = [$.Instance];
-  skyboxModel = new $.SkyboxModel(null, null, null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), skyboxProgram);
+  t3.$builtinTypeInfo = [$.Piece];
+  t1 = $.List_List($, $.Instance);
+  $.assertHelper(true);
+  t1.$builtinTypeInfo = [$.Instance];
+  skyboxModel = new $.SkyboxModel(null, null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), $.interceptedTypeCheck(t1, "$isList"), skyboxProgram);
   skyboxModel.Model$fromJson$3(gl, skyboxProgram, "/mesh/cube.json");
   skyboxModel.cubemapTexture = gl.createTexture();
   skyboxModel.addCubemapFace$2(34069, "/texture/space_rt.jpg");
@@ -15350,7 +15330,7 @@ initAirship: function(gl) {
 },
 
 initAirshipTex: function(gl) {
-  var t1, prog, temporaryColor, onDone, objURL, t2, t3, onDone0, t4, airshipModel, t5, t6, airshipModel2, colonyShipURL, colonyShipModel;
+  var t1, prog, temporaryColor, onDone, objURL, t2, t3, t4, onDone0, t5, airshipModel, t6, t7, airshipModel2, colonyShipURL, colonyShipModel;
   t1 = $.List_List($, $.Model);
   $.assertHelper(true);
   t1.$builtinTypeInfo = [$.Model];
@@ -15364,75 +15344,84 @@ initAirshipTex: function(gl) {
   t1 = $.List_List($, $.TextureInfo);
   $.assertHelper(true);
   t1.$builtinTypeInfo = [$.TextureInfo];
-  t2 = $.List_List($, $.Instance);
+  t2 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t2.$builtinTypeInfo = [$.Instance];
-  t3 = $ === onDone;
-  onDone0 = t3 ? null : onDone;
-  t4 = !t3;
-  airshipModel = new $.TexModel(null, null, $.interceptedTypeCheck(t1, "$isList"), null, null, null, null, null, $.interceptedTypeCheck(t2, "$isList"), prog);
-  airshipModel.Model$fromOBJ$4(gl, prog, objURL, onDone0, t4);
-  t2 = prog.modelList;
-  $.JSArray_methods.add$1(t2, airshipModel);
+  t2.$builtinTypeInfo = [$.Piece];
+  t3 = $.List_List($, $.Instance);
+  $.assertHelper(true);
+  t3.$builtinTypeInfo = [$.Instance];
+  t4 = $ === onDone;
+  onDone0 = t4 ? null : onDone;
+  t5 = !t4;
+  airshipModel = new $.TexModel(null, null, $.interceptedTypeCheck(t1, "$isList"), null, null, null, null, $.interceptedTypeCheck(t2, "$isList"), $.interceptedTypeCheck(t3, "$isList"), prog);
+  airshipModel.Model$fromOBJ$4(gl, prog, objURL, onDone0, t5);
+  t3 = prog.modelList;
+  $.JSArray_methods.add$1(t3, airshipModel);
   $.doubleTypeCheck(0);
-  t1 = new $.Vector3(new Float32Array(3));
-  t5 = t1.storage;
-  t6 = t5.length;
+  t2 = new $.Vector3(new Float32Array(3));
+  t1 = t2.storage;
+  t6 = t1.length;
   if (0 >= t6)
     throw $.ioore(0);
-  t5[0] = 0;
+  t1[0] = 0;
   if (1 >= t6)
     throw $.ioore(1);
-  t5[1] = 0;
+  t1[1] = 0;
   if (2 >= t6)
     throw $.ioore(2);
-  t5[2] = 0;
+  t1[2] = 0;
   $.doubleTypeCheck(1);
-  t5 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
-  t5.setIdentity$0();
-  $.JSArray_methods.add$1(airshipModel.instanceList, new $.TexInstance(airshipModel, t1, 1, t5));
+  t1 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
+  t1.setIdentity$0();
+  $.JSArray_methods.add$1(airshipModel.instanceList, new $.TexInstance(airshipModel, t2, 1, t1));
   onDone0 = new $.initAirshipTex_onModelDone2(temporaryColor);
   $.propertyTypeCheck(onDone0, "$isFunction");
-  t5 = $.List_List($, $.TextureInfo);
+  t1 = $.List_List($, $.TextureInfo);
   $.assertHelper(true);
-  t5.$builtinTypeInfo = [$.TextureInfo];
-  t1 = $.List_List($, $.Instance);
+  t1.$builtinTypeInfo = [$.TextureInfo];
+  t2 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t1.$builtinTypeInfo = [$.Instance];
-  t6 = $ === onDone0;
-  if (t6)
+  t2.$builtinTypeInfo = [$.Piece];
+  t6 = $.List_List($, $.Instance);
+  $.assertHelper(true);
+  t6.$builtinTypeInfo = [$.Instance];
+  t7 = $ === onDone0;
+  if (t7)
     onDone0 = null;
-  airshipModel2 = new $.TexModel(null, null, $.interceptedTypeCheck(t5, "$isList"), null, null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), prog);
-  airshipModel2.Model$fromOBJ$4(gl, prog, objURL, onDone0, !t6);
-  $.JSArray_methods.add$1(t2, airshipModel2);
+  airshipModel2 = new $.TexModel(null, null, $.interceptedTypeCheck(t1, "$isList"), null, null, null, null, $.interceptedTypeCheck(t2, "$isList"), $.interceptedTypeCheck(t6, "$isList"), prog);
+  airshipModel2.Model$fromOBJ$4(gl, prog, objURL, onDone0, !t7);
+  $.JSArray_methods.add$1(t3, airshipModel2);
   $.doubleTypeCheck(8);
   t1 = new $.Vector3(new Float32Array(3));
-  t5 = t1.storage;
-  t6 = t5.length;
+  t2 = t1.storage;
+  t6 = t2.length;
   if (0 >= t6)
     throw $.ioore(0);
-  t5[0] = 8;
+  t2[0] = 8;
   if (1 >= t6)
     throw $.ioore(1);
-  t5[1] = 0;
+  t2[1] = 0;
   if (2 >= t6)
     throw $.ioore(2);
-  t5[2] = 0;
-  t5 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
-  t5.setIdentity$0();
-  $.JSArray_methods.add$1(airshipModel2.instanceList, new $.TexInstance(airshipModel2, t1, 1, t5));
+  t2[2] = 0;
+  t2 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
+  t2.setIdentity$0();
+  $.JSArray_methods.add$1(airshipModel2.instanceList, new $.TexInstance(airshipModel2, t1, 1, t2));
   colonyShipURL = $.S($.get$asset()._obj) + "/Colony Ship Ogame Fleet.obj";
-  t5 = $.List_List($, $.TextureInfo);
+  t2 = $.List_List($, $.TextureInfo);
   $.assertHelper(true);
-  t5.$builtinTypeInfo = [$.TextureInfo];
-  t1 = $.List_List($, $.Instance);
+  t2.$builtinTypeInfo = [$.TextureInfo];
+  t1 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t1.$builtinTypeInfo = [$.Instance];
-  if (t3)
+  t1.$builtinTypeInfo = [$.Piece];
+  t6 = $.List_List($, $.Instance);
+  $.assertHelper(true);
+  t6.$builtinTypeInfo = [$.Instance];
+  if (t4)
     onDone = null;
-  colonyShipModel = new $.TexModel(null, null, $.interceptedTypeCheck(t5, "$isList"), null, null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), prog);
-  colonyShipModel.Model$fromOBJ$4(gl, prog, colonyShipURL, onDone, t4);
-  $.JSArray_methods.add$1(t2, colonyShipModel);
+  colonyShipModel = new $.TexModel(null, null, $.interceptedTypeCheck(t2, "$isList"), null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), $.interceptedTypeCheck(t6, "$isList"), prog);
+  colonyShipModel.Model$fromOBJ$4(gl, prog, colonyShipURL, onDone, t5);
+  $.JSArray_methods.add$1(t3, colonyShipModel);
   $.doubleTypeCheck(3);
   $.doubleTypeCheck(-5);
   t1 = new $.Vector3(new Float32Array(3));
@@ -15563,31 +15552,15 @@ main: function() {
   $.initContext(gl, gameLoop);
 }}],
 ["obj", "obj.dart", , {
-_Object: {"": "Object;name>,smooth,usemtl<,indices<", $is_Object: true},
+Part: {"": "Object;name>,smooth,usemtl<,indexFirst,indexListSize<", $isPart: true},
 
-Obj: {"": "Object;_objTable<,vertCoord<,textCoord<,normCoord,mtllib<",
+Obj: {"": "Object;partTable<,vertCoord<,textCoord<,normCoord,indices<,mtllib<",
   set$mtllib: function(v) {
     this.mtllib = $.stringTypeCheck(v);
   },
-  get$indices: function() {
-    var t1, t2, $arguments, arguments0;
-    t1 = this._objTable;
-    if (t1._liblib0$_length === 0)
-      return $.interceptedTypeCheck(null, "$isList");
-    t1 = t1.get$values(t1);
-    t2 = t1._iterable;
-    t2 = t1._f$1(t2.get$first(t2));
-    $arguments = t1.$asMappedIterable;
-    arguments0 = $.getRuntimeTypeInfo(t1);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.interceptedTypeCheck($.assertSubtypeOfRuntimeType(t2, $arguments == null ? null : $arguments[1]).get$indices(), "$isList");
-  },
   get$usemtl: function() {
     var t1, t2, $arguments, arguments0;
-    t1 = this._objTable;
+    t1 = this.partTable;
     if (t1._liblib0$_length === 0)
       return;
     t1 = t1.get$values(t1);
@@ -15624,7 +15597,7 @@ Obj: {"": "Object;_objTable<,vertCoord<,textCoord<,normCoord,mtllib<",
     t1 = new $.Obj$fromString_closure(new $.Obj$fromString_parseLine(box_0, this, url, t3, _vertCoord, _textCoord));
     $.propertyTypeCheck(t1, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(lines, t1));
-    t1 = this._objTable;
+    t1 = this.partTable;
     $arguments = t1.$asHashMap;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -15714,7 +15687,7 @@ Obj: {"": "Object;_objTable<,vertCoord<,textCoord<,normCoord,mtllib<",
       ;
     else
       $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    $.Primitives_printString("Obj.fromString: first=" + $.S($.get$name$x($.assertSubtypeOfRuntimeType(t3, $arguments == null ? null : $arguments[1]))) + " indices.length = " + $.S($.get$length$asx(this.get$indices())));
+    $.Primitives_printString("Obj.fromString: first=" + $.S($.get$name$x($.assertSubtypeOfRuntimeType(t3, $arguments == null ? null : $arguments[1]))) + " indices.length = " + this.indices.length);
     t1 = t1.get$values(t1);
     t2 = t1._iterable;
     t2 = t1._f$1(t2.get$first(t2));
@@ -15754,14 +15727,11 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
     if ($.JSString_methods.startsWith$1(line, "o ")) {
       objName = $.JSString_methods.substring$1(line, 2);
       t2 = this.this_1;
-      t3 = t2.get$_objTable();
-      t1.currObj_2 = $.propertyTypeCheck(t3.$index(t3, objName), "$is_Object");
+      t3 = t2.get$partTable();
+      t1.currObj_2 = $.propertyTypeCheck(t3.$index(t3, objName), "$isPart");
       if (t1.currObj_2 == null) {
-        t3 = $.List_List($, $.JSInt);
-        $.assertHelper(true);
-        t3.$builtinTypeInfo = [$.JSInt];
-        t1.currObj_2 = new $._Object(objName, null, null, $.interceptedTypeCheck(t3, "$isList"));
-        t2 = t2.get$_objTable();
+        t1.currObj_2 = new $.Part(objName, null, null, t2.get$indices().length, 0);
+        t2 = t2.get$partTable();
         t2.$indexSet(t2, objName, t1.currObj_2);
       } else
         $.Primitives_printString("OBJ: redefining object " + objName + " at line=" + t1.lineNum_1 + " from url=" + this.url_2 + ": [" + line + "]");
@@ -15847,11 +15817,13 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
         $.Primitives_printString("OBJ: wrong number of face indices (" + (t2 - 1) + " != 3) at line=" + t1.lineNum_1 + " from url=" + this.url_2 + ": [" + line + "]");
         return;
       }
-      for (t2 = this.indexTable_3, t3 = this.this_1, t4 = this._textCoord_5, t5 = this._vertCoord_4, i = 1; i < f.length; ++i) {
+      for (t2 = this.this_1, t3 = this.indexTable_3, t4 = this._textCoord_5, t5 = this._vertCoord_4, i = 1; i < f.length; ++i) {
         ind = $.stringTypeCheck(f[i]);
-        index = $.intTypeCheck(t2.$index(t2, ind));
+        index = $.intTypeCheck(t3.$index(t3, ind));
         if (index != null) {
-          $.JSArray_methods.add$1(t1.currObj_2.indices, index);
+          $.JSArray_methods.add$1(t2.get$indices(), index);
+          t6 = t1.currObj_2;
+          t6.indexListSize = t6.indexListSize + 1;
           continue;
         }
         v = $.interceptedTypeCheck($.split$1$s(ind, "/"), "$isList");
@@ -15859,17 +15831,17 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
         vi = $.stringTypeCheck(t6.$index(v, 0));
         $.propertyTypeCheck(null, "$isFunction");
         vOffset = 3 * $.$sub$n($.Primitives_parseInt(vi, null, null), 1);
-        t7 = t3.get$vertCoord();
+        t7 = t2.get$vertCoord();
         t8 = vOffset + 0;
         if (t8 < 0 || t8 >= t5.length)
           throw $.ioore(t8);
         $.JSArray_methods.add$1(t7, t5[t8]);
-        t8 = t3.get$vertCoord();
+        t8 = t2.get$vertCoord();
         t7 = vOffset + 1;
         if (t7 < 0 || t7 >= t5.length)
           throw $.ioore(t7);
         $.JSArray_methods.add$1(t8, t5[t7]);
-        t7 = t3.get$vertCoord();
+        t7 = t2.get$vertCoord();
         t8 = vOffset + 2;
         if (t8 < 0 || t8 >= t5.length)
           throw $.ioore(t8);
@@ -15878,12 +15850,12 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
           ti = $.stringTypeCheck(t6.$index(v, 1));
           if (ti != null && !$.get$isEmpty$asx(ti)) {
             tOffset = 2 * $.$sub$n($.Primitives_parseInt(ti, null, null), 1);
-            t7 = t3.get$textCoord();
+            t7 = t2.get$textCoord();
             t8 = tOffset + 0;
             if (t8 < 0 || t8 >= t4.length)
               throw $.ioore(t8);
             $.JSArray_methods.add$1(t7, t4[t8]);
-            t8 = t3.get$textCoord();
+            t8 = t2.get$textCoord();
             t7 = tOffset + 1;
             if (t7 < 0 || t7 >= t4.length)
               throw $.ioore(t7);
@@ -15895,8 +15867,10 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
           if (ni != null && !$.get$isEmpty$asx(ni))
             $.$sub$n($.Primitives_parseInt(ni, null, null), 1);
         }
-        $.JSArray_methods.add$1(t1.currObj_2.indices, t1.indexCounter_0);
-        t2.$indexSet(t2, ind, t1.indexCounter_0);
+        $.JSArray_methods.add$1(t2.get$indices(), t1.indexCounter_0);
+        t6 = t1.currObj_2;
+        t6.indexListSize = t6.indexListSize + 1;
+        t3.$indexSet(t3, ind, t1.indexCounter_0);
         t1.indexCounter_0 = t1.indexCounter_0 + 1;
       }
       return;
@@ -15937,14 +15911,11 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
         if ($.JSString_methods.startsWith$1(line, "o ")) {
           objName = $.JSString_methods.substring$1(line, 2);
           t2 = this.this_1;
-          t3 = t2.get$_objTable();
-          t1.currObj_2 = $.propertyTypeCheck(t3.$index(t3, objName), "$is_Object");
+          t3 = t2.get$partTable();
+          t1.currObj_2 = $.propertyTypeCheck(t3.$index(t3, objName), "$isPart");
           if (t1.currObj_2 == null) {
-            t3 = $.List_List($, $.JSInt);
-            $.assertHelper(true);
-            t3.$builtinTypeInfo = [$.JSInt];
-            t1.currObj_2 = new $._Object(objName, null, null, $.interceptedTypeCheck(t3, "$isList"));
-            t2 = t2.get$_objTable();
+            t1.currObj_2 = new $.Part(objName, null, null, t2.get$indices().length, 0);
+            t2 = t2.get$partTable();
             t2.$indexSet(t2, objName, t1.currObj_2);
           } else
             $.Primitives_printString("OBJ: redefining object " + objName + " at line=" + t1.lineNum_1 + " from url=" + this.url_2 + ": [" + line + "]");
@@ -16034,11 +16005,13 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
                 $.Primitives_printString("OBJ: wrong number of face indices (" + $.$sub$n(t2.get$length(f), 1) + " != 3) at line=" + t1.lineNum_1 + " from url=" + this.url_2 + ": [" + line + "]");
                 return;
               }
-              for (t3 = this.indexTable_3, t4 = this.this_1, t5 = this._textCoord_5, t6 = this._vertCoord_4, i = 1; $.JSInt_methods.$lt(i, t2.get$length(f)); ++i) {
+              for (t3 = this.this_1, t4 = this.indexTable_3, t5 = this._textCoord_5, t6 = this._vertCoord_4, i = 1; $.JSInt_methods.$lt(i, t2.get$length(f)); ++i) {
                 ind = $.stringTypeCheck(t2.$index(f, i));
-                index = $.intTypeCheck(t3.$index(t3, ind));
+                index = $.intTypeCheck(t4.$index(t4, ind));
                 if (index != null) {
-                  $.JSArray_methods.add$1(t1.currObj_2.indices, index);
+                  $.JSArray_methods.add$1(t3.get$indices(), index);
+                  t7 = t1.currObj_2;
+                  t7.indexListSize = t7.indexListSize + 1;
                   continue;
                 }
                 v = $.interceptedTypeCheck($.split$1$s(ind, "/"), "$isList");
@@ -16046,17 +16019,17 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
                 vi = $.stringTypeCheck(t7.$index(v, 0));
                 $.propertyTypeCheck(null, "$isFunction");
                 vOffset = 3 * $.$sub$n($.Primitives_parseInt(vi, null, null), 1);
-                t8 = t4.get$vertCoord();
+                t8 = t3.get$vertCoord();
                 t9 = vOffset + 0;
                 if (t9 < 0 || t9 >= t6.length)
                   throw $.ioore(t9);
                 $.JSArray_methods.add$1(t8, t6[t9]);
-                t9 = t4.get$vertCoord();
+                t9 = t3.get$vertCoord();
                 t8 = vOffset + 1;
                 if (t8 < 0 || t8 >= t6.length)
                   throw $.ioore(t8);
                 $.JSArray_methods.add$1(t9, t6[t8]);
-                t8 = t4.get$vertCoord();
+                t8 = t3.get$vertCoord();
                 t9 = vOffset + 2;
                 if (t9 < 0 || t9 >= t6.length)
                   throw $.ioore(t9);
@@ -16065,12 +16038,12 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
                   ti = $.stringTypeCheck(t7.$index(v, 1));
                   if (ti != null && !$.get$isEmpty$asx(ti)) {
                     tOffset = 2 * $.$sub$n($.Primitives_parseInt(ti, null, null), 1);
-                    t8 = t4.get$textCoord();
+                    t8 = t3.get$textCoord();
                     t9 = tOffset + 0;
                     if (t9 < 0 || t9 >= t5.length)
                       throw $.ioore(t9);
                     $.JSArray_methods.add$1(t8, t5[t9]);
-                    t9 = t4.get$textCoord();
+                    t9 = t3.get$textCoord();
                     t8 = tOffset + 1;
                     if (t8 < 0 || t8 >= t5.length)
                       throw $.ioore(t8);
@@ -16082,8 +16055,10 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
                   if (ni != null && !$.get$isEmpty$asx(ni))
                     $.$sub$n($.Primitives_parseInt(ni, null, null), 1);
                 }
-                $.JSArray_methods.add$1(t1.currObj_2.indices, t1.indexCounter_0);
-                t3.$indexSet(t3, ind, t1.indexCounter_0);
+                $.JSArray_methods.add$1(t3.get$indices(), t1.indexCounter_0);
+                t7 = t1.currObj_2;
+                t7.indexListSize = t7.indexListSize + 1;
+                t4.$indexSet(t4, ind, t1.indexCounter_0);
                 t1.indexCounter_0 = t1.indexCounter_0 + 1;
               }
               return;
@@ -16118,8 +16093,8 @@ Obj$fromString_closure: {"": "Closure;parseLine_6",
 Obj$fromString_closure0: {"": "Closure;this_7,url_8",
   call$1: function($name) {
     var t1, empty;
-    t1 = this.this_7.get$_objTable();
-    empty = $.get$isEmpty$asx(t1.$index(t1, $name).get$indices());
+    t1 = this.this_7.get$partTable();
+    empty = t1.$index(t1, $name).get$indexListSize() < 1;
     if (empty)
       $.Primitives_printString("OBJ: deleting empty object=" + $.S($name) + " loaded from url=" + this.url_8);
     return empty;
@@ -16285,9 +16260,9 @@ mtllib_parse_closure: {"": "Closure;parseLine_4",
 },
 
 Obj$fromString: function(url, str) {
-  var t1, t2, t3, t4;
+  var t1, t2, t3, t4, t5;
   t1 = $.JSString;
-  t2 = $._Object;
+  t2 = $.Part;
   t3 = new $.HashMap(0, null, null, null, null);
   $.assertHelper(true);
   t3.$builtinTypeInfo = [t1, t2];
@@ -16301,7 +16276,10 @@ Obj$fromString: function(url, str) {
   t4 = $.List_List($, $.JSDouble);
   $.assertHelper(true);
   t4.$builtinTypeInfo = [$.JSDouble];
-  t1 = new $.Obj($.interceptedTypeCheck(t3, "$isMap"), $.interceptedTypeCheck(t1, "$isList"), $.interceptedTypeCheck(t2, "$isList"), $.interceptedTypeCheck(t4, "$isList"), null);
+  t5 = $.List_List($, $.JSInt);
+  $.assertHelper(true);
+  t5.$builtinTypeInfo = [$.JSInt];
+  t1 = new $.Obj($.interceptedTypeCheck(t3, "$isMap"), $.interceptedTypeCheck(t1, "$isList"), $.interceptedTypeCheck(t2, "$isList"), $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), null);
   t1.Obj$fromString$2(url, str, {});
   return t1;
 },
@@ -16353,12 +16331,27 @@ Instance: {"": "Object;model>,center,scale,MV",
     t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
     t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
     t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
-    t5.drawElements$4(gl, 4, t2.vertexIndexLength, 5123, $.JSInt_methods.$mul(0, t2.vertexIndexBufferItemSize));
+    t5 = new $.Instance_draw_closure(this, gl);
+    $.propertyTypeCheck(t5, "$isFunction");
+    $.voidTypeCheck($.IterableMixinWorkaround_forEach(t2.pieceList, t5));
   },
   $isInstance: true
 },
 
-Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize<,vertexIndexLength,instanceList,program<",
+Instance_draw_closure: {"": "Closure;this_0,gl_1",
+  call$1: function(piece) {
+    $.propertyTypeCheck(piece, "$isPiece");
+    $.drawElements$4$x(this.gl_1, 4, piece.vertexIndexLength, 5123, $.JSInt_methods.$mul(piece.vertexIndexOffset, $.get$model$x(this.this_0).get$vertexIndexBufferItemSize()));
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $is_FutureErrorTest: true
+},
+
+Piece: {"": "Object;vertexIndexOffset,vertexIndexLength<", $isPiece: true},
+
+Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize<,pieceList<,instanceList,program<",
   set$program: function(v) {
     this.program = $.propertyTypeCheck(v, "$isShaderProgram");
   },
@@ -16381,8 +16374,6 @@ Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferI
     $.interceptedTypeCheck(indices, "$isList");
     t1.bufferData$3(gl, 34963, new Uint16Array(indices), 35044);
     this.vertexIndexBufferItemSize = 2;
-    this.vertexIndexLength = $.get$length$asx(indices);
-    $.Primitives_printString("Model._createBuffers: vertex index length: " + $.S(this.vertexIndexLength));
     t1.bindBuffer$2(gl, 34962, null);
     t1.bindBuffer$2(gl, 34963, null);
   },
@@ -16408,7 +16399,7 @@ Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferI
 
 Model$fromJson_handleResponse: {"": "Closure;this_0,gl_1",
   call$1: function(response) {
-    var m, e, exception, t1;
+    var m, e, exception, t1, indices, vertCoord;
     $.stringTypeCheck(response);
     m = null;
     try {
@@ -16420,7 +16411,11 @@ Model$fromJson_handleResponse: {"": "Closure;this_0,gl_1",
       return;
     }
 
-    this.this_0._createBuffers$5(this.gl_1, $.interceptedTypeCheck($.$index$asx(m, "vertInd"), "$isList"), $.interceptedTypeCheck($.$index$asx(m, "vertCoord"), "$isList"), null, null);
+    indices = $.interceptedTypeCheck($.$index$asx(m, "vertInd"), "$isList");
+    vertCoord = $.interceptedTypeCheck($.$index$asx(m, "vertCoord"), "$isList");
+    t1 = this.this_0;
+    $.JSArray_methods.add$1(t1.get$pieceList(), new $.Piece(0, $.get$length$asx(indices)));
+    t1._createBuffers$5(this.gl_1, indices, vertCoord, null, null);
   },
   $isFunction: true,
   $asObject: null,
@@ -16451,20 +16446,37 @@ Model$fromOBJ_handleResponse: {"": "Closure;this_0,gl_1,URL_2,onDone_3,onDone_ch
     t1 = this.URL_2;
     $.Primitives_printString("Model.fromOBJ: fetched OBJ from URL: " + t1);
     obj = $.Obj$fromString(t1, response);
-    t2 = this.this_0;
-    t3 = this.gl_1;
-    t2._createBuffers$5(t3, obj.get$indices(), obj.vertCoord, obj.textCoord, obj.normCoord);
+    t2 = obj.partTable;
+    t2 = t2.get$values(t2);
+    t3 = this.this_0;
+    t2.forEach$1(t2, new $.Model$fromOBJ_handleResponse_closure(t3));
+    t2 = this.gl_1;
+    t3._createBuffers$5(t2, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
     if ($.boolConversionCheck(this.onDone_check_4))
-      this.onDone_3.call$4(t3, t2, obj, t1);
+      this.onDone_3.call$4(t2, t3, obj, t1);
   },
   $isFunction: true,
   $asObject: null,
   $is_FutureOnError: true
 },
 
-Model$fromOBJ_handleError: {"": "Closure;URL_5",
+Model$fromOBJ_handleResponse_closure: {"": "Closure;this_5",
+  call$1: function(pa) {
+    var pi;
+    $.propertyTypeCheck(pa, "$isPart");
+    pi = new $.Piece(pa.indexFirst, pa.indexListSize);
+    $.JSArray_methods.add$1(this.this_5.get$pieceList(), pi);
+    $.Primitives_printString("Model.fromOBJ: added part " + pa.name + " into piece: offset=" + pi.vertexIndexOffset + " length=" + $.S(pi.vertexIndexLength));
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $is_FutureErrorTest: true
+},
+
+Model$fromOBJ_handleError: {"": "Closure;URL_6",
   call$1: function(err) {
-    $.Primitives_printString("Model.fromOBJ: failure fetching OBJ from URL: " + this.URL_5 + ": " + $.S(err));
+    $.Primitives_printString("Model.fromOBJ: failure fetching OBJ from URL: " + this.URL_6 + ": " + $.S(err));
   },
   $isFunction: true,
   $asObject: null,
@@ -16907,7 +16919,7 @@ TexShaderProgram_drawModels_closure: {"": "Closure;gameLoop_0,cam_1",
   $is_FutureErrorTest: true
 },
 
-TexModel: {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,textureInfoList,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program",
+TexModel: {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,textureInfoList,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,pieceList,instanceList,program",
   initContext$2: function(gl, textureTable) {
     var t1 = new $.TexModel_initContext_closure(gl, $.interceptedTypeCheck(textureTable, "$isMap"));
     $.propertyTypeCheck(t1, "$isFunction");
@@ -17011,22 +17023,29 @@ TexInstance_draw_closure: {"": "Closure;this_0,prog_1,gl_2",
 },
 
 Model$fromJson: function(gl, program, URL) {
-  var t1 = $.List_List($, $.Instance);
+  var t1, t2;
+  t1 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t1.$builtinTypeInfo = [$.Instance];
-  t1 = new $.Model(null, null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), program);
+  t1.$builtinTypeInfo = [$.Piece];
+  t2 = $.List_List($, $.Instance);
+  $.assertHelper(true);
+  t2.$builtinTypeInfo = [$.Instance];
+  t1 = new $.Model(null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), $.interceptedTypeCheck(t2, "$isList"), program);
   t1.Model$fromJson$3(gl, program, URL);
   return t1;
 },
 
 Model$fromOBJ: function(gl, program, URL, onDone) {
-  var t1, t2;
+  var t1, t2, t3;
   t1 = $ === onDone;
   onDone = $.propertyTypeCheck(t1 ? null : onDone, "$isFunction");
-  t2 = $.List_List($, $.Instance);
+  t2 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t2.$builtinTypeInfo = [$.Instance];
-  t2 = new $.Model(null, null, null, null, null, $.interceptedTypeCheck(t2, "$isList"), program);
+  t2.$builtinTypeInfo = [$.Piece];
+  t3 = $.List_List($, $.Instance);
+  $.assertHelper(true);
+  t3.$builtinTypeInfo = [$.Instance];
+  t2 = new $.Model(null, null, null, null, $.interceptedTypeCheck(t2, "$isList"), $.interceptedTypeCheck(t3, "$isList"), program);
   t2.Model$fromOBJ$4(gl, program, URL, onDone, !t1);
   return t2;
 }}],
@@ -17066,7 +17085,7 @@ SkyboxProgram_drawModels_closure: {"": "Closure;gameLoop_0,cam_1",
   $is_FutureErrorTest: true
 },
 
-SkyboxModel: {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,vertexIndexLength,instanceList,program",
+SkyboxModel: {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,pieceList,instanceList,program",
   addCubemapFace$2: function(face, URL) {
     var image, t1, t2, t3, $arguments, arguments0, t4;
     image = $.interceptedTypeCheck($.ImageElement_ImageElement(null, null, null), "$isImageElement");
@@ -17185,8 +17204,21 @@ SkyboxInstance: {"": "Instance;model,center,scale,MV",
     t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
     t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
     t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
-    t5.drawElements$4(gl, 4, t2.vertexIndexLength, 5123, $.JSInt_methods.$mul(0, t2.vertexIndexBufferItemSize));
+    t5 = new $.SkyboxInstance_draw_closure(this, gl);
+    $.propertyTypeCheck(t5, "$isFunction");
+    $.voidTypeCheck($.IterableMixinWorkaround_forEach(t2.pieceList, t5));
   }
+},
+
+SkyboxInstance_draw_closure: {"": "Closure;this_0,gl_1",
+  call$1: function(piece) {
+    $.propertyTypeCheck(piece, "$isPiece");
+    $.drawElements$4$x(this.gl_1, 4, piece.vertexIndexLength, 5123, $.JSInt_methods.$mul(piece.vertexIndexOffset, $.get$model$x(this.this_0).get$vertexIndexBufferItemSize()));
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $is_FutureErrorTest: true
 }}],
 ["texture", "texture.dart", , {
 TextureInfo: {"": "Object;indexOffset,indexNumber,textureName<,texture<,temporaryColor",
@@ -18416,8 +18448,8 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
+$.Node.$isObject = true;
 $.Element.$isElement = true;
 $.Element.$isObject = true;
 $.Element.$isObject = true;
@@ -18425,24 +18457,24 @@ $.Element.$isNode = true;
 $.Entry.$isEntry = true;
 $.Entry.$isObject = true;
 $._EntrySync.$isObject = true;
-$._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$.GameLoopTouchPosition.$isObject = true;
+$._GameLoopTouchEvent.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
+$.GameLoopTouchPosition.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
-$._IsolateEvent.$isObject = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
 $._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateEvent.$isObject = true;
 $.File.$isFile = true;
 $.File.$isObject = true;
 $.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
-$.DigitalButton.$isDigitalButton = true;
 $.DigitalButton.$isObject = true;
+$.DigitalButton.$isDigitalButton = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.Plugin.$isObject = true;
@@ -18450,82 +18482,84 @@ $.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isShaderProgram = true;
 $.Transform.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Instance.$isObject = true;
 $.Instance.$isInstance = true;
+$.Instance.$isObject = true;
 $.Model.$isModel = true;
 $.Model.$isObject = true;
-$.TextureInfo.$isObject = true;
+$.Piece.$isObject = true;
+$.Piece.$isPiece = true;
 $.TextureInfo.$isTextureInfo = true;
-$._Object.$is_Object = true;
-$._Object.$isObject = true;
+$.TextureInfo.$isObject = true;
+$.Part.$isPart = true;
+$.Part.$isObject = true;
 $.Material.$isMaterial = true;
 $.Material.$isObject = true;
-$.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
-$.HttpRequest.$isObject = true;
+$.ReceivePort.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
+$.HttpRequest.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.Map.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
-$.ElementInstance.$isObject = true;
 $.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.SpeechRecognitionResult.$isObject = true;
 $.Rect.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
-$.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isEvent = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
 $.JSArray.$isList = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.Length.$isObject = true;
 $.Touch.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isint = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
+$.JSDouble.$isnum = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
-$.JSString.$isObject = true;
-$.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
+$.CssRule.$isCssRule = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
-$.Shader.$isObject = true;
 $.Shader.$isShader = true;
+$.Shader.$isObject = true;
 $.MimeType.$isObject = true;
 $.Texture.$isTexture = true;
 $.Texture.$isObject = true;
+$.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isObject = true;
-$.MouseEvent.$isMouseEvent = true;
 $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 Isolate.makeConstantList = function(list) {
   list.immutable$list = true;
@@ -18542,13 +18576,13 @@ $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
 $.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
 $.JSString_methods = $.JSString.prototype;
 $.JSNumber_methods = $.JSNumber.prototype;
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
+$.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.C_CloseToken = new $.CloseToken();
 $.Float32List_methods = $.Float32List.prototype;
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
-$.HtmlDocument_methods = $.HtmlDocument.prototype;
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.Duration_0 = new $.Duration(0);
 $.C_JSUnknown = new $.JSUnknown();
 $.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
@@ -18676,6 +18710,9 @@ $.contains$2$asx = function(receiver, a0, a1) {
 };
 $.createShader$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).createShader$1(receiver, a0);
+};
+$.drawElements$4$x = function(receiver, a0, a1, a2, a3) {
+  return $.getInterceptor$x(receiver).drawElements$4(receiver, a0, a1, a2, a3);
 };
 $.elementAt$1$ax = function(receiver, a0) {
   return $.getInterceptor$ax(receiver).elementAt$1(receiver, a0);

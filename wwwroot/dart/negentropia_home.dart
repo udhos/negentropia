@@ -201,7 +201,7 @@ void initAirshipTex(RenderingContext gl) {
       String textureURL = "${asset.texture}/$texFile";
       print("onMtlLibLoaded: textureURL=$textureURL");
       
-      TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.vertexIndexLength,
+      TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.pieceList[0].vertexIndexLength,
           textureURL, temporaryColor);
       mod.addTexture(texInfo);
     }
@@ -219,7 +219,7 @@ void initAirshipTex(RenderingContext gl) {
   airshipModel.addInstance(airshipInstance);
 
   void onModelDone2(RenderingContext gl, TexModel mod, Obj obj, String oURL) {
-    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.vertexIndexLength,
+    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.pieceList[0].vertexIndexLength,
         "INTENTIONAL-BAD-TEXTURE-NAME", temporaryColor);
     mod.addTexture(texInfo);  
   }

@@ -29,8 +29,19 @@ class Instance {
     gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
   
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
-    gl.drawElements(RenderingContext.TRIANGLES, model.vertexIndexLength, RenderingContext.UNSIGNED_SHORT, 0 * model.vertexIndexBufferItemSize);
+    
+    model.pieceList.forEach((Piece piece) {
+        gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength, RenderingContext.UNSIGNED_SHORT,
+        piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
+      });
   }
+}
+
+class Piece {
+  int vertexIndexOffset;
+  int vertexIndexLength;  
+  
+  Piece(this.vertexIndexOffset, this.vertexIndexLength);
 }
 
 class Model {
@@ -39,8 +50,10 @@ class Model {
   Buffer vertexIndexBuffer;
   int vertexPositionBufferItemSize;
   int vertexIndexBufferItemSize;
-  int vertexIndexLength;
+  
+  //int vertexIndexLength; // FIXME ERASEME
 
+  List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
   ShaderProgram program; // parent program
   
@@ -56,9 +69,8 @@ class Model {
     gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
     vertexIndexBufferItemSize = 2; // size of Uint16Array
     
-    vertexIndexLength = indices.length;
-    
-    print("Model._createBuffers: vertex index length: $vertexIndexLength");
+    //vertexIndexLength = indices.length;
+    //print("Model._createBuffers: vertex index length: $vertexIndexLength");
     
     // clean-up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -103,6 +115,8 @@ class Model {
       
       List<int> indices = m['vertInd'];
       List<double> vertCoord = m['vertCoord'];
+      
+      pieceList.add(new Piece(0, indices.length)); // single-piece model
 
       _createBuffers(gl, indices, vertCoord, null, null);
     }
@@ -123,6 +137,12 @@ class Model {
       print("Model.fromOBJ: fetched OBJ from URL: $URL");
       
       Obj obj = new Obj.fromString(URL, response);
+      
+      obj.partTable.values.forEach((Part pa) {
+        Piece pi = new Piece(pa.indexFirst, pa.indexListSize);
+        pieceList.add(pi);
+        print("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
+      });
       
       _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
       

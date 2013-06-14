@@ -8,7 +8,6 @@ import 'package:vector_math/vector_math.dart';
 import 'package:game_loop/game_loop_html.dart';
 
 import 'shader.dart';
-//import 'buffer.dart';
 import 'camera.dart';
 
 class SkyboxProgram extends ShaderProgram {
@@ -146,6 +145,12 @@ class SkyboxInstance extends Instance {
     gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
   
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
-    gl.drawElements(RenderingContext.TRIANGLES, model.vertexIndexLength, RenderingContext.UNSIGNED_SHORT, 0 * model.vertexIndexBufferItemSize);
+    
+    //gl.drawElements(RenderingContext.TRIANGLES, model.vertexIndexLength, RenderingContext.UNSIGNED_SHORT, 0 * model.vertexIndexBufferItemSize);
+    model.pieceList.forEach((Piece piece) {
+      gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength, RenderingContext.UNSIGNED_SHORT,
+          piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
+    });
+    
   }
 }
