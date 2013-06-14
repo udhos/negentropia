@@ -7201,6 +7201,27 @@ ListIterable: {"": "IterableBase;",
     t1 = $arguments == null ? null : $arguments[0];
     return $.assertSubtype(t2, "$isIterator", [t1], "$asIterator");
   },
+  forEach$1: function(_, action) {
+    var $length, i;
+    $.propertyTypeCheck(action, "$isFunction");
+    $length = this.get$length(this);
+    if ($length !== ($length | 0))
+      return this.forEach$1$bailout1(1, action, $length);
+    for (i = 0; i < $length; ++i) {
+      action.call$1(this.elementAt$1(this, i));
+      if ($length !== this.get$length(this))
+        throw $.wrapException(new $.ConcurrentModificationError(this));
+    }
+  },
+  forEach$1$bailout1: function(state0, action, $length) {
+    var i, t1;
+    for (i = 0; $.JSInt_methods.$lt(i, $length); ++i) {
+      action.call$1(this.elementAt$1(this, i));
+      t1 = this.get$length(this);
+      if ($length == null ? t1 != null : $length !== t1)
+        throw $.wrapException(new $.ConcurrentModificationError(this));
+    }
+  },
   get$first: function(_) {
     var t1, $arguments, arguments0;
     if (this.get$length(this) === 0)
@@ -8670,7 +8691,7 @@ HashMap_values_closure: {"": "Closure;this_0",
   $isGameLoopPointerLockChangeFunction: true
 },
 
-HashMapKeyIterable: {"": "IterableBase;_map<",
+HashMapKeyIterable: {"": "IterableBase;_map",
   get$length: function(_) {
     return this._map._liblib0$_length;
   },
@@ -8697,6 +8718,17 @@ HashMapKeyIterable: {"": "IterableBase;_map<",
       $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
     t1 = $arguments == null ? null : $arguments[0];
     return $.assertSubtype(t2, "$isIterator", [t1], "$asIterator");
+  },
+  forEach$1: function(_, f) {
+    var t1, keys, $length, i;
+    $.propertyTypeCheck(f, "$isFunction");
+    t1 = this._map;
+    keys = t1._computeKeys$0();
+    for ($length = keys.length, i = 0; i < $length; ++i) {
+      f.call$1(keys[i]);
+      if (keys !== t1._keys)
+        throw $.wrapException(new $.ConcurrentModificationError(t1));
+    }
   },
   $asIterableBase: null,
   $asIterableBase: null,
@@ -8756,7 +8788,7 @@ LinkedHashMap_values_closure: {"": "Closure;this_0",
 
 LinkedHashMapCell: {"": "Object;_key,_value,_next,_previous", $isLinkedHashMapCell: true},
 
-LinkedHashMapKeyIterable: {"": "IterableBase;_map<",
+LinkedHashMapKeyIterable: {"": "IterableBase;_map",
   get$length: function(_) {
     return this._map._liblib0$_length;
   },
@@ -8784,6 +8816,19 @@ LinkedHashMapKeyIterable: {"": "IterableBase;_map<",
       $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
     t1 = $arguments == null ? null : $arguments[0];
     return $.assertSubtype(t2, "$isIterator", [t1], "$asIterator");
+  },
+  forEach$1: function(_, f) {
+    var t1, cell, modifications;
+    $.propertyTypeCheck(f, "$isFunction");
+    t1 = this._map;
+    cell = t1._first;
+    modifications = t1._modifications;
+    for (; cell != null;) {
+      f.call$1(cell._key);
+      if (modifications !== t1._modifications)
+        throw $.wrapException(new $.ConcurrentModificationError(t1));
+      cell = cell._next;
+    }
   },
   $asIterableBase: null,
   $asIterableBase: null,
@@ -10170,6 +10215,19 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
       $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
     t2 = $arguments == null ? null : $arguments[0];
     return $.assertSubtype(t1, "$isIterator", [t2], "$asIterator");
+  },
+  forEach$1: function(_, action) {
+    var modificationCount, i, t1;
+    $.propertyTypeCheck(action, "$isFunction");
+    modificationCount = this._modificationCount;
+    for (i = this._head; i !== this._tail; i = (i + 1 & this._table.length - 1) >>> 0) {
+      t1 = this._table;
+      if (i < 0 || i >= t1.length)
+        throw $.ioore(i);
+      action.call$1(t1[i]);
+      if (modificationCount !== this._modificationCount)
+        $.throwExpression(new $.ConcurrentModificationError(this));
+    }
   },
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
@@ -15549,13 +15607,13 @@ main: function() {
 ["obj", "obj.dart", , {
 Part: {"": "Object;name>,smooth,usemtl<,indexFirst,indexListSize<", $isPart: true},
 
-Obj: {"": "Object;partTable<,vertCoord<,textCoord<,normCoord,indices<,mtllib<",
+Obj: {"": "Object;_partTable<,vertCoord<,textCoord<,normCoord,indices<,mtllib<",
   set$mtllib: function(v) {
     this.mtllib = $.stringTypeCheck(v);
   },
   get$usemtl: function() {
     var t1, t2, $arguments, arguments0;
-    t1 = this.partTable;
+    t1 = this._partTable;
     if (t1._liblib0$_length === 0)
       return;
     t1 = t1.get$values(t1);
@@ -15592,7 +15650,7 @@ Obj: {"": "Object;partTable<,vertCoord<,textCoord<,normCoord,indices<,mtllib<",
     t1 = new $.Obj$fromString_closure(new $.Obj$fromString_parseLine(box_0, this, url, t3, _vertCoord, _textCoord));
     $.propertyTypeCheck(t1, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(lines, t1));
-    t1 = this.partTable;
+    t1 = this._partTable;
     $arguments = t1.$asHashMap;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -15651,24 +15709,7 @@ Obj: {"": "Object;partTable<,vertCoord<,textCoord<,normCoord,indices<,mtllib<",
     t2 = t1.get$remove(t1);
     $.propertyTypeCheck(t2, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(t3, t2));
-    $arguments = t1.$asHashMap;
-    arguments0 = $.getRuntimeTypeInfo(t1);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    t2 = $arguments == null ? null : $arguments[0];
-    t3 = new $.HashMapKeyIterable(t1);
-    $.assertHelper(true);
-    t3.$builtinTypeInfo = [t2];
-    $arguments = t1.$asHashMap;
-    arguments0 = $.getRuntimeTypeInfo(t1);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    t2 = $arguments == null ? null : $arguments[0];
-    $.Primitives_printString("Obj.fromString: objects = " + $.listSuperNativeTypeCheck(t3, "$isIterable").get$_map().get$_liblib0$_length());
+    $.Primitives_printString("Obj.fromString: objects = " + t1._liblib0$_length);
     $.Primitives_printString("Obj.fromString: vertCoord.length = " + this.vertCoord.length);
     $.Primitives_printString("Obj.fromString: textCoord.length = " + this.textCoord.length);
     $.Primitives_printString("Obj.fromString: normCoord.length = " + this.normCoord.length);
@@ -15722,11 +15763,11 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
     if ($.JSString_methods.startsWith$1(line, "o ")) {
       objName = $.JSString_methods.substring$1(line, 2);
       t2 = this.this_1;
-      t3 = t2.get$partTable();
+      t3 = t2.get$_partTable();
       t1.currObj_2 = $.propertyTypeCheck(t3.$index(t3, objName), "$isPart");
       if (t1.currObj_2 == null) {
         t1.currObj_2 = new $.Part(objName, null, null, t2.get$indices().length, 0);
-        t2 = t2.get$partTable();
+        t2 = t2.get$_partTable();
         t2.$indexSet(t2, objName, t1.currObj_2);
       } else
         $.Primitives_printString("OBJ: redefining object " + objName + " at line=" + t1.lineNum_1 + " from url=" + this.url_2 + ": [" + line + "]");
@@ -15906,11 +15947,11 @@ Obj$fromString_parseLine: {"": "Closure;box_0,this_1,url_2,indexTable_3,_vertCoo
         if ($.JSString_methods.startsWith$1(line, "o ")) {
           objName = $.JSString_methods.substring$1(line, 2);
           t2 = this.this_1;
-          t3 = t2.get$partTable();
+          t3 = t2.get$_partTable();
           t1.currObj_2 = $.propertyTypeCheck(t3.$index(t3, objName), "$isPart");
           if (t1.currObj_2 == null) {
             t1.currObj_2 = new $.Part(objName, null, null, t2.get$indices().length, 0);
-            t2 = t2.get$partTable();
+            t2 = t2.get$_partTable();
             t2.$indexSet(t2, objName, t1.currObj_2);
           } else
             $.Primitives_printString("OBJ: redefining object " + objName + " at line=" + t1.lineNum_1 + " from url=" + this.url_2 + ": [" + line + "]");
@@ -16088,7 +16129,7 @@ Obj$fromString_closure: {"": "Closure;parseLine_6",
 Obj$fromString_closure0: {"": "Closure;this_7,url_8",
   call$1: function($name) {
     var t1, empty;
-    t1 = this.this_7.get$partTable();
+    t1 = this.this_7.get$_partTable();
     empty = t1.$index(t1, $name).get$indexListSize() < 1;
     if (empty)
       $.Primitives_printString("OBJ: deleting empty object=" + $.S($name) + " loaded from url=" + this.url_8);
@@ -16441,10 +16482,9 @@ Model$fromOBJ_handleResponse: {"": "Closure;this_0,gl_1,URL_2,onDone_3,onDone_ch
     t1 = this.URL_2;
     $.Primitives_printString("Model.fromOBJ: fetched OBJ from URL: " + t1);
     obj = $.Obj$fromString(t1, response);
-    t2 = obj.partTable;
-    t2 = t2.get$values(t2);
+    t2 = obj._partTable;
     t3 = this.this_0;
-    t2.forEach$1(t2, new $.Model$fromOBJ_handleResponse_closure(t3));
+    $.forEach$1$ax($.listSuperNativeTypeCheck(t2.get$values(t2), "$isIterable"), new $.Model$fromOBJ_handleResponse_closure(t3));
     t2 = this.gl_1;
     t3._createBuffers$5(t2, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
     if ($.boolConversionCheck(this.onDone_check_4))
@@ -18443,31 +18483,31 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $._CSSValue.$isObject = true;
-$.Node.$isNode = true;
 $.Node.$isObject = true;
+$.Node.$isNode = true;
 $.Element.$isObject = true;
 $.Element.$isElement = true;
-$.Element.$isObject = true;
 $.Element.$isNode = true;
-$.Entry.$isEntry = true;
+$.Element.$isObject = true;
 $.Entry.$isObject = true;
+$.Entry.$isEntry = true;
 $._EntrySync.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
+$._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
-$._IsolateContext.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
-$._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
+$._IsolateEvent.$is_IsolateEvent = true;
 $.File.$isFile = true;
 $.File.$isObject = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
 $.DigitalButton.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $.Duration.$isObject = true;
@@ -18481,79 +18521,79 @@ $.Instance.$isObject = true;
 $.Instance.$isInstance = true;
 $.Model.$isObject = true;
 $.Model.$isModel = true;
-$.Piece.$isPiece = true;
 $.Piece.$isObject = true;
+$.Piece.$isPiece = true;
 $.TextureInfo.$isObject = true;
 $.TextureInfo.$isTextureInfo = true;
 $.Part.$isObject = true;
 $.Part.$isPart = true;
-$.Material.$isObject = true;
 $.Material.$isMaterial = true;
+$.Material.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
 $.ReceivePort.$isObject = true;
-$.HttpRequest.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
+$.HttpRequest.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.Map.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
-$.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isObject = true;
-$.SpeechRecognitionResult.$isObject = true;
+$.ElementInstance.$isElementInstance = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
+$.SpeechRecognitionResult.$isObject = true;
 $.Rect.$isObject = true;
 $.StyleSheet.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
 $.KeyboardEvent.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isEvent = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
 $.JSArray.$isList = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.Length.$isObject = true;
 $.Touch.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isint = true;
-$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isnum = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isint = true;
+$.JSInt.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isnum = true;
+$.JSDouble.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
-$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
-$.Shader.$isShader = true;
 $.Shader.$isObject = true;
+$.Shader.$isShader = true;
 $.MimeType.$isObject = true;
 $.Texture.$isObject = true;
 $.Texture.$isTexture = true;
-$.MouseEvent.$isObject = true;
 $.MouseEvent.$isEvent = true;
+$.MouseEvent.$isObject = true;
 $.MouseEvent.$isMouseEvent = true;
 $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 Isolate.makeConstantList = function(list) {

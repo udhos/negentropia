@@ -17,7 +17,9 @@ class Obj {
   static final int prefix_mtllib_len = prefix_mtllib.length;
   static final int prefix_usemtl_len = prefix_usemtl.length;
   
-  Map<String,Part> partTable = new Map<String,Part>();
+  Map<String,Part> _partTable = new Map<String,Part>();
+  
+  Iterable<Part> get partList => _partTable.values;
   
   /*
   List<int> get indices {
@@ -28,9 +30,9 @@ class Obj {
   */
   
   String get usemtl {
-    if (partTable.isEmpty)
+    if (_partTable.isEmpty)
       return null;
-    return partTable.values.first.usemtl;
+    return _partTable.values.first.usemtl;
   }
   
   List<double> vertCoord = new List<double>();   
@@ -74,10 +76,10 @@ class Obj {
       
       if (line.startsWith('o ')) {
         String objName = line.substring(2);
-        currObj = partTable[objName];
+        currObj = _partTable[objName];
         if (currObj == null) {
           currObj = new Part(objName, indices.length);
-          partTable[objName] = currObj;
+          _partTable[objName] = currObj;
         }
         else {
           print("OBJ: redefining object $objName at line=$lineNum from url=$url: [$line]");          
@@ -223,24 +225,24 @@ class Obj {
     });
     emptyList.forEach((String name) => _objTable.remove(name));
     */
-    partTable.keys
+    _partTable.keys
       .where((name) { // where: filter keys
-        bool empty = partTable[name].indexListSize < 1;
+        bool empty = _partTable[name].indexListSize < 1;
         if (empty) {
           print("OBJ: deleting empty object=$name loaded from url=$url");
         }       
         return empty;
       })
       .toList() // create a copy to avoid concurrent modifications
-      .forEach(partTable.remove); // remove selected keys
+      .forEach(_partTable.remove); // remove selected keys
     
-    print("Obj.fromString: objects = ${partTable.keys.length}");
+    print("Obj.fromString: objects = ${_partTable.length}");
     print("Obj.fromString: vertCoord.length = ${vertCoord.length}");
     print("Obj.fromString: textCoord.length = ${textCoord.length}");
     print("Obj.fromString: normCoord.length = ${normCoord.length}");
     print("Obj.fromString: mtllib = $mtllib");
-    print("Obj.fromString: first=${partTable.values.first.name} indices.length = ${indices.length}");
-    print("Obj.fromString: first=${partTable.values.first.name} usemtl = $usemtl");
+    print("Obj.fromString: first=${_partTable.values.first.name} indices.length = ${indices.length}");
+    print("Obj.fromString: first=${_partTable.values.first.name} usemtl = $usemtl");
   }
 }
 

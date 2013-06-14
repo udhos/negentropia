@@ -138,7 +138,7 @@ class Model {
       
       Obj obj = new Obj.fromString(URL, response);
       
-      obj.partTable.values.forEach((Part pa) {
+      obj.partList.forEach((Part pa) {
         Piece pi = new Piece(pa.indexFirst, pa.indexListSize);
         pieceList.add(pi);
         print("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
