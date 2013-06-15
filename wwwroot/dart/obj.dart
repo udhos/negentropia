@@ -328,18 +328,20 @@ Map<String,Material> mtllib_parse(String str, String url) {
     }
     
     int paramIndex = line.indexOf(' ');
-    if (paramIndex > 0) {
-      String field = line.substring(0, paramIndex);
-      String param = line.substring(paramIndex).trim();
-      field_parser parser = parserTable[field];
-      if (parser == null) {
-        print("mtllib_parse: unknown field=[$field] on line=$lineNum from url=$url: [$line]");
-      }
-      else {
-        parser(field, param, line, lineNum, url);
-        return;
-      }
-    }    
+    if (paramIndex < 1) {
+      print("mtllib_parse: space separator not found on line=$lineNum from url=$url: [$line]");
+      return;
+    }
+
+    String field = line.substring(0, paramIndex);
+    String param = line.substring(paramIndex).trim();
+    field_parser parser = parserTable[field];
+    if (parser == null) {
+      print("mtllib_parse: unknown field=[$field] on line=$lineNum from url=$url: [$line]");
+      return;
+    }
+    
+    parser(field, param, line, lineNum, url);
   }
   
   List<String> lines = str.split('\n');
