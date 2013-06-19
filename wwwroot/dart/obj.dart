@@ -247,7 +247,6 @@ class Obj {
 }
 
 class Material {
-
   
   static final String prefix_newmtl = "newmtl ";
   static final String prefix_map_Kd = "map_Kd ";

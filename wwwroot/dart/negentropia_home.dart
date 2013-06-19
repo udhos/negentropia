@@ -204,12 +204,12 @@ void initAirshipTex(RenderingContext gl) {
       TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.pieceList[0].vertexIndexLength,
           textureURL, temporaryColor);
       mod.addTexture(texInfo);
-    }
+    } // onMtlLibLoaded
     
     HttpRequest.getString(mtlURL)
     .then(onMtlLibLoaded)
     .catchError((err) { print("initAirshipTex: onModelDone: failure fetching mtllib: $mtlURL: $err"); });    
-  }
+  } // onModelDone
   
   String objURL = "${asset.obj}/airship.obj"; 
 
