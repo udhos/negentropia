@@ -19,9 +19,11 @@ void initDebugLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHtm
     print("webgl context: restored");
   }
 
-  canvas.on['webglcontextlost'].listen((Event e) => onContextLost(e));
-  canvas.on['webglcontextrestored'].listen((Event e) => onContextRestored(e));
-
+  //canvas.on['webglcontextlost'].listen((Event e) => onContextLost(e));
+  //canvas.on['webglcontextrestored'].listen((Event e) => onContextRestored(e));
+  canvas.onWebGlContextLost.listen(onContextLost);
+  canvas.onWebGlContextRestored.listen(onContextRestored);
+  
   print("initDebugLostContext: webglcontextlost trapped");
   print("initDebugLostContext: webglcontextrestored trapped");
 
