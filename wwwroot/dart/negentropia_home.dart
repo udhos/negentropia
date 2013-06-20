@@ -280,6 +280,11 @@ void render(RenderingContext gl, GameLoopHtml gameLoop) {
 
 void update(GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
+  
+  Mouse m = gameLoop.mouse;
+  if (m.pressed(Mouse.LEFT)) {
+    print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas} x=${m.x} y=${m.y}");
+  }
 
   cam.update(gameLoop);
     
@@ -301,7 +306,7 @@ void main() {
   if (debugLostContext) {
     initDebugLostContext(gl, canvas, gameLoop, initContext);
   }
-
+  
   gameLoop.onUpdate = ((GameLoopHtml gameLoop) { 
     update(gameLoop);
   });

@@ -7592,18 +7592,19 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
 
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
   var t1;
-  if (start < 0 || start > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (start < 0 || start > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + start + " not in range 0.." + t1));
   }
-  if (end < start || end > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (end < start || end > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + end + " not in range " + start + ".." + t1));
   }
 },
 
 IterableMixinWorkaround_setRangeList: function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList;
+  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = end - start;
   if ($length === 0)
@@ -13007,6 +13008,14 @@ DigitalInput: {"": "Object;gameLoop<",
         }
     }
   },
+  pressed$1: function(buttonId) {
+    var t1, button;
+    t1 = this.buttons;
+    button = $.propertyTypeCheck(t1.$index(t1, buttonId), "$isDigitalButton");
+    if (button == null)
+      return false;
+    return button.framePressed === this.gameLoop._frameCounter;
+  },
   DigitalInput$2: function(gameLoop, buttonIds) {
     var $arguments, arguments0, t1, t2, t3;
     $.interceptedTypeCheck(buttonIds, "$isList");
@@ -15381,7 +15390,17 @@ draw: function(gl, gameLoop) {
 },
 
 update: function(gameLoop) {
-  var t1, t2;
+  var m, t1, t2;
+  gameLoop.get$mouse;
+  m = gameLoop._mouse;
+  if (m.pressed$1(0)) {
+    m.get$withinCanvas;
+    t1 = "Mouse.LEFT pressed: withinCanvas=" + m._withinCanvas + " x=";
+    m.get$x;
+    t1 = t1 + m._x + " y=";
+    m.get$y;
+    $.Primitives_printString(t1 + m._y);
+  }
   t1 = $.get$cam();
   t1.oldAngle = $.doubleTypeCheck(t1.angle);
   gameLoop.get$gameTime;
@@ -18537,59 +18556,59 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
+$.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isObject = true;
-$.MouseEvent.$isMouseEvent = true;
 $._CSSValue.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isObject = true;
-$.Element.$isNode = true;
+$.Element.$isObject = true;
 $.Element.$isObject = true;
 $.Element.$isElement = true;
-$.Element.$isObject = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
+$.Element.$isNode = true;
 $._GameLoopTouchEvent.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isObject = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
 $.Entry.$isObject = true;
 $.Entry.$isEntry = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
-$.DigitalButton.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
+$.DigitalButton.$isObject = true;
 $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$isObject = true;
-$._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
-$.File.$isObject = true;
+$._IsolateEvent.$is_IsolateEvent = true;
 $.File.$isFile = true;
+$.File.$isObject = true;
 $.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isShaderProgram = true;
-$.Instance.$isObject = true;
 $.Instance.$isInstance = true;
+$.Instance.$isObject = true;
 $.Transform.$isObject = true;
 $.Model.$isModel = true;
 $.Model.$isObject = true;
-$.Piece.$isPiece = true;
 $.Piece.$isObject = true;
+$.Piece.$isPiece = true;
 $.Plugin.$isObject = true;
-$.Part.$isObject = true;
 $.Part.$isPart = true;
+$.Part.$isObject = true;
 $.Gamepad.$isObject = true;
 $.Material.$isMaterial = true;
 $.Material.$isObject = true;
 $.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
-$.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
+$.HttpRequest.$isHttpRequest = true;
 $.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
@@ -18602,19 +18621,17 @@ $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.StyleSheet.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
 $.KeyboardEvent.$isEvent = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
 $.JSInt.$isnum = true;
@@ -18622,29 +18639,31 @@ $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isdouble = true;
+$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
-$.JSString.$isObject = true;
 $.Length.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.TextTrack.$isObject = true;
 $.Number.$isObject = true;
 $.Touch.$isObject = true;
 $.PathSeg.$isObject = true;
-$.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
-$.Shader.$isObject = true;
+$.CssRule.$isCssRule = true;
 $.Shader.$isShader = true;
+$.Shader.$isObject = true;
 $.Texture.$isObject = true;
 $.Texture.$isTexture = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
