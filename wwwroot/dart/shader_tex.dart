@@ -53,16 +53,26 @@ class TexShaderProgram extends ShaderProgram {
   
 }
 
+class TexPiece extends Piece {
+  
+  TextureInfo texInfo;
+  
+  TexPiece(int indexOffset, int indexLength) : super(indexOffset, indexLength);  
+}
+
 class TexModel extends Model {
   
   Buffer textureCoordBuffer;
-  int textureCoordBufferItemSize;  
+  int textureCoordBufferItemSize;
+  Asset asset;
+  Map<String,Texture> textureTable;
 
-  List<TextureInfo> textureInfoList = new List<TextureInfo>();
+  //List<TextureInfo> textureInfoList = new List<TextureInfo>();
   
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
     
-    textureInfoList.forEach((TextureInfo ti) => ti.forceCreateTexture(gl, textureTable));
+    //textureInfoList.forEach((TextureInfo ti) => ti.forceCreateTexture(gl, textureTable));
+    pieceList.forEach((TexPiece pi) => pi.texInfo.forceCreateTexture(gl, textureTable));
     
   }
   
@@ -135,11 +145,71 @@ class TexModel extends Model {
   }
   */
 
-  TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL,
-      void onDone(RenderingContext gl, TexModel m, Obj o, String u)) : super.fromOBJ(gl, program, URL, onDone);
+  void loadObj(RenderingContext gl, Obj obj) {
+    
+    String mtlURL = "${asset.mtl}/${obj.mtllib}";
+
+    void onMtlLibLoaded(String materialResponse) {
+
+      Map<String,Material> lib = mtllib_parse(materialResponse, mtlURL);
+      assert(lib != null);
+      
+      int i = 0;
+
+      obj.partList.forEach((Part pa) {
+
+        String usemtl = pa.usemtl;      
+        print("loadObj $i: usemtl=$usemtl");
+        
+        Material mtl = lib[usemtl];
+        if (mtl == null) {
+          print("loadObj $i: material usemtl=$usemtl NOT FOUND on mtllib=$mtlURL");
+          return;
+        }
+        
+        int r = (mtl.Kd[0] * 255.0).round();
+        int g = (mtl.Kd[1] * 255.0).round();
+        int b = (mtl.Kd[2] * 255.0).round();
+        List<int> temporaryColor = [r, g, b, 255];
+                
+        String texFile = mtl.map_Kd;
+        print("loadObj $i: map_Kd=$texFile");
+
+        String textureURL;
+        if (texFile != null) {
+          textureURL = "${asset.texture}/$texFile";
+        }
+        print("loadObj $i: textureURL=$textureURL");
+        
+        TextureInfo texInfo = new TextureInfo(gl, textureTable, textureURL, temporaryColor);
+        
+        addTexture(pa.indexFirst, pa.indexListSize, texInfo);
+        
+        ++i;
+      });    
+    }
+
+    HttpRequest.getString(mtlURL)
+    .then(onMtlLibLoaded)
+    .catchError((err) { print("loadObj: failure fetching mtllib: $mtlURL: $err"); });    
+  }
   
-  void addTexture(TextureInfo tex) {
-    textureInfoList.add(tex); 
+  TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL,
+      this.textureTable, this.asset,
+      [void onDone(RenderingContext gl, TexModel m, Obj o, String u)]):
+        super.fromOBJ(gl, program, URL, onDone);
+
+  Piece addPiece(int offset, int length) {
+    Piece pi = new TexPiece(offset, length);
+    pieceList.add(pi);
+    return pi;
+  }
+  
+  void addTexture(int indexOffset, int indexLength, TextureInfo tex) {
+    TexPiece pi = addPiece(indexOffset, indexLength) as TexPiece;
+    pi.texInfo = tex;
+    print("addTexture: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
+    //textureInfoList.add(tex); 
   }
 
   void drawInstances(GameLoopHtml gameLoop, Camera cam) {
@@ -178,6 +248,7 @@ class TexInstance extends Instance {
 
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
     
+    /*
     (model as TexModel).textureInfoList.forEach((TextureInfo ti) {
       
       // set texture sampler
@@ -188,6 +259,21 @@ class TexInstance extends Instance {
       
       gl.drawElements(RenderingContext.TRIANGLES, ti.indexNumber, RenderingContext.UNSIGNED_SHORT,
         ti.indexOffset * model.vertexIndexBufferItemSize);
+    });
+    */
+    (model as TexModel).pieceList.forEach((Piece pi) {
+      
+      TexPiece tp = pi as TexPiece;
+      TextureInfo ti = tp.texInfo;
+      
+      // set texture sampler
+      int unit = 1;
+      gl.activeTexture(RenderingContext.TEXTURE0 + unit);
+      gl.bindTexture(RenderingContext.TEXTURE_2D, ti.texture);
+      gl.uniform1i((prog as TexShaderProgram).u_Sampler, unit);
+      
+      gl.drawElements(RenderingContext.TRIANGLES, tp.vertexIndexLength, RenderingContext.UNSIGNED_SHORT,
+        tp.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });
     
   }

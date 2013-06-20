@@ -174,6 +174,9 @@ void initAirshipTex(RenderingContext gl) {
   void onModelDone(RenderingContext gl, TexModel mod, Obj obj, String oURL) {
     
     print("initAirshipTex: onModelDone: $oURL");
+    
+    return;
+    
     if (obj.mtllib == null) {
       print("initAirshipTex: onModelDone: $oURL: mtllib NOT FOUND");
       return;
@@ -201,9 +204,11 @@ void initAirshipTex(RenderingContext gl) {
       String textureURL = "${asset.texture}/$texFile";
       print("onMtlLibLoaded: textureURL=$textureURL");
       
+      /*
       TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.pieceList[0].vertexIndexLength,
           textureURL, temporaryColor);
       mod.addTexture(texInfo);
+      */
     } // onMtlLibLoaded
     
     HttpRequest.getString(mtlURL)
@@ -213,28 +218,35 @@ void initAirshipTex(RenderingContext gl) {
   
   String objURL = "${asset.obj}/airship.obj"; 
 
-  TexModel airshipModel = new TexModel.fromOBJ(gl, prog, objURL, onModelDone);
+  TexModel airshipModel = new TexModel.fromOBJ(gl, prog, objURL, textureTable, asset, onModelDone);
   prog.addModel(airshipModel);
   TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
 
-  void onModelDone2(RenderingContext gl, TexModel mod, Obj obj, String oURL) {
+  void onModelDone2(RenderingContext gl, TexModel mod, Obj obj, String oURL) {    
+    /*
     TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.pieceList[0].vertexIndexLength,
         "INTENTIONAL-BAD-TEXTURE-NAME", temporaryColor);
-    mod.addTexture(texInfo);  
+    mod.addTexture(texInfo);
+    */  
   }
 
-  TexModel airshipModel2 = new TexModel.fromOBJ(gl, prog, objURL, onModelDone2);
+  TexModel airshipModel2 = new TexModel.fromOBJ(gl, prog, objURL, textureTable, asset, onModelDone2);
   prog.addModel(airshipModel2);
   TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0);
   airshipModel2.addInstance(airshipInstance2);
   
-  String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";
-  
-  TexModel colonyShipModel = new TexModel.fromOBJ(gl, prog, colonyShipURL, onModelDone);
+  String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";  
+  TexModel colonyShipModel = new TexModel.fromOBJ(gl, prog, colonyShipURL, textureTable, asset, onModelDone);
   prog.addModel(colonyShipModel);
-  TexInstance colonyShipInstance = new TexInstance(colonyShipModel, new Vector3(0.0, 3.0, -5.0), 1.0);
+  TexInstance colonyShipInstance = new TexInstance(colonyShipModel, new Vector3(0.0, -5.0, -50.0), 1.0);
   colonyShipModel.addInstance(colonyShipInstance);
+    
+  String coneURL = "${asset.obj}/cone.obj";  
+  TexModel coneModel = new TexModel.fromOBJ(gl, prog, coneURL, textureTable, asset, onModelDone);
+  prog.addModel(coneModel);
+  TexInstance coneInstance = new TexInstance(coneModel, new Vector3(0.0, 2.0, -10.0), 1.0);
+  coneModel.addInstance(coneInstance);  
 }
 
 void initShips(RenderingContext gl) {

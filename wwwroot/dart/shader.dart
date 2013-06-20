@@ -13,9 +13,10 @@ import 'package:game_loop/game_loop_html.dart';
 import 'camera.dart';
 import 'texture.dart';
 import 'obj.dart';
+import 'asset.dart';
 
-part 'shader_tex.dart';
 part 'buffer.dart';
+part 'shader_tex.dart';
 
 class ShaderProgram {
   

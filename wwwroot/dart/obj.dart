@@ -7,7 +7,8 @@ class Part {
   int       indexFirst;
   int       indexListSize = 0;
   
-  Part(this.name, this.indexFirst);
+  Part(this.name, this.indexFirst) {
+  }
 }
 
 class Obj {
@@ -205,6 +206,7 @@ class Obj {
         }
         //usemtl = new_usemtl;
         currObj.usemtl = new_usemtl;
+        //print("part: name=${currObj.name} usemtl=${currObj.usemtl} offset=${currObj.indexFirst}");        
         return;
       }
 
@@ -235,6 +237,15 @@ class Obj {
       })
       .toList() // create a copy to avoid concurrent modifications
       .forEach(_partTable.remove); // remove selected keys
+
+    // FIXME
+    if (textCoord.length == 0) {
+      print("OBJ: FIXME: adding ${indices.length} virtual texture coordinates");
+      for (int i = 0; i < indices.length; ++i) {
+        textCoord.add(0.0); // u
+        textCoord.add(0.0); // v        
+      }
+    }
     
     print("Obj.fromString: objects = ${_partTable.length}");
     print("Obj.fromString: vertCoord.length = ${vertCoord.length}");

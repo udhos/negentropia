@@ -76,7 +76,13 @@ class Model {
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
   }
-    
+
+  Piece addPiece(int offset, int length) {
+    Piece pi = new Piece(offset, length);
+    pieceList.add(pi);
+    return pi;
+  }
+  
   Model.fromJson(RenderingContext gl, ShaderProgram this.program, String URL) {
 
     /*
@@ -100,7 +106,7 @@ class Model {
     });
     req.send();
     */
-
+    
     void handleResponse(String response) {
       //print("Model.fromJson: fetched JSON from URL: $URL: [$response]");
       Map m;
@@ -116,7 +122,9 @@ class Model {
       List<int> indices = m['vertInd'];
       List<double> vertCoord = m['vertCoord'];
       
-      pieceList.add(new Piece(0, indices.length)); // single-piece model
+      //pieceList.add(new Piece(0, indices.length)); // single-piece model
+      addPiece(0, indices.length); // single-piece model
+      assert(pieceList.length == 1);
 
       _createBuffers(gl, indices, vertCoord, null, null);
     }
@@ -130,6 +138,13 @@ class Model {
     .catchError(handleError);
   }
   
+  void loadObj(RenderingContext gl, Obj o) {
+    o.partList.forEach((Part pa) {
+      Piece pi = addPiece(pa.indexFirst, pa.indexListSize);
+      print("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
+    });    
+  }
+  
   Model.fromOBJ(RenderingContext gl, this.program, String URL,
       [void onDone(RenderingContext gl, Model m, Obj o, String u)]) {
 
@@ -138,11 +153,7 @@ class Model {
       
       Obj obj = new Obj.fromString(URL, response);
       
-      obj.partList.forEach((Part pa) {
-        Piece pi = new Piece(pa.indexFirst, pa.indexListSize);
-        pieceList.add(pi);
-        print("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
-      });
+      loadObj(gl, obj);
       
       _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
       
