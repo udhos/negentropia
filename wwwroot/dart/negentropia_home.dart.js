@@ -24,7 +24,7 @@ $$.AbstractWorker = {"": "EventTarget;",
   }
 };
 
-$$.AnchorElement = {"": "_HTMLElement;name=",
+$$.AnchorElement = {"": "_HTMLElement;",
   set$type: function(receiver, v) {
     receiver.type = $.stringTypeCheck(v);
   },
@@ -66,7 +66,7 @@ $$.Blob = {"": "Interceptor;"};
 
 $$.BodyElement = {"": "_HTMLElement;", $isBodyElement: true, $asBodyElement: null};
 
-$$.ButtonElement = {"": "_HTMLElement;name=",
+$$.ButtonElement = {"": "_HTMLElement;",
   set$type: function(receiver, v) {
     receiver.type = $.stringTypeCheck(v);
   }
@@ -143,7 +143,7 @@ $$.CssImportRule = {"": "CssRule;"};
 
 $$.CssKeyframeRule = {"": "CssRule;"};
 
-$$.CssKeyframesRule = {"": "CssRule;name="};
+$$.CssKeyframesRule = {"": "CssRule;"};
 
 $$.CssMatrix = {"": "Interceptor;",
   toString$0: function(receiver) {
@@ -239,29 +239,9 @@ $$.DocumentFragment = {"": "Node;", $isDocumentFragment: true, $asDocumentFragme
 
 $$.DocumentType = {"": "Node;"};
 
-$$.DomError = {"": "Interceptor;name=", $isDomError: true, $asDomError: null};
+$$.DomError = {"": "Interceptor;", $isDomError: true, $asDomError: null};
 
 $$.DomException = {"": "Interceptor;",
-  get$name: function(receiver) {
-    var errorName, t1;
-    errorName = receiver.name;
-    if ($.Device__isWebKit == null) {
-      if ($.Device__isOpera == null)
-        $.Device__isOpera = $.contains$2$asx(window.navigator.userAgent, "Opera", 0);
-      $.Device__isWebKit = !$.Device__isOpera && $.boolConversionCheck($.contains$2$asx(window.navigator.userAgent, "WebKit", 0));
-    }
-    t1 = $.Device__isWebKit;
-    if (t1 && errorName === "SECURITY_ERR")
-      return "SecurityError";
-    if (t1 == null) {
-      if ($.Device__isOpera == null)
-        $.Device__isOpera = $.contains$2$asx(window.navigator.userAgent, "Opera", 0);
-      $.Device__isWebKit = !$.Device__isOpera && $.boolConversionCheck($.contains$2$asx(window.navigator.userAgent, "WebKit", 0));
-    }
-    if ($.Device__isWebKit && errorName === "SYNTAX_ERR")
-      return "SyntaxError";
-    return errorName;
-  },
   toString$0: function(receiver) {
     return receiver.toString();
   }
@@ -333,13 +313,13 @@ $$.Element = {"": "Node;",
   $asObject: null
 };
 
-$$.EmbedElement = {"": "_HTMLElement;name=",
+$$.EmbedElement = {"": "_HTMLElement;",
   set$type: function(receiver, v) {
     receiver.type = $.stringTypeCheck(v);
   }
 };
 
-$$.Entry = {"": "Interceptor;name=",
+$$.Entry = {"": "Interceptor;",
   _remove$2: function(receiver, successCallback, errorCallback) {
     $.propertyTypeCheck(successCallback, "$isVoidCallback");
     $.propertyTypeCheck(errorCallback, "$is_ErrorCallback");
@@ -369,7 +349,7 @@ $$.ErrorEvent = {"": "Event;"};
 
 $$.Event = {"": "Interceptor;", $isEvent: true, $asEvent: null};
 
-$$.EventException = {"": "Interceptor;name=",
+$$.EventException = {"": "Interceptor;",
   toString$0: function(receiver) {
     return receiver.toString();
   }
@@ -395,15 +375,15 @@ $$.EventTarget = {"": "Interceptor;",
   $asEventTarget: null
 };
 
-$$.FieldSetElement = {"": "_HTMLElement;name="};
+$$.FieldSetElement = {"": "_HTMLElement;"};
 
-$$.File = {"": "Blob;name=", $isFile: true, $asFile: null};
+$$.File = {"": "Blob;", $isFile: true, $asFile: null};
 
 $$.FileEntry = {"": "Entry;"};
 
 $$.FileError = {"": "Interceptor;", $isFileError: true, $asFileError: null};
 
-$$.FileException = {"": "Interceptor;name=",
+$$.FileException = {"": "Interceptor;",
   toString$0: function(receiver) {
     return receiver.toString();
   }
@@ -451,7 +431,7 @@ $$.FileReader = {"": "EventTarget;",
   }
 };
 
-$$.FileSystem = {"": "Interceptor;name=", $isFileSystem: true, $asFileSystem: null};
+$$.FileSystem = {"": "Interceptor;", $isFileSystem: true, $asFileSystem: null};
 
 $$.FileWriter = {"": "EventTarget;length=",
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
@@ -477,7 +457,7 @@ $$.FontLoader = {"": "EventTarget;",
 
 $$.FormData = {"": "Interceptor;"};
 
-$$.FormElement = {"": "_HTMLElement;length=,name=", $isFormElement: true, $asFormElement: null};
+$$.FormElement = {"": "_HTMLElement;length=", $isFormElement: true, $asFormElement: null};
 
 $$.Gamepad = {"": "Interceptor;", $isGamepad: true, $asGamepad: null};
 
@@ -610,13 +590,13 @@ $$.HttpRequestUpload = {"": "EventTarget;",
   $asHttpRequestUpload: null
 };
 
-$$.IFrameElement = {"": "_HTMLElement;name="};
+$$.IFrameElement = {"": "_HTMLElement;"};
 
 $$.ImageData = {"": "Interceptor;"};
 
 $$.ImageElement = {"": "_HTMLElement;", $isImageElement: true, $asImageElement: null, $asObject: null};
 
-$$.InputElement = {"": "_HTMLElement;name=",
+$$.InputElement = {"": "_HTMLElement;",
   set$type: function(receiver, v) {
     receiver.type = $.stringTypeCheck(v);
   },
@@ -635,7 +615,7 @@ $$.InputMethodContext = {"": "Interceptor;"};
 
 $$.KeyboardEvent = {"": "UIEvent;", $isKeyboardEvent: true, $asKeyboardEvent: null};
 
-$$.KeygenElement = {"": "_HTMLElement;name="};
+$$.KeygenElement = {"": "_HTMLElement;"};
 
 $$.LIElement = {"": "_HTMLElement;",
   set$type: function(receiver, v) {
@@ -660,7 +640,7 @@ $$.Location = {"": "Interceptor;",
   $asObject: null
 };
 
-$$.MapElement = {"": "_HTMLElement;name="};
+$$.MapElement = {"": "_HTMLElement;"};
 
 $$.MediaController = {"": "EventTarget;",
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
@@ -754,7 +734,7 @@ $$.MessagePort = {"": "EventTarget;",
   $asMessagePort: null
 };
 
-$$.MetaElement = {"": "_HTMLElement;name="};
+$$.MetaElement = {"": "_HTMLElement;"};
 
 $$.Metadata = {"": "Interceptor;"};
 
@@ -781,7 +761,7 @@ $$.MidiOutput = {"": "MidiPort;",
   }
 };
 
-$$.MidiPort = {"": "EventTarget;name=",
+$$.MidiPort = {"": "EventTarget;",
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.addEventListener(type, $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
   },
@@ -839,7 +819,7 @@ $$.MutationObserver = {"": "Interceptor;"};
 
 $$.MutationRecord = {"": "Interceptor;"};
 
-$$.NamedFlow = {"": "EventTarget;name=",
+$$.NamedFlow = {"": "EventTarget;",
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.addEventListener(type, $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
   },
@@ -852,7 +832,7 @@ $$.NamedFlowCollection = {"": "Interceptor;length="};
 
 $$.Navigator = {"": "Interceptor;", $isNavigator: true, $asNavigator: null};
 
-$$.NavigatorUserMediaError = {"": "Interceptor;name="};
+$$.NavigatorUserMediaError = {"": "Interceptor;"};
 
 $$.Node = {"": "EventTarget;",
   remove$0: function(receiver) {
@@ -950,7 +930,7 @@ $$.OListElement = {"": "_HTMLElement;",
   }
 };
 
-$$.ObjectElement = {"": "_HTMLElement;name=",
+$$.ObjectElement = {"": "_HTMLElement;",
   set$type: function(receiver, v) {
     receiver.type = $.stringTypeCheck(v);
   }
@@ -960,7 +940,7 @@ $$.OptGroupElement = {"": "_HTMLElement;"};
 
 $$.OptionElement = {"": "_HTMLElement;"};
 
-$$.OutputElement = {"": "_HTMLElement;name="};
+$$.OutputElement = {"": "_HTMLElement;"};
 
 $$.OverflowEvent = {"": "Event;"};
 
@@ -968,13 +948,13 @@ $$.PageTransitionEvent = {"": "Event;"};
 
 $$.ParagraphElement = {"": "_HTMLElement;", $isParagraphElement: true, $asParagraphElement: null};
 
-$$.ParamElement = {"": "_HTMLElement;name="};
+$$.ParamElement = {"": "_HTMLElement;"};
 
 $$.Path = {"": "Interceptor;", $isPath: true, $asPath: null};
 
 $$.Performance = {"": "EventTarget;", $isPerformance: true, $asPerformance: null};
 
-$$.PerformanceEntry = {"": "Interceptor;name="};
+$$.PerformanceEntry = {"": "Interceptor;"};
 
 $$.PerformanceMark = {"": "PerformanceEntry;"};
 
@@ -986,7 +966,7 @@ $$.PerformanceResourceTiming = {"": "PerformanceEntry;"};
 
 $$.PerformanceTiming = {"": "Interceptor;", $isPerformanceTiming: true, $asPerformanceTiming: null};
 
-$$.Plugin = {"": "Interceptor;length=,name=", $isPlugin: true, $asPlugin: null};
+$$.Plugin = {"": "Interceptor;length=", $isPlugin: true, $asPlugin: null};
 
 $$.PluginArray = {"": "Interceptor_ListMixin_ImmutableListMixin5;",
   get$length: function(receiver) {
@@ -1108,7 +1088,7 @@ $$.SecurityPolicy = {"": "Interceptor;", $isSecurityPolicy: true, $asSecurityPol
 
 $$.SecurityPolicyViolationEvent = {"": "Event;"};
 
-$$.SelectElement = {"": "_HTMLElement;length=,name="};
+$$.SelectElement = {"": "_HTMLElement;length="};
 
 $$.Selection = {"": "Interceptor;",
   toString$0: function(receiver) {
@@ -1231,11 +1211,11 @@ $$.SpeechRecognitionResult = {"": "Interceptor;length=", $isSpeechRecognitionRes
 
 $$.SpeechSynthesis = {"": "Interceptor;", $isSpeechSynthesis: true, $asSpeechSynthesis: null};
 
-$$.SpeechSynthesisEvent = {"": "Event;name="};
+$$.SpeechSynthesisEvent = {"": "Event;"};
 
 $$.SpeechSynthesisUtterance = {"": "EventTarget;"};
 
-$$.SpeechSynthesisVoice = {"": "Interceptor;name=", $isSpeechSynthesisVoice: true, $asSpeechSynthesisVoice: null};
+$$.SpeechSynthesisVoice = {"": "Interceptor;", $isSpeechSynthesisVoice: true, $asSpeechSynthesisVoice: null};
 
 $$.Storage = {"": "Interceptor;",
   $index: function(receiver, key) {
@@ -1315,7 +1295,7 @@ $$.TemplateElement = {"": "_HTMLElement;"};
 
 $$.Text = {"": "CharacterData;"};
 
-$$.TextAreaElement = {"": "_HTMLElement;name="};
+$$.TextAreaElement = {"": "_HTMLElement;"};
 
 $$.TextEvent = {"": "UIEvent;"};
 
@@ -1535,7 +1515,7 @@ $$.WheelEvent = {"": "MouseEvent;",
   $asWheelEvent: null
 };
 
-$$.Window = {"": "EventTarget;name=",
+$$.Window = {"": "EventTarget;",
   _liblib$_requestAnimationFrame$1: function(receiver, callback) {
     return receiver.requestAnimationFrame($.convertDartClosureToJS($.propertyTypeCheck(callback, "$isRequestAnimationFrameCallback"), 1));
   },
@@ -1578,7 +1558,7 @@ $$.Worker = {"": "AbstractWorker;"};
 
 $$.XPathEvaluator = {"": "Interceptor;"};
 
-$$.XPathException = {"": "Interceptor;name=",
+$$.XPathException = {"": "Interceptor;",
   toString$0: function(receiver) {
     return receiver.toString();
   }
@@ -1594,7 +1574,7 @@ $$.XmlSerializer = {"": "Interceptor;"};
 
 $$.XsltProcessor = {"": "Interceptor;"};
 
-$$._Attr = {"": "Node;name="};
+$$._Attr = {"": "Node;"};
 
 $$._CSSValue = {"": "Interceptor;", $is_CSSValue: true, $as_CSSValue: null};
 
@@ -1980,7 +1960,7 @@ $$.Cursor = {"": "Interceptor;"};
 
 $$.CursorWithValue = {"": "Cursor;"};
 
-$$.Database = {"": "EventTarget;name=",
+$$.Database = {"": "EventTarget;",
   $$dom_addEventListener$3: function(receiver, type, listener, useCapture) {
     return receiver.addEventListener(type, $.convertDartClosureToJS($.propertyTypeCheck(listener, "$isEventListener"), 1), useCapture);
   },
@@ -1993,11 +1973,11 @@ $$.Database = {"": "EventTarget;name=",
 
 $$.IdbFactory = {"": "Interceptor;"};
 
-$$.Index = {"": "Interceptor;name="};
+$$.Index = {"": "Interceptor;"};
 
 $$.KeyRange = {"": "Interceptor;"};
 
-$$.ObjectStore = {"": "Interceptor;name=", $isObjectStore: true, $asObjectStore: null};
+$$.ObjectStore = {"": "Interceptor;", $isObjectStore: true, $asObjectStore: null};
 
 $$.OpenDBRequest = {"": "Request;", $isEventTarget: true, $asEventTarget: null, $asObject: null};
 
@@ -2383,7 +2363,7 @@ $$.SvgDocument = {"": "Document;"};
 
 $$.SvgElement = {"": "Element;", $isSvgElement: true, $asSvgElement: null};
 
-$$.SvgException = {"": "Interceptor;name=",
+$$.SvgException = {"": "Interceptor;",
   toString$0: function(receiver) {
     return receiver.toString();
   }
@@ -2520,7 +2500,7 @@ $$.AudioNode = {"": "EventTarget;",
   }
 };
 
-$$.AudioParam = {"": "Interceptor;name=", $isAudioParam: true, $asAudioParam: null};
+$$.AudioParam = {"": "Interceptor;", $isAudioParam: true, $asAudioParam: null};
 
 $$.AudioProcessingEvent = {"": "Event;"};
 
@@ -2568,7 +2548,7 @@ $$.WaveShaperNode = {"": "AudioNode;"};
 
 $$.WaveTable = {"": "Interceptor;"};
 
-$$.ActiveInfo = {"": "Interceptor;name="};
+$$.ActiveInfo = {"": "Interceptor;"};
 
 $$.Buffer = {"": "Interceptor;", $isBuffer: true, $asBuffer: null};
 
@@ -4639,11 +4619,6 @@ JSString: {"": "String/Interceptor;",
   },
   indexOf$1: function($receiver, pattern) {
     return this.indexOf$2($receiver, pattern, 0);
-  },
-  contains$2: function(receiver, other, startIndex) {
-    if (startIndex < 0 || startIndex > receiver.length)
-      throw $.wrapException(new $.RangeError("value " + startIndex + " not in range 0.." + receiver.length));
-    return $.boolTypeCheck($.stringContainsUnchecked(receiver, other, startIndex));
   },
   get$isEmpty: function(receiver) {
     return receiver.length === 0;
@@ -7187,10 +7162,6 @@ lookupDispatchRecord: function(obj) {
     return $.makeDispatchRecord(interceptor, Object.getPrototypeOf(obj), null, null);
 },
 
-stringContainsUnchecked: function(receiver, other, startIndex) {
-  return $.JSString_methods.indexOf$2(receiver, other, startIndex) !== -1;
-},
-
 stringReplaceAllUnchecked: function(receiver, from, to) {
   var result, $length, i, t1;
   if (from === "")
@@ -7370,9 +7341,6 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current@",
 },
 
 MappedIterable: {"": "IterableBase;_iterable<,_f",
-  _f$1: function(arg0) {
-    return this._f.call$1(arg0);
-  },
   get$iterator: function(_) {
     var t1, $arguments, arguments0, t2, t3;
     t1 = this._iterable;
@@ -7408,18 +7376,6 @@ MappedIterable: {"": "IterableBase;_iterable<,_f",
   get$length: function(_) {
     var t1 = this._iterable;
     return t1.get$length(t1);
-  },
-  get$first: function(_) {
-    var t1, $arguments, arguments0;
-    t1 = this._iterable;
-    t1 = this._f$1(t1.get$first(t1));
-    $arguments = this.$asMappedIterable;
-    arguments0 = $.getRuntimeTypeInfo(this);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterableBase: function (S, T) { return [T]; },
@@ -9461,20 +9417,6 @@ IterableBase: {"": "Object;",
       ++count;
     return count;
   },
-  get$first: function(_) {
-    var it, t1, $arguments, arguments0;
-    it = this.get$iterator(this);
-    if (!$.boolConversionCheck(it.moveNext$0()))
-      throw $.wrapException(new $.StateError("No elements"));
-    t1 = it.get$current();
-    $arguments = this.$asIterableBase;
-    arguments0 = $.getRuntimeTypeInfo(this);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
-  },
   elementAt$1: function(_, index) {
     var t1, remaining, element, $arguments, arguments0;
     $.intTypeCheck(index);
@@ -10227,23 +10169,6 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
-  get$first: function(_) {
-    var t1, t2, $arguments, arguments0;
-    t1 = this._head;
-    if (t1 === this._tail)
-      throw $.wrapException(new $.StateError("No elements"));
-    t2 = this._table;
-    if (t1 < 0 || t1 >= t2.length)
-      throw $.ioore(t1);
-    t1 = t2[t1];
-    $arguments = this.$asListQueue;
-    arguments0 = $.getRuntimeTypeInfo(this);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
-  },
   toString$0: function(_) {
     var result = new $.StringBuffer("");
     result._contents = "";
@@ -10826,7 +10751,7 @@ FormatException: {"": "Object;message",
   $asObject: null
 },
 
-Expando: {"": "Object;name>",
+Expando: {"": "Object;name",
   toString$0: function(_) {
     return "Expando:" + this.name;
   },
@@ -15487,27 +15412,11 @@ main: function() {
   $.initContext(gl, gameLoop);
 }}],
 ["obj", "obj.dart", , {
-Part: {"": "Object;name>,smooth,usemtl<,indexFirst,indexListSize<", $isPart: true},
+Part: {"": "Object;name,smooth,usemtl,indexFirst,indexListSize<", $isPart: true},
 
 Obj: {"": "Object;_partTable<,vertCoord<,textCoord<,normCoord,indices<,mtllib<",
   set$mtllib: function(v) {
     this.mtllib = $.stringTypeCheck(v);
-  },
-  get$usemtl: function() {
-    var t1, t2, $arguments, arguments0;
-    t1 = this._partTable;
-    if (t1._liblib0$_length === 0)
-      return;
-    t1 = t1.get$values(t1);
-    t2 = t1._iterable;
-    t2 = t1._f$1(t2.get$first(t2));
-    $arguments = t1.$asMappedIterable;
-    arguments0 = $.getRuntimeTypeInfo(t1);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t2, $arguments == null ? null : $arguments[1]).get$usemtl();
   },
   Obj$fromString$2: function(url, str, box_0) {
     var t1, t2, t3, _vertCoord, _textCoord, lines, $arguments, arguments0, t4, i;
@@ -15605,26 +15514,6 @@ Obj: {"": "Object;_partTable<,vertCoord<,textCoord<,normCoord,indices<,mtllib<",
     $.Primitives_printString("Obj.fromString: textCoord.length = " + t2.length);
     $.Primitives_printString("Obj.fromString: normCoord.length = " + this.normCoord.length);
     $.Primitives_printString("Obj.fromString: mtllib = " + this.mtllib);
-    t2 = t1.get$values(t1);
-    t3 = t2._iterable;
-    t3 = t2._f$1(t3.get$first(t3));
-    $arguments = t2.$asMappedIterable;
-    arguments0 = $.getRuntimeTypeInfo(t2);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    $.Primitives_printString("Obj.fromString: first=" + $.get$name$x($.assertSubtypeOfRuntimeType(t3, $arguments == null ? null : $arguments[1])) + " indices.length = " + this.indices.length);
-    t1 = t1.get$values(t1);
-    t2 = t1._iterable;
-    t2 = t1._f$1(t2.get$first(t2));
-    $arguments = t1.$asMappedIterable;
-    arguments0 = $.getRuntimeTypeInfo(t1);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    $.Primitives_printString("Obj.fromString: first=" + $.get$name$x($.assertSubtypeOfRuntimeType(t2, $arguments == null ? null : $arguments[1])) + " usemtl = " + this.get$usemtl());
   },
   $isObj: true
 },
@@ -16105,7 +15994,7 @@ Obj$fromString_closure0: {"": "Closure;this_7,url_8",
   $isGameLoopPointerLockChangeFunction: true
 },
 
-Material: {"": "Object;name>,map_Kd,Kd", $isMaterial: true},
+Material: {"": "Object;name,map_Kd,Kd", $isMaterial: true},
 
 mtllib_parse__parse_newmtl: {"": "Closure;box_0,lib_1",
   call$5: function(field, param, line, lineNum, url) {
@@ -18648,25 +18537,25 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
+$.MouseEvent.$isEvent = true;
 $.MouseEvent.$isObject = true;
 $.MouseEvent.$isMouseEvent = true;
-$.MouseEvent.$isEvent = true;
 $._CSSValue.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isObject = true;
-$.Element.$isObject = true;
+$.Element.$isNode = true;
 $.Element.$isObject = true;
 $.Element.$isElement = true;
-$.Element.$isNode = true;
-$._GameLoopTouchEvent.$isObject = true;
+$.Element.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
+$._GameLoopTouchEvent.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
-$.GameLoopTimer.$isObject = true;
+$.GameLoopTouch.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTimer.$isObject = true;
 $.Entry.$isObject = true;
 $.Entry.$isEntry = true;
 $.Duration.$isObject = true;
@@ -18675,14 +18564,14 @@ $.DigitalButton.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
+$._IsolateContext.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
 $.File.$isObject = true;
 $.File.$isFile = true;
-$.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
+$.ShaderProgram.$isShaderProgram = true;
 $.Instance.$isObject = true;
 $.Instance.$isInstance = true;
 $.Transform.$isObject = true;
@@ -18694,8 +18583,8 @@ $.Plugin.$isObject = true;
 $.Part.$isObject = true;
 $.Part.$isPart = true;
 $.Gamepad.$isObject = true;
-$.Material.$isObject = true;
 $.Material.$isMaterial = true;
+$.Material.$isObject = true;
 $.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
@@ -18706,56 +18595,56 @@ $.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
-$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechRecognitionResult.$isObject = true;
-$.StyleSheet.$isStyleSheet = true;
+$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.StyleSheet.$isObject = true;
+$.StyleSheet.$isStyleSheet = true;
+$.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isObject = true;
-$.KeyboardEvent.$isEvent = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
+$.JSString.$isObject = true;
 $.Length.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.TextTrack.$isObject = true;
 $.Number.$isObject = true;
 $.Touch.$isObject = true;
 $.PathSeg.$isObject = true;
-$.CssRule.$isObject = true;
 $.CssRule.$isCssRule = true;
-$.Shader.$isShader = true;
+$.CssRule.$isObject = true;
 $.Shader.$isObject = true;
+$.Shader.$isShader = true;
 $.Texture.$isObject = true;
 $.Texture.$isTexture = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
@@ -18809,8 +18698,6 @@ $.interceptorsByTag = null;
 $.leafTags = null;
 $._callbacksAreEnqueued = false;
 $.Expando__keyCount = 0;
-$.Device__isOpera = null;
-$.Device__isWebKit = null;
 $.canvas = null;
 $.canvasAspect = null;
 $.debugLostContext = true;
@@ -18877,9 +18764,6 @@ $.clear$1$ax = function(receiver, a0) {
 $.compileShader$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).compileShader$1(receiver, a0);
 };
-$.contains$2$asx = function(receiver, a0, a1) {
-  return $.getInterceptor$asx(receiver).contains$2(receiver, a0, a1);
-};
 $.createShader$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).createShader$1(receiver, a0);
 };
@@ -18903,9 +18787,6 @@ $.get$length$asx = function(receiver) {
 };
 $.get$model$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$model(receiver);
-};
-$.get$name$x = function(receiver) {
-  return $.getInterceptor$x(receiver).get$name(receiver);
 };
 $.get$onMouseDown$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$onMouseDown(receiver);

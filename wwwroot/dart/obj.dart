@@ -21,11 +21,13 @@ class Obj {
   
   Iterable<Part> get partList => _partTable.values;
   
+  /*
   String get usemtl {
     if (_partTable.isEmpty)
       return null;
     return _partTable.values.first.usemtl;
   }
+  */
   
   List<double> vertCoord = new List<double>();   
   List<double> textCoord = new List<double>();
@@ -243,8 +245,6 @@ class Obj {
     print("Obj.fromString: textCoord.length = ${textCoord.length}");
     print("Obj.fromString: normCoord.length = ${normCoord.length}");
     print("Obj.fromString: mtllib = $mtllib");
-    print("Obj.fromString: first=${_partTable.values.first.name} indices.length = ${indices.length}");
-    print("Obj.fromString: first=${_partTable.values.first.name} usemtl = $usemtl");
   }
 }
 
