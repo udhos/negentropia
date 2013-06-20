@@ -10,14 +10,6 @@ const CM_CODE_AUTH  = 2; // client->server: let me in
 const CM_CODE_ECHO  = 3; // client->server: please echo this
 const CM_CODE_KILL  = 4; // server->client: do not attempt reconnect on same session
 
-/*
-WebSocket w;
-StreamSubscription<Event> subOpen;
-StreamSubscription<Event> subClose;
-StreamSubscription<Event> subError;
-StreamSubscription<Event> subMessage;
-*/
-
 void doSend(WebSocket w, String msg) {
   print("websocket: sending: [${msg}]");
   w.send(msg);

@@ -7,8 +7,6 @@ import 'dart:typed_data';
 
 class TextureInfo {
   
-  //int indexOffset;
-  //int indexNumber;
   String textureName;
   Texture texture;
   List<int> temporaryColor;
@@ -85,8 +83,6 @@ class TextureInfo {
   TextureInfo(RenderingContext gl, Map<String,Texture> textureTable, this.textureName,
               List<int> this.temporaryColor) {
     
-    //print("TextureInfo: indexOffset=$indexOffset indexNumber=$indexNumber");
-        
     texture = textureTable[textureName];
     if (texture != null) {
       print("TextureInfo: texture table HIT: $textureName");

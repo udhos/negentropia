@@ -7,8 +7,7 @@ class Part {
   int       indexFirst;
   int       indexListSize = 0;
   
-  Part(this.name, this.indexFirst) {
-  }
+  Part(this.name, this.indexFirst);
 }
 
 class Obj {
@@ -21,14 +20,6 @@ class Obj {
   Map<String,Part> _partTable = new Map<String,Part>();
   
   Iterable<Part> get partList => _partTable.values;
-  
-  /*
-  List<int> get indices {
-    if (_objTable.isEmpty)
-      return null;
-    return _objTable.values.first.indices;
-  }
-  */
   
   String get usemtl {
     if (_partTable.isEmpty)

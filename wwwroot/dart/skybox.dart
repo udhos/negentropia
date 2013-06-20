@@ -62,12 +62,6 @@ class SkyboxModel extends Model {
   
   SkyboxModel.fromJson(RenderingContext gl, SkyboxProgram prog, String URL, bool reverse, num rescale) : super.fromJson(gl, prog, URL) {
     cubemapTexture = gl.createTexture();
-    
-    /*
-    gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
-    gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP, RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.LINEAR);
-    gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP, RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.LINEAR);
-    */
   }
     
   void addCubemapFace(int face, String URL) {
@@ -133,12 +127,6 @@ class SkyboxInstance extends Instance {
     ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;
 
-    // send model-view matrix uniform
-    /*
-    List<num> MV_tmp = new List<num>(16); 
-    MV.copyIntoArray(MV_tmp);
-    gl.uniformMatrix4fv(prog.u_MV, false, MV_tmp);
-    */
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
@@ -146,7 +134,6 @@ class SkyboxInstance extends Instance {
   
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
     
-    //gl.drawElements(RenderingContext.TRIANGLES, model.vertexIndexLength, RenderingContext.UNSIGNED_SHORT, 0 * model.vertexIndexBufferItemSize);
     model.pieceList.forEach((Piece piece) {
       gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength, RenderingContext.UNSIGNED_SHORT,
           piece.vertexIndexOffset * model.vertexIndexBufferItemSize);

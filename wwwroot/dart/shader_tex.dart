@@ -87,64 +87,6 @@ class TexModel extends Model {
     super._createBuffers(gl, indices, vertCoord, textCoord, normCoord);
 }
 
-  /*
-  void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
-    
-    vertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
-    gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
-    vertexPositionBufferItemSize = 3; // coord x,y,z
-    
-    textureCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
-    gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(textCoord), RenderingContext.STATIC_DRAW);
-    textureCoordBufferItemSize = 2; // coord s,t
-    
-    vertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
-    gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
-    vertexIndexBufferItemSize = 2; // size of Uint16Array
-    
-    vertexIndexLength = indices.length;
-    
-    print("TexModel._createBuffers: vertex index length: ${vertexIndexLength}");
-    
-    // clean-up
-    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
-    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
-  }
-  */
-
-  /*
-  TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL) :
-    super.fromOBJ(gl, program, URL);
-  */  
-
-  /*
-  TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL, void onDone(RenderingContext gl, TexModel model)) {
-
-    this.program = program;
-    
-    void handleResponse(String response) {
-      print("TexModel.fromOBJ: fetched OBJ from URL: $URL");
-      
-      Obj obj = new Obj.fromString(URL, response);
-      
-      _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
-      
-      onDone(gl, this);
-    }
-
-    void handleError(Object err) {
-      print("TexModel.fromOBJ: failure fetching OBJ from URL: $URL: $err");
-    }
-
-    HttpRequest.getString(URL)
-    .then(handleResponse)
-    .catchError(handleError);    
-  }
-  */
-
   void loadObj(RenderingContext gl, Obj obj) {
     
     String mtlURL = "${asset.mtl}/${obj.mtllib}";
@@ -159,7 +101,6 @@ class TexModel extends Model {
       obj.partList.forEach((Part pa) {
 
         String usemtl = pa.usemtl;      
-        print("loadObj $i: usemtl=$usemtl");
         
         Material mtl = lib[usemtl];
         if (mtl == null) {
@@ -173,20 +114,21 @@ class TexModel extends Model {
         List<int> temporaryColor = [r, g, b, 255];
                 
         String texFile = mtl.map_Kd;
-        print("loadObj $i: map_Kd=$texFile");
 
         String textureURL;
         if (texFile != null) {
           textureURL = "${asset.texture}/$texFile";
         }
-        print("loadObj $i: textureURL=$textureURL");
+        //print("loadObj $i: usemtl=$usemtl map_Kd=$texFile textureURL=$textureURL");
         
         TextureInfo texInfo = new TextureInfo(gl, textureTable, textureURL, temporaryColor);
         
         addTexture(pa.indexFirst, pa.indexListSize, texInfo);
         
         ++i;
-      });    
+      });
+      
+      print("loadObj: ${obj.partList.length} parts fed into ${pieceList.length} pieces");
     }
 
     HttpRequest.getString(mtlURL)
@@ -208,8 +150,7 @@ class TexModel extends Model {
   void addTexture(int indexOffset, int indexLength, TextureInfo tex) {
     TexPiece pi = addPiece(indexOffset, indexLength) as TexPiece;
     pi.texInfo = tex;
-    print("addTexture: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
-    //textureInfoList.add(tex); 
+    //print("addTexture: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
   }
 
   void drawInstances(GameLoopHtml gameLoop, Camera cam) {

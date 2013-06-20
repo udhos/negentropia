@@ -51,8 +51,6 @@ class Model {
   int vertexPositionBufferItemSize;
   int vertexIndexBufferItemSize;
   
-  //int vertexIndexLength; // FIXME ERASEME
-
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
   ShaderProgram program; // parent program
@@ -68,10 +66,7 @@ class Model {
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
     gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
     vertexIndexBufferItemSize = 2; // size of Uint16Array
-    
-    //vertexIndexLength = indices.length;
-    //print("Model._createBuffers: vertex index length: $vertexIndexLength");
-    
+        
     // clean-up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
@@ -122,7 +117,6 @@ class Model {
       List<int> indices = m['vertInd'];
       List<double> vertCoord = m['vertCoord'];
       
-      //pieceList.add(new Piece(0, indices.length)); // single-piece model
       addPiece(0, indices.length); // single-piece model
       assert(pieceList.length == 1);
 
@@ -170,27 +164,6 @@ class Model {
     .then(handleResponse)
     .catchError(handleError);    
   }
-
-  /*
-  Model.fromOBJ(RenderingContext gl, ShaderProgram this.program, String URL) {
-
-    void handleResponse(String response) {
-      print("Model.fromOBJ: fetched OBJ from URL: $URL");
-      
-      Obj obj = new Obj.fromString(URL, response);
-      
-      _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
-    }
-
-    void handleError(Object err) {
-      print("Model.fromOBJ: failure fetching OBJ from URL: $URL: $err");
-    }
-
-    HttpRequest.getString(URL)
-    .then(handleResponse)
-    .catchError(handleError);    
-  }
-  */
 
   void addInstance(Instance i) {
     this.instanceList.add(i);

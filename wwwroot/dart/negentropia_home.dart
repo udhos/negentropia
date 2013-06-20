@@ -169,81 +169,26 @@ void initAirshipTex(RenderingContext gl) {
   programList.add(prog);
   prog.fetch(shaderCache, "${asset.shader}/simpleTex_vs.txt", "${asset.shader}/simpleTex_fs.txt");
   
-  List<int> temporaryColor = [25, 175, 25, 255]; // green
-  
-  void onModelDone(RenderingContext gl, TexModel mod, Obj obj, String oURL) {
-    
-    print("initAirshipTex: onModelDone: $oURL");
-    
-    return;
-    
-    if (obj.mtllib == null) {
-      print("initAirshipTex: onModelDone: $oURL: mtllib NOT FOUND");
-      return;
-    }
-    
-    String mtlURL = "${asset.mtl}/${obj.mtllib}";
-    
-    void onMtlLibLoaded(String response) {
-      
-      Map<String,Material> lib = mtllib_parse(response, mtlURL);
-      assert(lib != null);
-      
-      String usemtl = obj.usemtl;      
-      print("onMtlLibLoaded: usemtl=$usemtl");
-      
-      Material mtl = lib[usemtl];
-      if (mtl == null) {
-        print("onMtlLibLoaded: material usemtl=$usemtl NOT FOUND on mtllib=$mtlURL");
-        return;
-      }
-      
-      String texFile = mtl.map_Kd;
-      print("onMtlLibLoaded: map_Kd=$texFile");
-
-      String textureURL = "${asset.texture}/$texFile";
-      print("onMtlLibLoaded: textureURL=$textureURL");
-      
-      /*
-      TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.pieceList[0].vertexIndexLength,
-          textureURL, temporaryColor);
-      mod.addTexture(texInfo);
-      */
-    } // onMtlLibLoaded
-    
-    HttpRequest.getString(mtlURL)
-    .then(onMtlLibLoaded)
-    .catchError((err) { print("initAirshipTex: onModelDone: failure fetching mtllib: $mtlURL: $err"); });    
-  } // onModelDone
-  
   String objURL = "${asset.obj}/airship.obj"; 
 
-  TexModel airshipModel = new TexModel.fromOBJ(gl, prog, objURL, textureTable, asset, onModelDone);
+  TexModel airshipModel = new TexModel.fromOBJ(gl, prog, objURL, textureTable, asset);
   prog.addModel(airshipModel);
   TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   airshipModel.addInstance(airshipInstance);
 
-  void onModelDone2(RenderingContext gl, TexModel mod, Obj obj, String oURL) {    
-    /*
-    TextureInfo texInfo = new TextureInfo(gl, textureTable, 0, mod.pieceList[0].vertexIndexLength,
-        "INTENTIONAL-BAD-TEXTURE-NAME", temporaryColor);
-    mod.addTexture(texInfo);
-    */  
-  }
-
-  TexModel airshipModel2 = new TexModel.fromOBJ(gl, prog, objURL, textureTable, asset, onModelDone2);
+  TexModel airshipModel2 = new TexModel.fromOBJ(gl, prog, objURL, textureTable, asset);
   prog.addModel(airshipModel2);
   TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0);
   airshipModel2.addInstance(airshipInstance2);
   
   String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";  
-  TexModel colonyShipModel = new TexModel.fromOBJ(gl, prog, colonyShipURL, textureTable, asset, onModelDone);
+  TexModel colonyShipModel = new TexModel.fromOBJ(gl, prog, colonyShipURL, textureTable, asset);
   prog.addModel(colonyShipModel);
   TexInstance colonyShipInstance = new TexInstance(colonyShipModel, new Vector3(0.0, -5.0, -50.0), 1.0);
   colonyShipModel.addInstance(colonyShipInstance);
     
   String coneURL = "${asset.obj}/cone.obj";  
-  TexModel coneModel = new TexModel.fromOBJ(gl, prog, coneURL, textureTable, asset, onModelDone);
+  TexModel coneModel = new TexModel.fromOBJ(gl, prog, coneURL, textureTable, asset);
   prog.addModel(coneModel);
   TexInstance coneInstance = new TexInstance(coneModel, new Vector3(0.0, 2.0, -10.0), 1.0);
   coneModel.addInstance(coneInstance);  
@@ -256,8 +201,8 @@ void initShips(RenderingContext gl) {
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
     
-  programList = new List<ShaderProgram>(); // drop existing programs 
-  shaderCache = new Map<String,Shader>();  // drop existing compile shader cache
+  programList = new List<ShaderProgram>();  // drop existing programs 
+  shaderCache = new Map<String,Shader>();   // drop existing compile shader cache
   textureTable = new Map<String,Texture>(); // drop existing texture table
 
   programList.forEach((ShaderProgram p) => p.initContext(gl, textureTable));
@@ -266,10 +211,10 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   initShips(gl);
   initSkybox(gl);
   
-  gl.clearColor(0.5, 0.5, 0.5, 1.0);            // clear color
+  gl.clearColor(0.5, 0.5, 0.5, 1.0);       // clear color
   gl.enable(RenderingContext.DEPTH_TEST);  // enable depth testing
   gl.depthFunc(RenderingContext.LESS);     // gl.LESS is default depth test
-  gl.depthRange(0.0, 1.0);                      // default
+  gl.depthRange(0.0, 1.0);                 // default
   
   // define viewport size
   gl.viewport(0, 0, canvas.width, canvas.height);

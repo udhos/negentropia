@@ -7369,7 +7369,7 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current@",
   $asObject: null
 },
 
-MappedIterable: {"": "IterableBase;_iterable,_f",
+MappedIterable: {"": "IterableBase;_iterable<,_f",
   _f$1: function(arg0) {
     return this._f.call$1(arg0);
   },
@@ -7455,7 +7455,7 @@ MappedIterator: {"": "Iterator;_current@,_iterator,_f",
   $asObject: null
 },
 
-WhereIterable: {"": "IterableBase;_iterable,_f",
+WhereIterable: {"": "IterableBase;_iterable<,_f",
   get$iterator: function(_) {
     var t1, $arguments, arguments0, t2;
     t1 = $.get$iterator$ax(this._iterable);
@@ -14953,29 +14953,6 @@ initSquares_closure: {"": "Closure;squareProgram2_0",
   $isVoidCallback: true
 },
 
-initAirshipTex_onModelDone: {"": "Closure;",
-  call$4: function(gl, mod, obj, oURL) {
-    $.interceptedTypeCheck(gl, "$isRenderingContext");
-    $.propertyTypeCheck(mod, "$isTexModel");
-    $.propertyTypeCheck(obj, "$isObj");
-    $.Primitives_printString("initAirshipTex: onModelDone: " + $.stringTypeCheck(oURL));
-    return;
-  },
-  $isFunction: true,
-  $asObject: null
-},
-
-initAirshipTex_onModelDone2: {"": "Closure;",
-  call$4: function(gl, mod, obj, oURL) {
-    $.interceptedTypeCheck(gl, "$isRenderingContext");
-    $.propertyTypeCheck(mod, "$isTexModel");
-    $.propertyTypeCheck(obj, "$isObj");
-    $.stringTypeCheck(oURL);
-  },
-  $isFunction: true,
-  $asObject: null
-},
-
 initContext_closure: {"": "Closure;gl_0",
   call$1: function(p) {
     return $.propertyTypeCheck(p, "$isShaderProgram").initContext$2(this.gl_0, $.textureTable);
@@ -15266,125 +15243,112 @@ initAirship: function(gl) {
 },
 
 initAirshipTex: function(gl) {
-  var t1, prog, onDone, objURL, t2, t3, t4, t5, onDone0, t6, airshipModel, t7, t8, airshipModel2, colonyShipURL, colonyShipModel, coneURL, coneModel;
+  var t1, prog, objURL, t2, t3, t4, airshipModel, t5, airshipModel2, colonyShipURL, colonyShipModel, coneURL, coneModel;
   t1 = $.List_List($, $.Model);
   $.assertHelper(true);
   t1.$builtinTypeInfo = [$.Model];
   prog = new $.TexShaderProgram(null, null, null, gl, null, null, null, false, $.interceptedTypeCheck(t1, "$isList"));
   $.add$1$ax($.programList, prog);
   prog.fetch$3($.shaderCache, $.get$asset()._shader + "/simpleTex_vs.txt", $.get$asset()._shader + "/simpleTex_fs.txt");
-  $.interceptedTypeCheck([25, 175, 25, 255], "$isList");
-  onDone = new $.initAirshipTex_onModelDone();
   objURL = $.get$asset()._obj + "/airship.obj";
   t1 = $.textureTable;
   t2 = $.get$asset();
-  $.propertyTypeCheck(onDone, "$isFunction");
+  $.propertyTypeCheck(null, "$isFunction");
   t3 = $.List_List($, $.Piece);
   $.assertHelper(true);
   t3.$builtinTypeInfo = [$.Piece];
   t4 = $.List_List($, $.Instance);
   $.assertHelper(true);
   t4.$builtinTypeInfo = [$.Instance];
-  t5 = $ === onDone;
-  onDone0 = t5 ? null : onDone;
-  t6 = !t5;
   airshipModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t1, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), $.interceptedTypeCheck(t4, "$isList"), prog);
-  airshipModel.Model$fromOBJ$4(gl, prog, objURL, onDone0, t6);
-  t4 = prog.modelList;
-  $.JSArray_methods.add$1(t4, airshipModel);
+  airshipModel.Model$fromOBJ$4(gl, prog, objURL, null, true);
+  t1 = prog.modelList;
+  $.JSArray_methods.add$1(t1, airshipModel);
   $.doubleTypeCheck(0);
-  t3 = new $.Vector3(new Float32Array(3));
-  t1 = t3.storage;
-  t2 = t1.length;
-  if (0 >= t2)
+  t2 = new $.Vector3(new Float32Array(3));
+  t3 = t2.storage;
+  t4 = t3.length;
+  if (0 >= t4)
     throw $.ioore(0);
-  t1[0] = 0;
-  if (1 >= t2)
+  t3[0] = 0;
+  if (1 >= t4)
     throw $.ioore(1);
-  t1[1] = 0;
-  if (2 >= t2)
+  t3[1] = 0;
+  if (2 >= t4)
     throw $.ioore(2);
-  t1[2] = 0;
+  t3[2] = 0;
   $.doubleTypeCheck(1);
-  t1 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
-  t1.setIdentity$0();
-  $.JSArray_methods.add$1(airshipModel.instanceList, new $.TexInstance(airshipModel, t3, 1, t1));
-  onDone0 = new $.initAirshipTex_onModelDone2();
-  t1 = $.textureTable;
-  t3 = $.get$asset();
-  $.propertyTypeCheck(onDone0, "$isFunction");
-  t2 = $.List_List($, $.Piece);
+  t3 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
+  t3.setIdentity$0();
+  $.JSArray_methods.add$1(airshipModel.instanceList, new $.TexInstance(airshipModel, t2, 1, t3));
+  t3 = $.textureTable;
+  t2 = $.get$asset();
+  t4 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t2.$builtinTypeInfo = [$.Piece];
-  t7 = $.List_List($, $.Instance);
+  t4.$builtinTypeInfo = [$.Piece];
+  t5 = $.List_List($, $.Instance);
   $.assertHelper(true);
-  t7.$builtinTypeInfo = [$.Instance];
-  t8 = $ === onDone0;
-  if (t8)
-    onDone0 = null;
-  airshipModel2 = new $.TexModel(null, null, t3, $.interceptedTypeCheck(t1, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t2, "$isList"), $.interceptedTypeCheck(t7, "$isList"), prog);
-  airshipModel2.Model$fromOBJ$4(gl, prog, objURL, onDone0, !t8);
-  $.JSArray_methods.add$1(t4, airshipModel2);
+  t5.$builtinTypeInfo = [$.Instance];
+  airshipModel2 = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), prog);
+  airshipModel2.Model$fromOBJ$4(gl, prog, objURL, null, true);
+  $.JSArray_methods.add$1(t1, airshipModel2);
   $.doubleTypeCheck(8);
-  t1 = new $.Vector3(new Float32Array(3));
-  t2 = t1.storage;
-  t3 = t2.length;
-  if (0 >= t3)
+  t2 = new $.Vector3(new Float32Array(3));
+  t3 = t2.storage;
+  t4 = t3.length;
+  if (0 >= t4)
     throw $.ioore(0);
-  t2[0] = 8;
-  if (1 >= t3)
+  t3[0] = 8;
+  if (1 >= t4)
     throw $.ioore(1);
-  t2[1] = 0;
-  if (2 >= t3)
+  t3[1] = 0;
+  if (2 >= t4)
     throw $.ioore(2);
-  t2[2] = 0;
-  t2 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
-  t2.setIdentity$0();
-  $.JSArray_methods.add$1(airshipModel2.instanceList, new $.TexInstance(airshipModel2, t1, 1, t2));
+  t3[2] = 0;
+  t3 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
+  t3.setIdentity$0();
+  $.JSArray_methods.add$1(airshipModel2.instanceList, new $.TexInstance(airshipModel2, t2, 1, t3));
   colonyShipURL = $.get$asset()._obj + "/Colony Ship Ogame Fleet.obj";
-  t2 = $.textureTable;
-  t1 = $.get$asset();
-  t3 = $.List_List($, $.Piece);
+  t3 = $.textureTable;
+  t2 = $.get$asset();
+  t4 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t3.$builtinTypeInfo = [$.Piece];
-  t7 = $.List_List($, $.Instance);
+  t4.$builtinTypeInfo = [$.Piece];
+  t5 = $.List_List($, $.Instance);
   $.assertHelper(true);
-  t7.$builtinTypeInfo = [$.Instance];
-  onDone0 = t5 ? null : onDone;
-  colonyShipModel = new $.TexModel(null, null, t1, $.interceptedTypeCheck(t2, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), $.interceptedTypeCheck(t7, "$isList"), prog);
-  colonyShipModel.Model$fromOBJ$4(gl, prog, colonyShipURL, onDone0, t6);
-  $.JSArray_methods.add$1(t4, colonyShipModel);
+  t5.$builtinTypeInfo = [$.Instance];
+  colonyShipModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), prog);
+  colonyShipModel.Model$fromOBJ$4(gl, prog, colonyShipURL, null, true);
+  $.JSArray_methods.add$1(t1, colonyShipModel);
   $.doubleTypeCheck(-5);
   $.doubleTypeCheck(-50);
-  t1 = new $.Vector3(new Float32Array(3));
-  t2 = t1.storage;
-  t3 = t2.length;
-  if (0 >= t3)
+  t2 = new $.Vector3(new Float32Array(3));
+  t3 = t2.storage;
+  t4 = t3.length;
+  if (0 >= t4)
     throw $.ioore(0);
-  t2[0] = 0;
-  if (1 >= t3)
+  t3[0] = 0;
+  if (1 >= t4)
     throw $.ioore(1);
-  t2[1] = -5;
-  if (2 >= t3)
+  t3[1] = -5;
+  if (2 >= t4)
     throw $.ioore(2);
-  t2[2] = -50;
-  t2 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
-  t2.setIdentity$0();
-  $.JSArray_methods.add$1(colonyShipModel.instanceList, new $.TexInstance(colonyShipModel, t1, 1, t2));
+  t3[2] = -50;
+  t3 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
+  t3.setIdentity$0();
+  $.JSArray_methods.add$1(colonyShipModel.instanceList, new $.TexInstance(colonyShipModel, t2, 1, t3));
   coneURL = $.get$asset()._obj + "/cone.obj";
-  t2 = $.textureTable;
-  t1 = $.get$asset();
-  t3 = $.List_List($, $.Piece);
+  t3 = $.textureTable;
+  t2 = $.get$asset();
+  t4 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t3.$builtinTypeInfo = [$.Piece];
-  t7 = $.List_List($, $.Instance);
+  t4.$builtinTypeInfo = [$.Piece];
+  t5 = $.List_List($, $.Instance);
   $.assertHelper(true);
-  t7.$builtinTypeInfo = [$.Instance];
-  if (t5)
-    onDone = null;
-  coneModel = new $.TexModel(null, null, t1, $.interceptedTypeCheck(t2, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), $.interceptedTypeCheck(t7, "$isList"), prog);
-  coneModel.Model$fromOBJ$4(gl, prog, coneURL, onDone, t6);
-  $.JSArray_methods.add$1(t4, coneModel);
+  t5.$builtinTypeInfo = [$.Instance];
+  coneModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), prog);
+  coneModel.Model$fromOBJ$4(gl, prog, coneURL, null, true);
+  $.JSArray_methods.add$1(t1, coneModel);
   $.doubleTypeCheck(2);
   $.doubleTypeCheck(-10);
   t1 = new $.Vector3(new Float32Array(3));
@@ -16991,12 +16955,6 @@ TexModel: {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,asset<,textu
     $.JSArray_methods.add$1(this.pieceList, pi);
     return pi;
   },
-  addTexture$3: function(indexOffset, indexLength, tex) {
-    var pi = new $.TexPiece(null, indexOffset, indexLength);
-    $.JSArray_methods.add$1(this.pieceList, pi);
-    pi.texInfo = tex;
-    $.Primitives_printString("addTexture: offset=" + pi.vertexIndexOffset + " length=" + $.S(pi.vertexIndexLength));
-  },
   drawInstances$2: function(gameLoop, cam) {
     var gl, t1;
     gl = this.program.gl;
@@ -17025,14 +16983,16 @@ TexModel_initContext_closure: {"": "Closure;gl_0,textureTable_1",
 
 TexModel_loadObj_onMtlLibLoaded: {"": "Closure;this_1,gl_2,obj_3,mtlURL_4",
   call$1: function(materialResponse) {
-    var t1, t2, lib, t3;
+    var t1, t2, lib, t3, t4;
     t1 = {};
     t2 = this.mtlURL_4;
     lib = $.interceptedTypeCheck($.mtllib_parse($.stringTypeCheck(materialResponse), t2), "$isMap");
     $.assertHelper(lib != null);
     t1.i_0 = 0;
     t3 = this.obj_3._partTable;
-    $.forEach$1$ax($.listSuperNativeTypeCheck(t3.get$values(t3), "$isIterable"), new $.TexModel_loadObj_onMtlLibLoaded_closure(t1, this.this_1, this.gl_2, t2, lib));
+    t4 = this.this_1;
+    $.forEach$1$ax($.listSuperNativeTypeCheck(t3.get$values(t3), "$isIterable"), new $.TexModel_loadObj_onMtlLibLoaded_closure(t1, t4, this.gl_2, t2, lib));
+    $.Primitives_printString("loadObj: " + $.S($.get$length$asx($.listSuperNativeTypeCheck(t3.get$values(t3), "$isIterable").get$_iterable())) + " parts fed into " + t4.get$pieceList().length + " pieces");
   },
   $isFunction: true,
   $asObject: null,
@@ -17041,35 +17001,34 @@ TexModel_loadObj_onMtlLibLoaded: {"": "Closure;this_1,gl_2,obj_3,mtlURL_4",
 
 TexModel_loadObj_onMtlLibLoaded_closure: {"": "Closure;box_0,this_5,gl_6,mtlURL_7,lib_8",
   call$1: function(pa) {
-    var usemtl, t1, t2, mtl, t3, r, g, temporaryColor, texFile, textureURL, texInfo;
+    var usemtl, t1, mtl, t2, r, g, temporaryColor, texFile, textureURL, texInfo, pi;
     $.propertyTypeCheck(pa, "$isPart");
     usemtl = pa.usemtl;
-    t1 = this.box_0;
-    $.Primitives_printString("loadObj " + t1.i_0 + ": usemtl=" + usemtl);
-    t2 = this.lib_8;
-    mtl = $.propertyTypeCheck(t2.$index(t2, usemtl), "$isMaterial");
+    t1 = this.lib_8;
+    mtl = $.propertyTypeCheck(t1.$index(t1, usemtl), "$isMaterial");
     if (mtl == null) {
-      $.Primitives_printString("loadObj " + t1.i_0 + ": material usemtl=" + usemtl + " NOT FOUND on mtllib=" + this.mtlURL_7);
+      $.Primitives_printString("loadObj " + this.box_0.i_0 + ": material usemtl=" + usemtl + " NOT FOUND on mtllib=" + this.mtlURL_7);
       return;
     }
-    t2 = mtl.Kd;
-    t3 = t2.length;
-    if (0 >= t3)
+    t1 = mtl.Kd;
+    t2 = t1.length;
+    if (0 >= t2)
       throw $.ioore(0);
-    r = $.intTypeCheck($.round$0$nx($.$mul$n(t2[0], 255)));
-    if (1 >= t3)
+    r = $.intTypeCheck($.round$0$nx($.$mul$n(t1[0], 255)));
+    if (1 >= t2)
       throw $.ioore(1);
-    g = $.intTypeCheck($.round$0$nx($.$mul$n(t2[1], 255)));
-    if (2 >= t3)
+    g = $.intTypeCheck($.round$0$nx($.$mul$n(t1[1], 255)));
+    if (2 >= t2)
       throw $.ioore(2);
-    temporaryColor = $.interceptedTypeCheck([r, g, $.intTypeCheck($.round$0$nx($.$mul$n(t2[2], 255))), 255], "$isList");
+    temporaryColor = $.interceptedTypeCheck([r, g, $.intTypeCheck($.round$0$nx($.$mul$n(t1[2], 255))), 255], "$isList");
     texFile = mtl.map_Kd;
-    $.Primitives_printString("loadObj " + t1.i_0 + ": map_Kd=" + texFile);
     textureURL = texFile != null ? this.this_5.get$asset()._texture + "/" + texFile : null;
-    $.Primitives_printString("loadObj " + t1.i_0 + ": textureURL=" + textureURL);
-    t2 = this.this_5;
-    texInfo = $.TextureInfo$(this.gl_6, t2.get$textureTable(), textureURL, temporaryColor);
-    t2.addTexture$3(pa.indexFirst, pa.indexListSize, texInfo);
+    t1 = this.this_5;
+    texInfo = $.TextureInfo$(this.gl_6, t1.get$textureTable(), textureURL, temporaryColor);
+    pi = new $.TexPiece(null, pa.indexFirst, pa.indexListSize);
+    $.JSArray_methods.add$1(t1.get$pieceList(), pi);
+    pi.texInfo = texInfo;
+    t1 = this.box_0;
     t1.i_0 = t1.i_0 + 1;
   },
   $isFunction: true,
@@ -18689,9 +18648,9 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
-$.MouseEvent.$isEvent = true;
 $.MouseEvent.$isObject = true;
 $.MouseEvent.$isMouseEvent = true;
+$.MouseEvent.$isEvent = true;
 $._CSSValue.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isObject = true;
@@ -18699,17 +18658,17 @@ $.Element.$isObject = true;
 $.Element.$isObject = true;
 $.Element.$isElement = true;
 $.Element.$isNode = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isObject = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTimer.$isObject = true;
-$.Entry.$isEntry = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
 $.Entry.$isObject = true;
+$.Entry.$isEntry = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.DigitalButton.$isObject = true;
@@ -18718,14 +18677,14 @@ $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
-$._IsolateEvent.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
-$.File.$isFile = true;
+$._IsolateEvent.$isObject = true;
 $.File.$isObject = true;
+$.File.$isFile = true;
 $.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
-$.Instance.$isInstance = true;
 $.Instance.$isObject = true;
+$.Instance.$isInstance = true;
 $.Transform.$isObject = true;
 $.Model.$isModel = true;
 $.Model.$isObject = true;
@@ -18742,51 +18701,51 @@ $.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
-$.ElementInstance.$isObject = true;
 $.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
-$.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
-$.SpeechRecognitionResult.$isObject = true;
+$.SpeechInputResult.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
-$.StyleSheet.$isObject = true;
+$.SpeechRecognitionResult.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
-$.KeyboardEvent.$isEvent = true;
+$.StyleSheet.$isObject = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isEvent = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
+$.JSNumber.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isint = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isint = true;
-$.JSInt.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isString = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
 $.Length.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.TextTrack.$isObject = true;
@@ -18795,8 +18754,8 @@ $.Touch.$isObject = true;
 $.PathSeg.$isObject = true;
 $.CssRule.$isObject = true;
 $.CssRule.$isCssRule = true;
-$.Shader.$isObject = true;
 $.Shader.$isShader = true;
+$.Shader.$isObject = true;
 $.Texture.$isObject = true;
 $.Texture.$isTexture = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
