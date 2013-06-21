@@ -3,6 +3,7 @@ import 'dart:html';
 import 'dart:async';
 import 'dart:web_gl';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:stats/stats.dart';
 import 'package:vector_math/vector_math.dart';
@@ -41,7 +42,8 @@ RenderingContext initGL(CanvasElement canvas) {
 
   RenderingContext gl;
 
-  gl = canvas.getContext3d();
+  // FIXME: ERASEME: preserveDrawingBuffer: true
+  gl = canvas.getContext3d(preserveDrawingBuffer: true);
   if (gl != null) {
     print("WebGL: initialized");
     return gl;
@@ -278,17 +280,24 @@ void render(RenderingContext gl, GameLoopHtml gameLoop) {
   stats.end();
 }
 
-void update(GameLoopHtml gameLoop) {
+void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
-  
+
   Mouse m = gameLoop.mouse;
   if (m.pressed(Mouse.LEFT)) {
-    print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas} x=${m.x} y=${m.y}");
-  }
+    
+    int y = canvas.height - m.y;
+    
+    Uint8List pixel = new Uint8List(4);
+    gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null); // default framebuffer
+    gl.readPixels(m.x, y, 1, 1, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, pixel);
 
+    print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas} x=${m.x} y=${y} pixel color=$pixel");
+  }  
+  
   cam.update(gameLoop);
     
-  programList.forEach((ShaderProgram p) => p.update(gameLoop));
+  programList.forEach((ShaderProgram p) => p.update(gameLoop));  
 }
 
 void main() {
@@ -301,6 +310,10 @@ void main() {
   
   GameLoopHtml gameLoop = new GameLoopHtml(canvas);
   
+  gameLoop.pointerLock.lockOnClick = false; // disable pointer lock
+
+  print("gameLoop lockOnClick = ${gameLoop.pointerLock.lockOnClick}");
+
   print("gameLoop updateStep = ${gameLoop.updateTimeStep} seconds");
 
   if (debugLostContext) {
@@ -308,7 +321,7 @@ void main() {
   }
   
   gameLoop.onUpdate = ((GameLoopHtml gameLoop) { 
-    update(gameLoop);
+    update(gl, gameLoop);
   });
   gameLoop.onRender = ((GameLoopHtml gameLoop) {
     render(gl, gameLoop);
