@@ -1403,7 +1403,7 @@ $$.TimeRanges = {"": "Interceptor;length=", $isTimeRanges: true, $asTimeRanges: 
 
 $$.TitleElement = {"": "_HTMLElement;"};
 
-$$.Touch = {"": "Interceptor;", $isTouch: true, $asTouch: null};
+$$.Touch = {"": "Interceptor;identifier=", $isTouch: true, $asTouch: null};
 
 $$.TouchEvent = {"": "UIEvent;", $isTouchEvent: true, $asTouchEvent: null};
 
@@ -7347,6 +7347,9 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current@",
 },
 
 MappedIterable: {"": "IterableBase;_iterable<,_f",
+  _f$1: function(arg0) {
+    return this._f.call$1(arg0);
+  },
   get$iterator: function(_) {
     var t1, $arguments, arguments0, t2, t3;
     t1 = this._iterable;
@@ -7382,6 +7385,18 @@ MappedIterable: {"": "IterableBase;_iterable<,_f",
   get$length: function(_) {
     var t1 = this._iterable;
     return t1.get$length(t1);
+  },
+  elementAt$1: function(_, index) {
+    var t1, $arguments, arguments0;
+    t1 = this._iterable;
+    t1 = this._f$1(t1.elementAt$1(t1, index));
+    $arguments = this.$asMappedIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterableBase: function (S, T) { return [T]; },
@@ -7583,10 +7598,9 @@ Arrays_indexOf: function(a, element, startIndex, endIndex) {
 
 IterableMixinWorkaround_forEach: function(iterable, f) {
   var t1, t2, $arguments, arguments0;
-  $.listSuperNativeTypeCheck(iterable, "$isIterable");
   $.propertyTypeCheck(f, "$isFunction");
-  for (t1 = $.get$iterator$ax(iterable); $.boolConversionCheck(t1.moveNext$0());) {
-    t2 = t1.get$_current();
+  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();) {
+    t2 = t1._current;
     $arguments = t1.$asListIterator;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -7599,19 +7613,18 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
 
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
   var t1;
-  if (start < 0 || start > list.length) {
-    t1 = list.length;
+  if (start < 0 || start > $.get$length$asx(list)) {
+    t1 = $.get$length$asx(list);
     throw $.wrapException(new $.RangeError("value " + start + " not in range 0.." + t1));
   }
-  if (end < start || end > list.length) {
-    t1 = list.length;
+  if (end < start || end > $.get$length$asx(list)) {
+    t1 = $.get$length$asx(list);
     throw $.wrapException(new $.RangeError("value " + end + " not in range " + start + ".." + t1));
   }
 },
 
 IterableMixinWorkaround_setRangeList: function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList;
-  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = end - start;
   if ($length === 0)
@@ -10177,6 +10190,30 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
+  elementAt$1: function(_, index) {
+    var t1, t2, t3, $arguments, arguments0;
+    if (index == null)
+      throw index.$lt();
+    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
+      t1 = this._tail;
+      t2 = this._head;
+      t3 = this._table;
+      throw $.wrapException(new $.RangeError("value " + index + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
+    }
+    t1 = this._table;
+    t2 = t1.length;
+    t3 = (this._head + index & t2 - 1) >>> 0;
+    if (t3 < 0 || t3 >= t2)
+      throw $.ioore(t3);
+    t3 = t1[t3];
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t3, $arguments == null ? null : $arguments[0]);
+  },
   toString$0: function(_) {
     var result = new $.StringBuffer("");
     result._contents = "";
@@ -10718,10 +10755,7 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    var t1 = this.modifiedObject;
-    if (t1 == null)
-      return "Concurrent modification during iteration.";
-    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
   },
   $asObject: null
 },
@@ -13643,19 +13677,25 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
     return new $.Bound__fullscreenError_GameLoopHtml(this, "_fullscreenError$1", null);
   },
   _touchStartEvent$1: function($event) {
-    $.JSArray_methods.add$1(this._touchEvents, new $._GameLoopTouchEvent($.interceptedTypeCheck($event, "$isTouchEvent"), 3));
+    $.interceptedTypeCheck($event, "$isTouchEvent");
+    $.JSArray_methods.add$1(this._touchEvents, new $._GameLoopTouchEvent($event, 3));
+    $event.preventDefault();
   },
   get$_touchStartEvent: function() {
     return new $.Bound__touchStartEvent_GameLoopHtml(this, "_touchStartEvent$1", null);
   },
   _touchMoveEvent$1: function($event) {
-    $.JSArray_methods.add$1(this._touchEvents, new $._GameLoopTouchEvent($.interceptedTypeCheck($event, "$isTouchEvent"), 1));
+    $.interceptedTypeCheck($event, "$isTouchEvent");
+    $.JSArray_methods.add$1(this._touchEvents, new $._GameLoopTouchEvent($event, 1));
+    $event.preventDefault();
   },
   get$_touchMoveEvent: function() {
     return new $.Bound__touchMoveEvent_GameLoopHtml(this, "_touchMoveEvent$1", null);
   },
   _touchEndEvent$1: function($event) {
-    $.JSArray_methods.add$1(this._touchEvents, new $._GameLoopTouchEvent($.interceptedTypeCheck($event, "$isTouchEvent"), 2));
+    $.interceptedTypeCheck($event, "$isTouchEvent");
+    $.JSArray_methods.add$1(this._touchEvents, new $._GameLoopTouchEvent($event, 2));
+    $event.preventDefault();
   },
   get$_touchEndEvent: function() {
     return new $.Bound__touchEndEvent_GameLoopHtml(this, "_touchEndEvent$1", null);
@@ -13815,12 +13855,38 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t1 = $arguments == null ? null : $arguments[0];
       $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
+      t1 = $.assertSubtype($.EventStreamProvider_touchcancel.forTarget$1(window), "$isStream", [$.TouchEvent], "$asStream");
+      t4 = this.get$_touchEndEvent();
+      $.propertyTypeCheck(t4, "$isFunction");
+      t2 = t1.get$_target();
+      t3 = t1.get$_eventType();
+      t5 = t1.get$_useCapture();
+      $arguments = t1.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t1);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t6 = $arguments == null ? null : $arguments[0];
+      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
+      $.assertHelper(true);
+      t5.$builtinTypeInfo = [t6];
+      if (t5._onData != null && !t5.get$isPaused())
+        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
+      $arguments = t1.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t1);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
       t1 = $.assertSubtype($.EventStreamProvider_touchmove.forTarget$1(window), "$isStream", [$.TouchEvent], "$asStream");
-      t4 = this.get$_touchMoveEvent();
-      $.propertyTypeCheck(t4, "$isFunction");
+      t5 = this.get$_touchMoveEvent();
+      $.propertyTypeCheck(t5, "$isFunction");
       t2 = t1.get$_target();
       t3 = t1.get$_eventType();
-      t5 = t1.get$_useCapture();
+      t4 = t1.get$_useCapture();
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13828,11 +13894,11 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t6 = $arguments == null ? null : $arguments[0];
-      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
+      t4 = new $._EventStreamSubscription(0, t2, t3, t5, t4);
       $.assertHelper(true);
-      t5.$builtinTypeInfo = [t6];
-      if (t5._onData != null && !t5.get$isPaused())
-        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
+      t4.$builtinTypeInfo = [t6];
+      if (t4._onData != null && !t4.get$isPaused())
+        $.$$dom_addEventListener$3$x(t4._target, t4._eventType, t4._onData, t4._useCapture);
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13840,13 +13906,13 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
+      $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
       t1 = $.assertSubtype($.EventStreamProvider_keydown.forTarget$1(window), "$isStream", [$.KeyboardEvent], "$asStream");
-      t5 = this.get$_keyDown();
-      $.propertyTypeCheck(t5, "$isFunction");
+      t4 = this.get$_keyDown();
+      $.propertyTypeCheck(t4, "$isFunction");
       t2 = t1.get$_target();
       t3 = t1.get$_eventType();
-      t4 = t1.get$_useCapture();
+      t5 = t1.get$_useCapture();
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13854,11 +13920,11 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t6 = $arguments == null ? null : $arguments[0];
-      t4 = new $._EventStreamSubscription(0, t2, t3, t5, t4);
+      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
       $.assertHelper(true);
-      t4.$builtinTypeInfo = [t6];
-      if (t4._onData != null && !t4.get$isPaused())
-        $.$$dom_addEventListener$3$x(t4._target, t4._eventType, t4._onData, t4._useCapture);
+      t5.$builtinTypeInfo = [t6];
+      if (t5._onData != null && !t5.get$isPaused())
+        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13866,13 +13932,13 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
+      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
       t1 = $.assertSubtype($.EventStreamProvider_keyup.forTarget$1(window), "$isStream", [$.KeyboardEvent], "$asStream");
-      t4 = this.get$_keyUp();
-      $.propertyTypeCheck(t4, "$isFunction");
+      t5 = this.get$_keyUp();
+      $.propertyTypeCheck(t5, "$isFunction");
       t2 = t1.get$_target();
       t3 = t1.get$_eventType();
-      t5 = t1.get$_useCapture();
+      t4 = t1.get$_useCapture();
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13880,11 +13946,11 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t6 = $arguments == null ? null : $arguments[0];
-      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
+      t4 = new $._EventStreamSubscription(0, t2, t3, t5, t4);
       $.assertHelper(true);
-      t5.$builtinTypeInfo = [t6];
-      if (t5._onData != null && !t5.get$isPaused())
-        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
+      t4.$builtinTypeInfo = [t6];
+      if (t4._onData != null && !t4.get$isPaused())
+        $.$$dom_addEventListener$3$x(t4._target, t4._eventType, t4._onData, t4._useCapture);
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13892,13 +13958,13 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
+      $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
       t1 = $.assertSubtype($.EventStreamProvider_resize.forTarget$1(window), "$isStream", [$.Event], "$asStream");
-      t5 = this.get$_resize();
-      $.propertyTypeCheck(t5, "$isFunction");
+      t4 = this.get$_resize();
+      $.propertyTypeCheck(t4, "$isFunction");
       t2 = t1.get$_target();
       t3 = t1.get$_eventType();
-      t4 = t1.get$_useCapture();
+      t5 = t1.get$_useCapture();
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13906,11 +13972,11 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t6 = $arguments == null ? null : $arguments[0];
-      t4 = new $._EventStreamSubscription(0, t2, t3, t5, t4);
+      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
       $.assertHelper(true);
-      t4.$builtinTypeInfo = [t6];
-      if (t4._onData != null && !t4.get$isPaused())
-        $.$$dom_addEventListener$3$x(t4._target, t4._eventType, t4._onData, t4._useCapture);
+      t5.$builtinTypeInfo = [t6];
+      if (t5._onData != null && !t5.get$isPaused())
+        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13918,13 +13984,13 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
+      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
       t1 = $.assertSubtype($.EventStreamProvider_mousemove.forTarget$1(window), "$isStream", [$.MouseEvent], "$asStream");
-      t4 = this.get$_mouseMove();
-      $.propertyTypeCheck(t4, "$isFunction");
+      t5 = this.get$_mouseMove();
+      $.propertyTypeCheck(t5, "$isFunction");
       t2 = t1.get$_target();
       t3 = t1.get$_eventType();
-      t5 = t1.get$_useCapture();
+      t4 = t1.get$_useCapture();
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13932,11 +13998,11 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t6 = $arguments == null ? null : $arguments[0];
-      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
+      t4 = new $._EventStreamSubscription(0, t2, t3, t5, t4);
       $.assertHelper(true);
-      t5.$builtinTypeInfo = [t6];
-      if (t5._onData != null && !t5.get$isPaused())
-        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
+      t4.$builtinTypeInfo = [t6];
+      if (t4._onData != null && !t4.get$isPaused())
+        $.$$dom_addEventListener$3$x(t4._target, t4._eventType, t4._onData, t4._useCapture);
       $arguments = t1.$as_EventStream;
       arguments0 = $.getRuntimeTypeInfo(t1);
       if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -13944,35 +14010,9 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
+      $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
       t1 = $.assertSubtype($.EventStreamProvider_mousedown.forTarget$1(window), "$isStream", [$.MouseEvent], "$asStream");
-      t5 = this.get$_mouseDown();
-      $.propertyTypeCheck(t5, "$isFunction");
-      t2 = t1.get$_target();
-      t3 = t1.get$_eventType();
-      t4 = t1.get$_useCapture();
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t6 = $arguments == null ? null : $arguments[0];
-      t4 = new $._EventStreamSubscription(0, t2, t3, t5, t4);
-      $.assertHelper(true);
-      t4.$builtinTypeInfo = [t6];
-      if (t4._onData != null && !t4.get$isPaused())
-        $.$$dom_addEventListener$3$x(t4._target, t4._eventType, t4._onData, t4._useCapture);
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
-      t1 = $.assertSubtype($.EventStreamProvider_mouseup.forTarget$1(window), "$isStream", [$.MouseEvent], "$asStream");
-      t4 = this.get$_mouseUp();
+      t4 = this.get$_mouseDown();
       $.propertyTypeCheck(t4, "$isFunction");
       t2 = t1.get$_target();
       t3 = t1.get$_eventType();
@@ -13997,8 +14037,8 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t1 = $arguments == null ? null : $arguments[0];
       $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
-      t1 = $.assertSubtype($._CustomEventStreamProvider__determineMouseWheelEventType.forTarget$1(window), "$isStream", [$.WheelEvent], "$asStream");
-      t5 = this.get$_mouseWheel();
+      t1 = $.assertSubtype($.EventStreamProvider_mouseup.forTarget$1(window), "$isStream", [$.MouseEvent], "$asStream");
+      t5 = this.get$_mouseUp();
       $.propertyTypeCheck(t5, "$isFunction");
       t2 = t1.get$_target();
       t3 = t1.get$_eventType();
@@ -14023,6 +14063,32 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t1 = $arguments == null ? null : $arguments[0];
       $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
+      t1 = $.assertSubtype($._CustomEventStreamProvider__determineMouseWheelEventType.forTarget$1(window), "$isStream", [$.WheelEvent], "$asStream");
+      t4 = this.get$_mouseWheel();
+      $.propertyTypeCheck(t4, "$isFunction");
+      t2 = t1.get$_target();
+      t3 = t1.get$_eventType();
+      t5 = t1.get$_useCapture();
+      $arguments = t1.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t1);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t6 = $arguments == null ? null : $arguments[0];
+      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
+      $.assertHelper(true);
+      t5.$builtinTypeInfo = [t6];
+      if (t5._onData != null && !t5.get$isPaused())
+        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
+      $arguments = t1.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t1);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t1 = $arguments == null ? null : $arguments[0];
+      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
       this._initialized = true;
     }
     this._interrupt = false;
@@ -14158,12 +14224,45 @@ GameLoopTouch: {"": "Object;id,positions<", $isGameLoopTouch: true},
 GameLoopTouchSet: {"": "Object;activeTouches<,gameLoop<",
   _start$1: function($event) {
     $.forEach$1$ax($event.changedTouches, new $.GameLoopTouchSet__start_closure(this));
+    this._verifyTouchList$1($event.touches);
   },
   _liblib4$_end$1: function($event) {
     $.forEach$1$ax($event.changedTouches, new $.GameLoopTouchSet__end_closure(this));
+    this._verifyTouchList$1($event.touches);
   },
   _move$1: function($event) {
     $.forEach$1$ax($event.changedTouches, new $.GameLoopTouchSet__move_closure(this));
+    this._verifyTouchList$1($event.touches);
+  },
+  _inTouchList$2: function(touches, identifier) {
+    var i, t1;
+    $.interceptedTypeCheck(touches, "$isList");
+    if (typeof touches !== "string" && (typeof touches !== "object" || touches === null || touches.constructor !== Array && !$.isJsIndexable(touches, touches[$.dispatchPropertyName])))
+      return this._inTouchList$2$bailout(1, touches, identifier);
+    for (i = 0; i < touches.length; ++i) {
+      t1 = $.get$identifier$x(touches[i]);
+      if (t1 == null ? identifier == null : t1 === identifier)
+        return true;
+    }
+    return false;
+  },
+  _inTouchList$2$bailout: function(state0, touches, identifier) {
+    var t1, i, t2;
+    for (t1 = $.getInterceptor$asx(touches), i = 0; $.JSInt_methods.$lt(i, t1.get$length(touches)); ++i) {
+      t2 = $.get$identifier$x(t1.$index(touches, i));
+      if (t2 == null ? identifier == null : t2 === identifier)
+        return true;
+    }
+    return false;
+  },
+  _verifyTouchList$1: function(touches) {
+    var t1, t2;
+    $.interceptedTypeCheck(touches, "$isList");
+    t1 = $.getInterceptor$asx(touches);
+    t2 = this.activeTouches;
+    if (t1.get$length(touches) !== t2._liblib0$_length)
+      $.Primitives_printString($.S(t1.get$length(touches)) + " " + t2._liblib0$_length);
+    t2.forEach$1(t2, new $.GameLoopTouchSet__verifyTouchList_closure(this, touches));
   },
   $isGameLoopTouchSet: true
 },
@@ -14179,10 +14278,15 @@ GameLoopTouchSet__start_closure: {"": "Closure;this_0",
     glTouch = new $.GameLoopTouch(t1, $.interceptedTypeCheck(t2, "$isList"));
     t1 = this.this_0;
     t2 = t1.get$activeTouches();
+    if (t2.$index(t2, touch.identifier) != null)
+      return;
+    t2 = t1.get$activeTouches();
+    $.assertHelper(t2.$index(t2, touch.identifier) == null);
+    t2 = t1.get$activeTouches();
     t2.$indexSet(t2, touch.identifier, glTouch);
-    touch.get$client;
-    t2 = touch.clientX;
-    t3 = touch.clientY;
+    touch.get$page;
+    t2 = touch.pageX;
+    t3 = touch.pageY;
     t4 = t1.get$gameLoop();
     t5 = $.doubleTypeCheck(t4._gameTime);
     t4 = t4._frameCounter;
@@ -14202,12 +14306,16 @@ GameLoopTouchSet__end_closure: {"": "Closure;this_0",
     t1 = this.this_0;
     t2 = t1.get$activeTouches();
     glTouch = t2.$index(t2, touch.identifier);
+    t2 = glTouch == null;
+    if (t2)
+      return;
+    $.assertHelper(!t2);
     t2 = t1.get$activeTouches();
     t2.remove$1(t2, touch.identifier);
     $.propertyTypeCheck(glTouch, "$isGameLoopTouch");
-    touch.get$client;
-    t2 = touch.clientX;
-    t3 = touch.clientY;
+    touch.get$page;
+    t2 = touch.pageX;
+    t3 = touch.pageY;
     t4 = t1.get$gameLoop();
     t5 = $.doubleTypeCheck(t4._gameTime);
     t4 = t4._frameCounter;
@@ -14230,9 +14338,9 @@ GameLoopTouchSet__move_closure: {"": "Closure;this_0",
     t2 = t1.get$activeTouches();
     glTouch = t2.$index(t2, touch.identifier);
     $.propertyTypeCheck(glTouch, "$isGameLoopTouch");
-    touch.get$client;
-    t2 = touch.clientX;
-    t3 = touch.clientY;
+    touch.get$page;
+    t2 = touch.pageX;
+    t3 = touch.pageY;
     t1 = t1.get$gameLoop();
     t4 = $.doubleTypeCheck(t1._gameTime);
     t1 = t1._frameCounter;
@@ -14244,6 +14352,17 @@ GameLoopTouchSet__move_closure: {"": "Closure;this_0",
   $asObject: null,
   $is_FutureOnError: true,
   $is_FutureErrorTest: true
+},
+
+GameLoopTouchSet__verifyTouchList_closure: {"": "Closure;this_0,touches_1",
+  call$2: function(identifier, touch) {
+    if (!this.this_0._inTouchList$2(this.touches_1, identifier))
+      $.Primitives_printString("Did not find " + $.S(identifier));
+  },
+  $isFunction: true,
+  $asObject: null,
+  $isDigitalButtonEventInterceptor: true,
+  $isGameLoopTouchEventFunction: true
 },
 
 GameLoopHtml$: function(element) {
@@ -18578,112 +18697,113 @@ $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isObject = true;
 $.MouseEvent.$isMouseEvent = true;
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
+$.Node.$isObject = true;
 $.Element.$isElement = true;
-$.Element.$isNode = true;
 $.Element.$isObject = true;
+$.Element.$isNode = true;
 $.Element.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTimer.$isObject = true;
-$.Entry.$isEntry = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
 $.Entry.$isObject = true;
+$.Entry.$isEntry = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $.DigitalButton.$isObject = true;
 $._EntrySync.$isObject = true;
-$._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$isObject = true;
+$._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
-$.File.$isFile = true;
 $.File.$isObject = true;
+$.File.$isFile = true;
 $.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
 $.Instance.$isInstance = true;
 $.Instance.$isObject = true;
 $.Transform.$isObject = true;
-$.Model.$isObject = true;
 $.Model.$isModel = true;
-$.Piece.$isPiece = true;
+$.Model.$isObject = true;
 $.Piece.$isObject = true;
+$.Piece.$isPiece = true;
 $.Plugin.$isObject = true;
 $.Part.$isObject = true;
 $.Part.$isPart = true;
 $.Gamepad.$isObject = true;
-$.Material.$isMaterial = true;
 $.Material.$isObject = true;
+$.Material.$isMaterial = true;
 $.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
-$.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
+$.HttpRequest.$isHttpRequest = true;
 $.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
-$.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
+$.SpeechInputResult.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.SpeechRecognitionResult.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
-$.KeyboardEvent.$isObject = true;
 $.KeyboardEvent.$isEvent = true;
+$.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
+$.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
+$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isnum = true;
-$.JSString.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSString.$isString = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
-$.Length.$isObject = true;
-$.TextTrackCue.$isObject = true;
+$.JSString.$isObject = true;
 $.TextTrack.$isObject = true;
-$.Number.$isObject = true;
-$.Touch.$isObject = true;
-$.PathSeg.$isObject = true;
-$.CssRule.$isObject = true;
+$.TextTrackCue.$isObject = true;
+$.Length.$isObject = true;
 $.CssRule.$isCssRule = true;
+$.CssRule.$isObject = true;
+$.Number.$isObject = true;
+$.PathSeg.$isObject = true;
+$.Touch.$isObject = true;
+$.Touch.$isTouch = true;
 $.Shader.$isShader = true;
 $.Shader.$isObject = true;
-$.Texture.$isTexture = true;
 $.Texture.$isObject = true;
+$.Texture.$isTexture = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
@@ -18712,6 +18832,7 @@ $.C_JSUnknown = new $.JSUnknown();
 $.C_NullThrownError = new $.NullThrownError();
 $.JSDouble_methods = $.JSDouble.prototype;
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.EventStreamProvider_webglcontextrestored = new $.EventStreamProvider("webglcontextrestored");
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
@@ -18723,8 +18844,8 @@ $.JSNull_methods = $.JSNull.prototype;
 $.EventStreamProvider_touchend = new $.EventStreamProvider("touchend");
 $.JSInt_methods = $.JSInt.prototype;
 $.JSArray_methods = $.JSArray.prototype;
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.EventStreamProvider_click = new $.EventStreamProvider("click");
+$.EventStreamProvider_touchcancel = new $.EventStreamProvider("touchcancel");
 $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
 $.EventStreamProvider_webglcontextlost = new $.EventStreamProvider("webglcontextlost");
 $.dispatchPropertyName = null;
@@ -18812,6 +18933,9 @@ $.forEach$1$ax = function(receiver, a0) {
 };
 $.get$hashCode$ = function(receiver) {
   return $.getInterceptor(receiver).get$hashCode(receiver);
+};
+$.get$identifier$x = function(receiver) {
+  return $.getInterceptor$x(receiver).get$identifier(receiver);
 };
 $.get$isEmpty$asx = function(receiver) {
   return $.getInterceptor$asx(receiver).get$isEmpty(receiver);

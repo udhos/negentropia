@@ -193,12 +193,15 @@ void initAirshipTex(RenderingContext gl) {
   TexModel coneModel = new TexModel.fromOBJ(gl, prog, coneURL, textureTable, asset);
   prog.addModel(coneModel);
   TexInstance coneInstance = new TexInstance(coneModel, new Vector3(0.0, 2.0, -10.0), 1.0);
-  coneModel.addInstance(coneInstance);  
+  coneModel.addInstance(coneInstance);
 }
 
 void initShips(RenderingContext gl) {
   initAirship(gl);
   initAirshipTex(gl);
+}
+
+void initPicker(RenderingContext gl) {
 }
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
@@ -212,6 +215,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   initSquares(gl);
   initShips(gl);
   initSkybox(gl);
+  initPicker(gl);
   
   gl.clearColor(0.5, 0.5, 0.5, 1.0);       // clear color
   gl.enable(RenderingContext.DEPTH_TEST);  // enable depth testing

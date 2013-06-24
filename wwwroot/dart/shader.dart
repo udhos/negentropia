@@ -17,6 +17,7 @@ import 'asset.dart';
 
 part 'buffer.dart';
 part 'shader_tex.dart';
+part 'picker.dart';
 
 class ShaderProgram {
   
