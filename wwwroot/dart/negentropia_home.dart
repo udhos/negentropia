@@ -202,6 +202,7 @@ void initShips(RenderingContext gl) {
 }
 
 void initPicker(RenderingContext gl) {
+  PickerShader p = new PickerShader(gl, programList);
 }
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
