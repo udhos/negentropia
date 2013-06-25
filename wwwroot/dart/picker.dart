@@ -2,12 +2,16 @@ part of shader;
 
 class PickerShader extends ShaderProgram {
 
-  UniformLocation u_Color;  
+  UniformLocation u_Color;
+  List<ShaderProgram> programList;
 
-  PickerShader(RenderingContext gl, List<ShaderProgram> programList) : super(gl) {
+  PickerShader(RenderingContext gl, this.programList) : super(gl) {
     /*
     // move to draw: scan programs/models/instances
     programList.forEach((p) {
+      if (identical(p, this)) {
+        return; // skip myself
+      }
       if (p is! TexShaderProgram) {
         return;
       }

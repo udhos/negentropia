@@ -50,8 +50,9 @@ class ShaderProgram {
       Shader shader = gl.createShader(shaderType);
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
-      var parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
-      if (parameter == null) {
+      bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
+      print("gl.getShaderParameter: shader=$shaderURL parameter=$parameter");
+      if (parameter == null || !parameter) {
         String infoLog = gl.getShaderInfoLog(shader);
         print("compileShader: compilation FAILURE: $shaderURL: $infoLog");
         if (gl.isContextLost()) {
@@ -78,8 +79,9 @@ class ShaderProgram {
       gl.attachShader(p, vertexShader);
       gl.attachShader(p, fragmentShader);
       gl.linkProgram(p);
-      var parameter = gl.getProgramParameter(p, RenderingContext.LINK_STATUS);
-      if (parameter == null) {
+      bool parameter = gl.getProgramParameter(p, RenderingContext.LINK_STATUS);
+      print("gl.getProgramParameter: parameter=$parameter");
+      if (parameter == null || !parameter) {
         String infoLog = gl.getProgramInfoLog(p);
         print("tryLink: shader program link FAILURE: $infoLog");
         if (gl.isContextLost()) {
