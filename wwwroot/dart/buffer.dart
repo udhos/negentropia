@@ -6,8 +6,9 @@ class Instance {
   Vector3 center;
   double scale;
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
+  bool clickable;
   
-  Instance(Model this.model, Vector3 this.center, double this.scale);
+  Instance(Model this.model, Vector3 this.center, double this.scale, [this.clickable=false]);
   
   void update(GameLoopHtml gameLoop) {
   }
