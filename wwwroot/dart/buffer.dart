@@ -140,8 +140,7 @@ class Model {
     });    
   }
   
-  Model.fromOBJ(RenderingContext gl, this.program, String URL,
-      [void onDone(RenderingContext gl, Model m, Obj o, String u)]) {
+  Model.fromOBJ(RenderingContext gl, this.program, String URL) {
 
     void handleResponse(String response) {
       print("Model.fromOBJ: fetched OBJ from URL: $URL");
@@ -151,10 +150,6 @@ class Model {
       loadObj(gl, obj);
       
       _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
-      
-      if (?onDone) {
-        onDone(gl, this, obj, URL);
-      }
     }
 
     void handleError(Object err) {

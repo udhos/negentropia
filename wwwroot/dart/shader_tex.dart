@@ -137,9 +137,7 @@ class TexModel extends Model {
   }
   
   TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL,
-      this.textureTable, this.asset,
-      [void onDone(RenderingContext gl, TexModel m, Obj o, String u)]):
-        super.fromOBJ(gl, program, URL, onDone);
+      this.textureTable, this.asset): super.fromOBJ(gl, program, URL);
 
   Piece addPiece(int offset, int length) {
     Piece pi = new TexPiece(offset, length);

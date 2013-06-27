@@ -13851,62 +13851,196 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       t2 = $arguments == null ? null : $arguments[0];
       $.assertSubtype(t6, "$isStreamSubscription", [t2], "$asStreamSubscription");
       t1.get$onTouchMove;
-      t1 = $.assertSubtype($.EventStreamProvider_touchmove.forTarget$1(t1), "$isStream", [$.TouchEvent], "$asStream");
-      t2 = this.get$_touchMoveEvent();
+      t2 = $.assertSubtype($.EventStreamProvider_touchmove.forTarget$1(t1), "$isStream", [$.TouchEvent], "$asStream");
+      t6 = this.get$_touchMoveEvent();
+      $.propertyTypeCheck(t6, "$isFunction");
+      t3 = t2.get$_target();
+      t4 = t2.get$_eventType();
+      t5 = t2.get$_useCapture();
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t7 = $arguments == null ? null : $arguments[0];
+      t5 = new $._EventStreamSubscription(0, t3, t4, t6, t5);
+      $.assertHelper(true);
+      t5.$builtinTypeInfo = [t7];
+      if (t5._onData != null && !t5.get$isPaused())
+        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t2 = $arguments == null ? null : $arguments[0];
+      $.assertSubtype(t5, "$isStreamSubscription", [t2], "$asStreamSubscription");
+      t2 = $.assertSubtype($.EventStreamProvider_keydown.forTarget$1(window), "$isStream", [$.KeyboardEvent], "$asStream");
+      t5 = this.get$_keyDown();
+      $.propertyTypeCheck(t5, "$isFunction");
+      t3 = t2.get$_target();
+      t4 = t2.get$_eventType();
+      t6 = t2.get$_useCapture();
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t7 = $arguments == null ? null : $arguments[0];
+      t6 = new $._EventStreamSubscription(0, t3, t4, t5, t6);
+      $.assertHelper(true);
+      t6.$builtinTypeInfo = [t7];
+      if (t6._onData != null && !t6.get$isPaused())
+        $.$$dom_addEventListener$3$x(t6._target, t6._eventType, t6._onData, t6._useCapture);
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t2 = $arguments == null ? null : $arguments[0];
+      $.assertSubtype(t6, "$isStreamSubscription", [t2], "$asStreamSubscription");
+      t2 = $.assertSubtype($.EventStreamProvider_keyup.forTarget$1(window), "$isStream", [$.KeyboardEvent], "$asStream");
+      t6 = this.get$_keyUp();
+      $.propertyTypeCheck(t6, "$isFunction");
+      t3 = t2.get$_target();
+      t4 = t2.get$_eventType();
+      t5 = t2.get$_useCapture();
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t7 = $arguments == null ? null : $arguments[0];
+      t5 = new $._EventStreamSubscription(0, t3, t4, t6, t5);
+      $.assertHelper(true);
+      t5.$builtinTypeInfo = [t7];
+      if (t5._onData != null && !t5.get$isPaused())
+        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t2 = $arguments == null ? null : $arguments[0];
+      $.assertSubtype(t5, "$isStreamSubscription", [t2], "$asStreamSubscription");
+      t2 = $.assertSubtype($.EventStreamProvider_resize.forTarget$1(window), "$isStream", [$.Event], "$asStream");
+      t5 = this.get$_resize();
+      $.propertyTypeCheck(t5, "$isFunction");
+      t3 = t2.get$_target();
+      t4 = t2.get$_eventType();
+      t6 = t2.get$_useCapture();
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t7 = $arguments == null ? null : $arguments[0];
+      t6 = new $._EventStreamSubscription(0, t3, t4, t5, t6);
+      $.assertHelper(true);
+      t6.$builtinTypeInfo = [t7];
+      if (t6._onData != null && !t6.get$isPaused())
+        $.$$dom_addEventListener$3$x(t6._target, t6._eventType, t6._onData, t6._useCapture);
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t2 = $arguments == null ? null : $arguments[0];
+      $.assertSubtype(t6, "$isStreamSubscription", [t2], "$asStreamSubscription");
+      t1.get$onMouseMove;
+      t2 = $.assertSubtype($.EventStreamProvider_mousemove.forTarget$1(t1), "$isStream", [$.MouseEvent], "$asStream");
+      t6 = this.get$_mouseMove();
+      $.propertyTypeCheck(t6, "$isFunction");
+      t3 = t2.get$_target();
+      t4 = t2.get$_eventType();
+      t5 = t2.get$_useCapture();
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t7 = $arguments == null ? null : $arguments[0];
+      t5 = new $._EventStreamSubscription(0, t3, t4, t6, t5);
+      $.assertHelper(true);
+      t5.$builtinTypeInfo = [t7];
+      if (t5._onData != null && !t5.get$isPaused())
+        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t2 = $arguments == null ? null : $arguments[0];
+      $.assertSubtype(t5, "$isStreamSubscription", [t2], "$asStreamSubscription");
+      t1.get$onMouseDown;
+      t2 = $.assertSubtype($.EventStreamProvider_mousedown.forTarget$1(t1), "$isStream", [$.MouseEvent], "$asStream");
+      t5 = this.get$_mouseDown();
+      $.propertyTypeCheck(t5, "$isFunction");
+      t3 = t2.get$_target();
+      t4 = t2.get$_eventType();
+      t6 = t2.get$_useCapture();
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t7 = $arguments == null ? null : $arguments[0];
+      t6 = new $._EventStreamSubscription(0, t3, t4, t5, t6);
+      $.assertHelper(true);
+      t6.$builtinTypeInfo = [t7];
+      if (t6._onData != null && !t6.get$isPaused())
+        $.$$dom_addEventListener$3$x(t6._target, t6._eventType, t6._onData, t6._useCapture);
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t2 = $arguments == null ? null : $arguments[0];
+      $.assertSubtype(t6, "$isStreamSubscription", [t2], "$asStreamSubscription");
+      t1.get$onMouseUp;
+      t2 = $.assertSubtype($.EventStreamProvider_mouseup.forTarget$1(t1), "$isStream", [$.MouseEvent], "$asStream");
+      t6 = this.get$_mouseUp();
+      $.propertyTypeCheck(t6, "$isFunction");
+      t3 = t2.get$_target();
+      t4 = t2.get$_eventType();
+      t5 = t2.get$_useCapture();
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t7 = $arguments == null ? null : $arguments[0];
+      t5 = new $._EventStreamSubscription(0, t3, t4, t6, t5);
+      $.assertHelper(true);
+      t5.$builtinTypeInfo = [t7];
+      if (t5._onData != null && !t5.get$isPaused())
+        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
+      $arguments = t2.$as_EventStream;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+      t2 = $arguments == null ? null : $arguments[0];
+      $.assertSubtype(t5, "$isStreamSubscription", [t2], "$asStreamSubscription");
+      t1.get$onMouseWheel;
+      t1 = $.assertSubtype($._CustomEventStreamProvider__determineMouseWheelEventType.forTarget$1(t1), "$isStream", [$.WheelEvent], "$asStream");
+      t2 = this.get$_mouseWheel();
       $.propertyTypeCheck(t2, "$isFunction");
-      t6 = t1.get$_target();
-      t3 = t1.get$_eventType();
-      t4 = t1.get$_useCapture();
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t5 = $arguments == null ? null : $arguments[0];
-      t4 = new $._EventStreamSubscription(0, t6, t3, t2, t4);
-      $.assertHelper(true);
-      t4.$builtinTypeInfo = [t5];
-      if (t4._onData != null && !t4.get$isPaused())
-        $.$$dom_addEventListener$3$x(t4._target, t4._eventType, t4._onData, t4._useCapture);
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
-      t1 = $.assertSubtype($.EventStreamProvider_keydown.forTarget$1(window), "$isStream", [$.KeyboardEvent], "$asStream");
-      t4 = this.get$_keyDown();
-      $.propertyTypeCheck(t4, "$isFunction");
-      t2 = t1.get$_target();
-      t3 = t1.get$_eventType();
-      t5 = t1.get$_useCapture();
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t6 = $arguments == null ? null : $arguments[0];
-      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
-      $.assertHelper(true);
-      t5.$builtinTypeInfo = [t6];
-      if (t5._onData != null && !t5.get$isPaused())
-        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
-      t1 = $.assertSubtype($.EventStreamProvider_keyup.forTarget$1(window), "$isStream", [$.KeyboardEvent], "$asStream");
-      t5 = this.get$_keyUp();
-      $.propertyTypeCheck(t5, "$isFunction");
-      t2 = t1.get$_target();
+      t5 = t1.get$_target();
       t3 = t1.get$_eventType();
       t4 = t1.get$_useCapture();
       $arguments = t1.$as_EventStream;
@@ -13916,7 +14050,7 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
       else
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t6 = $arguments == null ? null : $arguments[0];
-      t4 = new $._EventStreamSubscription(0, t2, t3, t5, t4);
+      t4 = new $._EventStreamSubscription(0, t5, t3, t2, t4);
       $.assertHelper(true);
       t4.$builtinTypeInfo = [t6];
       if (t4._onData != null && !t4.get$isPaused())
@@ -13929,136 +14063,6 @@ GameLoopHtml: {"": "GameLoop;element,_frameCounter,_initialized,_interrupt,_prev
         $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
       t1 = $arguments == null ? null : $arguments[0];
       $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
-      t1 = $.assertSubtype($.EventStreamProvider_resize.forTarget$1(window), "$isStream", [$.Event], "$asStream");
-      t4 = this.get$_resize();
-      $.propertyTypeCheck(t4, "$isFunction");
-      t2 = t1.get$_target();
-      t3 = t1.get$_eventType();
-      t5 = t1.get$_useCapture();
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t6 = $arguments == null ? null : $arguments[0];
-      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
-      $.assertHelper(true);
-      t5.$builtinTypeInfo = [t6];
-      if (t5._onData != null && !t5.get$isPaused())
-        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
-      t1 = $.assertSubtype($.EventStreamProvider_mousemove.forTarget$1(window), "$isStream", [$.MouseEvent], "$asStream");
-      t5 = this.get$_mouseMove();
-      $.propertyTypeCheck(t5, "$isFunction");
-      t2 = t1.get$_target();
-      t3 = t1.get$_eventType();
-      t4 = t1.get$_useCapture();
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t6 = $arguments == null ? null : $arguments[0];
-      t4 = new $._EventStreamSubscription(0, t2, t3, t5, t4);
-      $.assertHelper(true);
-      t4.$builtinTypeInfo = [t6];
-      if (t4._onData != null && !t4.get$isPaused())
-        $.$$dom_addEventListener$3$x(t4._target, t4._eventType, t4._onData, t4._useCapture);
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
-      t1 = $.assertSubtype($.EventStreamProvider_mousedown.forTarget$1(window), "$isStream", [$.MouseEvent], "$asStream");
-      t4 = this.get$_mouseDown();
-      $.propertyTypeCheck(t4, "$isFunction");
-      t2 = t1.get$_target();
-      t3 = t1.get$_eventType();
-      t5 = t1.get$_useCapture();
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t6 = $arguments == null ? null : $arguments[0];
-      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
-      $.assertHelper(true);
-      t5.$builtinTypeInfo = [t6];
-      if (t5._onData != null && !t5.get$isPaused())
-        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
-      t1 = $.assertSubtype($.EventStreamProvider_mouseup.forTarget$1(window), "$isStream", [$.MouseEvent], "$asStream");
-      t5 = this.get$_mouseUp();
-      $.propertyTypeCheck(t5, "$isFunction");
-      t2 = t1.get$_target();
-      t3 = t1.get$_eventType();
-      t4 = t1.get$_useCapture();
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t6 = $arguments == null ? null : $arguments[0];
-      t4 = new $._EventStreamSubscription(0, t2, t3, t5, t4);
-      $.assertHelper(true);
-      t4.$builtinTypeInfo = [t6];
-      if (t4._onData != null && !t4.get$isPaused())
-        $.$$dom_addEventListener$3$x(t4._target, t4._eventType, t4._onData, t4._useCapture);
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t4, "$isStreamSubscription", [t1], "$asStreamSubscription");
-      t1 = $.assertSubtype($._CustomEventStreamProvider__determineMouseWheelEventType.forTarget$1(window), "$isStream", [$.WheelEvent], "$asStream");
-      t4 = this.get$_mouseWheel();
-      $.propertyTypeCheck(t4, "$isFunction");
-      t2 = t1.get$_target();
-      t3 = t1.get$_eventType();
-      t5 = t1.get$_useCapture();
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t6 = $arguments == null ? null : $arguments[0];
-      t5 = new $._EventStreamSubscription(0, t2, t3, t4, t5);
-      $.assertHelper(true);
-      t5.$builtinTypeInfo = [t6];
-      if (t5._onData != null && !t5.get$isPaused())
-        $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
-      $arguments = t1.$as_EventStream;
-      arguments0 = $.getRuntimeTypeInfo(t1);
-      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-        ;
-      else
-        $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-      t1 = $arguments == null ? null : $arguments[0];
-      $.assertSubtype(t5, "$isStreamSubscription", [t1], "$asStreamSubscription");
       this._initialized = true;
     }
     this._interrupt = false;
@@ -15250,7 +15254,7 @@ initAirship: function(gl) {
   prog = new $.ShaderProgram(null, gl, null, null, null, false, $.interceptedTypeCheck(t1, "$isList"));
   $.add$1$ax($.programList, prog);
   prog.fetch$3($.shaderCache, $.get$asset()._shader + "/simple_vs.txt", $.get$asset()._shader + "/simple_fs.txt");
-  airshipModel = $.Model$fromOBJ(gl, prog, $.get$asset()._obj + "/airship.obj", $);
+  airshipModel = $.Model$fromOBJ(gl, prog, $.get$asset()._obj + "/airship.obj");
   $.JSArray_methods.add$1(prog.modelList, airshipModel);
   $.doubleTypeCheck(-8);
   $.doubleTypeCheck(0);
@@ -15283,7 +15287,6 @@ initAirshipTex: function(gl) {
   objURL = $.get$asset()._obj + "/airship.obj";
   t1 = $.textureTable;
   t2 = $.get$asset();
-  $.propertyTypeCheck(null, "$isFunction");
   t3 = $.List_List($, $.Piece);
   $.assertHelper(true);
   t3.$builtinTypeInfo = [$.Piece];
@@ -15291,7 +15294,7 @@ initAirshipTex: function(gl) {
   $.assertHelper(true);
   t4.$builtinTypeInfo = [$.Instance];
   airshipModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t1, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), $.interceptedTypeCheck(t4, "$isList"), prog);
-  airshipModel.Model$fromOBJ$4(gl, prog, objURL, null, true);
+  airshipModel.Model$fromOBJ$3(gl, prog, objURL);
   t1 = prog.modelList;
   $.JSArray_methods.add$1(t1, airshipModel);
   $.doubleTypeCheck(0);
@@ -15320,7 +15323,7 @@ initAirshipTex: function(gl) {
   $.assertHelper(true);
   t5.$builtinTypeInfo = [$.Instance];
   airshipModel2 = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), prog);
-  airshipModel2.Model$fromOBJ$4(gl, prog, objURL, null, true);
+  airshipModel2.Model$fromOBJ$3(gl, prog, objURL);
   $.JSArray_methods.add$1(t1, airshipModel2);
   $.doubleTypeCheck(8);
   t2 = new $.Vector3(new Float32Array(3));
@@ -15348,7 +15351,7 @@ initAirshipTex: function(gl) {
   $.assertHelper(true);
   t5.$builtinTypeInfo = [$.Instance];
   colonyShipModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), prog);
-  colonyShipModel.Model$fromOBJ$4(gl, prog, colonyShipURL, null, true);
+  colonyShipModel.Model$fromOBJ$3(gl, prog, colonyShipURL);
   $.JSArray_methods.add$1(t1, colonyShipModel);
   $.doubleTypeCheck(-5);
   $.doubleTypeCheck(-50);
@@ -15377,7 +15380,7 @@ initAirshipTex: function(gl) {
   $.assertHelper(true);
   t5.$builtinTypeInfo = [$.Instance];
   coneModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), prog);
-  coneModel.Model$fromOBJ$4(gl, prog, coneURL, null, true);
+  coneModel.Model$fromOBJ$3(gl, prog, coneURL);
   $.JSArray_methods.add$1(t1, coneModel);
   $.doubleTypeCheck(2);
   $.doubleTypeCheck(-10);
@@ -16410,9 +16413,8 @@ Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferI
     $.propertyTypeCheck(t1, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.instanceList, t1));
   },
-  Model$fromOBJ$4: function(gl, program, URL, onDone, onDone_check) {
-    $.propertyTypeCheck(onDone, "$isFunction");
-    $.HttpRequest_getString(URL, null, null).then$1(new $.Model$fromOBJ_handleResponse(this, gl, URL, onDone, onDone_check)).catchError$1(new $.Model$fromOBJ_handleError(URL));
+  Model$fromOBJ$3: function(gl, program, URL) {
+    $.HttpRequest_getString(URL, null, null).then$1(new $.Model$fromOBJ_handleResponse(this, gl, URL)).catchError$1(new $.Model$fromOBJ_handleError(URL));
   },
   Model$fromJson$3: function(gl, program, URL) {
     $.HttpRequest_getString(URL, null, null).then$1(new $.Model$fromJson_handleResponse(this, gl)).catchError$1(new $.Model$fromJson_handleError(URL));
@@ -16476,28 +16478,26 @@ Model_loadObj_closure: {"": "Closure;this_0",
   $is_FutureErrorTest: true
 },
 
-Model$fromOBJ_handleResponse: {"": "Closure;this_0,gl_1,URL_2,onDone_3,onDone_check_4",
+Model$fromOBJ_handleResponse: {"": "Closure;this_0,gl_1,URL_2",
   call$1: function(response) {
-    var t1, obj, t2, t3;
+    var t1, obj, t2;
     $.stringTypeCheck(response);
     t1 = this.URL_2;
     $.Primitives_printString("Model.fromOBJ: fetched OBJ from URL: " + t1);
     obj = $.Obj$fromString(t1, response);
-    t2 = this.this_0;
-    t3 = this.gl_1;
-    t2.loadObj$2(t3, obj);
-    t2._createBuffers$5(t3, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
-    if ($.boolConversionCheck(this.onDone_check_4))
-      this.onDone_3.call$4(t3, t2, obj, t1);
+    t1 = this.this_0;
+    t2 = this.gl_1;
+    t1.loadObj$2(t2, obj);
+    t1._createBuffers$5(t2, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
   },
   $isFunction: true,
   $asObject: null,
   $is_FutureOnError: true
 },
 
-Model$fromOBJ_handleError: {"": "Closure;URL_5",
+Model$fromOBJ_handleError: {"": "Closure;URL_3",
   call$1: function(err) {
-    $.Primitives_printString("Model.fromOBJ: failure fetching OBJ from URL: " + this.URL_5 + ": " + $.S(err));
+    $.Primitives_printString("Model.fromOBJ: failure fetching OBJ from URL: " + this.URL_3 + ": " + $.S(err));
   },
   $isFunction: true,
   $asObject: null,
@@ -17157,19 +17157,17 @@ Model$fromJson: function(gl, program, URL) {
   return t1;
 },
 
-Model$fromOBJ: function(gl, program, URL, onDone) {
-  var t1, t2, t3;
-  t1 = $ === onDone;
-  onDone = $.propertyTypeCheck(t1 ? null : onDone, "$isFunction");
-  t2 = $.List_List($, $.Piece);
+Model$fromOBJ: function(gl, program, URL) {
+  var t1, t2;
+  t1 = $.List_List($, $.Piece);
   $.assertHelper(true);
-  t2.$builtinTypeInfo = [$.Piece];
-  t3 = $.List_List($, $.Instance);
+  t1.$builtinTypeInfo = [$.Piece];
+  t2 = $.List_List($, $.Instance);
   $.assertHelper(true);
-  t3.$builtinTypeInfo = [$.Instance];
-  t2 = new $.Model(null, null, null, null, $.interceptedTypeCheck(t2, "$isList"), $.interceptedTypeCheck(t3, "$isList"), program);
-  t2.Model$fromOBJ$4(gl, program, URL, onDone, !t1);
-  return t2;
+  t2.$builtinTypeInfo = [$.Instance];
+  t1 = new $.Model(null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), $.interceptedTypeCheck(t2, "$isList"), program);
+  t1.Model$fromOBJ$3(gl, program, URL);
+  return t1;
 }}],
 ["skybox", "skybox.dart", , {
 SkyboxProgram: {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,shaderReady,modelList",
@@ -18680,27 +18678,27 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
+$.MouseEvent.$isObject = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
-$.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isNode = true;
 $.Node.$isObject = true;
+$.Node.$isNode = true;
+$.Element.$isElement = true;
 $.Element.$isObject = true;
 $.Element.$isNode = true;
 $.Element.$isObject = true;
-$.Element.$isElement = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
-$.Entry.$isObject = true;
 $.Entry.$isEntry = true;
+$.Entry.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.DigitalButton.$isObject = true;
@@ -18709,14 +18707,14 @@ $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
-$._IsolateEvent.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateEvent.$isObject = true;
 $.File.$isFile = true;
 $.File.$isObject = true;
-$.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
-$.Instance.$isObject = true;
+$.ShaderProgram.$isShaderProgram = true;
 $.Instance.$isInstance = true;
+$.Instance.$isObject = true;
 $.Transform.$isObject = true;
 $.Model.$isModel = true;
 $.Model.$isObject = true;
@@ -18738,59 +18736,59 @@ $.ElementInstance.$isElementInstance = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
-$.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
-$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
+$.SpeechInputResult.$isObject = true;
 $.SpeechRecognitionResult.$isObject = true;
+$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
 $.KeyboardEvent.$isEvent = true;
-$.KeyboardEvent.$isObject = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
+$.KeyboardEvent.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isint = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
+$.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSDouble.$isdouble = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isdouble = true;
 $.JSString.$isString = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.Length.$isObject = true;
-$.CssRule.$isObject = true;
 $.CssRule.$isCssRule = true;
+$.CssRule.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
 $.Touch.$isObject = true;
 $.Touch.$isTouch = true;
-$.Shader.$isObject = true;
 $.Shader.$isShader = true;
-$.Texture.$isObject = true;
+$.Shader.$isObject = true;
 $.Texture.$isTexture = true;
+$.Texture.$isObject = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
