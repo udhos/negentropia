@@ -7347,6 +7347,9 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current@",
 },
 
 MappedIterable: {"": "IterableBase;_iterable<,_f",
+  _f$1: function(arg0) {
+    return this._f.call$1(arg0);
+  },
   get$iterator: function(_) {
     var t1, $arguments, arguments0, t2, t3;
     t1 = this._iterable;
@@ -7382,6 +7385,18 @@ MappedIterable: {"": "IterableBase;_iterable<,_f",
   get$length: function(_) {
     var t1 = this._iterable;
     return t1.get$length(t1);
+  },
+  elementAt$1: function(_, index) {
+    var t1, $arguments, arguments0;
+    t1 = this._iterable;
+    t1 = this._f$1(t1.elementAt$1(t1, index));
+    $arguments = this.$asMappedIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterableBase: function (S, T) { return [T]; },
@@ -7598,19 +7613,18 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
 
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
   var t1;
-  if (start < 0 || start > list.length) {
-    t1 = list.length;
+  if (start < 0 || start > $.get$length$asx(list)) {
+    t1 = $.get$length$asx(list);
     throw $.wrapException(new $.RangeError("value " + start + " not in range 0.." + t1));
   }
-  if (end < start || end > list.length) {
-    t1 = list.length;
+  if (end < start || end > $.get$length$asx(list)) {
+    t1 = $.get$length$asx(list);
     throw $.wrapException(new $.RangeError("value " + end + " not in range " + start + ".." + t1));
   }
 },
 
 IterableMixinWorkaround_setRangeList: function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList;
-  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = end - start;
   if ($length === 0)
@@ -10176,6 +10190,30 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
+  elementAt$1: function(_, index) {
+    var t1, t2, t3, $arguments, arguments0;
+    if (index == null)
+      throw index.$lt();
+    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
+      t1 = this._tail;
+      t2 = this._head;
+      t3 = this._table;
+      throw $.wrapException(new $.RangeError("value " + index + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
+    }
+    t1 = this._table;
+    t2 = t1.length;
+    t3 = (this._head + index & t2 - 1) >>> 0;
+    if (t3 < 0 || t3 >= t2)
+      throw $.ioore(t3);
+    t3 = t1[t3];
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t3, $arguments == null ? null : $arguments[0]);
+  },
   toString$0: function(_) {
     var result = new $.StringBuffer("");
     result._contents = "";
@@ -10717,10 +10755,7 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    var t1 = this.modifiedObject;
-    if (t1 == null)
-      return "Concurrent modification during iteration.";
-    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
   },
   $asObject: null
 },
@@ -15401,6 +15436,17 @@ initAirshipTex: function(gl) {
   $.JSArray_methods.add$1(coneModel.instanceList, new $.TexInstance(coneModel, t1, 1, t2, false));
 },
 
+initPicker: function(gl) {
+  var t1, t2, picker;
+  t1 = $.programList;
+  t2 = $.List_List($, $.Model);
+  $.assertHelper(true);
+  t2.$builtinTypeInfo = [$.Model];
+  picker = new $.PickerShader(null, $.interceptedTypeCheck(t1, "$isList"), null, gl, null, null, null, false, $.interceptedTypeCheck(t2, "$isList"));
+  $.add$1$ax($.programList, picker);
+  picker.fetch$3($.shaderCache, $.get$asset()._shader + "/picker_vs.txt", $.get$asset()._shader + "/picker_fs.txt");
+},
+
 initContext: function(gl, gameLoop) {
   var t1, t2, t3, before, i, after, duration;
   $.interceptedTypeCheck(gl, "$isRenderingContext");
@@ -15430,28 +15476,24 @@ initContext: function(gl, gameLoop) {
   $.initAirship(gl);
   $.initAirshipTex(gl);
   $.initSkybox(gl);
-  t2 = $.programList;
-  t1 = $.List_List($, $.Model);
-  $.assertHelper(true);
-  t1.$builtinTypeInfo = [$.Model];
-  new $.PickerShader(null, $.interceptedTypeCheck(t2, "$isList"), null, gl, null, null, null, false, $.interceptedTypeCheck(t1, "$isList")).fetch$3($.shaderCache, $.get$asset()._shader + "/picker_vs.txt", $.get$asset()._shader + "/picker_fs.txt");
-  t1 = $.getInterceptor$x(gl);
-  t1.clearColor$4(gl, 0.5, 0.5, 0.5, 1);
-  t1.enable$1(gl, 2929);
-  t1.depthFunc$1(gl, 513);
-  t1.depthRange$2(gl, 0, 1);
-  t2 = $.canvas;
-  t1.viewport$4(gl, 0, 0, t2.width, t2.height);
-  t2 = $.canvas;
-  t3 = t2.width;
-  t2 = t2.height;
+  $.initPicker(gl);
+  t2 = $.getInterceptor$x(gl);
+  t2.clearColor$4(gl, 0.5, 0.5, 0.5, 1);
+  t2.enable$1(gl, 2929);
+  t2.depthFunc$1(gl, 513);
+  t2.depthRange$2(gl, 0, 1);
+  t1 = $.canvas;
+  t2.viewport$4(gl, 0, 0, t1.width, t1.height);
+  t1 = $.canvas;
+  t3 = t1.width;
+  t1 = t1.height;
   if (t3 == null)
     throw t3.$div();
-  $.canvasAspect = $.JSInt_methods.$div(t3, t2);
+  $.canvasAspect = $.JSInt_methods.$div(t3, t1);
   if ($.backfaceCulling) {
-    t1.frontFace$1(gl, 2305);
-    t1.cullFace$1(gl, 1029);
-    t1.enable$1(gl, 2884);
+    t2.frontFace$1(gl, 2305);
+    t2.cullFace$1(gl, 1029);
+    t2.enable$1(gl, 2884);
   }
   t1 = $.fullRateFrames;
   if (t1 > 0) {
@@ -16323,8 +16365,8 @@ mtllib_parse: function(str, url) {
 }}],
 ["shader", "shader.dart", , {
 Instance: {"": "Object;model>,center,scale,MV,clickable",
-  draw$2: function(gameLoop, cam) {
-    var t1, t2, t3, t4, t5, prog, gl;
+  draw$3: function(gameLoop, prog, cam) {
+    var t1, t2, t3, t4, t5, gl;
     t1 = this.MV;
     $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
     t2 = this.center.storage;
@@ -16340,17 +16382,16 @@ Instance: {"": "Object;model>,center,scale,MV,clickable",
     t1.translate$3(t1, t4, t5, $.doubleTypeCheck(t2[2]));
     t2 = this.scale;
     t1.scale$3(t1, t2, t2, t2);
-    t2 = this.model;
-    prog = t2.program;
     gl = prog.gl;
-    t5 = $.getInterceptor$x(gl);
-    t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.storage);
-    t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
-    t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
-    t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
-    t5 = new $.Instance_draw_closure(this, gl);
-    $.propertyTypeCheck(t5, "$isFunction");
-    $.voidTypeCheck($.IterableMixinWorkaround_forEach(t2.pieceList, t5));
+    t2 = $.getInterceptor$x(gl);
+    t2.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.storage);
+    t1 = this.model;
+    t2.bindBuffer$2(gl, 34962, t1.vertexPositionBuffer);
+    t2.vertexAttribPointer$6(gl, prog.a_Position, t1.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t2.bindBuffer$2(gl, 34963, t1.vertexIndexBuffer);
+    t2 = new $.Instance_draw_closure(this, gl);
+    $.propertyTypeCheck(t2, "$isFunction");
+    $.voidTypeCheck($.IterableMixinWorkaround_forEach(t1.pieceList, t2));
   },
   $isInstance: true
 },
@@ -16404,7 +16445,7 @@ Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferI
     $.forEach$1$ax($.listSuperNativeTypeCheck(t1.get$values(t1), "$isIterable"), new $.Model_loadObj_closure(this));
   },
   drawInstances$2: function(gameLoop, cam) {
-    var t1 = new $.Model_drawInstances_closure(gameLoop, cam);
+    var t1 = new $.Model_drawInstances_closure(this, gameLoop, cam);
     $.propertyTypeCheck(t1, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.instanceList, t1));
   },
@@ -16512,9 +16553,9 @@ Model$fromOBJ_handleError: {"": "Closure;URL_3",
   $isGameLoopPointerLockChangeFunction: true
 },
 
-Model_drawInstances_closure: {"": "Closure;gameLoop_0,cam_1",
+Model_drawInstances_closure: {"": "Closure;this_0,gameLoop_1,cam_2",
   call$1: function(i) {
-    return $.propertyTypeCheck(i, "$isInstance").draw$2(this.gameLoop_0, this.cam_1);
+    return $.propertyTypeCheck(i, "$isInstance").draw$3(this.gameLoop_1, this.this_0.get$program(), this.cam_2);
   },
   $isFunction: true,
   $asObject: null,
@@ -16996,7 +17037,7 @@ TexModel: {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,asset<,textu
     t1.bindBuffer$2(gl, 34962, this.textureCoordBuffer);
     t1.vertexAttribPointer$6(gl, $.propertyTypeCast(this.program, "$isTexShaderProgram").a_TextureCoord, this.textureCoordBufferItemSize, 5126, false, 0, 0);
     t1.bindBuffer$2(gl, 34963, this.vertexIndexBuffer);
-    t1 = new $.TexModel_drawInstances_closure(gameLoop, cam);
+    t1 = new $.TexModel_drawInstances_closure(this, gameLoop, cam);
     $.propertyTypeCheck(t1, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.instanceList, t1));
   },
@@ -17087,9 +17128,9 @@ TexModel_loadObj_closure: {"": "Closure;mtlURL_9",
   $isGameLoopPointerLockChangeFunction: true
 },
 
-TexModel_drawInstances_closure: {"": "Closure;gameLoop_0,cam_1",
+TexModel_drawInstances_closure: {"": "Closure;this_0,gameLoop_1,cam_2",
   call$1: function(i) {
-    return $.propertyTypeCheck(i, "$isInstance").draw$2(this.gameLoop_0, this.cam_1);
+    return $.propertyTypeCheck(i, "$isInstance").draw$3(this.gameLoop_1, this.this_0.get$program(), this.cam_2);
   },
   $isFunction: true,
   $asObject: null,
@@ -17098,8 +17139,8 @@ TexModel_drawInstances_closure: {"": "Closure;gameLoop_0,cam_1",
 },
 
 TexInstance: {"": "Instance;model,center,scale,MV,clickable",
-  draw$2: function(gameLoop, cam) {
-    var t1, t2, t3, t4, t5, prog, gl;
+  draw$3: function(gameLoop, prog, cam) {
+    var t1, t2, t3, t4, t5, gl;
     t1 = this.MV;
     $.setViewMatrix(t1, cam.eye, cam.center, cam.up);
     t2 = this.center.storage;
@@ -17115,14 +17156,12 @@ TexInstance: {"": "Instance;model,center,scale,MV,clickable",
     t1.translate$3(t1, t4, t5, $.doubleTypeCheck(t2[2]));
     t2 = this.scale;
     t1.scale$3(t1, t2, t2, t2);
-    t2 = this.model;
-    prog = t2.program;
     gl = prog.gl;
     $.uniformMatrix4fv$3$x(gl, prog.u_MV, false, t1.storage);
-    t2 = $.propertyTypeCast(t2, "$isTexModel").pieceList;
-    t1 = new $.TexInstance_draw_closure(this, prog, gl);
-    $.propertyTypeCheck(t1, "$isFunction");
-    $.voidTypeCheck($.IterableMixinWorkaround_forEach(t2, t1));
+    t1 = $.propertyTypeCast(this.model, "$isTexModel").pieceList;
+    t2 = new $.TexInstance_draw_closure(this, prog, gl);
+    $.propertyTypeCheck(t2, "$isFunction");
+    $.voidTypeCheck($.IterableMixinWorkaround_forEach(t1, t2));
   }
 },
 
@@ -17243,7 +17282,7 @@ SkyboxModel: {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,
     gl = this.program.gl;
     t1 = $.getInterceptor$x(gl);
     t1.bindTexture$2(gl, 34067, this.cubemapTexture);
-    t2 = new $.SkyboxModel_drawInstances_closure(gameLoop, cam);
+    t2 = new $.SkyboxModel_drawInstances_closure(this, gameLoop, cam);
     $.propertyTypeCheck(t2, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.instanceList, t2));
     t1.bindTexture$2(gl, 34067, null);
@@ -17283,9 +17322,9 @@ SkyboxModel_addCubemapFace_handleError: {"": "Closure;URL_4",
   $isEventListener: true
 },
 
-SkyboxModel_drawInstances_closure: {"": "Closure;gameLoop_0,cam_1",
+SkyboxModel_drawInstances_closure: {"": "Closure;this_0,gameLoop_1,cam_2",
   call$1: function(i) {
-    return $.propertyTypeCheck(i, "$isInstance").draw$2(this.gameLoop_0, this.cam_1);
+    return $.propertyTypeCheck(i, "$isInstance").draw$3(this.gameLoop_1, this.this_0.get$program(), this.cam_2);
   },
   $isFunction: true,
   $asObject: null,
@@ -17294,8 +17333,8 @@ SkyboxModel_drawInstances_closure: {"": "Closure;gameLoop_0,cam_1",
 },
 
 SkyboxInstance: {"": "Instance;model,center,scale,MV,clickable",
-  draw$2: function(gameLoop, cam) {
-    var r, size, t1, t2, t3, t4, t5, s, prog, gl;
+  draw$3: function(gameLoop, prog, cam) {
+    var r, size, t1, t2, t3, t4, t5, s, gl;
     gameLoop.get$renderInterpolationFactor;
     r = $.doubleTypeCheck(cam.getRad$1($.doubleTypeCheck(gameLoop._renderInterpolationFactor)));
     if (typeof r !== "number")
@@ -17316,17 +17355,16 @@ SkyboxInstance: {"": "Instance;model,center,scale,MV,clickable",
     t1.translate$3(t1, t4, t5, $.doubleTypeCheck(t2[2]));
     s = $.JSDouble_methods.$mul(this.scale, size);
     t1.scale$3(t1, s, s, s);
-    t2 = this.model;
-    prog = t2.program;
     gl = prog.gl;
-    t5 = $.getInterceptor$x(gl);
-    t5.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.storage);
-    t5.bindBuffer$2(gl, 34962, t2.vertexPositionBuffer);
-    t5.vertexAttribPointer$6(gl, prog.a_Position, t2.vertexPositionBufferItemSize, 5126, false, 0, 0);
-    t5.bindBuffer$2(gl, 34963, t2.vertexIndexBuffer);
-    t5 = new $.SkyboxInstance_draw_closure(this, gl);
-    $.propertyTypeCheck(t5, "$isFunction");
-    $.voidTypeCheck($.IterableMixinWorkaround_forEach(t2.pieceList, t5));
+    t2 = $.getInterceptor$x(gl);
+    t2.uniformMatrix4fv$3(gl, prog.u_MV, false, t1.storage);
+    t1 = this.model;
+    t2.bindBuffer$2(gl, 34962, t1.vertexPositionBuffer);
+    t2.vertexAttribPointer$6(gl, prog.a_Position, t1.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t2.bindBuffer$2(gl, 34963, t1.vertexIndexBuffer);
+    t2 = new $.SkyboxInstance_draw_closure(this, gl);
+    $.propertyTypeCheck(t2, "$isFunction");
+    $.voidTypeCheck($.IterableMixinWorkaround_forEach(t1.pieceList, t2));
   }
 },
 
@@ -18682,19 +18720,19 @@ $.MouseEvent.$isObject = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
+$.Node.$isObject = true;
+$.Element.$isNode = true;
 $.Element.$isElement = true;
 $.Element.$isObject = true;
-$.Element.$isNode = true;
 $.Element.$isObject = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouch.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouch.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
 $.Entry.$isEntry = true;
@@ -18711,65 +18749,65 @@ $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
 $.File.$isFile = true;
 $.File.$isObject = true;
-$.ShaderProgram.$isObject = true;
 $.ShaderProgram.$isShaderProgram = true;
+$.ShaderProgram.$isObject = true;
 $.Instance.$isInstance = true;
 $.Instance.$isObject = true;
 $.Transform.$isObject = true;
-$.Model.$isModel = true;
 $.Model.$isObject = true;
-$.Piece.$isPiece = true;
+$.Model.$isModel = true;
 $.Piece.$isObject = true;
+$.Piece.$isPiece = true;
 $.Plugin.$isObject = true;
 $.Part.$isObject = true;
 $.Part.$isPart = true;
 $.Gamepad.$isObject = true;
-$.Material.$isMaterial = true;
 $.Material.$isObject = true;
-$.ReceivePort.$isReceivePort = true;
+$.Material.$isMaterial = true;
 $.ReceivePort.$isObject = true;
+$.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
-$.ElementInstance.$isObject = true;
 $.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
-$.SpeechRecognitionResult.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
-$.StyleSheet.$isStyleSheet = true;
+$.SpeechRecognitionResult.$isObject = true;
 $.StyleSheet.$isObject = true;
+$.StyleSheet.$isStyleSheet = true;
 $.KeyboardEvent.$isEvent = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
+$.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
+$.JSDouble.$isObject = true;
 $.JSString.$isString = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
@@ -18783,12 +18821,12 @@ $.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
-$.Touch.$isObject = true;
 $.Touch.$isTouch = true;
+$.Touch.$isObject = true;
 $.Shader.$isShader = true;
 $.Shader.$isObject = true;
-$.Texture.$isTexture = true;
 $.Texture.$isObject = true;
+$.Texture.$isTexture = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");

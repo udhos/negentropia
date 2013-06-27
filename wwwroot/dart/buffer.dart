@@ -13,7 +13,7 @@ class Instance {
   void update(GameLoopHtml gameLoop) {
   }
   
-  void draw(GameLoopHtml gameLoop, Camera cam) {
+  void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
 
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
@@ -21,7 +21,7 @@ class Instance {
     
     MV.scale(scale, scale, scale);
     
-    ShaderProgram prog = model.program;
+    //ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;
 
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
@@ -166,7 +166,7 @@ class Model {
   }
  
   void drawInstances(GameLoopHtml gameLoop, Camera cam) {
-    this.instanceList.forEach((Instance i) => i.draw(gameLoop, cam));
+    this.instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
   }  
 
   void update(GameLoopHtml gameLoop) {

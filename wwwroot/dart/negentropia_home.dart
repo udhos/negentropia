@@ -203,7 +203,7 @@ void initShips(RenderingContext gl) {
 
 void initPicker(RenderingContext gl) {
   PickerShader picker = new PickerShader(gl, programList);
-  //programList.add(picker);
+  programList.add(picker);
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 

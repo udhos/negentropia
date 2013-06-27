@@ -101,7 +101,7 @@ class SkyboxModel extends Model {
     
     gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
 
-    instanceList.forEach((Instance i) => i.draw(gameLoop, cam));
+    instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
     
     gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, null);
   }  
@@ -111,7 +111,7 @@ class SkyboxInstance extends Instance {
   
   SkyboxInstance(Model model, Vector3 center, double scale) : super(model, center, scale);
   
-  void draw(GameLoopHtml gameLoop, Camera cam) {
+  void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
     
     double r = cam.getRad(gameLoop.renderInterpolationFactor);
 
@@ -124,7 +124,7 @@ class SkyboxInstance extends Instance {
     double s = scale * size;
     MV.scale(s, s, s);
 
-    ShaderProgram prog = model.program;
+    //ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;
 
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);

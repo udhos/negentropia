@@ -165,7 +165,7 @@ class TexModel extends Model {
     
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
     
-    instanceList.forEach((Instance i) => i.draw(gameLoop, cam));
+    instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
   }  
   
 }
@@ -174,7 +174,7 @@ class TexInstance extends Instance {
     
   TexInstance(TexModel model, Vector3 center, double scale, [bool pick=false]) : super(model, center, scale, pick);
 
-  void draw(GameLoopHtml gameLoop, Camera cam) {
+  void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
 
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
@@ -182,7 +182,7 @@ class TexInstance extends Instance {
     
     MV.scale(scale, scale, scale);
     
-    ShaderProgram prog = model.program;
+    //ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;
 
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
