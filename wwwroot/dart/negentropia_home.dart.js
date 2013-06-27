@@ -2738,7 +2738,7 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
     return receiver.texParameteri(target, pname, param);
   },
   uniform1i$2: function(receiver, $location, x) {
-    return receiver.uniform1i($.interceptedTypeCheck($location, "$isUniformLocation"), x);
+    return receiver.uniform1i($location, x);
   },
   uniformMatrix4fv$3: function(receiver, $location, transpose, array) {
     return receiver.uniformMatrix4fv($location, transpose, array);
@@ -2747,7 +2747,7 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
     return receiver.useProgram(program);
   },
   vertexAttribPointer$6: function(receiver, indx, size, type, normalized, stride, offset) {
-    return receiver.vertexAttribPointer($.intTypeCheck(indx), size, type, normalized, stride, offset);
+    return receiver.vertexAttribPointer(indx, size, type, normalized, stride, offset);
   },
   viewport$4: function(receiver, x, y, width, height) {
     return receiver.viewport(x, y, width, height);
@@ -7613,18 +7613,19 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
 
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
   var t1;
-  if (start < 0 || start > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (start < 0 || start > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + start + " not in range 0.." + t1));
   }
-  if (end < start || end > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (end < start || end > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + end + " not in range " + start + ".." + t1));
   }
 },
 
 IterableMixinWorkaround_setRangeList: function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList;
+  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = end - start;
   if ($length === 0)
@@ -15164,7 +15165,7 @@ initSquares: function(gl) {
   squareProgram = new $.ShaderProgram(null, gl, null, null, null, false, $.interceptedTypeCheck(t1, "$isList"));
   $.add$1$ax($.programList, squareProgram);
   squareProgram.fetch$3($.shaderCache, $.get$asset()._shader + "/clip_vs.txt", $.get$asset()._shader + "/clip_fs.txt");
-  squareModel = $.Model$fromJson(gl, squareProgram, $.get$asset()._mesh + "/square.json");
+  squareModel = $.Model$fromJson(gl, $.get$asset()._mesh + "/square.json");
   $.JSArray_methods.add$1(squareProgram.modelList, squareModel);
   $.doubleTypeCheck(0);
   t1 = new $.Vector3(new Float32Array(3));
@@ -15192,7 +15193,7 @@ initSquares: function(gl) {
   t2 = new $.initSquares_closure(squareProgram2);
   $.propertyTypeCheck(t2, "$isFunction");
   $.get$_Zone__current().createTimer$2(t1, t2);
-  squareModel2 = $.Model$fromJson(gl, squareProgram2, $.get$asset()._mesh + "/square2.json");
+  squareModel2 = $.Model$fromJson(gl, $.get$asset()._mesh + "/square2.json");
   $.JSArray_methods.add$1(squareProgram2.modelList, squareModel2);
   t2 = new $.Vector3(new Float32Array(3));
   t1 = t2.storage;
@@ -15215,7 +15216,7 @@ initSquares: function(gl) {
   squareProgram3 = new $.ShaderProgram(null, gl, null, null, null, false, $.interceptedTypeCheck(t1, "$isList"));
   $.add$1$ax($.programList, squareProgram3);
   squareProgram3.fetch$3($.shaderCache, $.get$asset()._shader + "/clip_vs.txt", $.get$asset()._shader + "/clip3_fs.txt");
-  squareModel3 = $.Model$fromJson(gl, squareProgram3, $.get$asset()._mesh + "/square3.json");
+  squareModel3 = $.Model$fromJson(gl, $.get$asset()._mesh + "/square3.json");
   $.JSArray_methods.add$1(squareProgram3.modelList, squareModel3);
   t1 = new $.Vector3(new Float32Array(3));
   t2 = t1.storage;
@@ -15252,15 +15253,15 @@ initSkybox: function(gl) {
   t1 = $.List_List($, $.Instance);
   $.assertHelper(true);
   t1.$builtinTypeInfo = [$.Instance];
-  skyboxModel = new $.SkyboxModel(null, null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), $.interceptedTypeCheck(t1, "$isList"), skyboxProgram);
-  skyboxModel.Model$fromJson$3(gl, skyboxProgram, "/mesh/cube.json");
+  skyboxModel = new $.SkyboxModel(null, null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), $.interceptedTypeCheck(t1, "$isList"));
+  skyboxModel.Model$fromJson$2(gl, "/mesh/cube.json");
   skyboxModel.cubemapTexture = gl.createTexture();
-  skyboxModel.addCubemapFace$2(34069, "/texture/space_rt.jpg");
-  skyboxModel.addCubemapFace$2(34070, "/texture/space_lf.jpg");
-  skyboxModel.addCubemapFace$2(34071, "/texture/space_up.jpg");
-  skyboxModel.addCubemapFace$2(34072, "/texture/space_dn.jpg");
-  skyboxModel.addCubemapFace$2(34073, "/texture/space_fr.jpg");
-  skyboxModel.addCubemapFace$2(34074, "/texture/space_bk.jpg");
+  skyboxModel.addCubemapFace$3(gl, 34069, "/texture/space_rt.jpg");
+  skyboxModel.addCubemapFace$3(gl, 34070, "/texture/space_lf.jpg");
+  skyboxModel.addCubemapFace$3(gl, 34071, "/texture/space_up.jpg");
+  skyboxModel.addCubemapFace$3(gl, 34072, "/texture/space_dn.jpg");
+  skyboxModel.addCubemapFace$3(gl, 34073, "/texture/space_fr.jpg");
+  skyboxModel.addCubemapFace$3(gl, 34074, "/texture/space_bk.jpg");
   $.JSArray_methods.add$1(skyboxProgram.modelList, skyboxModel);
   $.doubleTypeCheck(0);
   t1 = new $.Vector3(new Float32Array(3));
@@ -15289,7 +15290,7 @@ initAirship: function(gl) {
   prog = new $.ShaderProgram(null, gl, null, null, null, false, $.interceptedTypeCheck(t1, "$isList"));
   $.add$1$ax($.programList, prog);
   prog.fetch$3($.shaderCache, $.get$asset()._shader + "/simple_vs.txt", $.get$asset()._shader + "/simple_fs.txt");
-  airshipModel = $.Model$fromOBJ(gl, prog, $.get$asset()._obj + "/airship.obj");
+  airshipModel = $.Model$fromOBJ(gl, $.get$asset()._obj + "/airship.obj");
   $.JSArray_methods.add$1(prog.modelList, airshipModel);
   $.doubleTypeCheck(-8);
   $.doubleTypeCheck(0);
@@ -15328,8 +15329,8 @@ initAirshipTex: function(gl) {
   t4 = $.List_List($, $.Instance);
   $.assertHelper(true);
   t4.$builtinTypeInfo = [$.Instance];
-  airshipModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t1, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), $.interceptedTypeCheck(t4, "$isList"), prog);
-  airshipModel.Model$fromOBJ$3(gl, prog, objURL);
+  airshipModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t1, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t3, "$isList"), $.interceptedTypeCheck(t4, "$isList"));
+  airshipModel.Model$fromOBJ$2(gl, objURL);
   t1 = prog.modelList;
   $.JSArray_methods.add$1(t1, airshipModel);
   $.doubleTypeCheck(0);
@@ -15357,8 +15358,8 @@ initAirshipTex: function(gl) {
   t5 = $.List_List($, $.Instance);
   $.assertHelper(true);
   t5.$builtinTypeInfo = [$.Instance];
-  airshipModel2 = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), prog);
-  airshipModel2.Model$fromOBJ$3(gl, prog, objURL);
+  airshipModel2 = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"));
+  airshipModel2.Model$fromOBJ$2(gl, objURL);
   $.JSArray_methods.add$1(t1, airshipModel2);
   $.doubleTypeCheck(8);
   t2 = new $.Vector3(new Float32Array(3));
@@ -15385,8 +15386,8 @@ initAirshipTex: function(gl) {
   t5 = $.List_List($, $.Instance);
   $.assertHelper(true);
   t5.$builtinTypeInfo = [$.Instance];
-  colonyShipModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), prog);
-  colonyShipModel.Model$fromOBJ$3(gl, prog, colonyShipURL);
+  colonyShipModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"));
+  colonyShipModel.Model$fromOBJ$2(gl, colonyShipURL);
   $.JSArray_methods.add$1(t1, colonyShipModel);
   $.doubleTypeCheck(-5);
   $.doubleTypeCheck(-50);
@@ -15414,8 +15415,8 @@ initAirshipTex: function(gl) {
   t5 = $.List_List($, $.Instance);
   $.assertHelper(true);
   t5.$builtinTypeInfo = [$.Instance];
-  coneModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"), prog);
-  coneModel.Model$fromOBJ$3(gl, prog, coneURL);
+  coneModel = new $.TexModel(null, null, t2, $.interceptedTypeCheck(t3, "$isMap"), null, null, null, null, $.interceptedTypeCheck(t4, "$isList"), $.interceptedTypeCheck(t5, "$isList"));
+  coneModel.Model$fromOBJ$2(gl, coneURL);
   $.JSArray_methods.add$1(t1, coneModel);
   $.doubleTypeCheck(2);
   $.doubleTypeCheck(-10);
@@ -16409,10 +16410,7 @@ Instance_draw_closure: {"": "Closure;this_0,gl_1",
 
 Piece: {"": "Object;vertexIndexOffset,vertexIndexLength", $isPiece: true},
 
-Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize<,pieceList<,instanceList,program<",
-  set$program: function(v) {
-    this.program = $.propertyTypeCheck(v, "$isShaderProgram");
-  },
+Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize<,pieceList<,instanceList",
   _createBuffers$5: function(gl, indices, vertCoord, textCoord, normCoord) {
     var t1;
     $.interceptedTypeCheck(indices, "$isList");
@@ -16444,8 +16442,8 @@ Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferI
     var t1 = o._partTable;
     $.forEach$1$ax($.listSuperNativeTypeCheck(t1.get$values(t1), "$isIterable"), new $.Model_loadObj_closure(this));
   },
-  drawInstances$2: function(gameLoop, cam) {
-    var t1 = new $.Model_drawInstances_closure(this, gameLoop, cam);
+  drawInstances$3: function(gameLoop, program, cam) {
+    var t1 = new $.Model_drawInstances_closure(gameLoop, program, cam);
     $.propertyTypeCheck(t1, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.instanceList, t1));
   },
@@ -16454,10 +16452,10 @@ Model: {"": "Object;vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferI
     $.propertyTypeCheck(t1, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.instanceList, t1));
   },
-  Model$fromOBJ$3: function(gl, program, URL) {
+  Model$fromOBJ$2: function(gl, URL) {
     $.HttpRequest_getString(URL, null, null).then$1(new $.Model$fromOBJ_handleResponse(this, gl, URL)).catchError$1(new $.Model$fromOBJ_handleError(URL));
   },
-  Model$fromJson$3: function(gl, program, URL) {
+  Model$fromJson$2: function(gl, URL) {
     $.HttpRequest_getString(URL, null, null).then$1(new $.Model$fromJson_handleResponse(this, gl)).catchError$1(new $.Model$fromJson_handleError(URL));
   },
   $isModel: true
@@ -16553,9 +16551,9 @@ Model$fromOBJ_handleError: {"": "Closure;URL_3",
   $isGameLoopPointerLockChangeFunction: true
 },
 
-Model_drawInstances_closure: {"": "Closure;this_0,gameLoop_1,cam_2",
+Model_drawInstances_closure: {"": "Closure;gameLoop_0,program_1,cam_2",
   call$1: function(i) {
-    return $.propertyTypeCheck(i, "$isInstance").draw$3(this.gameLoop_1, this.this_0.get$program(), this.cam_2);
+    return $.propertyTypeCheck(i, "$isInstance").draw$3(this.gameLoop_0, this.program_1, this.cam_2);
   },
   $isFunction: true,
   $asObject: null,
@@ -16582,7 +16580,7 @@ PickerShader: {"": "ShaderProgram;u_Color,programList,program,gl,a_Position,u_MV
   }
 },
 
-ShaderProgram: {"": "Object;program<,gl<,a_Position,u_MV,u_P,shaderReady,modelList",
+ShaderProgram: {"": "Object;program,gl<,a_Position,u_MV,u_P,shaderReady,modelList",
   set$program: function(v) {
     this.program = $.interceptedTypeCheck(v, "$isProgram");
   },
@@ -16632,7 +16630,7 @@ ShaderProgram: {"": "Object;program<,gl<,a_Position,u_MV,u_P,shaderReady,modelLi
     t2.useProgram$1(t1, this.program);
     t2.enableVertexAttribArray$1(t1, this.a_Position);
     t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.storage);
-    t3 = new $.ShaderProgram_drawModels_closure(gameLoop, cam);
+    t3 = new $.ShaderProgram_drawModels_closure(this, gameLoop, cam);
     $.propertyTypeCheck(t3, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.modelList, t3));
     t2.bindBuffer$2(t1, 34962, null);
@@ -16920,9 +16918,9 @@ ShaderProgram_fetch_fetchFragmentShader_closure0: {"": "Closure;",
   $isGameLoopPointerLockChangeFunction: true
 },
 
-ShaderProgram_drawModels_closure: {"": "Closure;gameLoop_0,cam_1",
+ShaderProgram_drawModels_closure: {"": "Closure;this_0,gameLoop_1,cam_2",
   call$1: function(m) {
-    return $.propertyTypeCheck(m, "$isModel").drawInstances$2(this.gameLoop_0, this.cam_1);
+    return $.propertyTypeCheck(m, "$isModel").drawInstances$3(this.gameLoop_1, this.this_0, this.cam_2);
   },
   $isFunction: true,
   $asObject: null,
@@ -16966,7 +16964,7 @@ TexShaderProgram: {"": "ShaderProgram;a_TextureCoord,u_Sampler,program,gl,a_Posi
     t2.enableVertexAttribArray$1(t1, this.a_Position);
     t2.enableVertexAttribArray$1(t1, this.a_TextureCoord);
     t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.storage);
-    t3 = new $.TexShaderProgram_drawModels_closure(gameLoop, cam);
+    t3 = new $.TexShaderProgram_drawModels_closure(this, gameLoop, cam);
     $.propertyTypeCheck(t3, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.modelList, t3));
     t2.bindBuffer$2(t1, 34962, null);
@@ -16986,9 +16984,9 @@ TexShaderProgram_initContext_closure: {"": "Closure;gl_0,textureTable_1",
   $is_FutureErrorTest: true
 },
 
-TexShaderProgram_drawModels_closure: {"": "Closure;gameLoop_0,cam_1",
+TexShaderProgram_drawModels_closure: {"": "Closure;this_0,gameLoop_1,cam_2",
   call$1: function(m) {
-    return $.propertyTypeCheck(m, "$isTexModel").drawInstances$2(this.gameLoop_0, this.cam_1);
+    return $.propertyTypeCheck(m, "$isTexModel").drawInstances$3(this.gameLoop_1, this.this_0, this.cam_2);
   },
   $isFunction: true,
   $asObject: null,
@@ -16998,7 +16996,7 @@ TexShaderProgram_drawModels_closure: {"": "Closure;gameLoop_0,cam_1",
 
 TexPiece: {"": "Piece;texInfo,vertexIndexOffset,vertexIndexLength", $isTexPiece: true},
 
-TexModel: {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,asset<,textureTable<,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,pieceList,instanceList,program",
+TexModel: {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,asset<,textureTable<,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,pieceList,instanceList",
   initContext$2: function(gl, textureTable) {
     var t1 = new $.TexModel_initContext_closure(gl, $.interceptedTypeCheck(textureTable, "$isMap"));
     $.propertyTypeCheck(t1, "$isFunction");
@@ -17028,16 +17026,16 @@ TexModel: {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,asset<,textu
     $.JSArray_methods.add$1(this.pieceList, pi);
     return pi;
   },
-  drawInstances$2: function(gameLoop, cam) {
+  drawInstances$3: function(gameLoop, program, cam) {
     var gl, t1;
-    gl = this.program.gl;
+    gl = program.gl;
     t1 = $.getInterceptor$x(gl);
     t1.bindBuffer$2(gl, 34962, this.vertexPositionBuffer);
-    t1.vertexAttribPointer$6(gl, this.program.a_Position, this.vertexPositionBufferItemSize, 5126, false, 0, 0);
+    t1.vertexAttribPointer$6(gl, program.a_Position, this.vertexPositionBufferItemSize, 5126, false, 0, 0);
     t1.bindBuffer$2(gl, 34962, this.textureCoordBuffer);
-    t1.vertexAttribPointer$6(gl, $.propertyTypeCast(this.program, "$isTexShaderProgram").a_TextureCoord, this.textureCoordBufferItemSize, 5126, false, 0, 0);
+    t1.vertexAttribPointer$6(gl, $.propertyTypeCast(program, "$isTexShaderProgram").a_TextureCoord, this.textureCoordBufferItemSize, 5126, false, 0, 0);
     t1.bindBuffer$2(gl, 34963, this.vertexIndexBuffer);
-    t1 = new $.TexModel_drawInstances_closure(this, gameLoop, cam);
+    t1 = new $.TexModel_drawInstances_closure(gameLoop, program, cam);
     $.propertyTypeCheck(t1, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.instanceList, t1));
   },
@@ -17128,9 +17126,9 @@ TexModel_loadObj_closure: {"": "Closure;mtlURL_9",
   $isGameLoopPointerLockChangeFunction: true
 },
 
-TexModel_drawInstances_closure: {"": "Closure;this_0,gameLoop_1,cam_2",
+TexModel_drawInstances_closure: {"": "Closure;gameLoop_0,program_1,cam_2",
   call$1: function(i) {
-    return $.propertyTypeCheck(i, "$isInstance").draw$3(this.gameLoop_1, this.this_0.get$program(), this.cam_2);
+    return $.propertyTypeCheck(i, "$isInstance").draw$3(this.gameLoop_0, this.program_1, this.cam_2);
   },
   $isFunction: true,
   $asObject: null,
@@ -17183,7 +17181,7 @@ TexInstance_draw_closure: {"": "Closure;this_0,prog_1,gl_2",
   $is_FutureErrorTest: true
 },
 
-Model$fromJson: function(gl, program, URL) {
+Model$fromJson: function(gl, URL) {
   var t1, t2;
   t1 = $.List_List($, $.Piece);
   $.assertHelper(true);
@@ -17191,12 +17189,12 @@ Model$fromJson: function(gl, program, URL) {
   t2 = $.List_List($, $.Instance);
   $.assertHelper(true);
   t2.$builtinTypeInfo = [$.Instance];
-  t1 = new $.Model(null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), $.interceptedTypeCheck(t2, "$isList"), program);
-  t1.Model$fromJson$3(gl, program, URL);
+  t1 = new $.Model(null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), $.interceptedTypeCheck(t2, "$isList"));
+  t1.Model$fromJson$2(gl, URL);
   return t1;
 },
 
-Model$fromOBJ: function(gl, program, URL) {
+Model$fromOBJ: function(gl, URL) {
   var t1, t2;
   t1 = $.List_List($, $.Piece);
   $.assertHelper(true);
@@ -17204,8 +17202,8 @@ Model$fromOBJ: function(gl, program, URL) {
   t2 = $.List_List($, $.Instance);
   $.assertHelper(true);
   t2.$builtinTypeInfo = [$.Instance];
-  t1 = new $.Model(null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), $.interceptedTypeCheck(t2, "$isList"), program);
-  t1.Model$fromOBJ$3(gl, program, URL);
+  t1 = new $.Model(null, null, null, null, $.interceptedTypeCheck(t1, "$isList"), $.interceptedTypeCheck(t2, "$isList"));
+  t1.Model$fromOBJ$2(gl, URL);
   return t1;
 }}],
 ["skybox", "skybox.dart", , {
@@ -17226,7 +17224,7 @@ SkyboxProgram: {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,shade
     t2.activeTexture$1(t1, 33984);
     t2.uniform1i$2(t1, this.u_Skybox, 0);
     t2.uniformMatrix4fv$3(t1, this.u_P, false, pMatrix.storage);
-    t3 = new $.SkyboxProgram_drawModels_closure(gameLoop, cam);
+    t3 = new $.SkyboxProgram_drawModels_closure(this, gameLoop, cam);
     $.propertyTypeCheck(t3, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.modelList, t3));
     t2.bindBuffer$2(t1, 34962, null);
@@ -17234,9 +17232,9 @@ SkyboxProgram: {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,shade
   }
 },
 
-SkyboxProgram_drawModels_closure: {"": "Closure;gameLoop_0,cam_1",
+SkyboxProgram_drawModels_closure: {"": "Closure;this_0,gameLoop_1,cam_2",
   call$1: function(m) {
-    return $.propertyTypeCheck(m, "$isModel").drawInstances$2(this.gameLoop_0, this.cam_1);
+    return $.propertyTypeCheck(m, "$isModel").drawInstances$3(this.gameLoop_1, this.this_0, this.cam_2);
   },
   $isFunction: true,
   $asObject: null,
@@ -17244,11 +17242,11 @@ SkyboxProgram_drawModels_closure: {"": "Closure;gameLoop_0,cam_1",
   $is_FutureErrorTest: true
 },
 
-SkyboxModel: {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,pieceList,instanceList,program",
-  addCubemapFace$2: function(face, URL) {
+SkyboxModel: {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,vertexPositionBufferItemSize,vertexIndexBufferItemSize,pieceList,instanceList",
+  addCubemapFace$3: function(gl, face, URL) {
     var image, t1, t2, t3, $arguments, arguments0, t4;
     image = $.interceptedTypeCheck($.ImageElement_ImageElement(null, null, null), "$isImageElement");
-    t1 = new $.SkyboxModel_addCubemapFace_handleDone(this, face, URL, image);
+    t1 = new $.SkyboxModel_addCubemapFace_handleDone(this, gl, face, URL, image);
     t2 = $.getInterceptor$x(image);
     t3 = t2.get$onLoad(image);
     $.propertyTypeCheck(t1, "$isFunction");
@@ -17277,33 +17275,32 @@ SkyboxModel: {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,
     t2.get$onError(image).listen$1(new $.SkyboxModel_addCubemapFace_handleError(URL));
     image.src = URL;
   },
-  drawInstances$2: function(gameLoop, cam) {
+  drawInstances$3: function(gameLoop, program, cam) {
     var gl, t1, t2;
-    gl = this.program.gl;
+    gl = program.gl;
     t1 = $.getInterceptor$x(gl);
     t1.bindTexture$2(gl, 34067, this.cubemapTexture);
-    t2 = new $.SkyboxModel_drawInstances_closure(this, gameLoop, cam);
+    t2 = new $.SkyboxModel_drawInstances_closure(gameLoop, program, cam);
     $.propertyTypeCheck(t2, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.instanceList, t2));
     t1.bindTexture$2(gl, 34067, null);
   }
 },
 
-SkyboxModel_addCubemapFace_handleDone: {"": "Closure;this_0,face_1,URL_2,image_3",
+SkyboxModel_addCubemapFace_handleDone: {"": "Closure;this_0,gl_1,face_2,URL_3,image_4",
   call$1: function(e) {
-    var t1, gl, t2;
+    var t1, t2;
     $.interceptedTypeCheck(e, "$isEvent");
-    $.Primitives_printString("addCubemapFace: handleDone: loaded image from URL: " + this.URL_2);
-    t1 = this.this_0;
-    gl = t1.get$program().get$gl();
-    t2 = $.getInterceptor$x(gl);
-    t2.bindTexture$2(gl, 34067, t1.get$cubemapTexture());
-    t2.texParameteri$3(gl, 34067, 10240, 9728);
-    t2.texParameteri$3(gl, 34067, 10241, 9728);
-    t2.texImage2D$6(gl, this.face_1, 0, 6408, 6408, 5121, this.image_3);
-    t2.texParameteri$3(gl, 34067, 10242, 33071);
-    t2.texParameteri$3(gl, 34067, 10243, 33071);
-    t2.bindTexture$2(gl, 34067, null);
+    $.Primitives_printString("addCubemapFace: handleDone: loaded image from URL: " + this.URL_3);
+    t1 = this.gl_1;
+    t2 = $.getInterceptor$x(t1);
+    t2.bindTexture$2(t1, 34067, this.this_0.get$cubemapTexture());
+    t2.texParameteri$3(t1, 34067, 10240, 9728);
+    t2.texParameteri$3(t1, 34067, 10241, 9728);
+    t2.texImage2D$6(t1, this.face_2, 0, 6408, 6408, 5121, this.image_4);
+    t2.texParameteri$3(t1, 34067, 10242, 33071);
+    t2.texParameteri$3(t1, 34067, 10243, 33071);
+    t2.bindTexture$2(t1, 34067, null);
   },
   $isFunction: true,
   $asObject: null,
@@ -17311,10 +17308,10 @@ SkyboxModel_addCubemapFace_handleDone: {"": "Closure;this_0,face_1,URL_2,image_3
   $isEventListener: true
 },
 
-SkyboxModel_addCubemapFace_handleError: {"": "Closure;URL_4",
+SkyboxModel_addCubemapFace_handleError: {"": "Closure;URL_5",
   call$1: function(e) {
     $.interceptedTypeCheck(e, "$isEvent");
-    $.Primitives_printString("addCubemapFace: handleError: failure loading image from URL: " + this.URL_4 + ": " + $.S(e));
+    $.Primitives_printString("addCubemapFace: handleError: failure loading image from URL: " + this.URL_5 + ": " + $.S(e));
   },
   $isFunction: true,
   $asObject: null,
@@ -17322,9 +17319,9 @@ SkyboxModel_addCubemapFace_handleError: {"": "Closure;URL_4",
   $isEventListener: true
 },
 
-SkyboxModel_drawInstances_closure: {"": "Closure;this_0,gameLoop_1,cam_2",
+SkyboxModel_drawInstances_closure: {"": "Closure;gameLoop_0,program_1,cam_2",
   call$1: function(i) {
-    return $.propertyTypeCheck(i, "$isInstance").draw$3(this.gameLoop_1, this.this_0.get$program(), this.cam_2);
+    return $.propertyTypeCheck(i, "$isInstance").draw$3(this.gameLoop_0, this.program_1, this.cam_2);
   },
   $isFunction: true,
   $asObject: null,
@@ -18716,23 +18713,23 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
-$.MouseEvent.$isObject = true;
-$.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
+$.MouseEvent.$isEvent = true;
+$.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isObject = true;
-$.Element.$isNode = true;
 $.Element.$isElement = true;
 $.Element.$isObject = true;
 $.Element.$isObject = true;
-$._GameLoopTouchEvent.$isObject = true;
+$.Element.$isNode = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$.GameLoopTouchPosition.$isObject = true;
+$._GameLoopTouchEvent.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isObject = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
 $.Entry.$isEntry = true;
@@ -18745,25 +18742,25 @@ $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
-$._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
+$._IsolateEvent.$is_IsolateEvent = true;
 $.File.$isFile = true;
 $.File.$isObject = true;
-$.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
-$.Instance.$isInstance = true;
+$.ShaderProgram.$isShaderProgram = true;
 $.Instance.$isObject = true;
+$.Instance.$isInstance = true;
 $.Transform.$isObject = true;
 $.Model.$isObject = true;
 $.Model.$isModel = true;
 $.Piece.$isObject = true;
 $.Piece.$isPiece = true;
 $.Plugin.$isObject = true;
-$.Part.$isObject = true;
 $.Part.$isPart = true;
+$.Part.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Material.$isObject = true;
 $.Material.$isMaterial = true;
+$.Material.$isObject = true;
 $.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
@@ -18774,42 +18771,42 @@ $.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.SpeechRecognitionResult.$isObject = true;
-$.StyleSheet.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
-$.KeyboardEvent.$isEvent = true;
-$.KeyboardEvent.$isObject = true;
+$.StyleSheet.$isObject = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
+$.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isEvent = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
+$.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
-$.JSInt.$isnum = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
-$.JSDouble.$isdouble = true;
-$.JSDouble.$isObject = true;
-$.JSString.$isString = true;
 $.JSString.$isObject = true;
+$.JSString.$isString = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
@@ -18817,8 +18814,8 @@ $.JSString.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.Length.$isObject = true;
-$.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
+$.CssRule.$isCssRule = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
 $.Touch.$isTouch = true;

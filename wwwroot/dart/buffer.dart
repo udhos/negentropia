@@ -54,7 +54,7 @@ class Model {
   
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
-  ShaderProgram program; // parent program
+  //ShaderProgram program; // parent program
   
   void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
         
@@ -79,7 +79,7 @@ class Model {
     return pi;
   }
   
-  Model.fromJson(RenderingContext gl, ShaderProgram this.program, String URL) {
+  Model.fromJson(RenderingContext gl, String URL) {
 
     /*
     // load JSON from URL
@@ -140,7 +140,7 @@ class Model {
     });    
   }
   
-  Model.fromOBJ(RenderingContext gl, this.program, String URL) {
+  Model.fromOBJ(RenderingContext gl, String URL) {
 
     void handleResponse(String response) {
       print("Model.fromOBJ: fetched OBJ from URL: $URL");
@@ -165,7 +165,7 @@ class Model {
     this.instanceList.add(i);
   }
  
-  void drawInstances(GameLoopHtml gameLoop, Camera cam) {
+  void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
     this.instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
   }  
 

@@ -41,7 +41,7 @@ class TexShaderProgram extends ShaderProgram {
     gl.uniform4fv(u_Color, new Float32List.fromList(white));
     */    
 
-    modelList.forEach((TexModel m) => m.drawInstances(gameLoop, cam));
+    modelList.forEach((TexModel m) => m.drawInstances(gameLoop, this, cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -136,8 +136,8 @@ class TexModel extends Model {
     .catchError((err) { print("loadObj: failure fetching mtllib: $mtlURL: $err"); });    
   }
   
-  TexModel.fromOBJ(RenderingContext gl, ShaderProgram program, String URL,
-      this.textureTable, this.asset): super.fromOBJ(gl, program, URL);
+  TexModel.fromOBJ(RenderingContext gl, String URL,
+      this.textureTable, this.asset): super.fromOBJ(gl, URL);
 
   Piece addPiece(int offset, int length) {
     Piece pi = new TexPiece(offset, length);
@@ -151,7 +151,7 @@ class TexModel extends Model {
     //print("addTexture: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
   }
 
-  void drawInstances(GameLoopHtml gameLoop, Camera cam) {
+  void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
     
     RenderingContext gl = program.gl;
 

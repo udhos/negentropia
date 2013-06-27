@@ -45,7 +45,7 @@ class SkyboxProgram extends ShaderProgram {
     // send perspective projection matrix uniform
     gl.uniformMatrix4fv(this.u_P, false, pMatrix.storage);
 
-    modelList.forEach((Model m) => m.drawInstances(gameLoop, cam));
+    modelList.forEach((Model m) => m.drawInstances(gameLoop, this, cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -60,18 +60,19 @@ class SkyboxModel extends Model {
   
   Texture cubemapTexture;
   
-  SkyboxModel.fromJson(RenderingContext gl, SkyboxProgram prog, String URL, bool reverse, num rescale) : super.fromJson(gl, prog, URL) {
+  SkyboxModel.fromJson(RenderingContext gl, String URL, bool reverse, num rescale):
+    super.fromJson(gl, URL) {
     cubemapTexture = gl.createTexture();
   }
     
-  void addCubemapFace(int face, String URL) {
+  void addCubemapFace(RenderingContext gl, int face, String URL) {
 
     ImageElement image = new ImageElement();
 
     void handleDone(Event e) {
       print("addCubemapFace: handleDone: loaded image from URL: $URL");
       
-      RenderingContext gl = this.program.gl;
+      //RenderingContext gl = program.gl;
       
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);      
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP, RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
@@ -95,7 +96,7 @@ class SkyboxModel extends Model {
       ..src = URL;
   }
   
-  void drawInstances(GameLoopHtml gameLoop, Camera cam) {
+  void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
     
     RenderingContext gl = program.gl;
     

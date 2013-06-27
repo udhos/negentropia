@@ -173,7 +173,7 @@ class ShaderProgram {
     // send perspective projection matrix uniform
     gl.uniformMatrix4fv(this.u_P, false, pMatrix.storage);
 
-    modelList.forEach((Model m) => m.drawInstances(gameLoop, cam));
+    modelList.forEach((Model m) => m.drawInstances(gameLoop, this, cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
