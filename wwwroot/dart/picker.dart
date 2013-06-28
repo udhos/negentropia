@@ -5,7 +5,6 @@ List<double> _currentPickColor = [0.0, 0.0, 0.0, 1.0];
 Float32List generatePickColor() {
   double d = 1.0/16.0;
   
-  int len = _currentPickColor.length;
   int i = 0;
   for (; i < 3; ++i) {
     _currentPickColor[i] += d;
