@@ -1,5 +1,26 @@
 part of shader;
 
+List<double> _currentPickColor = [0.0, 0.0, 0.0, 1.0]; 
+
+Float32List generatePickColor() {
+  double d = 1.0/16.0;
+  
+  int len = _currentPickColor.length;
+  int i = 0;
+  for (; i < 3; ++i) {
+    _currentPickColor[i] += d;
+    if (_currentPickColor[i] <= 1.0) {
+      break;
+    }
+    _currentPickColor[i] = 0.0;
+  } 
+  if (i == 3) {
+    print("generatePickColor: overflow");
+  }
+  
+  return new Float32List.fromList(_currentPickColor);  
+}
+
 class PickerInstance extends Instance {
   
   PickerInstance(Instance i): super(i.model, i.center, i.scale, i.pickColor);

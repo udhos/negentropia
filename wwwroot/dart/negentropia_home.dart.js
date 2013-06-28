@@ -4545,6 +4545,7 @@ JSNumber: {"": "num/Interceptor;",
     return receiver & 0x1FFFFFFF;
   },
   $add: function(receiver, other) {
+    $.numTypeCheck(other);
     if (typeof other !== "number")
       throw $.wrapException(new $.ArgumentError(other));
     return receiver + other;
@@ -4617,6 +4618,12 @@ JSNumber: {"": "num/Interceptor;",
       throw $.wrapException(new $.ArgumentError(other));
     return receiver > other;
   },
+  $le: function(receiver, other) {
+    $.numTypeCheck(other);
+    if (typeof other !== "number")
+      throw $.wrapException(new $.ArgumentError(other));
+    return receiver <= other;
+  },
   $ge: function(receiver, other) {
     if (typeof other !== "number")
       throw $.wrapException(new $.ArgumentError(other));
@@ -4664,6 +4671,7 @@ JSString: {"": "String/Interceptor;",
     return new $.StringMatch(start, string, receiver);
   },
   $add: function(receiver, other) {
+    $.stringTypeCheck(other);
     if (typeof other !== "string")
       throw $.wrapException(new $.ArgumentError(other));
     return receiver + other;
@@ -7473,9 +7481,6 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current@",
 },
 
 MappedIterable: {"": "IterableBase;_iterable<,_f",
-  _f$1: function(arg0) {
-    return this._f.call$1(arg0);
-  },
   get$iterator: function(_) {
     var t1, $arguments, arguments0, t2, t3;
     t1 = this._iterable;
@@ -7511,18 +7516,6 @@ MappedIterable: {"": "IterableBase;_iterable<,_f",
   get$length: function(_) {
     var t1 = this._iterable;
     return t1.get$length(t1);
-  },
-  elementAt$1: function(_, index) {
-    var t1, $arguments, arguments0;
-    t1 = this._iterable;
-    t1 = this._f$1(t1.elementAt$1(t1, index));
-    $arguments = this.$asMappedIterable;
-    arguments0 = $.getRuntimeTypeInfo(this);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterableBase: function (S, T) { return [T]; },
@@ -7724,9 +7717,10 @@ Arrays_indexOf: function(a, element, startIndex, endIndex) {
 
 IterableMixinWorkaround_forEach: function(iterable, f) {
   var t1, t2, $arguments, arguments0;
+  $.listSuperNativeTypeCheck(iterable, "$isIterable");
   $.propertyTypeCheck(f, "$isFunction");
-  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();) {
-    t2 = t1._current;
+  for (t1 = $.get$iterator$ax(iterable); $.boolConversionCheck(t1.moveNext$0());) {
+    t2 = t1.get$_current();
     $arguments = t1.$asListIterator;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -7739,18 +7733,19 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
 
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
   var t1;
-  if (start < 0 || start > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (start < 0 || start > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + start + " not in range 0.." + t1));
   }
-  if (end < start || end > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (end < start || end > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + end + " not in range " + start + ".." + t1));
   }
 },
 
 IterableMixinWorkaround_setRangeList: function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList;
+  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = end - start;
   if ($length === 0)
@@ -10316,30 +10311,6 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
-  elementAt$1: function(_, index) {
-    var t1, t2, t3, $arguments, arguments0;
-    if (index == null)
-      throw index.$lt();
-    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
-      t1 = this._tail;
-      t2 = this._head;
-      t3 = this._table;
-      throw $.wrapException(new $.RangeError("value " + index + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
-    }
-    t1 = this._table;
-    t2 = t1.length;
-    t3 = (this._head + index & t2 - 1) >>> 0;
-    if (t3 < 0 || t3 >= t2)
-      throw $.ioore(t3);
-    t3 = t1[t3];
-    $arguments = this.$asListQueue;
-    arguments0 = $.getRuntimeTypeInfo(this);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t3, $arguments == null ? null : $arguments[0]);
-  },
   toString$0: function(_) {
     var result = new $.StringBuffer("");
     result._contents = "";
@@ -10737,8 +10708,14 @@ DateTime_toString_twoDigits: {"": "Closure;",
 },
 
 Duration: {"": "Object;_duration",
+  $add: function(_, other) {
+    return $.Duration$(0, 0, this._duration + $.propertyTypeCheck(other, "$isDuration")._duration, 0, 0, 0);
+  },
   $mul: function(_, factor) {
     return $.Duration$(0, 0, $.JSInt_methods.$mul(this._duration, $.intTypeCheck(factor)), 0, 0, 0);
+  },
+  $le: function(_, other) {
+    return this._duration <= $.propertyTypeCheck(other, "$isDuration")._duration;
   },
   $eq: function(_, other) {
     if (other == null)
@@ -10881,7 +10858,10 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
+    var t1 = this.modifiedObject;
+    if (t1 == null)
+      return "Concurrent modification during iteration.";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
   },
   $asObject: null
 },
@@ -11154,7 +11134,6 @@ List_List$filled$bailout: function(state0, $length, result, fill, E) {
 
 List_List$from: function(other, growable, E) {
   var list, t1, t2, $length, fixedList, i, t3;
-  $.listSuperNativeTypeCheck(other, "$isIterable");
   list = $.List_List($, E);
   $.assertHelper(true);
   list.$builtinTypeInfo = [E];
@@ -11186,7 +11165,6 @@ List_List$from: function(other, growable, E) {
 List_List$from$bailout: function(state0, list, growable, other, E, t2, $length, fixedList) {
   switch (state0) {
     case 0:
-      $.listSuperNativeTypeCheck(other, "$isIterable");
       list = $.List_List($, E);
       $.assertHelper(true);
       list.$builtinTypeInfo = [E];
@@ -11797,6 +11775,20 @@ Point: {"": "Object;x,y",
     } else
       t1 = false;
     return t1;
+  },
+  $add: function(_, other) {
+    var t1, t2, t3;
+    $.propertyTypeCheck(other, "$isPoint");
+    t1 = this.x;
+    t2 = other.x;
+    if (t1 == null)
+      throw t1.$add();
+    t2 = $.JSNumber_methods.$add(t1, t2);
+    t1 = this.y;
+    t3 = other.y;
+    if (t1 == null)
+      throw t1.$add();
+    return new $.Point(t2, $.JSNumber_methods.$add(t1, t3));
   },
   $mul: function(_, factor) {
     var t1, t2;
@@ -15341,7 +15333,7 @@ boot: function() {
   t1.id = "main_canvas";
   t1.width = 780;
   t1.height = 500;
-  canvasbox = $.HtmlDocument_methods.query$1(document, "#canvasbox");
+  canvasbox = $.interceptedTypeCheck($.HtmlDocument_methods.query$1(document, "#canvasbox"), "$isDivElement");
   $.assertHelper(canvasbox != null);
   t1 = $.getInterceptor$x(canvasbox);
   t1.append$1(canvasbox, $.canvas);
@@ -15536,10 +15528,7 @@ initAirship: function(gl) {
   if (2 >= t3)
     throw $.ioore(2);
   t2[2] = 0;
-  t2 = [1, 0, 0, 1];
-  $.interceptedTypeCheck(t2, "$isList");
-  $.interceptedTypeCheck(t2, "$isList");
-  t2 = new Float32Array(t2);
+  t2 = $.generatePickColor();
   t3 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t3.setIdentity$0();
   $.JSArray_methods.add$1(airshipModel.instanceList, new $.Instance(airshipModel, t1, $.doubleTypeCheck(1), t2, t3));
@@ -15579,10 +15568,7 @@ initAirshipTex: function(gl) {
   if (2 >= t4)
     throw $.ioore(2);
   t3[2] = 0;
-  t3 = [0.9, 0, 0, 1];
-  $.interceptedTypeCheck(t3, "$isList");
-  $.interceptedTypeCheck(t3, "$isList");
-  t3 = new Float32Array(t3);
+  t3 = $.generatePickColor();
   $.doubleTypeCheck(1);
   t4 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t4.setIdentity$0();
@@ -15611,10 +15597,7 @@ initAirshipTex: function(gl) {
   if (2 >= t4)
     throw $.ioore(2);
   t3[2] = 0;
-  t3 = [0.8, 0, 0, 1];
-  $.interceptedTypeCheck(t3, "$isList");
-  $.interceptedTypeCheck(t3, "$isList");
-  t3 = new Float32Array(t3);
+  t3 = $.generatePickColor();
   t4 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t4.setIdentity$0();
   $.JSArray_methods.add$1(airshipModel2.instanceList, new $.TexInstance(airshipModel2, t2, 1, t3, t4));
@@ -15644,10 +15627,7 @@ initAirshipTex: function(gl) {
   if (2 >= t4)
     throw $.ioore(2);
   t3[2] = -50;
-  t3 = [0.7, 0, 0, 1];
-  $.interceptedTypeCheck(t3, "$isList");
-  $.interceptedTypeCheck(t3, "$isList");
-  t3 = new Float32Array(t3);
+  t3 = $.generatePickColor();
   t4 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t4.setIdentity$0();
   $.JSArray_methods.add$1(colonyShipModel.instanceList, new $.TexInstance(colonyShipModel, t2, 1, t3, t4));
@@ -15677,10 +15657,7 @@ initAirshipTex: function(gl) {
   if (2 >= t3)
     throw $.ioore(2);
   t2[2] = -10;
-  t2 = [0.6, 0, 0, 1];
-  $.interceptedTypeCheck(t2, "$isList");
-  $.interceptedTypeCheck(t2, "$isList");
-  t2 = new Float32Array(t2);
+  t2 = $.generatePickColor();
   t3 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t3.setIdentity$0();
   $.JSArray_methods.add$1(coneModel.instanceList, new $.TexInstance(coneModel, t1, 1, t2, t3));
@@ -17625,6 +17602,35 @@ Model$fromOBJ: function(gl, URL) {
   return t1;
 },
 
+generatePickColor: function() {
+  var i, t1, t2;
+  $.get$_currentPickColor();
+  for (i = 0; i < 3; ++i) {
+    t1 = $.get$_currentPickColor();
+    if (i >= t1.length)
+      throw $.ioore(i);
+    t2 = $.$add$ns(t1[i], 0.0625);
+    if (i >= t1.length)
+      throw $.ioore(i);
+    t1[i] = t2;
+    t1 = $.get$_currentPickColor();
+    if (i >= t1.length)
+      throw $.ioore(i);
+    if ($.$le$n(t1[i], 1))
+      break;
+    t1 = $.get$_currentPickColor();
+    if (i >= t1.length)
+      throw $.ioore(i);
+    t1[i] = 0;
+  }
+  if (i === 3)
+    $.Primitives_printString("generatePickColor: overflow");
+  t1 = $.get$_currentPickColor();
+  $.interceptedTypeCheck(t1, "$isList");
+  $.interceptedTypeCheck(t1, "$isList");
+  return new Float32Array(t1);
+},
+
 PickerShader$: function(gl, programList) {
   var t1, t2;
   t1 = $.List_List($, $.PickerInstance);
@@ -18089,6 +18095,162 @@ Matrix4: {"": "Object;storage",
     arg.get$dimension();
     throw $.wrapException(new $.ArgumentError(arg));
   },
+  $add: function(_, arg) {
+    var r, t1, t2, t3, t4, t5, t6, t7, t8;
+    $.propertyTypeCheck(arg, "$isMatrix4");
+    r = new $.Matrix4(new Float32Array(16));
+    t1 = r.storage;
+    t2 = this.storage;
+    t3 = t2.length;
+    if (0 >= t3)
+      throw $.ioore(0);
+    t4 = t2[0];
+    t5 = arg.storage;
+    t6 = t5.length;
+    if (0 >= t6)
+      throw $.ioore(0);
+    t7 = t5[0];
+    t8 = t1.length;
+    if (0 >= t8)
+      throw $.ioore(0);
+    t1[0] = t4 + t7;
+    if (1 >= t3)
+      throw $.ioore(1);
+    t7 = t2[1];
+    if (1 >= t6)
+      throw $.ioore(1);
+    t4 = t5[1];
+    if (1 >= t8)
+      throw $.ioore(1);
+    t1[1] = t7 + t4;
+    if (2 >= t3)
+      throw $.ioore(2);
+    t4 = t2[2];
+    if (2 >= t6)
+      throw $.ioore(2);
+    t7 = t5[2];
+    if (2 >= t8)
+      throw $.ioore(2);
+    t1[2] = t4 + t7;
+    if (3 >= t3)
+      throw $.ioore(3);
+    t7 = t2[3];
+    if (3 >= t6)
+      throw $.ioore(3);
+    t4 = t5[3];
+    if (3 >= t8)
+      throw $.ioore(3);
+    t1[3] = t7 + t4;
+    if (4 >= t3)
+      throw $.ioore(4);
+    t4 = t2[4];
+    if (4 >= t6)
+      throw $.ioore(4);
+    t7 = t5[4];
+    if (4 >= t8)
+      throw $.ioore(4);
+    t1[4] = t4 + t7;
+    if (5 >= t3)
+      throw $.ioore(5);
+    t7 = t2[5];
+    if (5 >= t6)
+      throw $.ioore(5);
+    t4 = t5[5];
+    if (5 >= t8)
+      throw $.ioore(5);
+    t1[5] = t7 + t4;
+    if (6 >= t3)
+      throw $.ioore(6);
+    t4 = t2[6];
+    if (6 >= t6)
+      throw $.ioore(6);
+    t7 = t5[6];
+    if (6 >= t8)
+      throw $.ioore(6);
+    t1[6] = t4 + t7;
+    if (7 >= t3)
+      throw $.ioore(7);
+    t7 = t2[7];
+    if (7 >= t6)
+      throw $.ioore(7);
+    t4 = t5[7];
+    if (7 >= t8)
+      throw $.ioore(7);
+    t1[7] = t7 + t4;
+    if (8 >= t3)
+      throw $.ioore(8);
+    t4 = t2[8];
+    if (8 >= t6)
+      throw $.ioore(8);
+    t7 = t5[8];
+    if (8 >= t8)
+      throw $.ioore(8);
+    t1[8] = t4 + t7;
+    if (9 >= t3)
+      throw $.ioore(9);
+    t7 = t2[9];
+    if (9 >= t6)
+      throw $.ioore(9);
+    t4 = t5[9];
+    if (9 >= t8)
+      throw $.ioore(9);
+    t1[9] = t7 + t4;
+    if (10 >= t3)
+      throw $.ioore(10);
+    t4 = t2[10];
+    if (10 >= t6)
+      throw $.ioore(10);
+    t7 = t5[10];
+    if (10 >= t8)
+      throw $.ioore(10);
+    t1[10] = t4 + t7;
+    if (11 >= t3)
+      throw $.ioore(11);
+    t7 = t2[11];
+    if (11 >= t6)
+      throw $.ioore(11);
+    t4 = t5[11];
+    if (11 >= t8)
+      throw $.ioore(11);
+    t1[11] = t7 + t4;
+    if (12 >= t3)
+      throw $.ioore(12);
+    t4 = t2[12];
+    if (12 >= t6)
+      throw $.ioore(12);
+    t7 = t5[12];
+    if (12 >= t8)
+      throw $.ioore(12);
+    t1[12] = t4 + t7;
+    if (13 >= t3)
+      throw $.ioore(13);
+    t7 = t2[13];
+    if (13 >= t6)
+      throw $.ioore(13);
+    t4 = t5[13];
+    if (13 >= t8)
+      throw $.ioore(13);
+    t1[13] = t7 + t4;
+    if (14 >= t3)
+      throw $.ioore(14);
+    t4 = t2[14];
+    if (14 >= t6)
+      throw $.ioore(14);
+    t7 = t5[14];
+    if (14 >= t8)
+      throw $.ioore(14);
+    t1[14] = t4 + t7;
+    if (15 >= t3)
+      throw $.ioore(15);
+    t2 = t2[15];
+    if (15 >= t6)
+      throw $.ioore(15);
+    t5 = t5[15];
+    if (15 >= t8)
+      throw $.ioore(15);
+    t1[15] = t2 + t5;
+    return r;
+  },
   translate$3: function(_, x, y, z) {
     var t1, tw, tx, ty, tz, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18;
     $.doubleTypeCheck(y);
@@ -18500,6 +18662,48 @@ Vector3: {"": "Object;storage",
     t5[2] = t4;
     return t1;
   },
+  $add: function(_, other) {
+    var t1, t2, t3, t4, t5, t6;
+    $.propertyTypeCheck(other, "$isVector3");
+    t1 = this.storage;
+    t2 = t1.length;
+    if (0 >= t2)
+      throw $.ioore(0);
+    t3 = t1[0];
+    t4 = other.storage;
+    t5 = t4.length;
+    if (0 >= t5)
+      throw $.ioore(0);
+    t3 += t4[0];
+    if (1 >= t2)
+      throw $.ioore(1);
+    t6 = t1[1];
+    if (1 >= t5)
+      throw $.ioore(1);
+    t6 += t4[1];
+    if (2 >= t2)
+      throw $.ioore(2);
+    t1 = t1[2];
+    if (2 >= t5)
+      throw $.ioore(2);
+    t4 = t1 + t4[2];
+    $.doubleTypeCheck(t3);
+    $.doubleTypeCheck(t6);
+    $.doubleTypeCheck(t4);
+    t1 = new $.Vector3(new Float32Array(3));
+    t5 = t1.storage;
+    t2 = t5.length;
+    if (0 >= t2)
+      throw $.ioore(0);
+    t5[0] = t3;
+    if (1 >= t2)
+      throw $.ioore(1);
+    t5[1] = t6;
+    if (2 >= t2)
+      throw $.ioore(2);
+    t5[2] = t4;
+    return t1;
+  },
   $mul: function(_, scale) {
     var t1, t2, t3, t4, t5, t6;
     t1 = this.storage;
@@ -18666,6 +18870,51 @@ Vector4: {"": "Object;storage",
     if (3 >= t1.length)
       throw $.ioore(3);
     return t2 + $.S(t1[3]);
+  },
+  $add: function(_, other) {
+    var t1, t2, t3, t4, t5, t6, t7;
+    $.propertyTypeCheck(other, "$isVector4");
+    t1 = this.storage;
+    t2 = t1.length;
+    if (0 >= t2)
+      throw $.ioore(0);
+    t3 = t1[0];
+    t4 = other.storage;
+    t5 = t4.length;
+    if (0 >= t5)
+      throw $.ioore(0);
+    t3 += t4[0];
+    if (1 >= t2)
+      throw $.ioore(1);
+    t6 = t1[1];
+    if (1 >= t5)
+      throw $.ioore(1);
+    t6 += t4[1];
+    if (2 >= t2)
+      throw $.ioore(2);
+    t7 = t1[2];
+    if (2 >= t5)
+      throw $.ioore(2);
+    t7 += t4[2];
+    if (3 >= t2)
+      throw $.ioore(3);
+    t1 = t1[3];
+    if (3 >= t5)
+      throw $.ioore(3);
+    t4 = t1 + t4[3];
+    $.doubleTypeCheck(t3);
+    $.doubleTypeCheck(t6);
+    $.doubleTypeCheck(t7);
+    $.doubleTypeCheck(t4);
+    t1 = new $.Vector4(new Float32Array(4));
+    t5 = t1.storage;
+    if (3 >= t5.length)
+      throw $.ioore(3);
+    t5[3] = t4;
+    t5[2] = t7;
+    t5[1] = t6;
+    t5[0] = t3;
+    return t1;
   },
   $mul: function(_, scale) {
     var t1, t2, t3, t4, t5, t6;
@@ -19213,30 +19462,30 @@ $.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
-$.Element.$isNode = true;
+$.Node.$isObject = true;
 $.Element.$isElement = true;
 $.Element.$isObject = true;
+$.Element.$isNode = true;
 $.Element.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
 $.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
-$.Entry.$isObject = true;
 $.Entry.$isEntry = true;
+$.Entry.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
-$.DigitalButton.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
+$.DigitalButton.$isObject = true;
 $._EntrySync.$isObject = true;
-$._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
+$._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateEvent.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
@@ -19247,66 +19496,66 @@ $.ShaderProgram.$isObject = true;
 $.Instance.$isInstance = true;
 $.Instance.$isObject = true;
 $.Transform.$isObject = true;
-$.Model.$isModel = true;
 $.Model.$isObject = true;
+$.Model.$isModel = true;
 $.Piece.$isPiece = true;
 $.Piece.$isObject = true;
 $.Plugin.$isObject = true;
-$.PickerInstance.$isPickerInstance = true;
 $.PickerInstance.$isObject = true;
 $.PickerInstance.$isInstance = true;
+$.PickerInstance.$isPickerInstance = true;
 $.Gamepad.$isObject = true;
-$.Part.$isObject = true;
 $.Part.$isPart = true;
-$.Material.$isMaterial = true;
+$.Part.$isObject = true;
 $.Material.$isObject = true;
+$.Material.$isMaterial = true;
 $.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
-$.HttpRequest.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
+$.HttpRequest.$isObject = true;
 $.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
-$.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
+$.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechRecognitionResult.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
-$.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isObject = true;
-$.KeyboardEvent.$isEvent = true;
+$.StyleSheet.$isStyleSheet = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
+$.KeyboardEvent.$isEvent = true;
+$.KeyboardEvent.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
-$.JSArray.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isint = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
+$.JSInt.$isint = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isnum = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isString = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
@@ -19319,10 +19568,10 @@ $.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
-$.Shader.$isShader = true;
 $.Shader.$isObject = true;
-$.Texture.$isObject = true;
+$.Shader.$isShader = true;
 $.Texture.$isTexture = true;
+$.Texture.$isObject = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
@@ -19345,15 +19594,16 @@ $.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
 $.EventStreamProvider_mousemove = new $.EventStreamProvider("mousemove");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.Duration_0 = new $.Duration(0);
 $.C_CloseToken = new $.CloseToken();
 $.C_JSUnknown = new $.JSUnknown();
 $.C_NullThrownError = new $.NullThrownError();
 $.JSDouble_methods = $.JSDouble.prototype;
 $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.EventStreamProvider_webglcontextrestored = new $.EventStreamProvider("webglcontextrestored");
+$.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
 $.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
 $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
@@ -19362,7 +19612,6 @@ $.JSNull_methods = $.JSNull.prototype;
 $.EventStreamProvider_touchend = new $.EventStreamProvider("touchend");
 $.JSInt_methods = $.JSInt.prototype;
 $.JSArray_methods = $.JSArray.prototype;
-$.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_click = new $.EventStreamProvider("click");
 $.EventStreamProvider_touchcancel = new $.EventStreamProvider("touchcancel");
 $.EventStreamProvider_mousedown = new $.EventStreamProvider("mousedown");
@@ -19398,6 +19647,11 @@ $.$$dom_removeEventListener$3$x = function(receiver, a0, a1, a2) {
 $.$$dom_replaceChild$2$x = function(receiver, a0, a1) {
   return $.getInterceptor$x(receiver).$$dom_replaceChild$2(receiver, a0, a1);
 };
+$.$add$ns = function(receiver, a0) {
+  if (typeof receiver == "number" && typeof a0 == "number")
+    return receiver + a0;
+  return $.getInterceptor$ns(receiver).$add(receiver, a0);
+};
 $.$eq = function(receiver, a0) {
   if (receiver == null)
     return a0 == null;
@@ -19413,6 +19667,11 @@ $.$index$asx = function(receiver, a0) {
 };
 $.$indexSet$ax = function(receiver, a0, a1) {
   return $.getInterceptor$ax(receiver).$indexSet(receiver, a0, a1);
+};
+$.$le$n = function(receiver, a0) {
+  if (typeof receiver == "number" && typeof a0 == "number")
+    return receiver <= a0;
+  return $.getInterceptor$n(receiver).$le(receiver, a0);
 };
 $.$mul$n = function(receiver, a0) {
   if (typeof receiver == "number" && typeof a0 == "number")
@@ -19761,6 +20020,9 @@ Isolate.$lazy($, "prefix_mtllib_len", "Obj_prefix_mtllib_len", "get$Obj_prefix_m
 });
 Isolate.$lazy($, "prefix_usemtl_len", "Obj_prefix_usemtl_len", "get$Obj_prefix_usemtl_len", function() {
   return 7;
+});
+Isolate.$lazy($, "_currentPickColor", "_currentPickColor", "get$_currentPickColor", function() {
+  return $.interceptedTypeCheck([0, 0, 0, 1], "$isList");
 });
 // Native classes
 $.defineNativeMethodsNonleaf("HTMLElement", $._HTMLElement);
