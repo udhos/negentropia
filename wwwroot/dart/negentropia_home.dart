@@ -30,6 +30,7 @@ Matrix4 pMatrix = new Matrix4.zero();
 double fieldOfViewYRadians = 45 * math.PI / 180;
 Camera cam = new Camera(new Vector3(0.0,0.0,15.0), new Vector3(0.0,0.0,-1.0), new Vector3(0.0,1.0,0.0));
 bool backfaceCulling = false;
+bool showPicking = false;
 Asset asset = new Asset("/");
 
 // >0  : render at max rate then stop
@@ -69,6 +70,23 @@ void initStats() {
   div.children.add(stats.container);
 }
 
+void initShowPicking() {
+  DivElement control = query("#control");
+  assert(control != null);
+
+  InputElement showPickingCheck = new InputElement();
+  showPickingCheck.type = 'checkbox';
+  showPickingCheck.id = 'show_picking';
+  showPickingCheck.checked = showPicking;
+  showPickingCheck.onClick.listen((Event e) { showPicking = showPickingCheck.checked; });
+  control.append(showPickingCheck);
+
+  LabelElement label = new LabelElement();
+  label.htmlFor = showPickingCheck.id;
+  label.appendText('show picking');
+  control.append(label);
+}
+
 RenderingContext boot() {
   canvas = new CanvasElement();
   assert(canvas != null);
@@ -93,6 +111,8 @@ RenderingContext boot() {
     canvasbox.style.backgroundColor = 'lightblue';    
     return null;
   }
+  
+  initShowPicking();
     
   var sid = Cookie.getCookie("sid");
   assert(sid != null);
@@ -162,7 +182,7 @@ void initAirship(RenderingContext gl) {
   prog.fetch(shaderCache, "${asset.shader}/simple_vs.txt", "${asset.shader}/simple_fs.txt");
   Model airshipModel = new Model.fromOBJ(gl, "${asset.obj}/airship.obj");
   prog.addModel(airshipModel);
-  Instance airshipInstance = new Instance(airshipModel, new Vector3(-8.0, 0.0, 0.0), 1.0);
+  Instance airshipInstance = new Instance(airshipModel, new Vector3(-8.0, 0.0, 0.0), 1.0, new Float32List.fromList([1.0, 0.0, 0.0, 1.0]));
   airshipModel.addInstance(airshipInstance);  
 }
 
@@ -175,24 +195,24 @@ void initAirshipTex(RenderingContext gl) {
 
   TexModel airshipModel = new TexModel.fromOBJ(gl, objURL, textureTable, asset);
   prog.addModel(airshipModel);
-  TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0, 0.0, 0.0), 1.0);
+  TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0, 0.0, 0.0), 1.0, new Float32List.fromList([.9, 0.0, 0.0, 1.0]));
   airshipModel.addInstance(airshipInstance);
 
   TexModel airshipModel2 = new TexModel.fromOBJ(gl, objURL, textureTable, asset);
   prog.addModel(airshipModel2);
-  TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0);
+  TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0, new Float32List.fromList([.8, 0.0, 0.0, 1.0]));
   airshipModel2.addInstance(airshipInstance2);
   
   String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";  
   TexModel colonyShipModel = new TexModel.fromOBJ(gl, colonyShipURL, textureTable, asset);
   prog.addModel(colonyShipModel);
-  TexInstance colonyShipInstance = new TexInstance(colonyShipModel, new Vector3(0.0, -5.0, -50.0), 1.0);
+  TexInstance colonyShipInstance = new TexInstance(colonyShipModel, new Vector3(0.0, -5.0, -50.0), 1.0, new Float32List.fromList([.7, 0.0, 0.0, 1.0]));
   colonyShipModel.addInstance(colonyShipInstance);
     
   String coneURL = "${asset.obj}/cone.obj";  
   TexModel coneModel = new TexModel.fromOBJ(gl, coneURL, textureTable, asset);
   prog.addModel(coneModel);
-  TexInstance coneInstance = new TexInstance(coneModel, new Vector3(0.0, 2.0, -10.0), 1.0);
+  TexInstance coneInstance = new TexInstance(coneModel, new Vector3(0.0, 2.0, -10.0), 1.0, new Float32List.fromList([.6, 0.0, 0.0, 1.0]));
   coneModel.addInstance(coneInstance);
 }
 
@@ -278,7 +298,14 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
 
   cam.render(gameLoop);
   
-  programList.forEach((ShaderProgram p) => p.drawModels(gameLoop, cam, pMatrix));
+  if (showPicking) {
+    programList
+      .where((p) => p is PickerShader)
+      .forEach((p) => p.drawModels(gameLoop, cam, pMatrix));
+  }
+  else {
+    programList.forEach((p) => p.drawModels(gameLoop, cam, pMatrix));    
+  }
 }
 
 void render(RenderingContext gl, GameLoopHtml gameLoop) {

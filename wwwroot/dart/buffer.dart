@@ -5,10 +5,11 @@ class Instance {
   Model model;
   Vector3 center;
   double scale;
+  Float32List pickColor;
+
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
-  bool clickable;
   
-  Instance(Model this.model, Vector3 this.center, double this.scale, [this.clickable=false]);
+  Instance(this.model, this.center, this.scale, [this.pickColor=null]);
   
   void update(GameLoopHtml gameLoop) {
   }
@@ -55,6 +56,18 @@ class Model {
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
   //ShaderProgram program; // parent program
+
+  /*
+  Model.copy(Model m) {
+    this.vertexPositionBuffer = m.vertexPositionBuffer;
+    this.vertexIndexBuffer = m.vertexIndexBuffer;
+    this.vertexPositionBufferItemSize = m.vertexPositionBufferItemSize;
+    this.vertexIndexBufferItemSize = m.vertexIndexBufferItemSize;
+    
+    this.pieceList = m.pieceList;
+    // do not copy instance list: this.instanceList = m.instanceList;
+  }
+  */
   
   void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
         
