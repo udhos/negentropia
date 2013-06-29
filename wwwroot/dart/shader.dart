@@ -51,12 +51,12 @@ class ShaderProgram {
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
       bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
-      print("gl.getShaderParameter: shader=$shaderURL parameter=$parameter");
-      if (parameter == null || !parameter) {
+      print("DEBUG gl.getShaderParameter: shader=$shaderURL bool=${parameter is bool} parameter=$parameter");
+      if (!parameter) {
         String infoLog = gl.getShaderInfoLog(shader);
-        print("compileShader: compilation FAILURE: $shaderURL: $infoLog");
+        print("compileShader: compilation FAILURE: $shaderURL: info=$infoLog");
         if (gl.isContextLost()) {
-          print("compileShader: compilation FAILURE: $shaderURL: $infoLog: context is lost");
+          print("compileShader: compilation FAILURE: $shaderURL: info=$infoLog: context is lost");
         }
         return null;
       }
@@ -80,8 +80,8 @@ class ShaderProgram {
       gl.attachShader(p, fragmentShader);
       gl.linkProgram(p);
       bool parameter = gl.getProgramParameter(p, RenderingContext.LINK_STATUS);
-      print("gl.getProgramParameter: parameter=$parameter");
-      if (parameter == null || !parameter) {
+      print("DEBUG gl.getProgramParameter: bool=${parameter is bool} parameter=$parameter");
+      if (!parameter) {
         String infoLog = gl.getProgramInfoLog(p);
         print("tryLink: shader program link FAILURE: $infoLog");
         if (gl.isContextLost()) {
