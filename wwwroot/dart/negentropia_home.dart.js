@@ -7748,18 +7748,19 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
 
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
   var t1;
-  if (start < 0 || start > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (start < 0 || start > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + start + " not in range 0.." + t1));
   }
-  if (end < start || end > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (end < start || end > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + end + " not in range " + start + ".." + t1));
   }
 },
 
 IterableMixinWorkaround_setRangeList: function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList;
+  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = end - start;
   if ($length === 0)
@@ -17087,8 +17088,9 @@ ShaderProgram_fetch_compileShader: {"": "Closure;this_1,shaderCache_2",
     shader = $.createShader$1$x(t1.get$gl(), shaderType);
     $.shaderSource$2$x(t1.get$gl(), shader, shaderSource);
     $.compileShader$1$x(t1.get$gl(), shader);
-    parameter = $.boolTypeCheck($.getShaderParameter$2$x(t1.get$gl(), shader, 35713));
-    $.Primitives_printString("DEBUG gl.getShaderParameter: shader=" + shaderURL + " bool=" + (typeof parameter === "boolean") + " parameter=" + $.S(parameter));
+    parameter = $.toString$0($.getShaderParameter$2$x(t1.get$gl(), shader, 35713)) === "true";
+    $.Primitives_printString("DEBUG gl.getShaderParameter: shader=" + shaderURL + " bool=true parameter=" + parameter);
+    $.Primitives_printString("FIXME work-around https://code.google.com/p/dart/issues/detail?id=11487");
     if (!parameter) {
       infoLog = $.getShaderInfoLog$1$x(t1.get$gl(), shader);
       $.Primitives_printString("compileShader: compilation FAILURE: " + shaderURL + ": info=" + infoLog);
@@ -19497,31 +19499,31 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
-$.MouseEvent.$isObject = true;
-$.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
+$.MouseEvent.$isEvent = true;
+$.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
+$.Node.$isObject = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
 $.Element.$isElement = true;
-$.Element.$isObject = true;
 $.Element.$isNode = true;
-$.Element.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
-$.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTimer.$isObject = true;
 $.Entry.$isEntry = true;
 $.Entry.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
-$.DigitalButton.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
+$.DigitalButton.$isObject = true;
 $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$isObject = true;
@@ -19535,42 +19537,42 @@ $.ShaderProgram.$isObject = true;
 $.Instance.$isInstance = true;
 $.Instance.$isObject = true;
 $.Transform.$isObject = true;
-$.Model.$isModel = true;
 $.Model.$isObject = true;
+$.Model.$isModel = true;
 $.Piece.$isPiece = true;
 $.Piece.$isObject = true;
 $.Plugin.$isObject = true;
+$.PickerInstance.$isObject = true;
 $.PickerInstance.$isPickerInstance = true;
 $.PickerInstance.$isInstance = true;
-$.PickerInstance.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Part.$isObject = true;
 $.Part.$isPart = true;
-$.Material.$isMaterial = true;
+$.Part.$isObject = true;
 $.Material.$isObject = true;
-$.ReceivePort.$isObject = true;
+$.Material.$isMaterial = true;
 $.ReceivePort.$isReceivePort = true;
+$.ReceivePort.$isObject = true;
 $.Map.$isObject = true;
-$.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
-$.ElementInstance.$isObject = true;
+$.HttpRequest.$isHttpRequest = true;
 $.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
 $.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
-$.SpeechRecognitionResult.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
-$.StyleSheet.$isObject = true;
+$.SpeechRecognitionResult.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
+$.StyleSheet.$isObject = true;
 $.KeyboardEvent.$isEvent = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isObject = true;
 $.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
 $.JSArray.$isList = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
@@ -19580,15 +19582,15 @@ $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
 $.JSInt.$isint = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
-$.JSDouble.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSDouble.$isnum = true;
-$.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
@@ -19609,8 +19611,8 @@ $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
 $.Shader.$isShader = true;
 $.Shader.$isObject = true;
-$.Texture.$isObject = true;
 $.Texture.$isTexture = true;
+$.Texture.$isObject = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");

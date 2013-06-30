@@ -50,8 +50,10 @@ class ShaderProgram {
       Shader shader = gl.createShader(shaderType);
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
-      bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
+      //bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
+      bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS).toString() == "true";
       print("DEBUG gl.getShaderParameter: shader=$shaderURL bool=${parameter is bool} parameter=$parameter");
+      print("FIXME work-around https://code.google.com/p/dart/issues/detail?id=11487");
       if (!parameter) {
         String infoLog = gl.getShaderInfoLog(shader);
         print("compileShader: compilation FAILURE: $shaderURL: info=$infoLog");
