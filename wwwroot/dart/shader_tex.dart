@@ -63,7 +63,7 @@ class TexPiece extends Piece {
 class TexModel extends Model {
   
   Buffer textureCoordBuffer;
-  int textureCoordBufferItemSize;
+  final int textureCoordBufferItemSize = 2; // coord s,t
   Asset asset;
   Map<String,Texture> textureTable;
 
@@ -82,7 +82,6 @@ class TexModel extends Model {
     textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
     gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(textCoord), RenderingContext.STATIC_DRAW);
-    textureCoordBufferItemSize = 2; // coord s,t
 
     super._createBuffers(gl, indices, vertCoord, textCoord, normCoord);
 }
@@ -152,7 +151,7 @@ class TexModel extends Model {
   }
 
   void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
-    
+
     RenderingContext gl = program.gl;
 
     // vertex coord

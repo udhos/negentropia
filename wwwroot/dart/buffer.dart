@@ -15,7 +15,7 @@ class Instance {
   }
   
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
-
+    
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
     MV.translate(center[0], center[1], center[2]);
@@ -50,8 +50,8 @@ class Model {
     
   Buffer vertexPositionBuffer;
   Buffer vertexIndexBuffer;
-  int vertexPositionBufferItemSize;
-  int vertexIndexBufferItemSize;
+  final int vertexPositionBufferItemSize = 3; // coord x,y,z
+  final int vertexIndexBufferItemSize = 2; // size of Uint16Array
   
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
@@ -74,12 +74,10 @@ class Model {
     vertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
     gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
-    vertexPositionBufferItemSize = 3; // coord x,y,z
     
     vertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
     gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
-    vertexIndexBufferItemSize = 2; // size of Uint16Array
         
     // clean-up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);

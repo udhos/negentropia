@@ -32,6 +32,7 @@ Camera cam = new Camera(new Vector3(0.0,0.0,15.0), new Vector3(0.0,0.0,-1.0), ne
 bool backfaceCulling = false;
 bool showPicking = false;
 Asset asset = new Asset("/");
+PickerShader picker;
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -44,7 +45,8 @@ RenderingContext initGL(CanvasElement canvas) {
   RenderingContext gl;
 
   // FIXME: ERASEME: preserveDrawingBuffer: true
-  gl = canvas.getContext3d(preserveDrawingBuffer: true);
+  //gl = canvas.getContext3d(preserveDrawingBuffer: true);
+  gl = canvas.getContext3d();
   if (gl != null) {
     print("WebGL: initialized");
     return gl;
@@ -222,7 +224,7 @@ void initShips(RenderingContext gl) {
 }
 
 void initPicker(RenderingContext gl) {
-  PickerShader picker = new PickerShader(gl, programList);
+  picker = new PickerShader(gl, programList, canvas.width, canvas.height);
   programList.add(picker);
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
@@ -299,11 +301,13 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   cam.render(gameLoop);
   
   if (showPicking) {
-    programList
-      .where((p) => p is PickerShader)
-      .forEach((p) => p.drawModels(gameLoop, cam, pMatrix));
+    picker.offscreen = true;
+    picker.drawModels(gameLoop, cam, pMatrix);
+    picker.offscreen = false;
+    picker.drawModels(gameLoop, cam, pMatrix);
   }
   else {
+    picker.offscreen = true;
     programList.forEach((p) => p.drawModels(gameLoop, cam, pMatrix));    
   }
 }
@@ -323,8 +327,9 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     int y = canvas.height - m.y;
     
     Uint8List pixel = new Uint8List(4);
-    gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null); // default framebuffer
+    gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, picker.framebuffer); // picker framebuffer
     gl.readPixels(m.x, y, 1, 1, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, pixel);
+    gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null); // default framebuffer
 
     print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas} x=${m.x} y=${y} pixel color=$pixel");
   }  

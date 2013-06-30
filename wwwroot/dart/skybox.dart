@@ -97,7 +97,7 @@ class SkyboxModel extends Model {
   }
   
   void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
-    
+
     RenderingContext gl = program.gl;
     
     gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);

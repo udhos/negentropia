@@ -25,6 +25,7 @@ class PickerInstance extends Instance {
   PickerInstance(Instance i): super(i.model, i.center, i.scale, i.pickColor);
 
   // the whole purpose of this class is to redefine the draw() method
+  // in order to send the pickColor as a uniform to the fragment shader
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
     RenderingContext gl = prog.gl;
     gl.uniform4fv((prog as PickerShader).u_Color, pickColor);
@@ -32,21 +33,47 @@ class PickerInstance extends Instance {
   }
 }
 
-/*
-// New Model not needed 
-class PickerModel extends Model {
-  PickerModel(Model m) : super.copy(m);
-}
-*/
-
 class PickerShader extends ShaderProgram {
 
   UniformLocation u_Color;
   List<ShaderProgram> programList;
   List<PickerInstance> instanceList = new List<PickerInstance>();
+  
+  Framebuffer framebuffer;
+  bool offscreen;
+  
+  void _createRenderbuffer(RenderingContext gl, int width, int height) {
+    // 1. Init Picking Texture
+    Texture texture = gl.createTexture();
+    gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
+    try {
+      gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, width, height, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, null);
+    }
+    catch (e) {
+      // https://code.google.com/p/dart/issues/detail?id=11498
+      print("FIXME DEBUG work-around: PickerShader: gl.texImage2D: exception: $e"); 
+    }
+  
+    // 2. Init Render Buffer
+    Renderbuffer renderbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(RenderingContext.RENDERBUFFER, renderbuffer);
+    gl.renderbufferStorage(RenderingContext.RENDERBUFFER, RenderingContext.DEPTH_COMPONENT16, width, height); 
+    
+    // 3. Init Frame Buffer
+    framebuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, framebuffer);
+    gl.framebufferTexture2D(RenderingContext.FRAMEBUFFER, RenderingContext.COLOR_ATTACHMENT0, RenderingContext.TEXTURE_2D, texture, 0);
+    gl.framebufferRenderbuffer(RenderingContext.FRAMEBUFFER, RenderingContext.DEPTH_ATTACHMENT, RenderingContext.RENDERBUFFER, renderbuffer);
 
-  PickerShader(RenderingContext gl, this.programList) : super(gl) {
+    // 4. Clean up
+    gl.bindTexture(RenderingContext.TEXTURE_2D, null);
+    gl.bindRenderbuffer(RenderingContext.RENDERBUFFER, null);
+    gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
+  }
 
+  PickerShader(RenderingContext gl, this.programList, int width, int height) : super(gl) {
+
+    // copy clickable instances
     programList.forEach((p) {
       p.modelList.forEach((m) {
         m.instanceList.where((i) => i.pickColor != null).forEach((ii) {
@@ -56,6 +83,7 @@ class PickerShader extends ShaderProgram {
       });
     });
     
+    _createRenderbuffer(gl, width, height);
   }
   
   void getLocations() {
@@ -67,7 +95,11 @@ class PickerShader extends ShaderProgram {
   }
   
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
-        
+
+    if (offscreen) {
+      gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, framebuffer);
+    }
+    
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
 
@@ -79,6 +111,7 @@ class PickerShader extends ShaderProgram {
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
+    gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null); // default framebuffer
     
     //gl.disableVertexAttribArray(a_Position); // needed ??
   }
