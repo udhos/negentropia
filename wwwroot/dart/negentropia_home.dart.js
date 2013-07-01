@@ -93,8 +93,8 @@ $$.CanvasElement = {"": "_HTMLElement;",
     context = this.getContext$2(receiver, "webgl", options);
     return $.interceptedTypeCheck(context == null ? this.getContext$2(receiver, "experimental-webgl", options) : context, "$isRenderingContext");
   },
-  getContext3d$0: function($receiver) {
-    return this.getContext3d$6$alpha$antialias$depth$premultipliedAlpha$preserveDrawingBuffer$stencil($receiver, true, true, true, true, false, false);
+  getContext3d$1$preserveDrawingBuffer: function($receiver, preserveDrawingBuffer) {
+    return this.getContext3d$6$alpha$antialias$depth$premultipliedAlpha$preserveDrawingBuffer$stencil($receiver, true, true, true, true, preserveDrawingBuffer, false);
   },
   $isCanvasElement: true,
   $asCanvasElement: null,
@@ -15251,7 +15251,7 @@ main_closure0: {"": "Closure;gl_1",
 initGL: function(canvas) {
   var gl;
   $.Primitives_printString("WebGL: initializing");
-  gl = $.getContext3d$0$x(canvas);
+  gl = $.getContext3d$1$preserveDrawingBuffer$x(canvas, true);
   if (gl != null) {
     $.Primitives_printString("WebGL: initialized");
     return gl;
@@ -15770,27 +15770,32 @@ draw: function(gl, gameLoop) {
   }
 },
 
+readColor: function(label, gl, x, y, framebuffer) {
+  var color, t1;
+  color = new Uint8Array(4);
+  t1 = $.getInterceptor$x(gl);
+  t1.bindFramebuffer$2(gl, 36160, framebuffer);
+  t1.readPixels$7(gl, x, y, 1, 1, 6408, 5121, color);
+  $.Primitives_printString(label + ": readPixels: x=" + x + " y=" + y + " color=" + $.S(color));
+},
+
 update: function(gl, gameLoop) {
-  var m, t1, t2, y, pixel;
+  var m, t1, t2, y;
   gameLoop.get$mouse;
   m = gameLoop._mouse;
   if (m.pressed$1(0)) {
+    m.get$withinCanvas;
+    $.Primitives_printString("Mouse.LEFT pressed: withinCanvas=" + m._withinCanvas);
     t1 = $.canvas.height;
     m.get$y;
     t2 = m._y;
     if (t1 == null)
       throw t1.$sub();
     y = t1 - t2;
-    pixel = new Uint8Array(4);
-    t2 = $.getInterceptor$x(gl);
-    t2.bindFramebuffer$2(gl, 36160, $.picker.framebuffer);
     m.get$x;
-    t2.readPixels$7(gl, m._x, y, 1, 1, 6408, 5121, pixel);
-    t2.bindFramebuffer$2(gl, 36160, null);
-    m.get$withinCanvas;
-    t2 = "Mouse.LEFT pressed: withinCanvas=" + m._withinCanvas + " x=";
+    $.readColor("canvas-framebuffer", gl, m._x, y, null);
     m.get$x;
-    $.Primitives_printString(t2 + m._x + " y=" + y + " pixel color=" + $.S(pixel));
+    $.readColor("offscreen-framebuffer", gl, m._x, y, $.picker.framebuffer);
   }
   t1 = $.get$cam();
   t1.oldAngle = $.doubleTypeCheck(t1.angle);
@@ -19498,59 +19503,59 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
-$.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isObject = true;
+$.MouseEvent.$isEvent = true;
 $._CSSValue.$isObject = true;
 $.Node.$isNode = true;
 $.Node.$isObject = true;
-$.Element.$isObject = true;
 $.Element.$isElement = true;
 $.Element.$isNode = true;
 $.Element.$isObject = true;
+$.Element.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouch.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
-$.GameLoopTimer.$isObject = true;
+$.GameLoopTouch.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
-$.Entry.$isObject = true;
+$.GameLoopTimer.$isObject = true;
 $.Entry.$isEntry = true;
+$.Entry.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $.DigitalButton.$isObject = true;
 $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
+$._IsolateContext.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
-$.File.$isObject = true;
 $.File.$isFile = true;
+$.File.$isObject = true;
 $.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
 $.Instance.$isInstance = true;
 $.Instance.$isObject = true;
 $.Transform.$isObject = true;
-$.Model.$isModel = true;
 $.Model.$isObject = true;
+$.Model.$isModel = true;
 $.Piece.$isObject = true;
 $.Piece.$isPiece = true;
 $.Plugin.$isObject = true;
-$.PickerInstance.$isPickerInstance = true;
 $.PickerInstance.$isInstance = true;
+$.PickerInstance.$isPickerInstance = true;
 $.PickerInstance.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Part.$isObject = true;
 $.Part.$isPart = true;
+$.Part.$isObject = true;
 $.Material.$isObject = true;
 $.Material.$isMaterial = true;
-$.ReceivePort.$isReceivePort = true;
 $.ReceivePort.$isObject = true;
+$.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
@@ -19561,40 +19566,40 @@ $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
-$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.SpeechRecognitionResult.$isObject = true;
+$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.StyleSheet.$isObject = true;
 $.StyleSheet.$isStyleSheet = true;
+$.KeyboardEvent.$isObject = true;
 $.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
-$.KeyboardEvent.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isint = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isint = true;
-$.JSInt.$isObject = true;
-$.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSString.$isString = true;
 $.JSString.$isObject = true;
+$.JSString.$isString = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
@@ -19602,8 +19607,8 @@ $.JSString.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.Length.$isObject = true;
-$.Touch.$isObject = true;
 $.Touch.$isTouch = true;
+$.Touch.$isObject = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
 $.Number.$isObject = true;
@@ -19613,23 +19618,23 @@ $.Shader.$isObject = true;
 $.Texture.$isTexture = true;
 $.Texture.$isObject = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
+$.Window_methods = $.Window.prototype;
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
 $.EventStreamProvider_webkitfullscreenchange = new $.EventStreamProvider("webkitfullscreenchange");
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
-$.Window_methods = $.Window.prototype;
-$.NodeList_methods = $.NodeList.prototype;
+$.EventStreamProvider_message = new $.EventStreamProvider("message");
 Isolate.makeConstantList = function(list) {
   list.immutable$list = true;
   list.fixed$length = true;
   return list;
 };
 $.List_empty = Isolate.makeConstantList([]);
+$.NodeList_methods = $.NodeList.prototype;
+$.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
 $.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.JSNumber_methods = $.JSNumber.prototype;
 $.JSString_methods = $.JSString.prototype;
-$.EventStreamProvider_webkitpointerlockchange = new $.EventStreamProvider("webkitpointerlockchange");
-$.EventStreamProvider_message = new $.EventStreamProvider("message");
 $.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.Float32List_methods = $.Float32List.prototype;
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_open = new $.EventStreamProvider("open");
@@ -19802,8 +19807,8 @@ $.get$responseText$x = function(receiver) {
 $.get$values$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$values(receiver);
 };
-$.getContext3d$0$x = function(receiver) {
-  return $.getInterceptor$x(receiver).getContext3d$0(receiver);
+$.getContext3d$1$preserveDrawingBuffer$x = function(receiver, a0) {
+  return $.getInterceptor$x(receiver).getContext3d$1$preserveDrawingBuffer(receiver, a0);
 };
 $.getExtension$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).getExtension$1(receiver, a0);

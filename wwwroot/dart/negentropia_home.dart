@@ -45,8 +45,8 @@ RenderingContext initGL(CanvasElement canvas) {
   RenderingContext gl;
 
   // FIXME: ERASEME: preserveDrawingBuffer: true
-  //gl = canvas.getContext3d(preserveDrawingBuffer: true);
-  gl = canvas.getContext3d();
+  gl = canvas.getContext3d(preserveDrawingBuffer: true);
+  //gl = canvas.getContext3d();
   if (gl != null) {
     print("WebGL: initialized");
     return gl;
@@ -301,14 +301,17 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   cam.render(gameLoop);
   
   if (showPicking) {
-    picker.offscreen = true;
+    // draw picking on both framebuffers
+    picker.offscreen = true; // offscreen framebuffer
     picker.drawModels(gameLoop, cam, pMatrix);
-    picker.offscreen = false;
+    picker.offscreen = false; // canvas framebuffer
     picker.drawModels(gameLoop, cam, pMatrix);
   }
   else {
-    picker.offscreen = true;
-    programList.forEach((p) => p.drawModels(gameLoop, cam, pMatrix));    
+    // draw picking on offscreen framebuffer
+    // and actual object colors on canvas framebuffer
+    picker.offscreen = true; 
+    programList.forEach((p) => p.drawModels(gameLoop, cam, pMatrix));     
   }
 }
 
@@ -318,20 +321,25 @@ void render(RenderingContext gl, GameLoopHtml gameLoop) {
   stats.end();
 }
 
+void readColor(String label, RenderingContext gl, int x, int y, Framebuffer framebuffer) {
+  Uint8List color = new Uint8List(4);
+  gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, framebuffer);
+  gl.readPixels(x, y, 1, 1, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, color);
+  print("$label: readPixels: x=$x y=$y color=$color");     
+}
+
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
 
   Mouse m = gameLoop.mouse;
   if (m.pressed(Mouse.LEFT)) {
+
+    print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas}");
     
     int y = canvas.height - m.y;
-    
-    Uint8List pixel = new Uint8List(4);
-    gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, picker.framebuffer); // picker framebuffer
-    gl.readPixels(m.x, y, 1, 1, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, pixel);
-    gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null); // default framebuffer
 
-    print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas} x=${m.x} y=${y} pixel color=$pixel");
+    readColor("canvas-framebuffer", gl, m.x, y, null);
+    readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer);    
   }  
   
   cam.update(gameLoop);

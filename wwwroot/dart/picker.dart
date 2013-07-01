@@ -46,6 +46,7 @@ class PickerShader extends ShaderProgram {
     // 1. Init Picking Texture
     Texture texture = gl.createTexture();
     gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
+    //gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
     try {
       gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, width, height, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, null);
     }
