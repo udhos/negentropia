@@ -20,6 +20,9 @@
 !negentropia
 !negentropia/lib
 !negentropia/texture
+!sample
+!sample/pixel_framebuffer
+!sample/pixel_framebuffer/web
 !template
 !webserv
 !webserv/src

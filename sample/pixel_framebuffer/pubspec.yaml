@@ -1,0 +1,4 @@
+name: pixel_framebuffer
+description: A sample web application
+dependencies:
+  browser: any
