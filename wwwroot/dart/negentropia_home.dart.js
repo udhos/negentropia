@@ -7735,9 +7735,10 @@ Arrays_indexOf: function(a, element, startIndex, endIndex) {
 
 IterableMixinWorkaround_forEach: function(iterable, f) {
   var t1, t2, $arguments, arguments0;
+  $.listSuperNativeTypeCheck(iterable, "$isIterable");
   $.propertyTypeCheck(f, "$isFunction");
-  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();) {
-    t2 = t1._current;
+  for (t1 = $.get$iterator$ax(iterable); $.boolConversionCheck(t1.moveNext$0());) {
+    t2 = t1.get$_current();
     $arguments = t1.$asListIterator;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -7748,21 +7749,41 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
   }
 },
 
+IterableMixinWorkaround_firstWhere: function(iterable, test, orElse) {
+  var t1, t2, $arguments, arguments0;
+  $.propertyTypeCheck(test, "$isFunction");
+  $.propertyTypeCheck(orElse, "$isFunction");
+  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();) {
+    t2 = t1._current;
+    $arguments = t1.$asListIterator;
+    arguments0 = $.getRuntimeTypeInfo(t1);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    $.assertSubtypeOfRuntimeType(t2, $arguments == null ? null : $arguments[0]);
+    if ($.boolConversionCheck(test.call$1(t2)))
+      return t2;
+  }
+  if (orElse != null)
+    return orElse.call$0();
+  throw $.wrapException(new $.StateError("No matching element"));
+},
+
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
   var t1;
-  if (start < 0 || start > list.length) {
-    t1 = list.length;
+  if (start < 0 || start > $.get$length$asx(list)) {
+    t1 = $.get$length$asx(list);
     throw $.wrapException(new $.RangeError("value " + start + " not in range 0.." + t1));
   }
-  if (end < start || end > list.length) {
-    t1 = list.length;
+  if (end < start || end > $.get$length$asx(list)) {
+    t1 = $.get$length$asx(list);
     throw $.wrapException(new $.RangeError("value " + end + " not in range " + start + ".." + t1));
   }
 },
 
 IterableMixinWorkaround_setRangeList: function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList;
-  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = end - start;
   if ($length === 0)
@@ -15199,6 +15220,16 @@ draw_closure: {"": "Closure;gameLoop_0",
   $isGameLoopPointerLockChangeFunction: true
 },
 
+mouseClickHit_match: {"": "Closure;color_0",
+  call$1: function(i) {
+    return $.matchColor(this.color_0, $.propertyTypeCheck(i, "$isInstance").pickColor);
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $is_FutureErrorTest: true
+},
+
 update_closure: {"": "Closure;gameLoop_0",
   call$1: function(p) {
     $.propertyTypeCheck(p, "$isShaderProgram");
@@ -15774,17 +15805,58 @@ draw: function(gl, gameLoop) {
   }
 },
 
-readColor: function(label, gl, x, y, framebuffer) {
-  var color, t1;
-  color = new Uint8Array(4);
-  t1 = $.getInterceptor$x(gl);
+readColor: function(label, gl, x, y, framebuffer, color) {
+  var t1 = $.getInterceptor$x(gl);
   t1.bindFramebuffer$2(gl, 36160, framebuffer);
   t1.readPixels$7(gl, x, y, 1, 1, 6408, 5121, color);
   $.Primitives_printString(label + ": readPixels: x=" + x + " y=" + y + " color=" + $.S(color));
 },
 
+matchColor: function(i, f) {
+  var t1;
+  if (0 >= f.length)
+    throw $.ioore(0);
+  t1 = f[0];
+  if (0 >= i.length)
+    throw $.ioore(0);
+  if (Math.abs(t1 - 255 * i[0]) < 1) {
+    if (1 >= f.length)
+      throw $.ioore(1);
+    t1 = f[1];
+    if (1 >= i.length)
+      throw $.ioore(1);
+    if (Math.abs(t1 - 255 * i[1]) < 1) {
+      if (2 >= f.length)
+        throw $.ioore(2);
+      t1 = f[2];
+      if (2 >= i.length)
+        throw $.ioore(2);
+      t1 = Math.abs(t1 - 255 * i[2]) < 1;
+    } else
+      t1 = false;
+  } else
+    t1 = false;
+  return t1;
+},
+
+mouseClickHit: function(color) {
+  var t1, t2, $arguments, arguments0;
+  t1 = new $.mouseClickHit_match(color);
+  t2 = $.picker.instanceList;
+  $.propertyTypeCheck(t1, "$isFunction");
+  $.propertyTypeCheck(null, "$isFunction");
+  t1 = $.IterableMixinWorkaround_firstWhere(t2, t1, null);
+  $arguments = t2.$asJSArray;
+  arguments0 = $.getRuntimeTypeInfo(t2);
+  if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+    ;
+  else
+    $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+  return $.propertyTypeCast($.propertyTypeCheck($.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]), "$isInstance"), "$isPickerInstance");
+},
+
 update: function(gl, gameLoop) {
-  var m, t1, t2, y;
+  var m, t1, t2, y, color;
   gameLoop.get$mouse;
   m = gameLoop._mouse;
   if (m.pressed$1(0)) {
@@ -15796,10 +15868,12 @@ update: function(gl, gameLoop) {
     if (t1 == null)
       throw t1.$sub();
     y = t1 - t2;
+    color = new Uint8Array(4);
     m.get$x;
-    $.readColor("canvas-framebuffer", gl, m._x, y, null);
+    $.readColor("canvas-framebuffer", gl, m._x, y, null, color);
     m.get$x;
-    $.readColor("offscreen-framebuffer", gl, m._x, y, $.picker.framebuffer);
+    $.readColor("offscreen-framebuffer", gl, m._x, y, $.picker.framebuffer, color);
+    $.Primitives_printString("mouse hit: " + $.S($.mouseClickHit(color)));
   }
   t1 = $.get$cam();
   t1.oldAngle = $.doubleTypeCheck(t1.angle);
@@ -19511,21 +19585,21 @@ $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
-$.Element.$isElement = true;
+$.Node.$isObject = true;
 $.Element.$isObject = true;
+$.Element.$isElement = true;
 $.Element.$isNode = true;
 $.Element.$isObject = true;
-$._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
+$._GameLoopTouchEvent.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
 $.Entry.$isEntry = true;
 $.Entry.$isObject = true;
 $.Duration.$isObject = true;
@@ -19534,10 +19608,10 @@ $.DigitalButton.$isDigitalButton = true;
 $.DigitalButton.$isObject = true;
 $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
-$._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$isObject = true;
-$._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateContext.$is_IsolateContext = true;
 $._IsolateEvent.$isObject = true;
+$._IsolateEvent.$is_IsolateEvent = true;
 $.File.$isObject = true;
 $.File.$isFile = true;
 $.ShaderProgram.$isObject = true;
@@ -19547,19 +19621,19 @@ $.Instance.$isInstance = true;
 $.Transform.$isObject = true;
 $.Model.$isObject = true;
 $.Model.$isModel = true;
-$.Piece.$isObject = true;
 $.Piece.$isPiece = true;
+$.Piece.$isObject = true;
 $.Plugin.$isObject = true;
 $.PickerInstance.$isPickerInstance = true;
 $.PickerInstance.$isInstance = true;
 $.PickerInstance.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Part.$isObject = true;
 $.Part.$isPart = true;
+$.Part.$isObject = true;
 $.Material.$isObject = true;
 $.Material.$isMaterial = true;
-$.ReceivePort.$isReceivePort = true;
 $.ReceivePort.$isObject = true;
+$.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
@@ -19568,24 +19642,26 @@ $.ElementInstance.$isElementInstance = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
-$.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
-$.SpeechRecognitionResult.$isObject = true;
+$.SpeechInputResult.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
-$.StyleSheet.$isStyleSheet = true;
+$.SpeechRecognitionResult.$isObject = true;
 $.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isObject = true;
+$.StyleSheet.$isStyleSheet = true;
 $.KeyboardEvent.$isEvent = true;
+$.KeyboardEvent.$isObject = true;
 $.KeyboardEvent.$isKeyboardEvent = true;
-$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
@@ -19593,14 +19669,12 @@ $.JSInt.$isint = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
@@ -19611,14 +19685,14 @@ $.JSString.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.Length.$isObject = true;
-$.Touch.$isObject = true;
 $.Touch.$isTouch = true;
+$.Touch.$isObject = true;
 $.CssRule.$isObject = true;
 $.CssRule.$isCssRule = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
-$.Shader.$isShader = true;
 $.Shader.$isObject = true;
+$.Shader.$isShader = true;
 $.Texture.$isTexture = true;
 $.Texture.$isObject = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
@@ -19638,7 +19712,6 @@ $.EventStreamProvider_load = new $.EventStreamProvider("load");
 $.JSNumber_methods = $.JSNumber.prototype;
 $.JSString_methods = $.JSString.prototype;
 $.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.Float32List_methods = $.Float32List.prototype;
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_open = new $.EventStreamProvider("open");
@@ -19655,6 +19728,7 @@ $.EventStreamProvider_webglcontextrestored = new $.EventStreamProvider("webglcon
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
 $.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
 $.EventStreamProvider_keyup = new $.EventStreamProvider("keyup");
 $.JSNull_methods = $.JSNull.prototype;

@@ -328,11 +328,27 @@ void render(RenderingContext gl, GameLoopHtml gameLoop) {
   stats.end();
 }
 
-void readColor(String label, RenderingContext gl, int x, int y, Framebuffer framebuffer) {
-  Uint8List color = new Uint8List(4);
+void readColor(String label, RenderingContext gl, int x, int y, Framebuffer framebuffer, Uint8List color) {
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, framebuffer);
   gl.readPixels(x, y, 1, 1, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, color);
   print("$label: readPixels: x=$x y=$y color=$color");     
+}
+
+bool matchColor(Uint8List i, Float32List f) {
+  return (f[0] - 255.0*i[0]).abs() < 1.0 &&
+      (f[1] - 255.0*i[1]).abs() < 1.0 &&
+      (f[2] - 255.0*i[2]).abs() < 1.0;
+}
+
+PickerInstance mouseClickHit(Uint8List color) {
+  
+  bool match(Instance i) {
+    return matchColor(color, i.pickColor);
+  }
+  
+  Instance pi = picker.instanceList.firstWhere(match);
+  
+  return pi as PickerInstance;
 }
 
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
@@ -345,8 +361,12 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     
     int y = canvas.height - m.y;
 
-    readColor("canvas-framebuffer", gl, m.x, y, null);
-    readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer);    
+    Uint8List color = new Uint8List(4);
+    readColor("canvas-framebuffer", gl, m.x, y, null, color);
+    readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
+    
+    PickerInstance pi = mouseClickHit(color);
+    print("mouse hit: $pi");
   }  
   
   cam.update(gameLoop);
