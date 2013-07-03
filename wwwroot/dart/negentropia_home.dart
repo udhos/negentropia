@@ -335,9 +335,12 @@ void readColor(String label, RenderingContext gl, int x, int y, Framebuffer fram
 }
 
 bool matchColor(Uint8List i, Float32List f) {
-  return (f[0] - 255.0*i[0]).abs() < 1.0 &&
-      (f[1] - 255.0*i[1]).abs() < 1.0 &&
-      (f[2] - 255.0*i[2]).abs() < 1.0;
+  
+  double d0 = (255.0*f[0] - i[0].toDouble()).abs();
+  double d1 = (255.0*f[1] - i[1].toDouble()).abs();
+  double d2 = (255.0*f[2] - i[2].toDouble()).abs();
+  
+  return d0 < 1.0 && d1 < 1.0 && d2 < 1.0;
 }
 
 PickerInstance mouseClickHit(Uint8List color) {
