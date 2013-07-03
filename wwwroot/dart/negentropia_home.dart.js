@@ -2767,13 +2767,10 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
   },
   texImage2D$9: function(receiver, target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video, format, type, pixels) {
     var t1, t2;
-    t1 = pixels == null;
+    t1 = type == null;
     if (!t1)
-      if (type != null)
-        if (format != null)
-          t2 = typeof border_OR_canvas_OR_image_OR_pixels_OR_video === "number" && Math.floor(border_OR_canvas_OR_image_OR_pixels_OR_video) === border_OR_canvas_OR_image_OR_pixels_OR_video || border_OR_canvas_OR_image_OR_pixels_OR_video == null;
-        else
-          t2 = false;
+      if (format != null)
+        t2 = typeof border_OR_canvas_OR_image_OR_pixels_OR_video === "number" && Math.floor(border_OR_canvas_OR_image_OR_pixels_OR_video) === border_OR_canvas_OR_image_OR_pixels_OR_video || border_OR_canvas_OR_image_OR_pixels_OR_video == null;
       else
         t2 = false;
     else
@@ -2782,19 +2779,19 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
       this._texImage2D_1$9(receiver, target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video, format, type, pixels);
       return;
     }
-    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null && format == null && type == null && t1) {
+    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null && format == null && t1 && pixels == null) {
       this._texImage2D_2$6(receiver, target, level, internalformat, format_OR_width, height_OR_type, $.convertDartToNative_ImageData(border_OR_canvas_OR_image_OR_pixels_OR_video));
       return;
     }
-    if ((typeof border_OR_canvas_OR_image_OR_pixels_OR_video === "object" && border_OR_canvas_OR_image_OR_pixels_OR_video !== null && !!$.getInterceptor(border_OR_canvas_OR_image_OR_pixels_OR_video).$isImageElement || border_OR_canvas_OR_image_OR_pixels_OR_video == null) && format == null && type == null && t1) {
+    if ((typeof border_OR_canvas_OR_image_OR_pixels_OR_video === "object" && border_OR_canvas_OR_image_OR_pixels_OR_video !== null && !!$.getInterceptor(border_OR_canvas_OR_image_OR_pixels_OR_video).$isImageElement || border_OR_canvas_OR_image_OR_pixels_OR_video == null) && format == null && t1 && pixels == null) {
       this._texImage2D_3$6(receiver, target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video);
       return;
     }
-    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null && format == null && type == null && t1) {
+    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null && format == null && t1 && pixels == null) {
       this._texImage2D_4$6(receiver, target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video);
       return;
     }
-    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null && format == null && type == null && t1) {
+    if (border_OR_canvas_OR_image_OR_pixels_OR_video == null && format == null && t1 && pixels == null) {
       this._texImage2D_5$6(receiver, target, level, internalformat, format_OR_width, height_OR_type, border_OR_canvas_OR_image_OR_pixels_OR_video);
       return;
     }
@@ -7502,9 +7499,6 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current@",
 },
 
 MappedIterable: {"": "IterableBase;_iterable<,_f",
-  _f$1: function(arg0) {
-    return this._f.call$1(arg0);
-  },
   get$iterator: function(_) {
     var t1, $arguments, arguments0, t2, t3;
     t1 = this._iterable;
@@ -7540,18 +7534,6 @@ MappedIterable: {"": "IterableBase;_iterable<,_f",
   get$length: function(_) {
     var t1 = this._iterable;
     return t1.get$length(t1);
-  },
-  elementAt$1: function(_, index) {
-    var t1, $arguments, arguments0;
-    t1 = this._iterable;
-    t1 = this._f$1(t1.elementAt$1(t1, index));
-    $arguments = this.$asMappedIterable;
-    arguments0 = $.getRuntimeTypeInfo(this);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterableBase: function (S, T) { return [T]; },
@@ -10346,30 +10328,6 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
-  elementAt$1: function(_, index) {
-    var t1, t2, t3, $arguments, arguments0;
-    if (index == null)
-      throw index.$lt();
-    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
-      t1 = this._tail;
-      t2 = this._head;
-      t3 = this._table;
-      throw $.wrapException(new $.RangeError("value " + index + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
-    }
-    t1 = this._table;
-    t2 = t1.length;
-    t3 = (this._head + index & t2 - 1) >>> 0;
-    if (t3 < 0 || t3 >= t2)
-      throw $.ioore(t3);
-    t3 = t1[t3];
-    $arguments = this.$asListQueue;
-    arguments0 = $.getRuntimeTypeInfo(this);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t3, $arguments == null ? null : $arguments[0]);
-  },
   toString$0: function(_) {
     var result = new $.StringBuffer("");
     result._contents = "";
@@ -10917,7 +10875,10 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
+    var t1 = this.modifiedObject;
+    if (t1 == null)
+      return "Concurrent modification during iteration.";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
   },
   $asObject: null
 },
@@ -15788,9 +15749,13 @@ initContext: function(gl, gameLoop) {
 
 draw: function(gl, gameLoop) {
   var t1, t2;
-  $.clear$1$ax(gl, 16640);
   $.setPerspectiveMatrix($.get$pMatrix(), $.fieldOfViewYRadians, $.canvasAspect, 1, 1000);
   $.get$cam().render$1(gameLoop);
+  t1 = $.getInterceptor$x(gl);
+  t1.bindFramebuffer$2(gl, 36160, $.picker.framebuffer);
+  t1.clear$1(gl, 16640);
+  t1.bindFramebuffer$2(gl, 36160, null);
+  t1.clear$1(gl, 16640);
   t1 = $.boolConversionCheck($.showPicking);
   t2 = $.picker;
   if (t1) {
@@ -19542,20 +19507,20 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
-$.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isEvent = true;
+$.MouseEvent.$isMouseEvent = true;
 $.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isNode = true;
 $.Node.$isObject = true;
+$.Node.$isNode = true;
 $.Element.$isElement = true;
 $.Element.$isObject = true;
-$.Element.$isObject = true;
 $.Element.$isNode = true;
+$.Element.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
@@ -19565,23 +19530,23 @@ $.Entry.$isEntry = true;
 $.Entry.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
-$.DigitalButton.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
+$.DigitalButton.$isObject = true;
 $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
+$._IsolateContext.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
 $.File.$isObject = true;
 $.File.$isFile = true;
-$.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
+$.ShaderProgram.$isShaderProgram = true;
 $.Instance.$isObject = true;
 $.Instance.$isInstance = true;
 $.Transform.$isObject = true;
-$.Model.$isModel = true;
 $.Model.$isObject = true;
+$.Model.$isModel = true;
 $.Piece.$isObject = true;
 $.Piece.$isPiece = true;
 $.Plugin.$isObject = true;
@@ -19589,8 +19554,8 @@ $.PickerInstance.$isPickerInstance = true;
 $.PickerInstance.$isInstance = true;
 $.PickerInstance.$isObject = true;
 $.Gamepad.$isObject = true;
-$.Part.$isPart = true;
 $.Part.$isObject = true;
+$.Part.$isPart = true;
 $.Material.$isObject = true;
 $.Material.$isMaterial = true;
 $.ReceivePort.$isReceivePort = true;
@@ -19598,8 +19563,8 @@ $.ReceivePort.$isObject = true;
 $.Map.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
-$.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isObject = true;
+$.ElementInstance.$isElementInstance = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
@@ -19609,45 +19574,45 @@ $.SpeechRecognitionResult.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
-$.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isObject = true;
+$.KeyboardEvent.$isEvent = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
+$.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isnum = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
+$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.Length.$isObject = true;
-$.Touch.$isTouch = true;
 $.Touch.$isObject = true;
+$.Touch.$isTouch = true;
 $.CssRule.$isObject = true;
 $.CssRule.$isCssRule = true;
 $.Number.$isObject = true;
@@ -19788,9 +19753,6 @@ $.bindRenderbuffer$2$x = function(receiver, a0, a1) {
 };
 $.bindTexture$2$x = function(receiver, a0, a1) {
   return $.getInterceptor$x(receiver).bindTexture$2(receiver, a0, a1);
-};
-$.clear$1$ax = function(receiver, a0) {
-  return $.getInterceptor$ax(receiver).clear$1(receiver, a0);
 };
 $.compileShader$1$x = function(receiver, a0) {
   return $.getInterceptor$x(receiver).compileShader$1(receiver, a0);

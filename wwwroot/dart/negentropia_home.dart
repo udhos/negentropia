@@ -281,10 +281,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
 }
 
 void draw(RenderingContext gl, GameLoopHtml gameLoop) {
-  
-  // http://www.opengl.org/sdk/docs/man/xhtml/glClear.xml
-  gl.clear(RenderingContext.COLOR_BUFFER_BIT | RenderingContext.DEPTH_BUFFER_BIT);    // clear color buffer and depth buffer
-  
+    
   // set perspective matrix
   // field of view y: 45 degrees
   // width to height ratio
@@ -299,11 +296,21 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, 1.0, 1000.0);
 
   cam.render(gameLoop);
+
+  // clear offscreen framebuffer
+  gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, picker.framebuffer);
+  gl.clear(RenderingContext.COLOR_BUFFER_BIT | RenderingContext.DEPTH_BUFFER_BIT);
+
+  // clear canvas framebuffer
+  gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
+  gl.clear(RenderingContext.COLOR_BUFFER_BIT | RenderingContext.DEPTH_BUFFER_BIT);  
   
   if (showPicking) {
     // draw picking on both framebuffers
+    
     picker.offscreen = true; // offscreen framebuffer
     picker.drawModels(gameLoop, cam, pMatrix);
+    
     picker.offscreen = false; // canvas framebuffer
     picker.drawModels(gameLoop, cam, pMatrix);
   }
