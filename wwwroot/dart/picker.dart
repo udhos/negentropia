@@ -20,6 +20,32 @@ Float32List generatePickColor() {
   return new Float32List.fromList(_currentPickColor);  
 }
 
+bool matchColor(Uint8List i, Float32List f) {
+  
+  double d0 = (255.0*f[0] - i[0].toDouble()).abs();
+  double d1 = (255.0*f[1] - i[1].toDouble()).abs();
+  double d2 = (255.0*f[2] - i[2].toDouble()).abs();
+  
+  return d0 < 1.0 && d1 < 1.0 && d2 < 1.0;
+}
+
+PickerInstance mouseClickHit(Iterable<Instance> list, Uint8List color) {
+  
+  bool match(Instance i) {
+    return matchColor(color, i.pickColor);
+  }
+  
+  Instance pi;
+    
+  try {
+    pi = list.firstWhere(match);
+  } catch (e) {
+    return null;
+  }
+  
+  return pi as PickerInstance;
+}
+
 class PickerInstance extends Instance {
   
   PickerInstance(Instance i): super(i.model, i.center, i.scale, i.pickColor);

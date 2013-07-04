@@ -334,26 +334,6 @@ void readColor(String label, RenderingContext gl, int x, int y, Framebuffer fram
   print("$label: readPixels: x=$x y=$y color=$color");     
 }
 
-bool matchColor(Uint8List i, Float32List f) {
-  
-  double d0 = (255.0*f[0] - i[0].toDouble()).abs();
-  double d1 = (255.0*f[1] - i[1].toDouble()).abs();
-  double d2 = (255.0*f[2] - i[2].toDouble()).abs();
-  
-  return d0 < 1.0 && d1 < 1.0 && d2 < 1.0;
-}
-
-PickerInstance mouseClickHit(Uint8List color) {
-  
-  bool match(Instance i) {
-    return matchColor(color, i.pickColor);
-  }
-  
-  Instance pi = picker.instanceList.firstWhere(match);
-  
-  return pi as PickerInstance;
-}
-
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
 
@@ -368,7 +348,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     readColor("canvas-framebuffer", gl, m.x, y, null, color);
     readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
     
-    PickerInstance pi = mouseClickHit(color);
+    PickerInstance pi = mouseClickHit(picker.instanceList, color);
     print("mouse hit: $pi");
   }  
   

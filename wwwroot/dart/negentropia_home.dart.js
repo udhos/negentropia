@@ -7751,10 +7751,11 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
 
 IterableMixinWorkaround_firstWhere: function(iterable, test, orElse) {
   var t1, t2, $arguments, arguments0;
+  $.listSuperNativeTypeCheck(iterable, "$isIterable");
   $.propertyTypeCheck(test, "$isFunction");
   $.propertyTypeCheck(orElse, "$isFunction");
-  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();) {
-    t2 = t1._current;
+  for (t1 = $.get$iterator$ax(iterable); $.boolConversionCheck(t1.moveNext$0());) {
+    t2 = t1.get$_current();
     $arguments = t1.$asListIterator;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -15220,16 +15221,6 @@ draw_closure: {"": "Closure;gameLoop_0",
   $isGameLoopPointerLockChangeFunction: true
 },
 
-mouseClickHit_match: {"": "Closure;color_0",
-  call$1: function(i) {
-    return $.matchColor(this.color_0, $.propertyTypeCheck(i, "$isInstance").pickColor);
-  },
-  $isFunction: true,
-  $asObject: null,
-  $is_FutureOnError: true,
-  $is_FutureErrorTest: true
-},
-
 update_closure: {"": "Closure;gameLoop_0",
   call$1: function(p) {
     $.propertyTypeCheck(p, "$isShaderProgram");
@@ -15812,58 +15803,6 @@ readColor: function(label, gl, x, y, framebuffer, color) {
   $.Primitives_printString(label + ": readPixels: x=" + x + " y=" + y + " color=" + $.S(color));
 },
 
-matchColor: function(i, f) {
-  var t1, d0, d1, d2;
-  if (0 >= f.length)
-    throw $.ioore(0);
-  t1 = f[0];
-  if (0 >= i.length)
-    throw $.ioore(0);
-  d0 = $.doubleTypeCheck(Math.abs(255 * t1 - i[0]));
-  if (1 >= f.length)
-    throw $.ioore(1);
-  t1 = f[1];
-  if (1 >= i.length)
-    throw $.ioore(1);
-  d1 = $.doubleTypeCheck(Math.abs(255 * t1 - i[1]));
-  if (2 >= f.length)
-    throw $.ioore(2);
-  t1 = f[2];
-  if (2 >= i.length)
-    throw $.ioore(2);
-  d2 = $.doubleTypeCheck(Math.abs(255 * t1 - i[2]));
-  if (d0 == null)
-    throw d0.$lt();
-  if (d0 < 1) {
-    if (d1 == null)
-      throw d1.$lt();
-    if (d1 < 1) {
-      if (d2 == null)
-        throw d2.$lt();
-      t1 = d2 < 1;
-    } else
-      t1 = false;
-  } else
-    t1 = false;
-  return t1;
-},
-
-mouseClickHit: function(color) {
-  var t1, t2, $arguments, arguments0;
-  t1 = new $.mouseClickHit_match(color);
-  t2 = $.picker.instanceList;
-  $.propertyTypeCheck(t1, "$isFunction");
-  $.propertyTypeCheck(null, "$isFunction");
-  t1 = $.IterableMixinWorkaround_firstWhere(t2, t1, null);
-  $arguments = t2.$asJSArray;
-  arguments0 = $.getRuntimeTypeInfo(t2);
-  if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-    ;
-  else
-    $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-  return $.propertyTypeCast($.propertyTypeCheck($.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]), "$isInstance"), "$isPickerInstance");
-},
-
 update: function(gl, gameLoop) {
   var m, t1, t2, y, color;
   gameLoop.get$mouse;
@@ -15882,7 +15821,7 @@ update: function(gl, gameLoop) {
     $.readColor("canvas-framebuffer", gl, m._x, y, null, color);
     m.get$x;
     $.readColor("offscreen-framebuffer", gl, m._x, y, $.picker.framebuffer, color);
-    $.Primitives_printString("mouse hit: " + $.S($.mouseClickHit(color)));
+    $.Primitives_printString("mouse hit: " + $.S($.mouseClickHit($.picker.instanceList, color)));
   }
   t1 = $.get$cam();
   t1.oldAngle = $.doubleTypeCheck(t1.angle);
@@ -16900,6 +16839,16 @@ Model_update_closure: {"": "Closure;gameLoop_0",
   $is_FutureErrorTest: true
 },
 
+mouseClickHit_match: {"": "Closure;color_0",
+  call$1: function(i) {
+    return $.matchColor(this.color_0, $.propertyTypeCheck(i, "$isInstance").pickColor);
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $is_FutureErrorTest: true
+},
+
 PickerInstance: {"": "Instance;model,center,scale,pickColor,MV",
   draw$3: function(gameLoop, prog, cam) {
     $.uniform4fv$2$x(prog.gl, $.propertyTypeCast(prog, "$isPickerShader").u_Color, this.pickColor);
@@ -17761,6 +17710,78 @@ generatePickColor: function() {
   $.interceptedTypeCheck(t1, "$isList");
   $.interceptedTypeCheck(t1, "$isList");
   return new Float32Array(t1);
+},
+
+matchColor: function(i, f) {
+  var t1, d0, d1, d2;
+  if (0 >= f.length)
+    throw $.ioore(0);
+  t1 = f[0];
+  if (0 >= i.length)
+    throw $.ioore(0);
+  d0 = $.doubleTypeCheck(Math.abs(255 * t1 - i[0]));
+  if (1 >= f.length)
+    throw $.ioore(1);
+  t1 = f[1];
+  if (1 >= i.length)
+    throw $.ioore(1);
+  d1 = $.doubleTypeCheck(Math.abs(255 * t1 - i[1]));
+  if (2 >= f.length)
+    throw $.ioore(2);
+  t1 = f[2];
+  if (2 >= i.length)
+    throw $.ioore(2);
+  d2 = $.doubleTypeCheck(Math.abs(255 * t1 - i[2]));
+  if (d0 == null)
+    throw d0.$lt();
+  if (d0 < 1) {
+    if (d1 == null)
+      throw d1.$lt();
+    if (d1 < 1) {
+      if (d2 == null)
+        throw d2.$lt();
+      t1 = d2 < 1;
+    } else
+      t1 = false;
+  } else
+    t1 = false;
+  return t1;
+},
+
+mouseClickHit: function(list, color) {
+  var match, pi, t1, t2, $arguments, arguments0, exception;
+  $.listSuperNativeTypeCheck(list, "$isIterable");
+  match = new $.mouseClickHit_match(color);
+  pi = null;
+  try {
+    t1 = list;
+    t2 = match;
+    $.propertyTypeCheck(t2, "$isFunction");
+    $.propertyTypeCheck(null, "$isFunction");
+    t2 = $.IterableMixinWorkaround_firstWhere(t1, t2, null);
+    $arguments = t1.$asJSArray;
+    arguments0 = $.getRuntimeTypeInfo(t1);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else {
+      t1 = typeof $arguments == "function";
+      if (t1)
+        $arguments = $arguments.apply(null, arguments0);
+      else
+        $arguments = arguments0;
+    }
+    if ($arguments == null)
+      t1 = null;
+    else
+      t1 = $arguments[0];
+    $.assertSubtypeOfRuntimeType(t2, t1);
+    pi = $.propertyTypeCheck(t2, "$isInstance");
+  } catch (exception) {
+    $.unwrapException(exception);
+    return;
+  }
+
+  return $.propertyTypeCast(pi, "$isPickerInstance");
 },
 
 PickerShader$: function(gl, programList, width, height) {
@@ -19591,26 +19612,26 @@ $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$cl
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
 $.MouseEvent.$isMouseEvent = true;
-$.MouseEvent.$isObject = true;
 $.MouseEvent.$isEvent = true;
+$.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isNode = true;
 $.Node.$isObject = true;
+$.Node.$isNode = true;
 $.Element.$isObject = true;
 $.Element.$isObject = true;
 $.Element.$isNode = true;
 $.Element.$isElement = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouch.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouch.$isObject = true;
 $.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
-$.Entry.$isObject = true;
 $.Entry.$isEntry = true;
+$.Entry.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $.DigitalButton.$isObject = true;
@@ -19619,89 +19640,89 @@ $._EntrySync.$isObject = true;
 $._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$isObject = true;
-$._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
-$.File.$isObject = true;
+$._IsolateEvent.$is_IsolateEvent = true;
 $.File.$isFile = true;
-$.ShaderProgram.$isObject = true;
+$.File.$isObject = true;
 $.ShaderProgram.$isShaderProgram = true;
-$.Instance.$isObject = true;
+$.ShaderProgram.$isObject = true;
 $.Instance.$isInstance = true;
+$.Instance.$isObject = true;
 $.Transform.$isObject = true;
 $.Model.$isObject = true;
 $.Model.$isModel = true;
-$.Piece.$isPiece = true;
 $.Piece.$isObject = true;
+$.Piece.$isPiece = true;
 $.Plugin.$isObject = true;
+$.PickerInstance.$isPickerInstance = true;
 $.PickerInstance.$isInstance = true;
 $.PickerInstance.$isObject = true;
-$.PickerInstance.$isPickerInstance = true;
 $.Gamepad.$isObject = true;
 $.Part.$isPart = true;
 $.Part.$isObject = true;
-$.Material.$isObject = true;
 $.Material.$isMaterial = true;
-$.ReceivePort.$isReceivePort = true;
+$.Material.$isObject = true;
 $.ReceivePort.$isObject = true;
+$.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
-$.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
-$.ElementInstance.$isElementInstance = true;
+$.HttpRequest.$isHttpRequest = true;
 $.ElementInstance.$isObject = true;
+$.ElementInstance.$isElementInstance = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
 $.SpeechInputResult.$isObject = true;
-$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.SpeechRecognitionResult.$isObject = true;
+$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
-$.JSNumber.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isString = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.Length.$isObject = true;
-$.Touch.$isTouch = true;
 $.Touch.$isObject = true;
-$.CssRule.$isObject = true;
+$.Touch.$isTouch = true;
 $.CssRule.$isCssRule = true;
+$.CssRule.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
-$.Shader.$isObject = true;
 $.Shader.$isShader = true;
+$.Shader.$isObject = true;
 $.Texture.$isObject = true;
 $.Texture.$isTexture = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
