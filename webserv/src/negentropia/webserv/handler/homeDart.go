@@ -17,7 +17,7 @@ import (
 
 type HomeDartPage struct {
 	HomePath		string
-	HomeDartPath	string
+	HomeJSPath	    string
 	SignupPath		string
 	LoginPath		string
 	LogoutPath		string
@@ -35,7 +35,7 @@ type HomeDartPage struct {
 
 func sendHomeDart(w http.ResponseWriter, p HomeDartPage) error {
 	p.HomePath   = cfg.HomePath()
-	p.HomeDartPath   = cfg.HomeDartPath()
+	p.HomeJSPath = cfg.HomeJSPath()
 	p.SignupPath = cfg.SignupPath()
 	p.LoginPath  = cfg.LoginPath()
 	p.LogoutPath = cfg.LogoutPath()

@@ -23,6 +23,6 @@
 <div id="framerate"></div>
 <div id="control"></div>
 
-<div id="toggle">return to <a href="{{.HomePath}}">javascript</a></div>
+<div id="toggle">switch to <a href="{{.HomeJSPath}}">javascript</a></div>
 
 {{ end }}

@@ -56,6 +56,6 @@ window.addEventListener("load", start, false);
 <div id="framerate"></div>
 <div id="control"></div>
 
-<div id="toggle">switch to <a href="{{.HomeDartPath}}">dart</a></div>
+<div id="toggle">switch to <a href="{{.HomePath}}">dart</a></div>
 
 {{ end }}

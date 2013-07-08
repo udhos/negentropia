@@ -6,7 +6,7 @@ import "log"
 
 var (
 	homePath				string
-	homeDartPath			string
+	homeJSPath	    		string
 	logoutPath				string
 	loginPath				string
 	loginAuthPath			string
@@ -35,7 +35,7 @@ func SetBasePath(basePath string) {
 	log.Printf("cfg.SetBasePath: www base path: %s", basePath)
 	
 	homePath             = basePath + "/"
-	homeDartPath         = basePath + "/homeDart"
+	homeJSPath           = basePath + "/homeJS"
 	logoutPath           = basePath + "/logout"
 	loginPath            = basePath + "/login"
 	loginAuthPath        = basePath + "/loginAuth"
@@ -52,7 +52,7 @@ func SetBasePath(basePath string) {
 }
 
 func HomePath()             string { return homePath }
-func HomeDartPath()         string { return homeDartPath }
+func HomeJSPath()           string { return homeJSPath }
 func LogoutPath()           string { return logoutPath }
 func LoginPath()            string { return loginPath }
 func LoginAuthPath()        string { return loginAuthPath }

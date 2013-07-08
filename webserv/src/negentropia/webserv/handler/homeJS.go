@@ -17,7 +17,7 @@ import (
 
 type HomePage struct {
 	HomePath		string
-	HomeDartPath		string
+	HomeJSPath		string
 	SignupPath		string
 	LoginPath		string
 	LogoutPath		string
@@ -35,7 +35,7 @@ type HomePage struct {
 
 func sendHome(w http.ResponseWriter, p HomePage) error {
 	p.HomePath   = cfg.HomePath()
-	p.HomeDartPath   = cfg.HomeDartPath()	
+	p.HomeJSPath = cfg.HomeJSPath()	
 	p.SignupPath = cfg.SignupPath()
 	p.LoginPath  = cfg.LoginPath()
 	p.LogoutPath = cfg.LogoutPath()
@@ -45,7 +45,7 @@ func sendHome(w http.ResponseWriter, p HomePage) error {
 	p.Websocket = store.Get(share.WORLD_WEBSOCKET)
 
 	// FIXME: we're loading template every time
-    t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("home.tpl"))
+    t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("homeJS.tpl"))
 	if err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func sendHome(w http.ResponseWriter, p HomePage) error {
 	return nil
 }
 
-func Home(w http.ResponseWriter, r *http.Request, s *session.Session) {
+func HomeJS(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 	
 	log.Printf("handler.Home url=%s", path)
