@@ -7750,9 +7750,10 @@ Arrays_indexOf: function(a, element, startIndex, endIndex) {
 
 IterableMixinWorkaround_forEach: function(iterable, f) {
   var t1, t2, $arguments, arguments0;
+  $.listSuperNativeTypeCheck(iterable, "$isIterable");
   $.propertyTypeCheck(f, "$isFunction");
-  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();) {
-    t2 = t1._current;
+  for (t1 = $.get$iterator$ax(iterable); $.boolConversionCheck(t1.moveNext$0());) {
+    t2 = t1.get$_current();
     $arguments = t1.$asListIterator;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -7765,11 +7766,10 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
 
 IterableMixinWorkaround_firstWhere: function(iterable, test, orElse) {
   var t1, t2, $arguments, arguments0;
-  $.listSuperNativeTypeCheck(iterable, "$isIterable");
   $.propertyTypeCheck(test, "$isFunction");
   $.propertyTypeCheck(orElse, "$isFunction");
-  for (t1 = $.get$iterator$ax(iterable); $.boolConversionCheck(t1.moveNext$0());) {
-    t2 = t1.get$_current();
+  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();) {
+    t2 = t1._current;
     $arguments = t1.$asListIterator;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -7787,19 +7787,18 @@ IterableMixinWorkaround_firstWhere: function(iterable, test, orElse) {
 
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
   var t1;
-  if (start < 0 || start > list.length) {
-    t1 = list.length;
+  if (start < 0 || start > $.get$length$asx(list)) {
+    t1 = $.get$length$asx(list);
     throw $.wrapException(new $.RangeError("value " + start + " not in range 0.." + t1));
   }
-  if (end < start || end > list.length) {
-    t1 = list.length;
+  if (end < start || end > $.get$length$asx(list)) {
+    t1 = $.get$length$asx(list);
     throw $.wrapException(new $.RangeError("value " + end + " not in range " + start + ".." + t1));
   }
 },
 
 IterableMixinWorkaround_setRangeList: function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList;
-  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = end - start;
   if ($length === 0)
@@ -11147,6 +11146,8 @@ StringBuffer: {"": "Object;_contents",
 Duration$: function(days, hours, microseconds, milliseconds, minutes, seconds) {
   $.intTypeCheck(microseconds);
   $.intTypeCheck(milliseconds);
+  if (seconds == null)
+    throw seconds.$mul();
   if (milliseconds == null)
     throw milliseconds.$mul();
   return new $.Duration($.JSInt_methods.$add(days * 86400000000 + hours * 3600000000 + minutes * 60000000 + seconds * 1000000 + milliseconds * 1000, microseconds));
@@ -15754,6 +15755,7 @@ initContext: function(gl, gameLoop) {
   t1.forEach$1;
   $.propertyTypeCheck(t2, "$isFunction");
   $.voidTypeCheck($.IterableMixinWorkaround_forEach(t1, t2));
+  $.requestZone();
   $.initSquares(gl);
   $.initAirship(gl);
   $.initAirshipTex(gl);
@@ -19356,10 +19358,41 @@ setFrustumMatrix: function(perspectiveMatrix, left, right, bottom, $top, near, f
   t3[14] = -(two_near * far) / far_minus_near;
 }}],
 ["ws", "ws.dart", , {
-initWebSocket_closure: {"": "Closure;box_0,wsUri_1,sid_2,status_3",
+initWebSocket_scheduleReconnect: {"": "Closure;box_0,wsUri_1,sid_2,status_3",
+  call$0: function() {
+    var t1, t2, t3;
+    t1 = this.box_0;
+    if (t1.reconnectScheduled_5)
+      return;
+    $.Primitives_printString("websocket: retrying in " + t1.retrySeconds_0 + " seconds");
+    t2 = $.Duration$(0, 0, 0, 0, 0, t1.retrySeconds_0);
+    t3 = new $.initWebSocket_scheduleReconnect_closure(t1, this.wsUri_1, this.sid_2, this.status_3);
+    $.propertyTypeCheck(t3, "$isFunction");
+    $.get$_Zone__current().createTimer$2(t2, t3);
+    t1.reconnectScheduled_5 = true;
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_AsyncCallback: true,
+  $is_TimerCallback: true,
+  $isVoidCallback: true
+},
+
+initWebSocket_scheduleReconnect_closure: {"": "Closure;box_0,wsUri_4,sid_5,status_6",
+  call$0: function() {
+    return $.initWebSocket(this.wsUri_4, this.sid_5, 2 * this.box_0.retrySeconds_0, this.status_6);
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_AsyncCallback: true,
+  $is_TimerCallback: true,
+  $isVoidCallback: true
+},
+
+initWebSocket_closure: {"": "Closure;wsUri_7,sid_8,status_9,scheduleReconnect_10",
   call$1: function(e) {
-    var t1, t2, output, jsonMsg;
-    this.status_3.textContent = "connected to " + this.wsUri_1;
+    var jsonMsg, e0, t1, t2, output, exception;
+    this.status_9.textContent = "connected to " + this.wsUri_7;
     $.Primitives_printString("websocket: CONNECTED");
     t1 = new $.HashMap(0, null, null, null, null);
     $.assertHelper(true);
@@ -19367,14 +19400,23 @@ initWebSocket_closure: {"": "Closure;box_0,wsUri_1,sid_2,status_3",
     $.interceptedTypeCheck(t1, "$isMap");
     t2 = $.getInterceptor$ax(t1);
     t2.$indexSet(t1, "Code", 2);
-    t2.$indexSet(t1, "Data", this.sid_2);
+    t2.$indexSet(t1, "Data", this.sid_8);
     output = new $.StringBuffer("");
     output._contents = "";
     new $._JsonStringifier(output, $.interceptedTypeCheck([], "$isList")).stringifyValue$1(t1);
     jsonMsg = output._contents;
-    t1 = this.box_0.w_1;
-    $.Primitives_printString("websocket: sending: [" + jsonMsg + "]");
-    $.send$1$x(t1, jsonMsg);
+    try {
+      t1 = jsonMsg;
+      $.stringTypeCheck(t1);
+      $.Primitives_printString("websocket: writing: [" + $.S(t1) + "]");
+      $.send$1$x($._ws, t1);
+    } catch (exception) {
+      t1 = $.unwrapException(exception);
+      e0 = t1;
+      $.Primitives_printString("websocket auth: send failure: " + $.S(e0));
+      this.scheduleReconnect_10.call$0();
+    }
+
   },
   $isFunction: true,
   $asObject: null,
@@ -19390,54 +19432,11 @@ initWebSocket_closure: {"": "Closure;box_0,wsUri_1,sid_2,status_3",
   $isGameLoopPointerLockChangeFunction: true
 },
 
-initWebSocket_scheduleReconnect: {"": "Closure;box_0,wsUri_4,sid_5,status_6",
-  call$0: function() {
-    var t1, t2, t3;
-    t1 = this.box_0;
-    if (t1.reconnectScheduled_6)
-      return;
-    $.Primitives_printString("websocket: retrying in " + t1.retrySeconds_0 + " seconds");
-    t2 = $.Duration$(0, 0, 0, 0, 0, t1.retrySeconds_0);
-    t3 = new $.initWebSocket_scheduleReconnect_closure(t1, this.wsUri_4, this.sid_5, this.status_6);
-    $.propertyTypeCheck(t3, "$isFunction");
-    $.get$_Zone__current().createTimer$2(t2, t3);
-    t1.reconnectScheduled_6 = true;
-  },
-  $isFunction: true,
-  $asObject: null,
-  $is_AsyncCallback: true,
-  $is_TimerCallback: true,
-  $isVoidCallback: true
-},
-
-initWebSocket_scheduleReconnect_closure: {"": "Closure;box_0,wsUri_7,sid_8,status_9",
-  call$0: function() {
-    return $.initWebSocket(this.wsUri_7, this.sid_8, 2 * this.box_0.retrySeconds_0, this.status_9);
-  },
-  $isFunction: true,
-  $asObject: null,
-  $is_AsyncCallback: true,
-  $is_TimerCallback: true,
-  $isVoidCallback: true
-},
-
-initWebSocket_closure0: {"": "Closure;wsUri_10,status_11,scheduleReconnect_12",
+initWebSocket_closure0: {"": "Closure;wsUri_11,status_12,scheduleReconnect_13",
   call$1: function(e) {
     $.interceptedTypeCheck(e, "$isEvent");
-    this.status_11.textContent = "disconnected from " + this.wsUri_10;
+    this.status_12.textContent = "disconnected from " + this.wsUri_11;
     $.Primitives_printString("websocket: DISCONNECTED");
-    this.scheduleReconnect_12.call$0();
-  },
-  $isFunction: true,
-  $asObject: null,
-  $is_FutureOnError: true,
-  $is_FutureErrorTest: true,
-  $isEventListener: true
-},
-
-initWebSocket_closure1: {"": "Closure;scheduleReconnect_13",
-  call$1: function(e) {
-    $.Primitives_printString("websocket: error: [" + $.S($.interceptedTypeCheck(e, "$isEvent")) + "]");
     this.scheduleReconnect_13.call$0();
   },
   $isFunction: true,
@@ -19447,9 +19446,21 @@ initWebSocket_closure1: {"": "Closure;scheduleReconnect_13",
   $isEventListener: true
 },
 
-initWebSocket_closure2: {"": "Closure;box_0,status_14",
+initWebSocket_closure1: {"": "Closure;scheduleReconnect_14",
   call$1: function(e) {
-    var msg, t1, t2, output, m;
+    $.Primitives_printString("websocket: error: [" + $.S($.interceptedTypeCheck(e, "$isEvent")) + "]");
+    this.scheduleReconnect_14.call$0();
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $is_FutureErrorTest: true,
+  $isEventListener: true
+},
+
+initWebSocket_closure2: {"": "Closure;box_0,status_15",
+  call$1: function(e) {
+    var msg, t1, t2, output, $arguments, arguments0, m;
     $.interceptedTypeCheck(e, "$isMessageEvent");
     e.get$data;
     $.Primitives_printString("websocket: received: [" + $.S($.convertNativeToDart_AcceptStructuredClone(e.data, true)) + "]");
@@ -19464,30 +19475,37 @@ initWebSocket_closure2: {"": "Closure;box_0,status_14",
       t2 = $.getInterceptor$ax(t1);
       t2.$indexSet(t1, "Code", 3);
       t2.$indexSet(t1, "Data", "hi there");
-      t2 = this.box_0.w_1;
       output = new $.StringBuffer("");
       output._contents = "";
       new $._JsonStringifier(output, $.interceptedTypeCheck([], "$isList")).stringifyValue$1(t1);
       t1 = output._contents;
-      $.Primitives_printString("websocket: sending: [" + t1 + "]");
-      $.send$1$x(t2, t1);
+      t2 = $.get$_wsQueue();
+      $arguments = t2.$asListQueue;
+      arguments0 = $.getRuntimeTypeInfo(t2);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else
+        $arguments = $.isJsFunction($arguments) ? $.invoke($arguments, arguments0) : arguments0;
+      $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[0]);
+      t2._add$1(t2, t1);
+      $.wsFlush();
       return;
     }
     if ($.$eq(t1.$index(msg, "Code"), 4)) {
       m = "server killed our session: " + $.stringTypeCheck(t1.$index(msg, "Data"));
       $.Primitives_printString(m);
-      this.status_14.textContent = m;
+      this.status_15.textContent = m;
       t1 = this.box_0;
-      t2 = t1.subOpen_2;
+      t2 = t1.subOpen_1;
       t2.cancel$0(t2);
-      t2 = t1.subClose_3;
+      t2 = t1.subClose_2;
       t2.cancel$0(t2);
-      t2 = t1.subMessage_5;
+      t2 = t1.subMessage_4;
       t2.cancel$0(t2);
-      t2 = t1.subError_4;
-      t2.cancel$0(t2);
-      t1.w_1.close();
-      t1.w_1 = null;
+      t1 = t1.subError_3;
+      t1.cancel$0(t1);
+      $._ws.close();
+      $._ws = null;
       return;
     }
   },
@@ -19498,8 +19516,86 @@ initWebSocket_closure2: {"": "Closure;box_0,status_14",
   $isEventListener: true
 },
 
+requestZone: function() {
+  var t1, t2, output, json, $arguments, arguments0;
+  t1 = new $.HashMap(0, null, null, null, null);
+  $.assertHelper(true);
+  t1.$builtinTypeInfo = [null, null];
+  $.interceptedTypeCheck(t1, "$isMap");
+  t2 = $.getInterceptor$ax(t1);
+  t2.$indexSet(t1, "Code", 5);
+  t2.$indexSet(t1, "Data", "");
+  output = new $.StringBuffer("");
+  output._contents = "";
+  new $._JsonStringifier(output, $.interceptedTypeCheck([], "$isList")).stringifyValue$1(t1);
+  json = output._contents;
+  t1 = $.get$_wsQueue();
+  $arguments = t1.$asListQueue;
+  arguments0 = $.getRuntimeTypeInfo(t1);
+  if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+    ;
+  else
+    $arguments = $.isJsFunction($arguments) ? $.invoke($arguments, arguments0) : arguments0;
+  $.assertSubtypeOfRuntimeType(json, $arguments == null ? null : $arguments[0]);
+  t1._add$1(t1, json);
+  $.wsFlush();
+},
+
+wsFlush: function() {
+  var e, t1, t2, t3, $arguments, arguments0, exception;
+  while (true) {
+    t1 = $._ws;
+    if (t1 != null)
+      if (t1.readyState === 1) {
+        t1 = $.get$_wsQueue();
+        t1 = t1._head !== t1._tail;
+      } else
+        t1 = false;
+    else
+      t1 = false;
+    if (!t1)
+      break;
+    try {
+      t1 = $.get$_wsQueue();
+      t2 = t1._head;
+      if (t2 === t1._tail)
+        $.throwExpression(new $.StateError("No elements"));
+      t3 = t1._table;
+      if (t2 < 0 || t2 >= t3.length)
+        throw $.ioore(t2);
+      t2 = t3[t2];
+      $arguments = t1.$asListQueue;
+      arguments0 = $.getRuntimeTypeInfo(t1);
+      if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+        ;
+      else {
+        t1 = typeof $arguments == "function";
+        if (t1)
+          $arguments = $arguments.apply(null, arguments0);
+        else
+          $arguments = arguments0;
+      }
+      if ($arguments == null)
+        t1 = null;
+      else
+        t1 = $arguments[0];
+      $.assertSubtypeOfRuntimeType(t2, t1);
+      $.stringTypeCheck(t2);
+      $.Primitives_printString("websocket: writing: [" + $.S(t2) + "]");
+      $.send$1$x($._ws, t2);
+    } catch (exception) {
+      t1 = $.unwrapException(exception);
+      e = t1;
+      $.Primitives_printString("websocket flush: send failure: " + $.S(e));
+      return;
+    }
+
+    $.get$_wsQueue().removeFirst$0();
+  }
+},
+
 initWebSocket: function(wsUri, sid, retrySeconds, $status) {
-  var t1, t2, t3, t4, t5, t6, $arguments, arguments0, t7, t8;
+  var t1, t2, t3, t4, t5, t6, t7, $arguments, arguments0, t8;
   t1 = {};
   t1.retrySeconds_0 = retrySeconds;
   $.intTypeCheck(retrySeconds);
@@ -19510,77 +19606,77 @@ initWebSocket: function(wsUri, sid, retrySeconds, $status) {
   else if (t2 > 120)
     t1.retrySeconds_0 = 120;
   $.Primitives_printString("websocket: opening: " + wsUri + " (retry=" + t1.retrySeconds_0 + ")");
-  t1.w_1 = $.interceptedTypeCheck($.WebSocket_WebSocket(wsUri, null), "$isWebSocket");
-  t1.subOpen_2 = null;
-  t1.subClose_3 = null;
-  t1.subError_4 = null;
-  t1.subMessage_5 = null;
-  t2 = t1.w_1;
-  t2.get$onOpen;
-  t2 = $.assertSubtype($.EventStreamProvider_open.forTarget$1(t2), "$isStream", [$.Event], "$asStream");
-  t3 = new $.initWebSocket_closure(t1, wsUri, sid, $status);
-  $.propertyTypeCheck(t3, "$isFunction");
-  $.propertyTypeCheck(null, "$isFunction");
-  $.propertyTypeCheck(null, "$isFunction");
-  t4 = t2.get$_target();
-  t5 = t2.get$_eventType();
-  t6 = t2.get$_useCapture();
-  $arguments = t2.$as_EventStream;
-  arguments0 = $.getRuntimeTypeInfo(t2);
-  if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-    ;
-  else
-    $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-  t7 = $arguments == null ? null : $arguments[0];
-  t6 = new $._EventStreamSubscription(0, t4, t5, t3, t6);
-  $.assertHelper(true);
-  t6.$builtinTypeInfo = [t7];
-  if (t6._onData != null && !t6.get$isPaused())
-    $.$$dom_addEventListener$3$x(t6._target, t6._eventType, t6._onData, t6._useCapture);
-  $arguments = t2.$as_EventStream;
-  arguments0 = $.getRuntimeTypeInfo(t2);
-  if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-    ;
-  else
-    $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-  t2 = $arguments == null ? null : $arguments[0];
-  t1.subOpen_2 = $.assertSubtype($.assertSubtype(t6, "$isStreamSubscription", [t2], "$asStreamSubscription"), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
-  t1.reconnectScheduled_6 = false;
+  $._ws = $.interceptedTypeCheck($.WebSocket_WebSocket(wsUri, null), "$isWebSocket");
+  t1.subOpen_1 = null;
+  t1.subClose_2 = null;
+  t1.subError_3 = null;
+  t1.subMessage_4 = null;
+  t1.reconnectScheduled_5 = false;
   t2 = new $.initWebSocket_scheduleReconnect(t1, wsUri, sid, $status);
-  t6 = t1.w_1;
-  t6.get$onClose;
-  t6 = $.assertSubtype($.EventStreamProvider_close.forTarget$1(t6), "$isStream", [$.CloseEvent], "$asStream");
-  t3 = new $.initWebSocket_closure0(wsUri, $status, t2);
-  $.propertyTypeCheck(t3, "$isFunction");
-  t4 = t6.get$_target();
-  t5 = t6.get$_eventType();
-  t7 = t6.get$_useCapture();
-  $arguments = t6.$as_EventStream;
-  arguments0 = $.getRuntimeTypeInfo(t6);
+  t3 = $._ws;
+  t3.get$onOpen;
+  t3 = $.assertSubtype($.EventStreamProvider_open.forTarget$1(t3), "$isStream", [$.Event], "$asStream");
+  t4 = new $.initWebSocket_closure(wsUri, sid, $status, t2);
+  $.propertyTypeCheck(t4, "$isFunction");
+  $.propertyTypeCheck(null, "$isFunction");
+  $.propertyTypeCheck(null, "$isFunction");
+  t5 = t3.get$_target();
+  t6 = t3.get$_eventType();
+  t7 = t3.get$_useCapture();
+  $arguments = t3.$as_EventStream;
+  arguments0 = $.getRuntimeTypeInfo(t3);
   if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
     ;
   else
     $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
   t8 = $arguments == null ? null : $arguments[0];
-  t7 = new $._EventStreamSubscription(0, t4, t5, t3, t7);
+  t7 = new $._EventStreamSubscription(0, t5, t6, t4, t7);
   $.assertHelper(true);
   t7.$builtinTypeInfo = [t8];
   if (t7._onData != null && !t7.get$isPaused())
     $.$$dom_addEventListener$3$x(t7._target, t7._eventType, t7._onData, t7._useCapture);
-  $arguments = t6.$as_EventStream;
-  arguments0 = $.getRuntimeTypeInfo(t6);
+  $arguments = t3.$as_EventStream;
+  arguments0 = $.getRuntimeTypeInfo(t3);
   if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
     ;
   else
     $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
   t3 = $arguments == null ? null : $arguments[0];
-  t1.subClose_3 = $.assertSubtype($.assertSubtype(t7, "$isStreamSubscription", [t3], "$asStreamSubscription"), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
-  t3 = t1.w_1;
+  t1.subOpen_1 = $.assertSubtype($.assertSubtype(t7, "$isStreamSubscription", [t3], "$asStreamSubscription"), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
+  t3 = $._ws;
+  t3.get$onClose;
+  t3 = $.assertSubtype($.EventStreamProvider_close.forTarget$1(t3), "$isStream", [$.CloseEvent], "$asStream");
+  t7 = new $.initWebSocket_closure0(wsUri, $status, t2);
+  $.propertyTypeCheck(t7, "$isFunction");
+  t4 = t3.get$_target();
+  t5 = t3.get$_eventType();
+  t6 = t3.get$_useCapture();
+  $arguments = t3.$as_EventStream;
+  arguments0 = $.getRuntimeTypeInfo(t3);
+  if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+    ;
+  else
+    $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+  t8 = $arguments == null ? null : $arguments[0];
+  t6 = new $._EventStreamSubscription(0, t4, t5, t7, t6);
+  $.assertHelper(true);
+  t6.$builtinTypeInfo = [t8];
+  if (t6._onData != null && !t6.get$isPaused())
+    $.$$dom_addEventListener$3$x(t6._target, t6._eventType, t6._onData, t6._useCapture);
+  $arguments = t3.$as_EventStream;
+  arguments0 = $.getRuntimeTypeInfo(t3);
+  if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+    ;
+  else
+    $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+  t3 = $arguments == null ? null : $arguments[0];
+  t1.subClose_2 = $.assertSubtype($.assertSubtype(t6, "$isStreamSubscription", [t3], "$asStreamSubscription"), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
+  t3 = $._ws;
   t3.get$onError;
   t3 = $.assertSubtype($.EventStreamProvider_error.forTarget$1(t3), "$isStream", [$.Event], "$asStream");
   t2 = new $.initWebSocket_closure1(t2);
   $.propertyTypeCheck(t2, "$isFunction");
-  t7 = t3.get$_target();
+  t6 = t3.get$_target();
   t4 = t3.get$_eventType();
   t5 = t3.get$_useCapture();
   $arguments = t3.$as_EventStream;
@@ -19589,10 +19685,10 @@ initWebSocket: function(wsUri, sid, retrySeconds, $status) {
     ;
   else
     $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-  t6 = $arguments == null ? null : $arguments[0];
-  t5 = new $._EventStreamSubscription(0, t7, t4, t2, t5);
+  t7 = $arguments == null ? null : $arguments[0];
+  t5 = new $._EventStreamSubscription(0, t6, t4, t2, t5);
   $.assertHelper(true);
-  t5.$builtinTypeInfo = [t6];
+  t5.$builtinTypeInfo = [t7];
   if (t5._onData != null && !t5.get$isPaused())
     $.$$dom_addEventListener$3$x(t5._target, t5._eventType, t5._onData, t5._useCapture);
   $arguments = t3.$as_EventStream;
@@ -19602,8 +19698,8 @@ initWebSocket: function(wsUri, sid, retrySeconds, $status) {
   else
     $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
   t2 = $arguments == null ? null : $arguments[0];
-  t1.subError_4 = $.assertSubtype($.assertSubtype(t5, "$isStreamSubscription", [t2], "$asStreamSubscription"), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
-  t2 = t1.w_1;
+  t1.subError_3 = $.assertSubtype($.assertSubtype(t5, "$isStreamSubscription", [t2], "$asStreamSubscription"), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
+  t2 = $._ws;
   t2.get$onMessage;
   t2 = $.assertSubtype($.EventStreamProvider_message.forTarget$1(t2), "$isStream", [$.MessageEvent], "$asStream");
   t5 = new $.initWebSocket_closure2(t1, $status);
@@ -19630,7 +19726,7 @@ initWebSocket: function(wsUri, sid, retrySeconds, $status) {
   else
     $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
   t2 = $arguments == null ? null : $arguments[0];
-  t1.subMessage_5 = $.assertSubtype($.assertSubtype(t6, "$isStreamSubscription", [t2], "$asStreamSubscription"), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
+  t1.subMessage_4 = $.assertSubtype($.assertSubtype(t6, "$isStreamSubscription", [t2], "$asStreamSubscription"), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
 }}],
 ]);
 Isolate.$finishClasses($$, $, null);
@@ -19652,59 +19748,59 @@ $.Element__determineMouseWheelEventType$closure = new $.Closure$_determineMouseW
 $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$closure");
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
+$.MouseEvent.$isObject = true;
 $.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
-$.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isNode = true;
 $.Node.$isObject = true;
-$.Element.$isObject = true;
-$.Element.$isElement = true;
+$.Node.$isNode = true;
 $.Element.$isNode = true;
+$.Element.$isElement = true;
+$.Element.$isObject = true;
 $.Element.$isObject = true;
 $._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
+$.GameLoopTouchPosition.$isObject = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouchPosition.$isObject = true;
-$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
-$.Entry.$isEntry = true;
 $.Entry.$isObject = true;
+$.Entry.$isEntry = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $._EntrySync.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $.DigitalButton.$isObject = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
 $.GameLoopTimer.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
 $._IsolateContext.$is_IsolateContext = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
 $._IsolateEvent.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
-$.File.$isFile = true;
 $.File.$isObject = true;
-$.ShaderProgram.$isObject = true;
+$.File.$isFile = true;
 $.ShaderProgram.$isShaderProgram = true;
+$.ShaderProgram.$isObject = true;
 $.Instance.$isInstance = true;
 $.Instance.$isObject = true;
 $.Transform.$isObject = true;
-$.Piece.$isObject = true;
 $.Piece.$isPiece = true;
-$.Model.$isModel = true;
+$.Piece.$isObject = true;
 $.Model.$isObject = true;
+$.Model.$isModel = true;
 $.Plugin.$isObject = true;
 $.PickerInstance.$isObject = true;
 $.PickerInstance.$isPickerInstance = true;
 $.PickerInstance.$isInstance = true;
 $.Gamepad.$isObject = true;
-$.Part.$isPart = true;
 $.Part.$isObject = true;
+$.Part.$isPart = true;
 $.Material.$isMaterial = true;
 $.Material.$isObject = true;
-$.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
+$.ReceivePort.$isObject = true;
 $.Map.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
@@ -19719,8 +19815,8 @@ $.SpeechRecognitionResult.$isObject = true;
 $.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isEvent = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
@@ -19728,9 +19824,10 @@ $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
 $.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
+$.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
@@ -19738,21 +19835,20 @@ $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
 $.JSInt.$isnum = true;
 $.JSDouble.$isObject = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
 $.JSDouble.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
+$.JSDouble.$isnum = true;
+$.JSDouble.$isObject = true;
 $.JSString.$isString = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.Length.$isObject = true;
@@ -19764,8 +19860,8 @@ $.Touch.$isObject = true;
 $.Touch.$isTouch = true;
 $.Shader.$isShader = true;
 $.Shader.$isObject = true;
-$.Texture.$isObject = true;
 $.Texture.$isTexture = true;
+$.Texture.$isObject = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
@@ -19784,7 +19880,6 @@ $.JSNumber_methods = $.JSNumber.prototype;
 $.JSString_methods = $.JSString.prototype;
 $.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
 $.Float32List_methods = $.Float32List.prototype;
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
@@ -19798,6 +19893,7 @@ $.EventStreamProvider_keydown = new $.EventStreamProvider("keydown");
 $.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.EventStreamProvider_webglcontextrestored = new $.EventStreamProvider("webglcontextrestored");
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
 $.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
 $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
@@ -19830,6 +19926,7 @@ $.showPicking = false;
 $.picker = null;
 $.fullRateFrames = 0;
 $.stats = null;
+$._ws = null;
 $.$$dom_addEventListener$3$x = function(receiver, a0, a1, a2) {
   return $.getInterceptor$x(receiver).$$dom_addEventListener$3(receiver, a0, a1, a2);
 };
@@ -20245,6 +20342,9 @@ Isolate.$lazy($, "prefix_usemtl_len", "Obj_prefix_usemtl_len", "get$Obj_prefix_u
 });
 Isolate.$lazy($, "_currentPickColor", "_currentPickColor", "get$_currentPickColor", function() {
   return $.interceptedTypeCheck([0, 0, 0, 1], "$isList");
+});
+Isolate.$lazy($, "_wsQueue", "_wsQueue", "get$_wsQueue", function() {
+  return $.assertSubtype($.ListQueue$(null, $.JSString), "$isListQueue", [$.JSString], "$asListQueue");
 });
 // Native classes
 $.defineNativeMethodsNonleaf("HTMLElement", $._HTMLElement);

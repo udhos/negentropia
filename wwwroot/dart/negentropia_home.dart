@@ -237,6 +237,8 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
 
   programList.forEach((ShaderProgram p) => p.initContext(gl, textureTable));
   
+  requestZone();
+  
   initSquares(gl);
   initShips(gl);
   initSkybox(gl);
