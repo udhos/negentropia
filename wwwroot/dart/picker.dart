@@ -110,8 +110,6 @@ class PickerShader extends ShaderProgram {
       });
     });
     
-    instanceList.forEach((i) { print("PickShader: instance pickColor=${i.pickColor}"); });
-    
     _createRenderbuffer(gl, width, height);
   }
   

@@ -7499,9 +7499,6 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current@",
 },
 
 MappedIterable: {"": "IterableBase;_iterable<,_f",
-  _f$1: function(arg0) {
-    return this._f.call$1(arg0);
-  },
   get$iterator: function(_) {
     var t1, $arguments, arguments0, t2, t3;
     t1 = this._iterable;
@@ -7537,18 +7534,6 @@ MappedIterable: {"": "IterableBase;_iterable<,_f",
   get$length: function(_) {
     var t1 = this._iterable;
     return t1.get$length(t1);
-  },
-  elementAt$1: function(_, index) {
-    var t1, $arguments, arguments0;
-    t1 = this._iterable;
-    t1 = this._f$1(t1.elementAt$1(t1, index));
-    $arguments = this.$asMappedIterable;
-    arguments0 = $.getRuntimeTypeInfo(this);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterableBase: function (S, T) { return [T]; },
@@ -10364,30 +10349,6 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
-  elementAt$1: function(_, index) {
-    var t1, t2, t3, $arguments, arguments0;
-    if (index == null)
-      throw index.$lt();
-    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
-      t1 = this._tail;
-      t2 = this._head;
-      t3 = this._table;
-      throw $.wrapException(new $.RangeError("value " + index + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
-    }
-    t1 = this._table;
-    t2 = t1.length;
-    t3 = (this._head + index & t2 - 1) >>> 0;
-    if (t3 < 0 || t3 >= t2)
-      throw $.ioore(t3);
-    t3 = t1[t3];
-    $arguments = this.$asListQueue;
-    arguments0 = $.getRuntimeTypeInfo(this);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    return $.assertSubtypeOfRuntimeType(t3, $arguments == null ? null : $arguments[0]);
-  },
   toString$0: function(_) {
     var result = new $.StringBuffer("");
     result._contents = "";
@@ -10935,7 +10896,10 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
+    var t1 = this.modifiedObject;
+    if (t1 == null)
+      return "Concurrent modification during iteration.";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
   },
   $asObject: null
 },
@@ -15420,7 +15384,7 @@ boot: function() {
 },
 
 initSquares: function(gl) {
-  var t1, squareProgram, squareModel, t2, t3, squareInstance, squareProgram2, squareModel2, squareInstance2, squareProgram3, squareModel3, squareInstance3;
+  var t1, squareProgram, squareModel, t2, t3, squareProgram2, squareModel2, squareProgram3, squareModel3;
   t1 = $.List_List($, $.Model);
   $.assertHelper(true);
   t1.$builtinTypeInfo = [$.Model];
@@ -15445,9 +15409,7 @@ initSquares: function(gl) {
   t2 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t2.setIdentity$0();
   $.doubleTypeCheck(1);
-  squareInstance = new $.Instance(squareModel, t1, 1, null, t2);
-  $.Primitives_printString("new Instance(): pickColor=" + $.S(squareInstance.pickColor));
-  $.JSArray_methods.add$1(squareModel.instanceList, squareInstance);
+  $.JSArray_methods.add$1(squareModel.instanceList, new $.Instance(squareModel, t1, 1, null, t2));
   t2 = $.List_List($, $.Model);
   $.assertHelper(true);
   t2.$builtinTypeInfo = [$.Model];
@@ -15473,9 +15435,7 @@ initSquares: function(gl) {
   t1[2] = 0;
   t1 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t1.setIdentity$0();
-  squareInstance2 = new $.Instance(squareModel2, t2, 1, null, t1);
-  $.Primitives_printString("new Instance(): pickColor=" + $.S(squareInstance2.pickColor));
-  $.JSArray_methods.add$1(squareModel2.instanceList, squareInstance2);
+  $.JSArray_methods.add$1(squareModel2.instanceList, new $.Instance(squareModel2, t2, 1, null, t1));
   t1 = $.List_List($, $.Model);
   $.assertHelper(true);
   t1.$builtinTypeInfo = [$.Model];
@@ -15498,13 +15458,11 @@ initSquares: function(gl) {
   t2[2] = 0;
   t2 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t2.setIdentity$0();
-  squareInstance3 = new $.Instance(squareModel3, t1, 1, null, t2);
-  $.Primitives_printString("new Instance(): pickColor=" + $.S(squareInstance3.pickColor));
-  $.JSArray_methods.add$1(squareModel3.instanceList, squareInstance3);
+  $.JSArray_methods.add$1(squareModel3.instanceList, new $.Instance(squareModel3, t1, 1, null, t2));
 },
 
 initSkybox: function(gl) {
-  var t1, skyboxProgram, t2, t3, skyboxModel, skyboxInstance;
+  var t1, skyboxProgram, t2, t3, skyboxModel;
   t1 = $.List_List($, $.Model);
   $.assertHelper(true);
   t1.$builtinTypeInfo = [$.Model];
@@ -15547,13 +15505,11 @@ initSkybox: function(gl) {
   $.doubleTypeCheck(1);
   t2 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t2.setIdentity$0();
-  skyboxInstance = new $.SkyboxInstance(skyboxModel, t1, 1, null, t2);
-  $.Primitives_printString("new Instance(): pickColor=" + $.S(skyboxInstance.pickColor));
-  $.JSArray_methods.add$1(skyboxModel.instanceList, skyboxInstance);
+  $.JSArray_methods.add$1(skyboxModel.instanceList, new $.SkyboxInstance(skyboxModel, t1, 1, null, t2));
 },
 
 initAirship: function(gl) {
-  var t1, prog, airshipModel, t2, t3, airshipInstance;
+  var t1, prog, airshipModel, t2, t3;
   t1 = $.List_List($, $.Model);
   $.assertHelper(true);
   t1.$builtinTypeInfo = [$.Model];
@@ -15579,13 +15535,11 @@ initAirship: function(gl) {
   t2 = $.generatePickColor();
   t3 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t3.setIdentity$0();
-  airshipInstance = new $.Instance(airshipModel, t1, $.doubleTypeCheck(1), t2, t3);
-  $.Primitives_printString("new Instance(): pickColor=" + $.S(airshipInstance.pickColor));
-  $.JSArray_methods.add$1(airshipModel.instanceList, airshipInstance);
+  $.JSArray_methods.add$1(airshipModel.instanceList, new $.Instance(airshipModel, t1, $.doubleTypeCheck(1), t2, t3));
 },
 
 initAirshipTex: function(gl) {
-  var t1, prog, objURL, t2, t3, t4, airshipModel, airshipInstance, t5, airshipModel2, airshipInstance2, colonyShipURL, colonyShipModel, colonyShipInstance, coneURL, coneModel, coneInstance;
+  var t1, prog, objURL, t2, t3, t4, airshipModel, t5, airshipModel2, colonyShipURL, colonyShipModel, coneURL, coneModel;
   t1 = $.List_List($, $.Model);
   $.assertHelper(true);
   t1.$builtinTypeInfo = [$.Model];
@@ -15622,9 +15576,7 @@ initAirshipTex: function(gl) {
   $.doubleTypeCheck(1);
   t4 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t4.setIdentity$0();
-  airshipInstance = new $.TexInstance(airshipModel, t2, 1, t3, t4);
-  $.Primitives_printString("new Instance(): pickColor=" + $.S(airshipInstance.pickColor));
-  $.JSArray_methods.add$1(airshipModel.instanceList, airshipInstance);
+  $.JSArray_methods.add$1(airshipModel.instanceList, new $.TexInstance(airshipModel, t2, 1, t3, t4));
   t4 = $.textureTable;
   t3 = $.get$asset();
   t2 = $.List_List($, $.Piece);
@@ -15652,9 +15604,7 @@ initAirshipTex: function(gl) {
   t3 = $.generatePickColor();
   t4 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t4.setIdentity$0();
-  airshipInstance2 = new $.TexInstance(airshipModel2, t2, 1, t3, t4);
-  $.Primitives_printString("new Instance(): pickColor=" + $.S(airshipInstance2.pickColor));
-  $.JSArray_methods.add$1(airshipModel2.instanceList, airshipInstance2);
+  $.JSArray_methods.add$1(airshipModel2.instanceList, new $.TexInstance(airshipModel2, t2, 1, t3, t4));
   colonyShipURL = $.get$asset()._obj + "/Colony Ship Ogame Fleet.obj";
   t4 = $.textureTable;
   t3 = $.get$asset();
@@ -15684,9 +15634,7 @@ initAirshipTex: function(gl) {
   t3 = $.generatePickColor();
   t4 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t4.setIdentity$0();
-  colonyShipInstance = new $.TexInstance(colonyShipModel, t2, 1, t3, t4);
-  $.Primitives_printString("new Instance(): pickColor=" + $.S(colonyShipInstance.pickColor));
-  $.JSArray_methods.add$1(colonyShipModel.instanceList, colonyShipInstance);
+  $.JSArray_methods.add$1(colonyShipModel.instanceList, new $.TexInstance(colonyShipModel, t2, 1, t3, t4));
   coneURL = $.get$asset()._obj + "/cone.obj";
   t4 = $.textureTable;
   t3 = $.get$asset();
@@ -15716,9 +15664,7 @@ initAirshipTex: function(gl) {
   t2 = $.generatePickColor();
   t3 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
   t3.setIdentity$0();
-  coneInstance = new $.TexInstance(coneModel, t1, 1, t2, t3);
-  $.Primitives_printString("new Instance(): pickColor=" + $.S(coneInstance.pickColor));
-  $.JSArray_methods.add$1(coneModel.instanceList, coneInstance);
+  $.JSArray_methods.add$1(coneModel.instanceList, new $.TexInstance(coneModel, t1, 1, t2, t3));
 },
 
 initPicker: function(gl) {
@@ -16947,9 +16893,6 @@ PickerShader: {"": "ShaderProgram;u_Color,programList,instanceList<,framebuffer,
     t1.forEach$1;
     $.propertyTypeCheck(t2, "$isFunction");
     $.voidTypeCheck($.IterableMixinWorkaround_forEach(t1, t2));
-    t2 = new $.PickerShader_closure0();
-    $.propertyTypeCheck(t2, "$isFunction");
-    $.voidTypeCheck($.IterableMixinWorkaround_forEach(this.instanceList, t2));
     this._createRenderbuffer$3(gl, width, height);
   },
   $isPickerShader: true
@@ -17030,7 +16973,7 @@ PickerShader___closure: {"": "Closure;",
 
 PickerShader___closure0: {"": "Closure;this_2",
   call$1: function(ii) {
-    var t1, t2, t3, t4, t5, pi;
+    var t1, t2, t3, t4, t5;
     $.propertyTypeCheck(ii, "$isInstance");
     t1 = $.getInterceptor$x(ii);
     t2 = t1.get$model(ii);
@@ -17039,27 +16982,9 @@ PickerShader___closure0: {"": "Closure;this_2",
     t4 = ii.get$pickColor();
     t5 = new $.Matrix4($._TypedArrayFactoryProvider__F32(16));
     t5.setIdentity$0();
-    pi = new $.PickerInstance($.propertyTypeCheck(t2, "$isModel"), t3, $.doubleTypeCheck(t1), t4, t5);
-    $.Primitives_printString("new Instance(): pickColor=" + $.S(pi.pickColor));
-    $.JSArray_methods.add$1(this.this_2.get$instanceList(), pi);
-  },
-  $isFunction: true,
-  $asObject: null,
-  $is_FutureOnError: true,
-  $is_FutureErrorTest: true,
-  $is_ErrorCallback: true,
-  $isRequestAnimationFrameCallback: true,
-  $isEventListener: true,
-  $isGameLoopUpdateFunction: true,
-  $isGameLoopRenderFunction: true,
-  $isGameLoopResizeFunction: true,
-  $isGameLoopFullscreenChangeFunction: true,
-  $isGameLoopPointerLockChangeFunction: true
-},
-
-PickerShader_closure0: {"": "Closure;",
-  call$1: function(i) {
-    $.Primitives_printString("PickShader: instance pickColor=" + $.S(i.get$pickColor()));
+    $.propertyTypeCheck(t2, "$isModel");
+    $.doubleTypeCheck(t1);
+    $.JSArray_methods.add$1(this.this_2.get$instanceList(), new $.PickerInstance(t2, t3, t1, t4, t5));
   },
   $isFunction: true,
   $asObject: null,
@@ -19749,36 +19674,36 @@ $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$cl
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
 $.MouseEvent.$isObject = true;
-$.MouseEvent.$isEvent = true;
 $.MouseEvent.$isMouseEvent = true;
+$.MouseEvent.$isEvent = true;
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
+$.Node.$isObject = true;
+$.Element.$isObject = true;
+$.Element.$isObject = true;
 $.Element.$isNode = true;
 $.Element.$isElement = true;
-$.Element.$isObject = true;
-$.Element.$isObject = true;
-$._GameLoopTouchEvent.$isObject = true;
 $._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
-$.GameLoopTouchPosition.$isObject = true;
+$._GameLoopTouchEvent.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
-$.GameLoopTouch.$isGameLoopTouch = true;
+$.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isObject = true;
-$.Entry.$isObject = true;
+$.GameLoopTouch.$isGameLoopTouch = true;
 $.Entry.$isEntry = true;
+$.Entry.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
 $._EntrySync.$isObject = true;
 $.DigitalButton.$isDigitalButton = true;
 $.DigitalButton.$isObject = true;
-$.GameLoopTimer.$isObject = true;
 $.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTimer.$isObject = true;
+$._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
 $._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateEvent.$isObject = true;
 $._IsolateEvent.$is_IsolateEvent = true;
+$._IsolateEvent.$isObject = true;
 $.File.$isObject = true;
 $.File.$isFile = true;
 $.ShaderProgram.$isShaderProgram = true;
@@ -19791,19 +19716,19 @@ $.Piece.$isObject = true;
 $.Model.$isObject = true;
 $.Model.$isModel = true;
 $.Plugin.$isObject = true;
-$.PickerInstance.$isObject = true;
 $.PickerInstance.$isPickerInstance = true;
+$.PickerInstance.$isObject = true;
 $.PickerInstance.$isInstance = true;
 $.Gamepad.$isObject = true;
 $.Part.$isObject = true;
 $.Part.$isPart = true;
-$.Material.$isMaterial = true;
 $.Material.$isObject = true;
+$.Material.$isMaterial = true;
 $.ReceivePort.$isReceivePort = true;
 $.ReceivePort.$isObject = true;
 $.Map.$isObject = true;
-$.HttpRequest.$isHttpRequest = true;
 $.HttpRequest.$isObject = true;
+$.HttpRequest.$isHttpRequest = true;
 $.ElementInstance.$isElementInstance = true;
 $.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
@@ -19820,33 +19745,33 @@ $.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
+$.JSArray.$isObject = true;
 $.JSNumber.$isnum = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSNumber.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isObject = true;
+$.JSInt.$isnum = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isint = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isObject = true;
-$.JSInt.$isnum = true;
+$.JSDouble.$isnum = true;
+$.JSDouble.$isObject = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
-$.JSDouble.$isObject = true;
-$.JSDouble.$isnum = true;
-$.JSDouble.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
+$.JSString.$isObject = true;
 $.JSString.$isString = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
-$.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
 $.TextTrack.$isObject = true;
@@ -19858,8 +19783,8 @@ $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
 $.Touch.$isObject = true;
 $.Touch.$isTouch = true;
-$.Shader.$isShader = true;
 $.Shader.$isObject = true;
+$.Shader.$isShader = true;
 $.Texture.$isTexture = true;
 $.Texture.$isObject = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");

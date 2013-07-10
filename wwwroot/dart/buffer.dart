@@ -9,9 +9,7 @@ class Instance {
 
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
   
-  Instance(this.model, this.center, this.scale, [this.pickColor=null]) {
-    print("new Instance(): pickColor=$pickColor");
-  }
+  Instance(this.model, this.center, this.scale, [this.pickColor=null]);
   
   void update(GameLoopHtml gameLoop) {
   }
