@@ -7499,6 +7499,9 @@ ListIterator: {"": "Object;_iterable,_length,_index,_current@",
 },
 
 MappedIterable: {"": "IterableBase;_iterable<,_f",
+  _f$1: function(arg0) {
+    return this._f.call$1(arg0);
+  },
   get$iterator: function(_) {
     var t1, $arguments, arguments0, t2, t3;
     t1 = this._iterable;
@@ -7534,6 +7537,18 @@ MappedIterable: {"": "IterableBase;_iterable<,_f",
   get$length: function(_) {
     var t1 = this._iterable;
     return t1.get$length(t1);
+  },
+  elementAt$1: function(_, index) {
+    var t1, $arguments, arguments0;
+    t1 = this._iterable;
+    t1 = this._f$1(t1.elementAt$1(t1, index));
+    $arguments = this.$asMappedIterable;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t1, $arguments == null ? null : $arguments[1]);
   },
   $asIterableBase: function (S, T) { return [T]; },
   $asIterableBase: function (S, T) { return [T]; },
@@ -7735,10 +7750,9 @@ Arrays_indexOf: function(a, element, startIndex, endIndex) {
 
 IterableMixinWorkaround_forEach: function(iterable, f) {
   var t1, t2, $arguments, arguments0;
-  $.listSuperNativeTypeCheck(iterable, "$isIterable");
   $.propertyTypeCheck(f, "$isFunction");
-  for (t1 = $.get$iterator$ax(iterable); $.boolConversionCheck(t1.moveNext$0());) {
-    t2 = t1.get$_current();
+  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();) {
+    t2 = t1._current;
     $arguments = t1.$asListIterator;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -7751,10 +7765,11 @@ IterableMixinWorkaround_forEach: function(iterable, f) {
 
 IterableMixinWorkaround_firstWhere: function(iterable, test, orElse) {
   var t1, t2, $arguments, arguments0;
+  $.listSuperNativeTypeCheck(iterable, "$isIterable");
   $.propertyTypeCheck(test, "$isFunction");
   $.propertyTypeCheck(orElse, "$isFunction");
-  for (t1 = $.get$iterator$ax(iterable); t1.moveNext$0();) {
-    t2 = t1._current;
+  for (t1 = $.get$iterator$ax(iterable); $.boolConversionCheck(t1.moveNext$0());) {
+    t2 = t1.get$_current();
     $arguments = t1.$asListIterator;
     arguments0 = $.getRuntimeTypeInfo(t1);
     if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
@@ -7772,18 +7787,19 @@ IterableMixinWorkaround_firstWhere: function(iterable, test, orElse) {
 
 IterableMixinWorkaround__rangeCheck: function(list, start, end) {
   var t1;
-  if (start < 0 || start > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (start < 0 || start > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + start + " not in range 0.." + t1));
   }
-  if (end < start || end > $.get$length$asx(list)) {
-    t1 = $.get$length$asx(list);
+  if (end < start || end > list.length) {
+    t1 = list.length;
     throw $.wrapException(new $.RangeError("value " + end + " not in range " + start + ".." + t1));
   }
 },
 
 IterableMixinWorkaround_setRangeList: function(list, start, end, from, skipCount) {
   var $length, otherStart, otherList;
+  $.listTypeCheck(list);
   $.IterableMixinWorkaround__rangeCheck(list, start, end);
   $length = end - start;
   if ($length === 0)
@@ -10349,6 +10365,30 @@ ListQueue: {"": "IterableBase;_table,_head,_tail,_modificationCount",
   get$length: function(_) {
     return (this._tail - this._head & this._table.length - 1) >>> 0;
   },
+  elementAt$1: function(_, index) {
+    var t1, t2, t3, $arguments, arguments0;
+    if (index == null)
+      throw index.$lt();
+    if (index < 0 || index > (this._tail - this._head & this._table.length - 1) >>> 0) {
+      t1 = this._tail;
+      t2 = this._head;
+      t3 = this._table;
+      throw $.wrapException(new $.RangeError("value " + index + " not in range 0.." + ((t1 - t2 & t3.length - 1) >>> 0)));
+    }
+    t1 = this._table;
+    t2 = t1.length;
+    t3 = (this._head + index & t2 - 1) >>> 0;
+    if (t3 < 0 || t3 >= t2)
+      throw $.ioore(t3);
+    t3 = t1[t3];
+    $arguments = this.$asListQueue;
+    arguments0 = $.getRuntimeTypeInfo(this);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    return $.assertSubtypeOfRuntimeType(t3, $arguments == null ? null : $arguments[0]);
+  },
   toString$0: function(_) {
     var result = new $.StringBuffer("");
     result._contents = "";
@@ -10896,10 +10936,7 @@ StateError: {"": "Object;message",
 
 ConcurrentModificationError: {"": "Object;modifiedObject",
   toString$0: function(_) {
-    var t1 = this.modifiedObject;
-    if (t1 == null)
-      return "Concurrent modification during iteration.";
-    return "Concurrent modification during iteration: " + $.Error_safeToString(t1) + ".";
+    return "Concurrent modification during iteration: " + $.Error_safeToString(this.modifiedObject) + ".";
   },
   $asObject: null
 },
@@ -17518,7 +17555,7 @@ TexModel: {"": "Model;textureCoordBuffer,textureCoordBufferItemSize,asset<,textu
 
 TexModel_initContext_closure: {"": "Closure;gl_0,textureTable_1",
   call$1: function(pi) {
-    return $.propertyTypeCheck(pi, "$isTexPiece").texInfo.forceCreateTexture$2(this.gl_0, this.textureTable_1);
+    return $.propertyTypeCheck(pi, "$isTexPiece").texInfo.loadTexture$2(this.gl_0, this.textureTable_1);
   },
   $isFunction: true,
   $asObject: null,
@@ -17569,7 +17606,13 @@ TexModel_loadObj_onMtlLibLoaded_closure: {"": "Closure;box_0,this_5,gl_6,mtlURL_
     texFile = mtl.map_Kd;
     textureURL = texFile != null ? this.this_5.get$asset()._texture + "/" + texFile : null;
     t1 = this.this_5;
-    texInfo = $.TextureInfo$(this.gl_6, t1.get$textureTable(), textureURL, temporaryColor);
+    t2 = t1.get$textureTable();
+    $.interceptedTypeCheck(t2, "$isMap");
+    $.interceptedTypeCheck(temporaryColor, "$isList");
+    texInfo = new $.TextureInfo(textureURL, null, $.interceptedTypeCheck(temporaryColor, "$isList"));
+    $.interceptedTypeCheck(t2, "$isMap");
+    $.interceptedTypeCheck(temporaryColor, "$isList");
+    texInfo.loadTexture$2(this.gl_6, t2);
     pi = new $.TexPiece(null, pa.indexFirst, pa.indexListSize);
     $.JSArray_methods.add$1(t1.get$pieceList(), pi);
     pi.texInfo = texInfo;
@@ -17972,45 +18015,6 @@ SkyboxInstance_draw_closure: {"": "Closure;this_0,gl_1",
 }}],
 ["texture", "texture.dart", , {
 TextureInfo: {"": "Object;textureName<,texture<,temporaryColor",
-  _loadTexture2D$6: function(gl, textureTable, textureName, temporaryColor, handleDone, handleError) {
-    var image, t1, t2, t3, $arguments, arguments0, t4;
-    $.interceptedTypeCheck(textureTable, "$isMap");
-    $.interceptedTypeCheck(temporaryColor, "$isList");
-    $.propertyTypeCheck(handleDone, "$isFunction");
-    $.propertyTypeCheck(handleError, "$isFunction");
-    $.assertHelper(this.texture != null);
-    image = $.interceptedTypeCheck($.ImageElement_ImageElement(null, null, null), "$isImageElement");
-    t1 = new $.TextureInfo__loadTexture2D_onDone(this, gl, handleDone, image);
-    $.$indexSet$ax(textureTable, textureName, this.texture);
-    this.loadSolidColor$1(gl);
-    t2 = $.getInterceptor$x(image);
-    t3 = t2.get$onLoad(image);
-    $.propertyTypeCheck(t1, "$isFunction");
-    $.propertyTypeCheck(null, "$isFunction");
-    $.propertyTypeCheck(null, "$isFunction");
-    $arguments = t3.$as_EventStream;
-    arguments0 = $.getRuntimeTypeInfo(t3);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    t4 = $arguments == null ? null : $arguments[0];
-    t1 = new $._EventStreamSubscription(0, t3._target, t3._eventType, t1, t3._useCapture);
-    $.assertHelper(true);
-    t1.$builtinTypeInfo = [t4];
-    if (t1._onData != null && !t1.get$isPaused())
-      $.$$dom_addEventListener$3$x(t1._target, t1._eventType, t1._onData, t1._useCapture);
-    $arguments = t3.$as_EventStream;
-    arguments0 = $.getRuntimeTypeInfo(t3);
-    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
-      ;
-    else
-      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
-    t3 = $arguments == null ? null : $arguments[0];
-    $.assertSubtype(t1, "$isStreamSubscription", [t3], "$asStreamSubscription");
-    t2.get$onError(image).listen$1(handleError);
-    image.src = textureName;
-  },
   loadSolidColor$1: function(gl) {
     var t1, t2;
     t1 = $.getInterceptor$x(gl);
@@ -18025,37 +18029,74 @@ TextureInfo: {"": "Object;textureName<,texture<,temporaryColor",
     t1.texParameteri$3(gl, 3553, 10243, 33071);
     t1.bindTexture$2(gl, 3553, null);
   },
-  forceCreateTexture$2: function(gl, textureTable) {
-    var t1;
+  _loadTexture2D$2: function(gl, textureTable) {
+    var image, t1, t2, t3, t4, $arguments, arguments0, t5;
+    $.interceptedTypeCheck(textureTable, "$isMap");
+    $.assertHelper(this.texture != null);
+    image = $.interceptedTypeCheck($.ImageElement_ImageElement(null, null, null), "$isImageElement");
+    t1 = this.textureName;
+    if (t1 != null)
+      $.$indexSet$ax(textureTable, t1, this.texture);
+    this.loadSolidColor$1(gl);
+    t2 = new $.TextureInfo__loadTexture2D_onDone(this, gl, image);
+    t3 = $.getInterceptor$x(image);
+    t4 = t3.get$onLoad(image);
+    $.propertyTypeCheck(t2, "$isFunction");
+    $.propertyTypeCheck(null, "$isFunction");
+    $.propertyTypeCheck(null, "$isFunction");
+    $arguments = t4.$as_EventStream;
+    arguments0 = $.getRuntimeTypeInfo(t4);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t5 = $arguments == null ? null : $arguments[0];
+    t2 = new $._EventStreamSubscription(0, t4._target, t4._eventType, t2, t4._useCapture);
+    $.assertHelper(true);
+    t2.$builtinTypeInfo = [t5];
+    if (t2._onData != null && !t2.get$isPaused())
+      $.$$dom_addEventListener$3$x(t2._target, t2._eventType, t2._onData, t2._useCapture);
+    $arguments = t4.$as_EventStream;
+    arguments0 = $.getRuntimeTypeInfo(t4);
+    if (typeof $arguments === "object" && $arguments !== null && $arguments.constructor === Array)
+      ;
+    else
+      $arguments = typeof $arguments == "function" ? $arguments.apply(null, arguments0) : arguments0;
+    t4 = $arguments == null ? null : $arguments[0];
+    $.assertSubtype(t2, "$isStreamSubscription", [t4], "$asStreamSubscription");
+    t3.get$onError(image).listen$1(new $.TextureInfo__loadTexture2D_onError(this));
+    image.src = t1;
+  },
+  createTexture$2: function(_, gl, textureTable) {
     $.interceptedTypeCheck(textureTable, "$isMap");
     this.texture = gl.createTexture();
     if (this.texture == null) {
       $.Primitives_printString("TextureInfo: " + ("could not create texture for: " + this.textureName));
       return;
     }
-    t1 = this.textureName;
-    if (t1 == null) {
+    if (this.textureName == null) {
       this.loadSolidColor$1(gl);
       return;
     }
-    this._loadTexture2D$6(gl, textureTable, t1, this.temporaryColor, new $.TextureInfo_forceCreateTexture_handleDone(this), new $.TextureInfo_forceCreateTexture_handleError(this));
+    this._loadTexture2D$2(gl, textureTable);
   },
-  TextureInfo$4: function(gl, textureTable, textureName, temporaryColor) {
+  loadTexture$2: function(gl, textureTable) {
     var t1;
     $.interceptedTypeCheck(textureTable, "$isMap");
-    $.interceptedTypeCheck(temporaryColor, "$isList");
     t1 = this.textureName;
-    this.texture = $.interceptedTypeCheck($.$index$asx(textureTable, t1), "$isTexture");
-    if (this.texture != null) {
-      $.Primitives_printString("TextureInfo: texture table HIT: " + t1);
-      return;
+    if (t1 != null) {
+      this.texture = $.interceptedTypeCheck($.$index$asx(textureTable, t1), "$isTexture");
+      if (this.texture != null) {
+        $.Primitives_printString("TextureInfo: texture table HIT: " + t1);
+        return;
+      }
     }
-    this.forceCreateTexture$2(gl, textureTable);
+    this.createTexture$2(this, gl, textureTable);
   },
   $isTextureInfo: true
 },
 
-TextureInfo__loadTexture2D_onDone: {"": "Closure;this_0,gl_1,handleDone_2,image_3",
+TextureInfo__loadTexture2D_onDone: {"": "Closure;this_0,gl_1,image_2",
   call$1: function(e) {
     var t1, t2;
     $.interceptedTypeCheck(e, "$isEvent");
@@ -18063,13 +18104,12 @@ TextureInfo__loadTexture2D_onDone: {"": "Closure;this_0,gl_1,handleDone_2,image_
     t2 = $.getInterceptor$x(t1);
     t2.bindTexture$2(t1, 3553, this.this_0.get$texture());
     t2.pixelStorei$2(t1, 37440, 1);
-    t2.texImage2D$6(t1, 3553, 0, 6408, 6408, 5121, this.image_3);
+    t2.texImage2D$6(t1, 3553, 0, 6408, 6408, 5121, this.image_2);
     t2.texParameteri$3(t1, 3553, 10240, 9728);
     t2.texParameteri$3(t1, 3553, 10241, 9728);
     t2.texParameteri$3(t1, 3553, 10242, 33071);
     t2.texParameteri$3(t1, 3553, 10243, 33071);
     t2.bindTexture$2(t1, 3553, null);
-    this.handleDone_2.call$1(e);
   },
   $isFunction: true,
   $asObject: null,
@@ -18077,7 +18117,18 @@ TextureInfo__loadTexture2D_onDone: {"": "Closure;this_0,gl_1,handleDone_2,image_
   $isEventListener: true
 },
 
-TextureInfo_forceCreateTexture_handleDone: {"": "Closure;this_0",
+TextureInfo__loadTexture2D_onError: {"": "Closure;this_3",
+  call$1: function(e) {
+    $.interceptedTypeCheck(e, "$isEvent");
+    $.Primitives_printString("TextureInfo: handleError: failure loading image from URL: " + this.this_3.get$textureName() + ": " + $.S(e));
+  },
+  $isFunction: true,
+  $asObject: null,
+  $is_FutureOnError: true,
+  $isEventListener: true
+},
+
+TextureInfo_createTexture_handleDone: {"": "Closure;this_0",
   call$1: function(e) {
     $.interceptedTypeCheck(e, "$isEvent");
     $.Primitives_printString("TextureInfo: handleDone: loaded image from URL: " + this.this_0.get$textureName());
@@ -18088,7 +18139,7 @@ TextureInfo_forceCreateTexture_handleDone: {"": "Closure;this_0",
   $isEventListener: true
 },
 
-TextureInfo_forceCreateTexture_handleError: {"": "Closure;this_1",
+TextureInfo_createTexture_handleError: {"": "Closure;this_1",
   call$1: function(e) {
     $.interceptedTypeCheck(e, "$isEvent");
     $.Primitives_printString("TextureInfo: handleError: failure loading image from URL: " + this.this_1.get$textureName() + ": " + $.S(e));
@@ -18097,15 +18148,6 @@ TextureInfo_forceCreateTexture_handleError: {"": "Closure;this_1",
   $asObject: null,
   $is_FutureOnError: true,
   $isEventListener: true
-},
-
-TextureInfo$: function(gl, textureTable, textureName, temporaryColor) {
-  var t1;
-  $.interceptedTypeCheck(textureTable, "$isMap");
-  $.interceptedTypeCheck(temporaryColor, "$isList");
-  t1 = new $.TextureInfo(textureName, null, $.interceptedTypeCheck(temporaryColor, "$isList"));
-  t1.TextureInfo$4(gl, textureTable, textureName, temporaryColor);
-  return t1;
 }}],
 ["vector_math", "package:vector_math/vector_math.dart", , {
 Matrix4: {"": "Object;storage",
@@ -19611,51 +19653,51 @@ $.initContext$closure = new $.Closure$initContext($.initContext, "initContext$cl
 $.main$closure = new $.Closure$main($.main, "main$closure");
 $.MimeType.$isObject = true;
 $.MouseEvent.$isEvent = true;
-$.MouseEvent.$isObject = true;
 $.MouseEvent.$isMouseEvent = true;
+$.MouseEvent.$isObject = true;
 $._CSSValue.$isObject = true;
-$.Node.$isObject = true;
 $.Node.$isNode = true;
-$.Element.$isNode = true;
+$.Node.$isObject = true;
+$.Element.$isObject = true;
 $.Element.$isElement = true;
+$.Element.$isNode = true;
 $.Element.$isObject = true;
-$.Element.$isObject = true;
-$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $._GameLoopTouchEvent.$isObject = true;
+$._GameLoopTouchEvent.$is_GameLoopTouchEvent = true;
 $.GameLoopTouchPosition.$isGameLoopTouchPosition = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouchPosition.$isObject = true;
 $.GameLoopTouch.$isGameLoopTouch = true;
 $.GameLoopTouch.$isObject = true;
-$.GameLoopTimer.$isObject = true;
-$.GameLoopTimer.$isGameLoopTimer = true;
 $.Entry.$isEntry = true;
 $.Entry.$isObject = true;
 $.Duration.$isObject = true;
 $.Duration.$isObject = true;
-$.DigitalButton.$isObject = true;
-$.DigitalButton.$isDigitalButton = true;
 $._EntrySync.$isObject = true;
+$.DigitalButton.$isDigitalButton = true;
+$.DigitalButton.$isObject = true;
+$.GameLoopTimer.$isGameLoopTimer = true;
+$.GameLoopTimer.$isObject = true;
+$._IsolateContext.$isObject = true;
+$._IsolateContext.$isObject = true;
 $._IsolateContext.$is_IsolateContext = true;
-$._IsolateContext.$isObject = true;
-$._IsolateContext.$isObject = true;
-$._IsolateEvent.$is_IsolateEvent = true;
 $._IsolateEvent.$isObject = true;
+$._IsolateEvent.$is_IsolateEvent = true;
 $.File.$isFile = true;
 $.File.$isObject = true;
-$.ShaderProgram.$isShaderProgram = true;
 $.ShaderProgram.$isObject = true;
-$.Instance.$isObject = true;
+$.ShaderProgram.$isShaderProgram = true;
 $.Instance.$isInstance = true;
+$.Instance.$isObject = true;
 $.Transform.$isObject = true;
-$.Model.$isModel = true;
-$.Model.$isObject = true;
 $.Piece.$isObject = true;
 $.Piece.$isPiece = true;
+$.Model.$isModel = true;
+$.Model.$isObject = true;
 $.Plugin.$isObject = true;
-$.PickerInstance.$isInstance = true;
 $.PickerInstance.$isObject = true;
 $.PickerInstance.$isPickerInstance = true;
+$.PickerInstance.$isInstance = true;
 $.Gamepad.$isObject = true;
 $.Part.$isPart = true;
 $.Part.$isObject = true;
@@ -19664,46 +19706,46 @@ $.Material.$isObject = true;
 $.ReceivePort.$isObject = true;
 $.ReceivePort.$isReceivePort = true;
 $.Map.$isObject = true;
-$.HttpRequest.$isObject = true;
 $.HttpRequest.$isHttpRequest = true;
-$.ElementInstance.$isObject = true;
+$.HttpRequest.$isObject = true;
 $.ElementInstance.$isElementInstance = true;
+$.ElementInstance.$isObject = true;
 $.SourceBuffer.$isObject = true;
 $.SpeechGrammar.$isObject = true;
 $.Rect.$isObject = true;
 $.SpeechInputResult.$isObject = true;
 $.SpeechInputResult.$isSpeechInputResult = true;
-$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.SpeechRecognitionResult.$isObject = true;
+$.SpeechRecognitionResult.$isSpeechRecognitionResult = true;
 $.StyleSheet.$isStyleSheet = true;
 $.StyleSheet.$isObject = true;
+$.KeyboardEvent.$isKeyboardEvent = true;
 $.KeyboardEvent.$isEvent = true;
 $.KeyboardEvent.$isObject = true;
-$.KeyboardEvent.$isKeyboardEvent = true;
+$.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isObject = true;
 $.JSArray.$isList = true;
 $.JSArray.$isObject = true;
-$.JSArray.$isObject = true;
+$.JSNumber.$isObject = true;
 $.JSNumber.$isnum = true;
 $.JSNumber.$isObject = true;
 $.JSNumber.$isObject = true;
-$.JSNumber.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
-$.JSInt.$isnum = true;
 $.JSInt.$isint = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
 $.JSInt.$isObject = true;
+$.JSInt.$isnum = true;
+$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isnum = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSDouble.$isdouble = true;
-$.JSDouble.$isObject = true;
 $.JSDouble.$isObject = true;
 $.JSString.$isObject = true;
 $.JSString.$isObject = true;
@@ -19714,16 +19756,16 @@ $.JSString.$isString = true;
 $.TextTrack.$isObject = true;
 $.TextTrackCue.$isObject = true;
 $.Length.$isObject = true;
-$.Touch.$isObject = true;
-$.Touch.$isTouch = true;
 $.CssRule.$isCssRule = true;
 $.CssRule.$isObject = true;
 $.Number.$isObject = true;
 $.PathSeg.$isObject = true;
+$.Touch.$isObject = true;
+$.Touch.$isTouch = true;
 $.Shader.$isShader = true;
 $.Shader.$isObject = true;
-$.Texture.$isTexture = true;
 $.Texture.$isObject = true;
+$.Texture.$isTexture = true;
 $.EventStreamProvider_touchstart = new $.EventStreamProvider("touchstart");
 $.Window_methods = $.Window.prototype;
 $.EventStreamProvider_webkitfullscreenerror = new $.EventStreamProvider("webkitfullscreenerror");
@@ -19742,6 +19784,7 @@ $.JSNumber_methods = $.JSNumber.prototype;
 $.JSString_methods = $.JSString.prototype;
 $.EventStreamProvider_mouseup = new $.EventStreamProvider("mouseup");
 $.Float32List_methods = $.Float32List.prototype;
+$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.HttpRequest_methods = $.HttpRequest.prototype;
 $.EventStreamProvider_open = new $.EventStreamProvider("open");
 $.EventStreamProvider_resize = new $.EventStreamProvider("resize");
@@ -19757,7 +19800,6 @@ $.EventStreamProvider_webglcontextrestored = new $.EventStreamProvider("webglcon
 $.EventStreamProvider_close = new $.EventStreamProvider("close");
 $.EventStreamProvider_error = new $.EventStreamProvider("error");
 $.EventStreamProvider_touchmove = new $.EventStreamProvider("touchmove");
-$._CustomEventStreamProvider__determineMouseWheelEventType = new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure);
 $.EventStreamProvider_progress = new $.EventStreamProvider("progress");
 $.EventStreamProvider_keyup = new $.EventStreamProvider("keyup");
 $.JSNull_methods = $.JSNull.prototype;

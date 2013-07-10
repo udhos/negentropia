@@ -72,7 +72,7 @@ class TexModel extends Model {
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
     
     //textureInfoList.forEach((TextureInfo ti) => ti.forceCreateTexture(gl, textureTable));
-    pieceList.forEach((TexPiece pi) => pi.texInfo.forceCreateTexture(gl, textureTable));
+    pieceList.forEach((TexPiece pi) => pi.texInfo.loadTexture(gl, textureTable));
     
   }
   
