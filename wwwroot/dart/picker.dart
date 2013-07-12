@@ -74,7 +74,7 @@ class PickerShader extends ShaderProgram {
     gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
     //gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
     try {
-      gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, width, height, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, null);
+      gl.texImage2DTyped(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, width, height, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, null);
     }
     catch (e) {
       // https://code.google.com/p/dart/issues/detail?id=11498

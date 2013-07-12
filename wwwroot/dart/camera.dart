@@ -9,9 +9,12 @@ class Camera {
   final double degreesPerSec = 30.0;
   final double camOrbitRadius = 15.0;
   Vector3 eye, center, up;
-  double oldAngle, angle;
+  double oldAngle = 0.0;
+  double angle = 0.0;
   
-  Camera(this.eye, this.center, this.up);
+  Camera(this.eye, this.center, this.up) {
+    _update(0.0);
+  }
   
   //double get rad => _getRad(1.0);
   double get rad => getRad(0.0);
@@ -29,9 +32,13 @@ class Camera {
     return r;
   }
   
-  void update(GameLoopHtml gameLoop) {
+  double _update(double gameTime) {
     oldAngle = angle;
-    angle = gameLoop.gameTime * this.degreesPerSec % 360;
+    angle = gameTime * this.degreesPerSec % 360;    
+  }
+   
+  void update(GameLoopHtml gameLoop) {
+    _update(gameLoop.gameTime);
   }
     
   void render(GameLoopHtml gameLoop) {

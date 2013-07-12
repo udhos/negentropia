@@ -81,7 +81,7 @@ class TexModel extends Model {
             
     textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
-    gl.bufferData(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(textCoord), RenderingContext.STATIC_DRAW);
+    gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(textCoord), RenderingContext.STATIC_DRAW);
 
     super._createBuffers(gl, indices, vertCoord, textCoord, normCoord);
 }

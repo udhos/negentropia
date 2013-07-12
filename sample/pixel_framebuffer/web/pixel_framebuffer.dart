@@ -39,7 +39,7 @@ Framebuffer createRenderbuffer(RenderingContext gl, int width, int height) {
   Texture texture = gl.createTexture();
   gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
   try {
-    gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, width, height, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, null);
+    gl.texImage2DTyped(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, width, height, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, null);
   }
   catch (e) {
     // https://code.google.com/p/dart/issues/detail?id=11498
@@ -110,11 +110,11 @@ void main() {
   Buffer vertexPositionBuffer = gl.createBuffer();
   final int vertexPositionBufferItemSize = 3; // coord x,y,z
   gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
-  gl.bufferData(RenderingContext.ARRAY_BUFFER, vertCoord, RenderingContext.STATIC_DRAW);
+  gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER, vertCoord, RenderingContext.STATIC_DRAW);
   
   Buffer vertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
-  gl.bufferData(RenderingContext.ELEMENT_ARRAY_BUFFER, indices, RenderingContext.STATIC_DRAW);
+  gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER, indices, RenderingContext.STATIC_DRAW);
     
   Shader vertShader = gl.createShader(RenderingContext.VERTEX_SHADER);
   gl.shaderSource(vertShader, vertexShaderSource);
