@@ -21,14 +21,6 @@ class Obj {
   
   Iterable<Part> get partList => _partTable.values;
   
-  /*
-  String get usemtl {
-    if (_partTable.isEmpty)
-      return null;
-    return _partTable.values.first.usemtl;
-  }
-  */
-  
   List<double> vertCoord = new List<double>();   
   List<double> textCoord = new List<double>();
   List<double> normCoord = new List<double>();
@@ -36,7 +28,7 @@ class Obj {
   String mtllib;
   
   Obj.fromString(String url, String str) {
-  
+    
     Map<String,int> indexTable = new Map<String,int>();
     List<double> _vertCoord = new List<double>();
     List<double> _textCoord = new List<double>();
@@ -207,19 +199,22 @@ class Obj {
     }
     
     List<String> lines = str.split('\n');
+    
     lines.forEach((String line) => parseLine(line));
     
     // remove empty objects
     /*
-    List<String> emptyList = new List<String>();
-    _objTable.keys.forEach((String name) { 
-      if (_objTable[name].indices.isEmpty) {
+    List<String> emptyList = new List<String>(); // create a copy to avoid concurrent modifications
+    _partTable.keys.forEach((String name) { 
+      if (_partTable[name].indexListSize < 1) {
         emptyList.add(name);
         print("OBJ: deleting empty object=$name loaded from url=$url");
       } 
     });
-    emptyList.forEach((String name) => _objTable.remove(name));
-    */
+    emptyList.forEach((String name) => _partTable.remove(name)); // remove selected keys
+    */   
+    
+    /*
     _partTable.keys
       .where((name) { // where: filter keys
         bool empty = _partTable[name].indexListSize < 1;
@@ -230,6 +225,21 @@ class Obj {
       })
       .toList() // create a copy to avoid concurrent modifications
       .forEach(_partTable.remove); // remove selected keys
+      */
+    Iterable<String> keys = _partTable.keys;
+    print("DEBUG got keys");
+    Iterable<String> filtered = keys.where((name) { // where: filter keys
+      bool empty = _partTable[name].indexListSize < 1;
+      if (empty) {
+        print("OBJ: deleting empty object=$name loaded from url=$url");
+      }       
+      return empty;
+    });
+    print("DEBUG got filtered");
+    List<String> copy = filtered.toList();
+    print("DEBUG got copy");
+    copy.forEach(_partTable.remove);
+    print("DEBUG got result");
 
     // FIXME
     if (textCoord.length == 0) {
@@ -239,7 +249,7 @@ class Obj {
         textCoord.add(0.0); // v        
       }
     }
-    
+
     print("Obj.fromString: objects = ${_partTable.length}");
     print("Obj.fromString: vertCoord.length = ${vertCoord.length}");
     print("Obj.fromString: textCoord.length = ${textCoord.length}");
