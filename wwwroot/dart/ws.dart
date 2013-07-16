@@ -16,6 +16,8 @@ const CM_CODE_ZONE  = 6; // server->client: current zone
 
 WebSocket _ws;
 ListQueue<String> _wsQueue = new ListQueue<String>();
+typedef void dispatcherFunc(int code, String data);
+dispatcherFunc _dispatcher;
 
 void requestZone() {
   Map msg = new Map();
@@ -51,7 +53,9 @@ void wsFlush() {
   }
 }
 
-void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
+void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, dispatcherFunc dispatch) {
+  
+  _dispatcher = dispatch;
   
   status.text = "opening $wsUri";
   
@@ -79,7 +83,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
     }
     
     print("websocket: retrying in $retrySeconds seconds");
-    new Timer(new Duration(seconds: retrySeconds), () => initWebSocket(wsUri, sid, 2 * retrySeconds, status));
+    new Timer(new Duration(seconds: retrySeconds), () => initWebSocket(wsUri, sid, 2 * retrySeconds, status, dispatch));
       
     reconnectScheduled = true;
   }
@@ -119,19 +123,12 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
     print('websocket: received: [${e.data}]');
     
     Map msg = parse(e.data);
+    int code = msg["Code"];
+    String data = msg["Data"];
     
-    if ((msg["Code"] == CM_CODE_INFO) && (msg["Data"].startsWith("welcome"))) {
-      // test echo loop thru server
-      var m = new Map();
-      m["Code"] = CM_CODE_ECHO;
-      m["Data"] = "hi there";
-      wsSend(stringify(m));
-      return;
-    }
-    
-    if (msg["Code"] == CM_CODE_KILL) {
+    if (code == CM_CODE_KILL) {
       
-      String killInfo = msg["Data"];
+      String killInfo = data;
       String m = "server killed our session: $killInfo";
 
       print(m);
@@ -146,15 +143,8 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
       
       return;
     }
-
-    if (msg["Code"] == CM_CODE_ZONE) {
-      
-      String zoneInfo = msg["Data"];
-      print("zoneInfo: $zoneInfo");
-      
-      return;
-    }
-
+    
+    _dispatcher(code, data);
   });
 }
 

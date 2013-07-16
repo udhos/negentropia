@@ -376,7 +376,7 @@ $$.Element = {"": "Node;$$dom_children:children=",
     return $.assertSubtype($.EventStreamProvider_click.forTarget$1(receiver), "$isStream", [$.MouseEvent], "$asStream");
   },
   get$onError: function(receiver) {
-    return $.assertSubtype($.EventStreamProvider_error0.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
+    return $.assertSubtype($.EventStreamProvider_error.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
   },
   get$onLoad: function(receiver) {
     return $.assertSubtype($.EventStreamProvider_load0.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
@@ -660,7 +660,7 @@ $$.HttpRequest = {"": "EventTarget;responseText=",
     return receiver.setRequestHeader($.stringTypeCheck(header), $.stringTypeCheck(value));
   },
   get$onError: function(receiver) {
-    return $.assertSubtype($.EventStreamProvider_error.forTarget$1(receiver), "$isStream", [$.ProgressEvent], "$asStream");
+    return $.assertSubtype($.EventStreamProvider_error0.forTarget$1(receiver), "$isStream", [$.ProgressEvent], "$asStream");
   },
   get$onLoad: function(receiver) {
     return $.assertSubtype($.EventStreamProvider_load.forTarget$1(receiver), "$isStream", [$.ProgressEvent], "$asStream");
@@ -1586,7 +1586,7 @@ $$.WebSocket = {"": "EventTarget;",
     return $.assertSubtype($.EventStreamProvider_close.forTarget$1(receiver), "$isStream", [$.CloseEvent], "$asStream");
   },
   get$onError: function(receiver) {
-    return $.assertSubtype($.EventStreamProvider_error0.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
+    return $.assertSubtype($.EventStreamProvider_error.forTarget$1(receiver), "$isStream", [$.Event], "$asStream");
   },
   get$onMessage: function(receiver) {
     return $.assertSubtype($.EventStreamProvider_message.forTarget$1(receiver), "$isStream", [$.MessageEvent], "$asStream");
@@ -3645,7 +3645,7 @@ $$.Bound__onPointerLockChange_PointerLock = {"": "BoundClosure;_self,_target,_re
   $signature: function () { return {func: "void__Event", void: true, args: [$.Event]}; }
 };
 
-$$.Closure$_processWorkerMessage = {"": "Closure;call$2,$name", $is_dynamic__int_dynamic: true, $is_void__GameLoop_GameLoopTouch: true, $is_void__K_V: true, $is_void__K_V0: true, $is_void__dynamic_SendPort: true, $is_dynamic__dynamic_dynamic: true, $is_void__RenderingContext_GameLoopHtml: true, $is_void__String_String: true};
+$$.Closure$_processWorkerMessage = {"": "Closure;call$2,$name", $is_dynamic__int_dynamic: true, $is_void__GameLoop_GameLoopTouch: true, $is_void__int_String: true, $is_void__dynamic_SendPort: true, $is_void__K_V: true, $is_dynamic__dynamic_dynamic: true, $is_void__K_V0: true, $is_void__RenderingContext_GameLoopHtml: true, $is_void__String_String: true};
 
 $$.Closure$_throwFormatException = {"": "Closure;call$1,$name", $signature: function () { return {func: "dynamic__String", args: [$.JSString]}; }};
 
@@ -3655,7 +3655,7 @@ $$.Closure$toStringWrapper = {"": "Closure;call$0,$name", $is_void_: true, $is_d
 
 $$.Closure$invokeClosure = {"": "Closure;call$5,$name"};
 
-$$.Closure$isAssignable = {"": "Closure;call$2,$name", $is_dynamic__int_dynamic: true, $is_bool__DigitalButtonEvent_bool: true, $is_void__GameLoop_GameLoopTouch: true, $is_void__K_V: true, $is_void__K_V0: true, $is_void__dynamic_SendPort: true, $is_dynamic__dynamic_dynamic: true, $is_void__RenderingContext_GameLoopHtml: true, $is_void__String_String: true};
+$$.Closure$isAssignable = {"": "Closure;call$2,$name", $is_dynamic__int_dynamic: true, $is_bool__DigitalButtonEvent_bool: true, $is_void__GameLoop_GameLoopTouch: true, $is_void__int_String: true, $is_void__dynamic_SendPort: true, $is_void__K_V: true, $is_dynamic__dynamic_dynamic: true, $is_void__K_V0: true, $is_void__RenderingContext_GameLoopHtml: true, $is_void__String_String: true};
 
 $$.Closure$typeNameInChrome = {"": "Closure;call$1,$name", $signature: function () { return {func: "String__dynamic", ret: $.JSString, args: [null]}; }};
 
@@ -4633,10 +4633,11 @@ _BaseSendPort_call_closure: {"": "Closure;completer_0,port_1",
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
-  $is_void__K_V: true,
-  $is_void__K_V0: true,
+  $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
+  $is_void__K_V: true,
   $is_dynamic__dynamic_dynamic: true,
+  $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
 },
@@ -5113,10 +5114,11 @@ _Copier_visitMap_closure: {"": "Closure;box_0,this_1",
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
-  $is_void__K_V: true,
-  $is_void__K_V0: true,
+  $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
+  $is_void__K_V: true,
   $is_dynamic__dynamic_dynamic: true,
+  $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
 },
@@ -7610,10 +7612,11 @@ ToString__emitPair_closure: {"": "Closure;box_0,result_1,visiting_2",
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
-  $is_void__K_V: true,
-  $is_void__K_V0: true,
+  $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
+  $is_void__K_V: true,
   $is_dynamic__dynamic_dynamic: true,
+  $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
 },
@@ -8968,7 +8971,7 @@ HashMapKeyIterable: {"": "IterableBase;_map",
   $asIterable: null
 },
 
-HashMapKeyIterator: {"": "Object;_map,_keys,_offset,_liblib2$_current?",
+HashMapKeyIterator: {"": "Object;_map,_keys,_liblib2$_offset,_liblib2$_current?",
   get$current: function() {
     var t1, $arguments;
     t1 = this._liblib2$_current;
@@ -8978,7 +8981,7 @@ HashMapKeyIterator: {"": "Object;_map,_keys,_offset,_liblib2$_current?",
   moveNext$0: function() {
     var keys, offset, t1;
     keys = this._keys;
-    offset = this._offset;
+    offset = this._liblib2$_offset;
     t1 = this._map;
     if (keys !== t1._keys)
       throw $.wrapException(new $.ConcurrentModificationError(t1));
@@ -8987,7 +8990,7 @@ HashMapKeyIterator: {"": "Object;_map,_keys,_offset,_liblib2$_current?",
       return false;
     } else {
       this.set$_liblib2$_current(keys[offset]);
-      this._offset = offset + 1;
+      this._liblib2$_offset = offset + 1;
       return true;
     }
   },
@@ -9287,7 +9290,7 @@ IterableBase: {"": "Object;",
   },
   forEach$1: function(_, f) {
     var t1, element, $arguments, t2;
-    $.assertFunctionSubtype(f, "void__E0", "IterableBase", this);
+    $.assertFunctionSubtype(f, "void__E1", "IterableBase", this);
     for (t1 = this.get$iterator(this); $.boolConversionCheck(t1.moveNext$0());) {
       element = t1.get$current();
       $arguments = $.substitute(this.$asIterableBase, $.getRuntimeTypeInfo(this));
@@ -9566,7 +9569,7 @@ ListMixin: {"": "Object;",
   },
   forEach$1: function(receiver, action) {
     var $length, i;
-    $.assertFunctionSubtype(action, "void__E1", "ListMixin", receiver);
+    $.assertFunctionSubtype(action, "void__E0", "ListMixin", receiver);
     $length = this.get$length(receiver);
     if ($length == null)
       return this.forEach$1$bailout(1, action, receiver, $length);
@@ -11107,10 +11110,11 @@ HttpRequest_request_closure: {"": "Closure;xhr_0",
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
-  $is_void__K_V: true,
-  $is_void__K_V0: true,
+  $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
+  $is_void__K_V: true,
   $is_dynamic__dynamic_dynamic: true,
+  $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
 },
@@ -11222,10 +11226,11 @@ Storage_keys_closure: {"": "Closure;keys_0",
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
-  $is_void__K_V: true,
-  $is_void__K_V0: true,
+  $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
+  $is_void__K_V: true,
   $is_dynamic__dynamic_dynamic: true,
+  $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
 },
@@ -11239,10 +11244,11 @@ Storage_values_closure: {"": "Closure;values_0",
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
-  $is_void__K_V: true,
-  $is_void__K_V0: true,
+  $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
+  $is_void__K_V: true,
   $is_dynamic__dynamic_dynamic: true,
+  $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
 },
@@ -11754,10 +11760,11 @@ _convertJsonToDart_closure: {"": "Closure;",
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
-  $is_void__K_V: true,
-  $is_void__K_V0: true,
+  $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
+  $is_void__K_V: true,
   $is_dynamic__dynamic_dynamic: true,
+  $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
 },
@@ -12234,9 +12241,9 @@ Uint8List__create1: function(arg) {
   return new Uint8Array(arg);
 }}],
 ["dart.utf", "dart:utf", , {
-_ListRange: {"": "IterableBase;_source,_liblib6$_offset,_liblib6$_length",
+_ListRange: {"": "IterableBase;_source,_offset,_liblib6$_length",
   get$iterator: function(_) {
-    var t1 = this._liblib6$_offset;
+    var t1 = this._offset;
     if (t1 == null)
       throw t1.$add();
     return $._ListRangeIteratorImpl$(this._source, t1, $.JSInt_methods.$add(t1, this._liblib6$_length));
@@ -12246,7 +12253,7 @@ _ListRange: {"": "IterableBase;_source,_liblib6$_offset,_liblib6$_length",
   },
   _ListRange$3: function(source, offset, $length) {
     var t1, t2, t3;
-    t1 = this._liblib6$_offset;
+    t1 = this._offset;
     if (t1 == null)
       throw t1.$lt();
     if (t1 < 0 || $.JSInt_methods.$gt(t1, $.get$length$asx(this._source)))
@@ -12270,27 +12277,27 @@ _ListRange: {"": "IterableBase;_source,_liblib6$_offset,_liblib6$_length",
   $asIterable: function () { return [null]; }
 },
 
-_ListRangeIteratorImpl: {"": "Object;_source,_liblib6$_offset,_liblib6$_end",
+_ListRangeIteratorImpl: {"": "Object;_source,_offset,_liblib6$_end",
   get$current: function() {
     var t1, t2;
     t1 = this._source;
     if (typeof t1 !== "string" && (typeof t1 !== "object" || t1 === null || t1.constructor !== Array && !$.isJsIndexable(t1, t1[$.dispatchPropertyName])))
       return this.get$current$bailout(1, t1);
-    t2 = this._liblib6$_offset;
+    t2 = this._offset;
     if (t2 < 0 || t2 >= t1.length)
       throw $.ioore(t2);
     return $.intTypeCheck(t1[t2]);
   },
   get$current$bailout: function(state0, t1) {
-    return $.intTypeCheck($.$index$asx(t1, this._liblib6$_offset));
+    return $.intTypeCheck($.$index$asx(t1, this._offset));
   },
   moveNext$0: function() {
-    var t1 = this._liblib6$_offset + 1;
-    this._liblib6$_offset = t1;
+    var t1 = this._offset + 1;
+    this._offset = t1;
     return t1 < this._liblib6$_end;
   },
   get$remaining: function() {
-    return this._liblib6$_end - this._liblib6$_offset - 1;
+    return this._liblib6$_end - this._offset - 1;
   },
   $is_ListRangeIterator: true,
   $isIterator: true,
@@ -12346,15 +12353,15 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
     var t1, t2, t3, t4, t5, t6, value, additionalBytes, j, validSequence, nonOverlong, inRange;
     this._liblib6$_current = null;
     t1 = this.utf8EncodedBytesIterator;
-    t2 = t1._liblib6$_offset + 1;
-    t1._liblib6$_offset = t2;
+    t2 = t1._offset + 1;
+    t1._offset = t2;
     t3 = t1._liblib6$_end;
     if (t2 >= t3)
       return false;
     t2 = t1._source;
     if (typeof t2 !== "string" && (typeof t2 !== "object" || t2 === null || t2.constructor !== Array && !$.isJsIndexable(t2, t2[$.dispatchPropertyName])))
       return this.moveNext$0$bailout(1, t3, t2, t1);
-    t4 = t1._liblib6$_offset;
+    t4 = t1._offset;
     t5 = $.getInterceptor(t2);
     if (t4 < 0 || t4 >= t2.length)
       throw $.ioore(t4);
@@ -12407,14 +12414,14 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
     j = 0;
     while (true) {
       if (j < additionalBytes) {
-        t4 = t1._liblib6$_offset + 1;
-        t1._liblib6$_offset = t4;
+        t4 = t1._offset + 1;
+        t1._offset = t4;
         t4 = t4 < t3;
       } else
         t4 = false;
       if (!t4)
         break;
-      t4 = t1._liblib6$_offset;
+      t4 = t1._offset;
       if (t4 < 0 || t4 >= t2.length)
         throw $.ioore(t4);
       t6 = t2[t4];
@@ -12425,7 +12432,7 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
         value = (value << 6 | t6 & 63) >>> 0;
       else {
         if (t6 >= 192)
-          t1._liblib6$_offset = t4 - 1;
+          t1._offset = t4 - 1;
         break;
       }
       ++j;
@@ -12452,7 +12459,7 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
         this._liblib6$_current = t2;
         return true;
       } else
-        throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + (t1._liblib6$_offset - j)));
+        throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + (t1._offset - j)));
     }
   },
   moveNext$0$bailout: function(state0, t3, t2, t1, t4, t5, j, additionalBytes, value) {
@@ -12460,8 +12467,8 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
       case 0:
         this._liblib6$_current = null;
         t1 = this.utf8EncodedBytesIterator;
-        t2 = t1._liblib6$_offset + 1;
-        t1._liblib6$_offset = t2;
+        t2 = t1._offset + 1;
+        t1._offset = t2;
         t3 = t1._liblib6$_end;
         if (t2 >= t3)
           return false;
@@ -12469,7 +12476,7 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
       case 1:
         state0 = 0;
         t4 = $.getInterceptor$asx(t2);
-        t5 = t4.$index(t2, t1._liblib6$_offset);
+        t5 = t4.$index(t2, t1._offset);
         $.intTypeCheck(t5);
       case 2:
         state0 = 0;
@@ -12481,7 +12488,7 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
             this._liblib6$_current = t2;
             return true;
           } else
-            throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + t1._liblib6$_offset));
+            throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + t1._offset));
         } else if (t5 <= 127) {
           this._liblib6$_current = t5;
           return true;
@@ -12491,7 +12498,7 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
             this._liblib6$_current = t2;
             return true;
           } else
-            throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + t1._liblib6$_offset));
+            throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + t1._offset));
         } else if (t5 < 224) {
           value = t5 - 192;
           additionalBytes = 1;
@@ -12513,7 +12520,7 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
               this._liblib6$_current = t2;
               return true;
             } else
-              throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + t1._liblib6$_offset));
+              throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + t1._offset));
           }
           additionalBytes = 5;
         }
@@ -12525,14 +12532,14 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
             switch (state0) {
               case 0:
                 if (j < additionalBytes) {
-                  t5 = t1._liblib6$_offset + 1;
-                  t1._liblib6$_offset = t5;
+                  t5 = t1._offset + 1;
+                  t1._offset = t5;
                   t5 = t5 < t3;
                 } else
                   t5 = false;
                 if (!t5)
                   break L0;
-                t5 = t4.$index(t2, t1._liblib6$_offset);
+                t5 = t4.$index(t2, t1._offset);
                 $.intTypeCheck(t5);
               case 3:
                 state0 = 0;
@@ -12542,7 +12549,7 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
                   value = (value << 6 | t5 & 63) >>> 0;
                 else {
                   if (t5 >= 192)
-                    t1._liblib6$_offset = t1._liblib6$_offset - 1;
+                    t1._offset = t1._offset - 1;
                   break L0;
                 }
                 ++j;
@@ -12569,7 +12576,7 @@ Utf8Decoder: {"": "Object;utf8EncodedBytesIterator,replacementCodepoint,_liblib6
             this._liblib6$_current = t2;
             return true;
           } else
-            throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + (t1._liblib6$_offset - j)));
+            throw $.wrapException(new $.ArgumentError("Invalid UTF8 at " + (t1._offset - j)));
         }
     }
   },
@@ -13450,10 +13457,11 @@ GameLoopTouchSet__verifyTouchList_closure: {"": "Closure;this_0,touches_1",
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
-  $is_void__K_V: true,
-  $is_void__K_V0: true,
+  $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
+  $is_void__K_V: true,
   $is_dynamic__dynamic_dynamic: true,
+  $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
 },
@@ -13940,6 +13948,15 @@ initShowPicking_closure: {"": "Closure;showPickingCheck_0",
   $signature: function () { return {func: "dynamic__Event", args: [$.Event]}; }
 },
 
+boot_dispatch: {"": "Closure;gl_0",
+  call$2: function(code, data) {
+    $.dispatcher(this.gl_0, $.intTypeCheck(code), $.stringTypeCheck(data));
+  },
+  $isFunction: true,
+  $asObject: null,
+  $signature: function () { return {func: "void__int_String", void: true, args: [$.JSInt, $.JSString]}; }
+},
+
 initSquares_closure: {"": "Closure;squareProgram2_0",
   call$0: function() {
     this.squareProgram2_0.fetch$3($.shaderCache, $.get$asset().get$shader() + "/clip_vs.txt", $.get$asset().get$shader() + "/clip2_fs.txt");
@@ -14035,6 +14052,39 @@ initShowPicking: function() {
   t1.append$1(control, label);
 },
 
+loadDemo: function(gl) {
+  $.print("loading demo");
+  $.initSquares(gl);
+  $.initShips(gl);
+  $.initSkybox(gl);
+  $.initPicker(gl);
+},
+
+dispatcher: function(gl, code, data) {
+  var m;
+  switch (code) {
+    case 1:
+      $.print("dispatcher: server sent info: " + data);
+      if ($.startsWith$1$s(data, "welcome")) {
+        m = $.Map_Map(null, null);
+        m.$indexSet(m, "Code", 3);
+        m.$indexSet(m, "Data", "hi there");
+        $.wsSend($.stringify(m));
+      }
+      break;
+    case 6:
+      $.print("dispatcher: zoneInfo=" + data);
+      if (data === "demo") {
+        $.loadDemo(gl);
+        return;
+      }
+      $.print("dispatcher: FIXME WRITEME load non-demo zone: zoneInfo=" + data);
+      break;
+    default:
+      $.print("dispatcher: unknown code=" + $.S(code));
+  }
+},
+
 boot: function() {
   var t1, canvasbox, gl, p, a, sid, wsUri, statusElem;
   $.canvas = $.CanvasElement_CanvasElement(null, null);
@@ -14069,7 +14119,7 @@ boot: function() {
   $.assertHelper(wsUri != null);
   statusElem = $.query("#ws_status");
   $.assertHelper(statusElem != null);
-  $.initWebSocket(wsUri, sid, 1, statusElem);
+  $.initWebSocket(wsUri, sid, 1, statusElem, new $.boot_dispatch(gl));
   $.initStats();
   return gl;
 },
@@ -14167,10 +14217,6 @@ initContext: function(gl, gameLoop) {
   $.textureTable = $.interceptedTypeCheck($.Map_Map($.JSString, $.Texture), "$isMap");
   $.forEach$1$ax($.programList, new $.initContext_closure(gl));
   $.requestZone();
-  $.initSquares(gl);
-  $.initShips(gl);
-  $.initSkybox(gl);
-  $.initPicker(gl);
   t1 = $.getInterceptor$x(gl);
   t1.clearColor$4(gl, 0.5, 0.5, 0.5, 1);
   t1.enable$1(gl, 2929);
@@ -17176,13 +17222,13 @@ Vector4$zero: function() {
   return new $.Vector4($.Float32List_Float32List(4));
 }}],
 ["ws", "ws.dart", , {
-initWebSocket_scheduleReconnect: {"": "Closure;box_0,wsUri_1,sid_2,status_3",
+initWebSocket_scheduleReconnect: {"": "Closure;box_0,wsUri_1,sid_2,status_3,dispatch_4",
   call$0: function() {
     var t1 = this.box_0;
     if (t1.reconnectScheduled_5)
       return;
     $.print("websocket: retrying in " + t1.retrySeconds_0 + " seconds");
-    $.Timer_Timer($.Duration$(0, 0, 0, 0, 0, t1.retrySeconds_0), new $.initWebSocket_scheduleReconnect_closure(t1, this.wsUri_1, this.sid_2, this.status_3));
+    $.Timer_Timer($.Duration$(0, 0, 0, 0, 0, t1.retrySeconds_0), new $.initWebSocket_scheduleReconnect_closure(t1, this.wsUri_1, this.sid_2, this.status_3, this.dispatch_4));
     t1.reconnectScheduled_5 = true;
   },
   $isFunction: true,
@@ -17192,9 +17238,9 @@ initWebSocket_scheduleReconnect: {"": "Closure;box_0,wsUri_1,sid_2,status_3",
   $is_Object_: true
 },
 
-initWebSocket_scheduleReconnect_closure: {"": "Closure;box_0,wsUri_4,sid_5,status_6",
+initWebSocket_scheduleReconnect_closure: {"": "Closure;box_0,wsUri_5,sid_6,status_7,dispatch_8",
   call$0: function() {
-    return $.initWebSocket(this.wsUri_4, this.sid_5, 2 * this.box_0.retrySeconds_0, this.status_6);
+    return $.initWebSocket(this.wsUri_5, this.sid_6, 2 * this.box_0.retrySeconds_0, this.status_7, this.dispatch_8);
   },
   $isFunction: true,
   $asObject: null,
@@ -17203,14 +17249,14 @@ initWebSocket_scheduleReconnect_closure: {"": "Closure;box_0,wsUri_4,sid_5,statu
   $is_Object_: true
 },
 
-initWebSocket_closure: {"": "Closure;wsUri_7,sid_8,status_9,scheduleReconnect_10",
+initWebSocket_closure: {"": "Closure;wsUri_9,sid_10,status_11,scheduleReconnect_12",
   call$1: function(e) {
     var jsonMsg, e0, msg, exception, t1;
-    this.status_9.textContent = "connected to " + this.wsUri_7;
+    this.status_11.textContent = "connected to " + this.wsUri_9;
     $.print("websocket: CONNECTED");
     msg = $.Map_Map(null, null);
     msg.$indexSet(msg, "Code", 2);
-    msg.$indexSet(msg, "Data", this.sid_8);
+    msg.$indexSet(msg, "Data", this.sid_10);
     jsonMsg = $.stringify(msg);
     try {
       $._write(jsonMsg);
@@ -17218,7 +17264,7 @@ initWebSocket_closure: {"": "Closure;wsUri_7,sid_8,status_9,scheduleReconnect_10
       t1 = $.unwrapException(exception);
       e0 = t1;
       $.print("websocket auth: send failure: " + $.S(e0));
-      this.scheduleReconnect_10.call$0();
+      this.scheduleReconnect_12.call$0();
     }
 
   },
@@ -17227,47 +17273,42 @@ initWebSocket_closure: {"": "Closure;wsUri_7,sid_8,status_9,scheduleReconnect_10
   $signature: function () { return {func: "dynamic__dynamic", args: [null]}; }
 },
 
-initWebSocket_closure0: {"": "Closure;wsUri_11,status_12,scheduleReconnect_13",
+initWebSocket_closure0: {"": "Closure;wsUri_13,status_14,scheduleReconnect_15",
   call$1: function(e) {
     $.interceptedTypeCheck(e, "$isEvent");
-    this.status_12.textContent = "disconnected from " + this.wsUri_11;
+    this.status_14.textContent = "disconnected from " + this.wsUri_13;
     $.print("websocket: DISCONNECTED");
-    this.scheduleReconnect_13.call$0();
+    this.scheduleReconnect_15.call$0();
   },
   $isFunction: true,
   $asObject: null,
   $signature: function () { return {func: "dynamic__Event", args: [$.Event]}; }
 },
 
-initWebSocket_closure1: {"": "Closure;scheduleReconnect_14",
+initWebSocket_closure1: {"": "Closure;scheduleReconnect_16",
   call$1: function(e) {
     $.print("websocket: error: [" + $.S($.interceptedTypeCheck(e, "$isEvent")) + "]");
-    this.scheduleReconnect_14.call$0();
+    this.scheduleReconnect_16.call$0();
   },
   $isFunction: true,
   $asObject: null,
   $signature: function () { return {func: "dynamic__Event", args: [$.Event]}; }
 },
 
-initWebSocket_closure2: {"": "Closure;box_0,status_15",
+initWebSocket_closure2: {"": "Closure;box_0,status_17",
   call$1: function(e) {
-    var t1, msg, m, t2;
+    var t1, msg, code, data, m, t2;
     $.interceptedTypeCheck(e, "$isMessageEvent");
     t1 = $.getInterceptor$x(e);
     $.print("websocket: received: [" + $.S(t1.get$data(e)) + "]");
     msg = $.interceptedTypeCheck($.parse(t1.get$data(e), null), "$isMap");
     t1 = $.getInterceptor$asx(msg);
-    if ($.$eq(t1.$index(msg, "Code"), 1) && $.startsWith$1$s(t1.$index(msg, "Data"), "welcome")) {
-      m = $.Map_Map(null, null);
-      m.$indexSet(m, "Code", 3);
-      m.$indexSet(m, "Data", "hi there");
-      $.wsSend($.stringify(m));
-      return;
-    }
-    if ($.$eq(t1.$index(msg, "Code"), 4)) {
-      m = "server killed our session: " + $.stringTypeCheck(t1.$index(msg, "Data"));
+    code = $.intTypeCheck(t1.$index(msg, "Code"));
+    data = $.stringTypeCheck(t1.$index(msg, "Data"));
+    if (code === 4) {
+      m = "server killed our session: " + data;
       $.print(m);
-      this.status_15.textContent = m;
+      this.status_17.textContent = m;
       t1 = this.box_0;
       t2 = t1.subOpen_1;
       t2.cancel$0(t2);
@@ -17281,6 +17322,7 @@ initWebSocket_closure2: {"": "Closure;box_0,status_15",
       $._ws = null;
       return;
     }
+    $._dispatcher.call$2(code, data);
   },
   $isFunction: true,
   $asObject: null,
@@ -17352,11 +17394,13 @@ wsFlush: function() {
   }
 },
 
-initWebSocket: function(wsUri, sid, retrySeconds, $status) {
+initWebSocket: function(wsUri, sid, retrySeconds, $status, dispatch) {
   var t1, t2;
   t1 = {};
   t1.retrySeconds_0 = retrySeconds;
   $.intTypeCheck(retrySeconds);
+  $.assertFunctionSubtype(dispatch, "void__int_String");
+  $._dispatcher = dispatch;
   $status.textContent = "opening " + wsUri;
   t2 = t1.retrySeconds_0;
   if (t2 < 1)
@@ -17370,7 +17414,7 @@ initWebSocket: function(wsUri, sid, retrySeconds, $status) {
   t1.subError_3 = null;
   t1.subMessage_4 = null;
   t1.reconnectScheduled_5 = false;
-  t2 = new $.initWebSocket_scheduleReconnect(t1, wsUri, sid, $status);
+  t2 = new $.initWebSocket_scheduleReconnect(t1, wsUri, sid, $status, dispatch);
   t1.subOpen_1 = $.assertSubtype($.get$onOpen$x($._ws).listen$1(new $.initWebSocket_closure(wsUri, sid, $status, t2)), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
   t1.subClose_2 = $.assertSubtype($.get$onClose$x($._ws).listen$1(new $.initWebSocket_closure0(wsUri, $status, t2)), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
   t1.subError_3 = $.assertSubtype($.get$onError$x($._ws).listen$1(new $.initWebSocket_closure1(t2)), "$isStreamSubscription", [$.Event], "$asStreamSubscription");
@@ -17600,20 +17644,21 @@ $.$signature_void__RenderingContext_GameLoopHtml = {func: "void__RenderingContex
 $.$signature_bool__dynamic = {func: "bool__dynamic", ret: $.JSBool, args: [null]};
 $.$signature_dynamic__Event = {func: "dynamic__Event", args: [$.Event]};
 $.$signature_dynamic__int = {func: "dynamic__int", args: [$.JSInt]};
+$.$signature_void__int_String = {func: "void__int_String", void: true, args: [$.JSInt, $.JSString]};
 $.$signature_void__ProgressEvent = {func: "void__ProgressEvent", void: true, args: [$.ProgressEvent]};
 $.JSArray.$signature_void__E = function (E) { return {func: "void__E", void: true, args: [E]}; };
 $.JSArray.$signature_bool__E0 = function (E) { return {func: "bool__E0", ret: $.JSBool, args: [E]}; };
 $._SubscribeFuture.$signature_dynamic__S = function (S, T) { return {func: "dynamic__S", args: [S]}; };
 $.Stream.$signature_bool__T = function (T) { return {func: "bool__T", ret: $.JSBool, args: [T]}; };
 $.HashMap.$signature_void__K_V0 = function (K, V) { return {func: "void__K_V0", void: true, args: [K, V]}; };
-$.ListMixin.$signature_void__E1 = function (E) { return {func: "void__E1", void: true, args: [E]}; };
+$.ListMixin.$signature_void__E0 = function (E) { return {func: "void__E0", void: true, args: [E]}; };
 $.ListMixin.$signature_bool__E = function (E) { return {func: "bool__E", ret: $.JSBool, args: [E]}; };
 $.ListIterable.$signature_bool__E2 = function (E) { return {func: "bool__E2", ret: $.JSBool, args: [E]}; };
 $.LinkedHashMap.$signature_void__K_V = function (K, V) { return {func: "void__K_V", void: true, args: [K, V]}; };
 $._EventStream.$signature_void__T = function (T) { return {func: "void__T", void: true, args: [T]}; };
-$.IterableBase.$signature_bool__E1 = function (E) { return {func: "bool__E1", ret: $.JSBool, args: [E]}; };
 $.IterableBase.$signature_dynamic__E = function (E) { return {func: "dynamic__E", args: [E]}; };
-$.IterableBase.$signature_void__E0 = function (E) { return {func: "void__E0", void: true, args: [E]}; };
+$.IterableBase.$signature_void__E1 = function (E) { return {func: "void__E1", void: true, args: [E]}; };
+$.IterableBase.$signature_bool__E1 = function (E) { return {func: "bool__E1", ret: $.JSBool, args: [E]}; };
 $._FutureImpl.$signature_dynamic__T = function (T) { return {func: "dynamic__T", args: [T]}; };
 $.getInterceptor = function(receiver) {
   if (typeof receiver == "number") {
@@ -17699,8 +17744,9 @@ $.getInterceptor$x = function(receiver) {
 };
 $.Float32List_methods = $.Float32List.prototype;
 $.EventStreamProvider_open = $.setRuntimeTypeInfo(new $.EventStreamProvider("open"), [$.Event]);
-$.HttpRequest_methods = $.HttpRequest.prototype;
+$._CustomEventStreamProvider__determineMouseWheelEventType = $.setRuntimeTypeInfo(new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure), [$.WheelEvent]);
 $.Window_methods = $.Window.prototype;
+$.HttpRequest_methods = $.HttpRequest.prototype;
 Isolate.makeConstantList = function(list) {
   list.immutable$list = true;
   list.fixed$length = true;
@@ -17708,12 +17754,11 @@ Isolate.makeConstantList = function(list) {
 };
 $.List_empty = Isolate.makeConstantList([]);
 $.JSNull_methods = $.JSNull.prototype;
-$.EventStreamProvider_error0 = $.setRuntimeTypeInfo(new $.EventStreamProvider("error"), [$.Event]);
-$._CustomEventStreamProvider__determineMouseWheelEventType = $.setRuntimeTypeInfo(new $._CustomEventStreamProvider($.Element__determineMouseWheelEventType$closure), [$.WheelEvent]);
-$.JSInt_methods = $.JSInt.prototype;
-$.EventStreamProvider_error = $.setRuntimeTypeInfo(new $.EventStreamProvider("error"), [$.ProgressEvent]);
-$.EventStreamProvider_keydown = $.setRuntimeTypeInfo(new $.EventStreamProvider("keydown"), [$.KeyboardEvent]);
 $.EventStreamProvider_message = $.setRuntimeTypeInfo(new $.EventStreamProvider("message"), [$.MessageEvent]);
+$.JSInt_methods = $.JSInt.prototype;
+$.EventStreamProvider_error0 = $.setRuntimeTypeInfo(new $.EventStreamProvider("error"), [$.ProgressEvent]);
+$.EventStreamProvider_keydown = $.setRuntimeTypeInfo(new $.EventStreamProvider("keydown"), [$.KeyboardEvent]);
+$.EventStreamProvider_error = $.setRuntimeTypeInfo(new $.EventStreamProvider("error"), [$.Event]);
 $.EventStreamProvider_touchcancel = $.setRuntimeTypeInfo(new $.EventStreamProvider("touchcancel"), [$.TouchEvent]);
 $.HtmlDocument_methods = $.HtmlDocument.prototype;
 $.EventStreamProvider_mousedown = $.setRuntimeTypeInfo(new $.EventStreamProvider("mousedown"), [$.MouseEvent]);
@@ -17725,7 +17770,6 @@ $.NodeList_methods = $.NodeList.prototype;
 $.EventStreamProvider_click = $.setRuntimeTypeInfo(new $.EventStreamProvider("click"), [$.MouseEvent]);
 $.JSNumber_methods = $.JSNumber.prototype;
 $.JSString_methods = $.JSString.prototype;
-$.EventStreamProvider_webkitpointerlockchange = $.setRuntimeTypeInfo(new $.EventStreamProvider("webkitpointerlockchange"), [$.Event]);
 $.C_JSUnknown = new $.JSUnknown();
 $.EventStreamProvider_webkitfullscreenchange = $.setRuntimeTypeInfo(new $.EventStreamProvider("webkitfullscreenchange"), [$.Event]);
 $.EventStreamProvider_webkitfullscreenerror = $.setRuntimeTypeInfo(new $.EventStreamProvider("webkitfullscreenerror"), [$.Event]);
@@ -17733,6 +17777,7 @@ $.EventStreamProvider_load0 = $.setRuntimeTypeInfo(new $.EventStreamProvider("lo
 $.EventStreamProvider_touchstart = $.setRuntimeTypeInfo(new $.EventStreamProvider("touchstart"), [$.TouchEvent]);
 $.EventStreamProvider_webglcontextlost = $.setRuntimeTypeInfo(new $.EventStreamProvider("webglcontextlost"), [$.ContextEvent]);
 $.EventStreamProvider_load = $.setRuntimeTypeInfo(new $.EventStreamProvider("load"), [$.ProgressEvent]);
+$.EventStreamProvider_webkitpointerlockchange = $.setRuntimeTypeInfo(new $.EventStreamProvider("webkitpointerlockchange"), [$.Event]);
 $.C_CloseToken = new $.CloseToken();
 $.EventStreamProvider_close = $.setRuntimeTypeInfo(new $.EventStreamProvider("close"), [$.CloseEvent]);
 $.EventStreamProvider_mouseup = $.setRuntimeTypeInfo(new $.EventStreamProvider("mouseup"), [$.MouseEvent]);
@@ -17762,6 +17807,7 @@ $.picker = null;
 $.fullRateFrames = 0;
 $.stats = null;
 $._ws = null;
+$._dispatcher = null;
 $.$$dom_addEventListener$3$x = function(receiver, a0, a1, a2) {
   return $.getInterceptor$x(receiver).$$dom_addEventListener$3(receiver, a0, a1, a2);
 };

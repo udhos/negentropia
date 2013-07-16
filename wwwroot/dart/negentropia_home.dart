@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:web_gl';
 import 'dart:math' as math;
 import 'dart:typed_data';
+import 'dart:json';
 
 import 'package:stats/stats.dart';
 import 'package:vector_math/vector_math.dart';
@@ -89,6 +90,44 @@ void initShowPicking() {
   control.append(label);
 }
 
+void loadDemo(RenderingContext gl) {
+  print("loading demo");
+  
+  initSquares(gl);
+  initShips(gl);
+  initSkybox(gl);
+  initPicker(gl);
+}
+
+void dispatcher(RenderingContext gl, int code, String data) {
+  
+  switch (code) {
+    case CM_CODE_INFO:
+      print("dispatcher: server sent info: $data");
+      if (data.startsWith("welcome")) {
+        // test echo loop thru server
+        var m = new Map();
+        m["Code"] = CM_CODE_ECHO;
+        m["Data"] = "hi there";
+        wsSend(stringify(m));        
+      }
+      break;
+      
+    case CM_CODE_ZONE:
+      String zoneInfo = data;
+      print("dispatcher: zoneInfo=$zoneInfo");
+      if (zoneInfo == "demo") {
+        loadDemo(gl);
+        return;
+      }
+      print("dispatcher: FIXME WRITEME load non-demo zone: zoneInfo=$zoneInfo");
+      break;
+      
+    default:
+      print("dispatcher: unknown code=$code");
+  }  
+}
+
 RenderingContext boot() {
   canvas = new CanvasElement();
   assert(canvas != null);
@@ -124,9 +163,13 @@ RenderingContext boot() {
   assert(wsUri != null);
   
   var statusElem = query("#ws_status");
-  assert(statusElem != null);  
+  assert(statusElem != null);
+  
+  void dispatch(int code, String data) {
+    dispatcher(gl, code, data);
+  }
 
-  initWebSocket(wsUri, sid, 1, statusElem);
+  initWebSocket(wsUri, sid, 1, statusElem, dispatch);
   
   initStats();
   
@@ -236,13 +279,8 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   textureTable = new Map<String,Texture>(); // drop existing texture table
 
   programList.forEach((ShaderProgram p) => p.initContext(gl, textureTable));
-  
-  requestZone();
-  
-  initSquares(gl);
-  initShips(gl);
-  initSkybox(gl);
-  initPicker(gl);
+
+  requestZone();  
   
   gl.clearColor(0.5, 0.5, 0.5, 1.0);       // clear color
   gl.enable(RenderingContext.DEPTH_TEST);  // enable depth testing
