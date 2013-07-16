@@ -11,6 +11,8 @@ const CM_CODE_AUTH  = 2; // client->server: let me in
 const CM_CODE_ECHO  = 3; // client->server: please echo this
 const CM_CODE_KILL  = 4; // server->client: do not attempt reconnect on same session
 const CM_CODE_REQZ  = 5; // client->server: please send current zone
+const CM_CODE_ZONE  = 6; // server->client: current zone
+
 
 WebSocket _ws;
 ListQueue<String> _wsQueue = new ListQueue<String>();
@@ -144,7 +146,15 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status) {
       
       return;
     }
-    
+
+    if (msg["Code"] == CM_CODE_ZONE) {
+      
+      String zoneInfo = msg["Data"];
+      print("zoneInfo: $zoneInfo");
+      
+      return;
+    }
+
   });
 }
 

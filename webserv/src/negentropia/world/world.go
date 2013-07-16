@@ -62,6 +62,7 @@ func auth(ws *websocket.Conn) *server.Player {
 	return &server.Player{sid, session.ProfileEmail, ws, make(chan *server.ClientMsg), make(chan int)}
 }
 
+// read from player channels and write to player socket
 func sender(p *server.Player) {
 	
 	LOOP:
@@ -91,6 +92,7 @@ func sender(p *server.Player) {
 	p.Websocket.Close()	
 }
 
+// read from player socket and write to player input channel
 func receiver(p *server.Player) {
 
 	for {
@@ -121,8 +123,8 @@ func dispatch(ws *websocket.Conn) {
 	server.PlayerAddCh <- newPlayer
 	defer func() { server.PlayerDelCh <- newPlayer  }()
 	
-	go sender(newPlayer)
-	receiver(newPlayer)
+	go sender(newPlayer)  // read from player channels and write to player socket
+	receiver(newPlayer)   // read from player socket and write to player input channel
 }
 
 func serve(addr string) {

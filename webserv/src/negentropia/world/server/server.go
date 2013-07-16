@@ -2,10 +2,11 @@ package server
 
 import (
 	"log"
+	"fmt"
 
 	"code.google.com/p/go.net/websocket"
 	
-	//"negentropia/webserv/store"
+	"negentropia/webserv/store"
 )
 
 const (
@@ -14,6 +15,8 @@ const (
 	CM_CODE_AUTH  = 2 // client->server: let me in
 	CM_CODE_ECHO  = 3 // client->server: please echo this
 	CM_CODE_KILL  = 4 // server->client: do not attempt reconnect on same session
+    CM_CODE_REQZ  = 5 // client->server: please send current zone	
+    CM_CODE_ZONE  = 6 // server->client: current zone
 )
 
 type ClientMsg struct {
@@ -27,6 +30,14 @@ type Player struct {
 	Websocket    *websocket.Conn
 	SendToPlayer  chan *ClientMsg
 	Quit          chan int
+}
+
+func (p *Player) getLocation() string {
+	var location string
+	if location = store.QueryField(p.Email, "location"); location == "" {
+		return "demo"
+	}
+	return location
 }
 
 type PlayerMsg struct {
@@ -59,8 +70,15 @@ func serve() {
 func input(p *Player, m *ClientMsg) {
 	log.Printf("server.input: %s: %q", p.Email, m)
 	
-	if (m.Code == CM_CODE_ECHO) {
+	switch m.Code {
+	case CM_CODE_ECHO:
 		p.SendToPlayer <- &ClientMsg{CM_CODE_INFO, "echo: " + m.Data}
+	case CM_CODE_REQZ:
+		log.Printf("server.input: CM_CODE_REQZ FIXME WRITEME");
+		p.SendToPlayer <- &ClientMsg{CM_CODE_ZONE, p.getLocation()}
+	default:
+		log.Printf("server.input: unknown code=%d", m.Code);
+		p.SendToPlayer <- &ClientMsg{CM_CODE_INFO, fmt.Sprintf("unknown code=%d", m.Code)}
 	}
 }
 
