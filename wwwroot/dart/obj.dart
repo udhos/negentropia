@@ -256,11 +256,13 @@ class Obj {
       }
     }
 
+    /*
     print("Obj.fromString: objects = ${_partTable.length}");
     print("Obj.fromString: vertCoord.length = ${vertCoord.length}");
     print("Obj.fromString: textCoord.length = ${textCoord.length}");
     print("Obj.fromString: normCoord.length = ${normCoord.length}");
     print("Obj.fromString: mtllib = $mtllib");
+    */
   }
 }
 

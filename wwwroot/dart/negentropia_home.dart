@@ -91,8 +91,6 @@ void initShowPicking() {
 }
 
 void loadDemo(RenderingContext gl) {
-  print("loading demo");
-  
   initSquares(gl);
   initShips(gl);
   initSkybox(gl);

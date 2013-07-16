@@ -70,9 +70,7 @@ class SkyboxModel extends Model {
     ImageElement image = new ImageElement();
 
     void handleDone(Event e) {
-      print("addCubemapFace: handleDone: loaded image from URL: $URL");
-      
-      //RenderingContext gl = program.gl;
+      //print("addCubemapFace: handleDone: loaded image from URL: $URL");
       
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);      
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP, RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);

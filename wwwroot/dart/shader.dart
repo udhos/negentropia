@@ -20,7 +20,7 @@ part 'shader_tex.dart';
 part 'picker.dart';
 
 class ShaderProgram {
-  
+    
   Program program;
   RenderingContext gl;
   int a_Position;
@@ -43,8 +43,8 @@ class ShaderProgram {
     print("ShaderProgram: locations ready");      
   }
   
-  void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
-    print("Program.fetch: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
+  void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, String fragmentShaderURL) {
+    //print("Program.fetch: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
     
     Shader compileShader(String shaderURL, String shaderSource, int shaderType) {
       Shader shader = gl.createShader(shaderType);
@@ -101,28 +101,35 @@ class ShaderProgram {
       shaderReady = true;
     }
     
-    void fetchVertexShader() {      
+    void fetchVertexShader() {
+
+      String url = vertexShaderURL;
+      
       var requestVert = new HttpRequest();
-      requestVert.open("GET", vertexShaderURL);
+      requestVert.open("GET", url);
       requestVert.onLoad.listen((ProgressEvent e) {
         String response = requestVert.responseText;
         if (requestVert.status != 200) {
-          print("vertexShader: error: [$response]");
+          print("vertexShader: url=$url: error: [$response]");
           return;
         }
-        //print("vertexShader: loaded: [$response]");
-        vertexShader = compileShader(vertexShaderURL, response, RenderingContext.VERTEX_SHADER);
+        print("vertexShader: url=$url: loaded");
+        vertexShader = compileShader(url, response, RenderingContext.VERTEX_SHADER);
         tryLink();
       });
       requestVert.onError.listen((e) {
         print("vertexShader: error: [$e]");
       });
       requestVert.send();
+      print("vertexShader: url=$url: sent, waiting");
     }
 
     void fetchFragmentShader() {
+      
+      String url = fragmentShaderURL;
+      
       var requestFrag = new HttpRequest();
-      requestFrag.open("GET", fragmentShaderURL);
+      requestFrag.open("GET", url);
       requestFrag.onLoad.listen((ProgressEvent e) {
         String response = requestFrag.responseText;
         if (requestFrag.status != 200) {
@@ -130,7 +137,7 @@ class ShaderProgram {
           return;
         }
         //print("fragmentShader: loaded: [$response]");
-        fragmentShader = compileShader(fragmentShaderURL, response, RenderingContext.FRAGMENT_SHADER);
+        fragmentShader = compileShader(url, response, RenderingContext.FRAGMENT_SHADER);
         tryLink();      
       });
       requestFrag.onError.listen((e) {
@@ -141,19 +148,14 @@ class ShaderProgram {
     
     vertexShader = shaderCache[vertexShaderURL];
     if (vertexShader == null) {
-      print("vertexShader: " + vertexShaderURL + ": cache MISS");
+      //print("vertexShader: " + vertexShaderURL + ": cache MISS");
       fetchVertexShader();
     }
-    else {
-      print("vertexShader: " + vertexShaderURL + ": cache HIT");      
-    }
     
+    fragmentShader = shaderCache[fragmentShaderURL];
     if (fragmentShader == null) {
-      print("fragmentShader: " + fragmentShaderURL + ": cache MISS");
+      //print("fragmentShader: " + fragmentShaderURL + ": cache MISS");
       fetchFragmentShader();
-    }
-    else {
-      print("fragmentShader: " + fragmentShaderURL + ": cache HIT");
     }
     
     tryLink(); // needed when both vertexShader and fragmentShader are found in cache

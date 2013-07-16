@@ -24,15 +24,15 @@ void initDebugLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHtm
   canvas.onWebGlContextLost.listen(onContextLost);
   canvas.onWebGlContextRestored.listen(onContextRestored);
   
-  print("initDebugLostContext: webglcontextlost trapped");
-  print("initDebugLostContext: webglcontextrestored trapped");
+  //print("initDebugLostContext: webglcontextlost trapped");
+  //print("initDebugLostContext: webglcontextrestored trapped");
 
   LoseContext ext = gl.getExtension('WEBGL_lose_context');
   if (ext == null) {
     print("WEBGL_lose_context: NOT AVAILABLE");
     return;
   }
-  print("WEBGL_lose_context: available");
+  //print("WEBGL_lose_context: available");
 
   DivElement control = query("#control");
   assert(control != null);

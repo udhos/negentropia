@@ -13911,14 +13911,11 @@ initDebugLostContext: function(gl, canvas, gameLoop, initContextCall) {
   t1 = $.getInterceptor$x(canvas);
   t1.get$onWebGlContextLost(canvas).listen$1(new $.initDebugLostContext_onContextLost(gameLoop));
   t1.get$onWebGlContextRestored(canvas).listen$1(new $.initDebugLostContext_onContextRestored(gl, gameLoop, initContextCall));
-  $.print("initDebugLostContext: webglcontextlost trapped");
-  $.print("initDebugLostContext: webglcontextrestored trapped");
   ext = $.interceptedTypeCheck($.getExtension$1$x(gl, "WEBGL_lose_context"), "$isLoseContext");
   if (ext == null) {
     $.print("WEBGL_lose_context: NOT AVAILABLE");
     return;
   }
-  $.print("WEBGL_lose_context: available");
   control = $.interceptedTypeCheck($.query("#control"), "$isDivElement");
   $.assertHelper(control != null);
   loseContextButton = $.InputElement_InputElement(null);
@@ -14049,7 +14046,6 @@ initShowPicking: function() {
 },
 
 loadDemo: function(gl) {
-  $.print("loading demo");
   $.initSquares(gl);
   $.initShips(gl);
   $.initSkybox(gl);
@@ -14375,12 +14371,6 @@ Obj: {"": "Object;_partTable<,vertCoord<,textCoord<,normCoord,indices<,mtllib<",
         $.JSArray_methods.add$1(t1, 0);
       }
     }
-    t2 = this._partTable;
-    $.print("Obj.fromString: objects = " + t2.get$length(t2));
-    $.print("Obj.fromString: vertCoord.length = " + this.vertCoord.length);
-    $.print("Obj.fromString: textCoord.length = " + t1.length);
-    $.print("Obj.fromString: normCoord.length = " + this.normCoord.length);
-    $.print("Obj.fromString: mtllib = " + this.mtllib);
   },
   $isObj: true
 },
@@ -15301,25 +15291,20 @@ ShaderProgram: {"": "Object;program,gl<,a_Position,u_MV,u_P,shaderReady,modelLis
     $.print("ShaderProgram: locations ready");
   },
   fetch$3: function(shaderCache, vertexShaderURL, fragmentShaderURL) {
-    var t1, t2, t3;
+    var t1, t2, t3, t4;
     t1 = {};
     $.interceptedTypeCheck(shaderCache, "$isMap");
-    $.print("Program.fetch: vsUrl=" + vertexShaderURL + " fsURL=" + fragmentShaderURL);
     t2 = new $.ShaderProgram_fetch_compileShader(this, shaderCache);
     t1.vertexShader_0 = null;
     t1.fragmentShader_1 = null;
     t3 = new $.ShaderProgram_fetch_tryLink(t1, this);
-    t1.vertexShader_0 = $.interceptedTypeCheck($.$index$asx(shaderCache, vertexShaderURL), "$isShader");
-    if (t1.vertexShader_0 == null) {
-      $.print($.JSString_methods.$add($.JSString_methods.$add("vertexShader: ", vertexShaderURL), ": cache MISS"));
+    t4 = $.getInterceptor$asx(shaderCache);
+    t1.vertexShader_0 = $.interceptedTypeCheck(t4.$index(shaderCache, vertexShaderURL), "$isShader");
+    if (t1.vertexShader_0 == null)
       new $.ShaderProgram_fetch_fetchVertexShader(t1, vertexShaderURL, t2, t3).call$0();
-    } else
-      $.print($.JSString_methods.$add($.JSString_methods.$add("vertexShader: ", vertexShaderURL), ": cache HIT"));
-    if (t1.fragmentShader_1 == null) {
-      $.print($.JSString_methods.$add($.JSString_methods.$add("fragmentShader: ", fragmentShaderURL), ": cache MISS"));
+    t1.fragmentShader_1 = $.interceptedTypeCheck(t4.$index(shaderCache, fragmentShaderURL), "$isShader");
+    if (t1.fragmentShader_1 == null)
       new $.ShaderProgram_fetch_fetchFragmentShader(t1, fragmentShaderURL, t2, t3).call$0();
-    } else
-      $.print($.JSString_methods.$add($.JSString_methods.$add("fragmentShader: ", fragmentShaderURL), ": cache HIT"));
     t3.call$0();
   },
   addModel$1: function(m) {
@@ -15403,13 +15388,14 @@ ShaderProgram_fetch_tryLink: {"": "Closure;box_0,this_3",
 
 ShaderProgram_fetch_fetchVertexShader: {"": "Closure;box_0,vertexShaderURL_4,compileShader_5,tryLink_6",
   call$0: function() {
-    var requestVert, t1;
+    var url, requestVert;
+    url = this.vertexShaderURL_4;
     requestVert = $.HttpRequest_HttpRequest();
-    t1 = this.vertexShaderURL_4;
-    $.HttpRequest_methods.open$2(requestVert, "GET", t1);
-    $.HttpRequest_methods.get$onLoad(requestVert).listen$1(new $.ShaderProgram_fetch_fetchVertexShader_closure(this.box_0, t1, this.compileShader_5, this.tryLink_6, requestVert));
+    $.HttpRequest_methods.open$2(requestVert, "GET", url);
+    $.HttpRequest_methods.get$onLoad(requestVert).listen$1(new $.ShaderProgram_fetch_fetchVertexShader_closure(this.box_0, this.compileShader_5, this.tryLink_6, url, requestVert));
     $.HttpRequest_methods.get$onError(requestVert).listen$1(new $.ShaderProgram_fetch_fetchVertexShader_closure0());
     requestVert.send();
+    $.print("vertexShader: url=" + url + ": sent, waiting");
   },
   $isFunction: true,
   $asObject: null,
@@ -15418,18 +15404,20 @@ ShaderProgram_fetch_fetchVertexShader: {"": "Closure;box_0,vertexShaderURL_4,com
   $is_Object_: true
 },
 
-ShaderProgram_fetch_fetchVertexShader_closure: {"": "Closure;box_0,vertexShaderURL_7,compileShader_8,tryLink_9,requestVert_10",
+ShaderProgram_fetch_fetchVertexShader_closure: {"": "Closure;box_0,compileShader_7,tryLink_8,url_9,requestVert_10",
   call$1: function(e) {
     var t1, response;
     $.interceptedTypeCheck(e, "$isProgressEvent");
     t1 = this.requestVert_10;
     response = t1.responseText;
     if (t1.status !== 200) {
-      $.print("vertexShader: error: [" + response + "]");
+      $.print("vertexShader: url=" + this.url_9 + ": error: [" + response + "]");
       return;
     }
-    this.box_0.vertexShader_0 = $.interceptedTypeCheck(this.compileShader_8.call$3(this.vertexShaderURL_7, response, 35633), "$isShader");
-    this.tryLink_9.call$0();
+    t1 = this.url_9;
+    $.print("vertexShader: url=" + t1 + ": loaded");
+    this.box_0.vertexShader_0 = $.interceptedTypeCheck(this.compileShader_7.call$3(t1, response, 35633), "$isShader");
+    this.tryLink_8.call$0();
   },
   $isFunction: true,
   $asObject: null,
@@ -15447,11 +15435,11 @@ ShaderProgram_fetch_fetchVertexShader_closure0: {"": "Closure;",
 
 ShaderProgram_fetch_fetchFragmentShader: {"": "Closure;box_0,fragmentShaderURL_11,compileShader_12,tryLink_13",
   call$0: function() {
-    var requestFrag, t1;
+    var url, requestFrag;
+    url = this.fragmentShaderURL_11;
     requestFrag = $.HttpRequest_HttpRequest();
-    t1 = this.fragmentShaderURL_11;
-    $.HttpRequest_methods.open$2(requestFrag, "GET", t1);
-    $.HttpRequest_methods.get$onLoad(requestFrag).listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_closure(this.box_0, t1, this.compileShader_12, this.tryLink_13, requestFrag));
+    $.HttpRequest_methods.open$2(requestFrag, "GET", url);
+    $.HttpRequest_methods.get$onLoad(requestFrag).listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_closure(this.box_0, this.compileShader_12, this.tryLink_13, url, requestFrag));
     $.HttpRequest_methods.get$onError(requestFrag).listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_closure0());
     requestFrag.send();
   },
@@ -15462,7 +15450,7 @@ ShaderProgram_fetch_fetchFragmentShader: {"": "Closure;box_0,fragmentShaderURL_1
   $is_Object_: true
 },
 
-ShaderProgram_fetch_fetchFragmentShader_closure: {"": "Closure;box_0,fragmentShaderURL_14,compileShader_15,tryLink_16,requestFrag_17",
+ShaderProgram_fetch_fetchFragmentShader_closure: {"": "Closure;box_0,compileShader_14,tryLink_15,url_16,requestFrag_17",
   call$1: function(e) {
     var t1, response;
     $.interceptedTypeCheck(e, "$isProgressEvent");
@@ -15472,8 +15460,8 @@ ShaderProgram_fetch_fetchFragmentShader_closure: {"": "Closure;box_0,fragmentSha
       $.print("fragmentShader: error: [" + response + "]");
       return;
     }
-    this.box_0.fragmentShader_1 = $.interceptedTypeCheck(this.compileShader_15.call$3(this.fragmentShaderURL_14, response, 35632), "$isShader");
-    this.tryLink_16.call$0();
+    this.box_0.fragmentShader_1 = $.interceptedTypeCheck(this.compileShader_14.call$3(this.url_16, response, 35632), "$isShader");
+    this.tryLink_15.call$0();
   },
   $isFunction: true,
   $asObject: null,
@@ -15921,7 +15909,7 @@ SkyboxModel: {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,
     var image, t1;
     image = $.ImageElement_ImageElement(null, null, null);
     t1 = $.getInterceptor$x(image);
-    t1.get$onLoad(image).listen$1(new $.SkyboxModel_addCubemapFace_handleDone(this, gl, face, URL, image));
+    t1.get$onLoad(image).listen$1(new $.SkyboxModel_addCubemapFace_handleDone(this, gl, face, image));
     t1.get$onError(image).listen$1(new $.SkyboxModel_addCubemapFace_handleError(URL));
     image.src = URL;
   },
@@ -15939,17 +15927,16 @@ SkyboxModel: {"": "Model;cubemapTexture<,vertexPositionBuffer,vertexIndexBuffer,
   $isSkyboxModel: true
 },
 
-SkyboxModel_addCubemapFace_handleDone: {"": "Closure;this_0,gl_1,face_2,URL_3,image_4",
+SkyboxModel_addCubemapFace_handleDone: {"": "Closure;this_0,gl_1,face_2,image_3",
   call$1: function(e) {
     var t1, t2;
     $.interceptedTypeCheck(e, "$isEvent");
-    $.print("addCubemapFace: handleDone: loaded image from URL: " + this.URL_3);
     t1 = this.gl_1;
     t2 = $.getInterceptor$x(t1);
     t2.bindTexture$2(t1, 34067, this.this_0.get$cubemapTexture());
     t2.texParameteri$3(t1, 34067, 10240, 9728);
     t2.texParameteri$3(t1, 34067, 10241, 9728);
-    t2.texImage2DImage$6(t1, this.face_2, 0, 6408, 6408, 5121, this.image_4);
+    t2.texImage2DImage$6(t1, this.face_2, 0, 6408, 6408, 5121, this.image_3);
     t2.texParameteri$3(t1, 34067, 10242, 33071);
     t2.texParameteri$3(t1, 34067, 10243, 33071);
     t2.bindTexture$2(t1, 34067, null);
@@ -15959,10 +15946,10 @@ SkyboxModel_addCubemapFace_handleDone: {"": "Closure;this_0,gl_1,face_2,URL_3,im
   $signature: function () { return {func: "void__Event", void: true, args: [$.Event]}; }
 },
 
-SkyboxModel_addCubemapFace_handleError: {"": "Closure;URL_5",
+SkyboxModel_addCubemapFace_handleError: {"": "Closure;URL_4",
   call$1: function(e) {
     $.interceptedTypeCheck(e, "$isEvent");
-    $.print("addCubemapFace: handleError: failure loading image from URL: " + this.URL_5 + ": " + $.S(e));
+    $.print("addCubemapFace: handleError: failure loading image from URL: " + this.URL_4 + ": " + $.S(e));
   },
   $isFunction: true,
   $asObject: null,
@@ -16079,10 +16066,8 @@ TextureInfo: {"": "Object;textureName<,texture<,temporaryColor",
     t1 = this.textureName;
     if (t1 != null) {
       this.texture = $.interceptedTypeCheck($.$index$asx(textureTable, t1), "$isTexture");
-      if (this.texture != null) {
-        $.print("TextureInfo: texture table HIT: " + t1);
+      if (this.texture != null)
         return;
-      }
     }
     this.createTexture$2(this, gl, textureTable);
   },
