@@ -50,10 +50,10 @@ class ShaderProgram {
       Shader shader = gl.createShader(shaderType);
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
-      //bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
-      bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS).toString() == "true";
-      print("DEBUG gl.getShaderParameter: shader=$shaderURL bool=${parameter is bool} parameter=$parameter");
-      print("FIXME work-around https://code.google.com/p/dart/issues/detail?id=11487");
+      bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
+      //bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS).toString() == "true";
+      //print("DEBUG gl.getShaderParameter: shader=$shaderURL bool=${parameter is bool} parameter=$parameter");
+      //print("FIXME work-around https://code.google.com/p/dart/issues/detail?id=11487");
       if (!parameter) {
         String infoLog = gl.getShaderInfoLog(shader);
         print("compileShader: compilation FAILURE: $shaderURL: info=$infoLog");
@@ -82,7 +82,7 @@ class ShaderProgram {
       gl.attachShader(p, fragmentShader);
       gl.linkProgram(p);
       bool parameter = gl.getProgramParameter(p, RenderingContext.LINK_STATUS);
-      print("DEBUG gl.getProgramParameter: bool=${parameter is bool} parameter=$parameter");
+      //print("DEBUG gl.getProgramParameter: bool=${parameter is bool} parameter=$parameter");
       if (!parameter) {
         String infoLog = gl.getProgramInfoLog(p);
         print("tryLink: shader program link FAILURE: $infoLog");

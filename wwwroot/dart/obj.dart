@@ -27,6 +27,49 @@ class Obj {
   List<int> indices = new List<int>();
   String mtllib;
   
+  void trimTable(String url) {
+    // remove empty objects from _partTable
+    
+    List<String> emptyList = new List<String>(); // create a copy to avoid concurrent modifications
+    _partTable.keys.forEach((String name) { 
+      if (_partTable[name].indexListSize < 1) {
+        emptyList.add(name);
+        print("OBJ: deleting empty object=$name loaded from url=$url");
+      } 
+    });
+    emptyList.forEach((String name) => _partTable.remove(name)); // remove selected keys
+    
+    /*
+    _partTable.keys
+      .where((name) { // where: filter keys
+        bool empty = _partTable[name].indexListSize < 1;
+        if (empty) {
+          print("OBJ: deleting empty object=$name loaded from url=$url");
+        }       
+        return empty;
+      })
+      .toList() // create a copy to avoid concurrent modifications
+      .forEach(_partTable.remove); // remove selected keys
+      */
+    
+    /*
+    Iterable<String> keys = _partTable.keys;
+    print("DEBUG got keys");
+    Iterable<String> filtered = keys.where((name) { // where: filter keys
+      bool empty = _partTable[name].indexListSize < 1;
+      if (empty) {
+        print("OBJ: deleting empty object=$name loaded from url=$url");
+      }       
+      return empty;
+    });
+    print("DEBUG got filtered");
+    List<String> copy = filtered.toList();
+    print("DEBUG got copy");
+    copy.forEach(_partTable.remove);
+    print("DEBUG got result");
+    */    
+  }
+  
   Obj.fromString(String url, String str) {
     
     Map<String,int> indexTable = new Map<String,int>();
@@ -202,45 +245,8 @@ class Obj {
     
     lines.forEach((String line) => parseLine(line));
     
-    // remove empty objects
-    /*
-    List<String> emptyList = new List<String>(); // create a copy to avoid concurrent modifications
-    _partTable.keys.forEach((String name) { 
-      if (_partTable[name].indexListSize < 1) {
-        emptyList.add(name);
-        print("OBJ: deleting empty object=$name loaded from url=$url");
-      } 
-    });
-    emptyList.forEach((String name) => _partTable.remove(name)); // remove selected keys
-    */   
+    trimTable(url); // remove empty objects from _partTable
     
-    /*
-    _partTable.keys
-      .where((name) { // where: filter keys
-        bool empty = _partTable[name].indexListSize < 1;
-        if (empty) {
-          print("OBJ: deleting empty object=$name loaded from url=$url");
-        }       
-        return empty;
-      })
-      .toList() // create a copy to avoid concurrent modifications
-      .forEach(_partTable.remove); // remove selected keys
-      */
-    Iterable<String> keys = _partTable.keys;
-    print("DEBUG got keys");
-    Iterable<String> filtered = keys.where((name) { // where: filter keys
-      bool empty = _partTable[name].indexListSize < 1;
-      if (empty) {
-        print("OBJ: deleting empty object=$name loaded from url=$url");
-      }       
-      return empty;
-    });
-    print("DEBUG got filtered");
-    List<String> copy = filtered.toList();
-    print("DEBUG got copy");
-    copy.forEach(_partTable.remove);
-    print("DEBUG got result");
-
     // FIXME
     if (textCoord.length == 0) {
       print("OBJ: FIXME: adding ${indices.length} virtual texture coordinates");
