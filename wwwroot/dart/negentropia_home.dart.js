@@ -2798,7 +2798,7 @@ $$.RenderingContext = {"": "CanvasRenderingContext;",
     return receiver.depthRange(zNear, zFar);
   },
   drawElements$4: function(receiver, mode, count, type, offset) {
-    return receiver.drawElements(mode, count, type, offset);
+    return receiver.drawElements(mode, count, type, $.intTypeCheck(offset));
   },
   enable$1: function(receiver, cap) {
     return receiver.enable(cap);
@@ -3638,7 +3638,7 @@ $$.Bound__onPointerLockChange_PointerLock = {"": "BoundClosure;_self,_target,_re
   $signature: function () { return {func: "void__Event", void: true, args: [$.Event]}; }
 };
 
-$$.Closure$_processWorkerMessage = {"": "Closure;call$2,$name", $is_dynamic__int_dynamic: true, $is_void__GameLoop_GameLoopTouch: true, $is_void__int_String: true, $is_void__dynamic_SendPort: true, $is_dynamic__dynamic_dynamic: true, $is_void__K_V: true, $is_void__K_V0: true, $is_void__RenderingContext_GameLoopHtml: true, $is_void__String_String: true};
+$$.Closure$_processWorkerMessage = {"": "Closure;call$2,$name", $is_void__K_V: true, $is_dynamic__int_dynamic: true, $is_void__GameLoop_GameLoopTouch: true, $is_void__int_String: true, $is_void__dynamic_SendPort: true, $is_dynamic__dynamic_dynamic: true, $is_void__K_V0: true, $is_void__RenderingContext_GameLoopHtml: true, $is_void__String_String: true};
 
 $$.Closure$_throwFormatException = {"": "Closure;call$1,$name", $signature: function () { return {func: "dynamic__String", args: [$.JSString]}; }};
 
@@ -3648,7 +3648,7 @@ $$.Closure$toStringWrapper = {"": "Closure;call$0,$name", $is_void_: true, $is_d
 
 $$.Closure$invokeClosure = {"": "Closure;call$5,$name"};
 
-$$.Closure$isAssignable = {"": "Closure;call$2,$name", $is_dynamic__int_dynamic: true, $is_bool__DigitalButtonEvent_bool: true, $is_void__GameLoop_GameLoopTouch: true, $is_void__int_String: true, $is_void__dynamic_SendPort: true, $is_dynamic__dynamic_dynamic: true, $is_void__K_V: true, $is_void__K_V0: true, $is_void__RenderingContext_GameLoopHtml: true, $is_void__String_String: true};
+$$.Closure$isAssignable = {"": "Closure;call$2,$name", $is_void__K_V: true, $is_dynamic__int_dynamic: true, $is_bool__DigitalButtonEvent_bool: true, $is_void__GameLoop_GameLoopTouch: true, $is_void__int_String: true, $is_void__dynamic_SendPort: true, $is_dynamic__dynamic_dynamic: true, $is_void__K_V0: true, $is_void__RenderingContext_GameLoopHtml: true, $is_void__String_String: true};
 
 $$.Closure$typeNameInChrome = {"": "Closure;call$1,$name", $signature: function () { return {func: "String__dynamic", ret: $.JSString, args: [null]}; }};
 
@@ -4623,13 +4623,13 @@ _BaseSendPort_call_closure: {"": "Closure;completer_0,port_1",
   },
   $isFunction: true,
   $asObject: null,
+  $is_void__K_V: true,
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
   $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
   $is_dynamic__dynamic_dynamic: true,
-  $is_void__K_V: true,
   $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
@@ -5104,13 +5104,13 @@ _Copier_visitMap_closure: {"": "Closure;box_0,this_1",
   },
   $isFunction: true,
   $asObject: null,
+  $is_void__K_V: true,
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
   $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
   $is_dynamic__dynamic_dynamic: true,
-  $is_void__K_V: true,
   $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
@@ -7596,13 +7596,13 @@ ToString__emitPair_closure: {"": "Closure;box_0,result_1,visiting_2",
   },
   $isFunction: true,
   $asObject: null,
+  $is_void__K_V: true,
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
   $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
   $is_dynamic__dynamic_dynamic: true,
-  $is_void__K_V: true,
   $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
@@ -11058,13 +11058,13 @@ HttpRequest_request_closure: {"": "Closure;xhr_0",
   },
   $isFunction: true,
   $asObject: null,
+  $is_void__K_V: true,
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
   $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
   $is_dynamic__dynamic_dynamic: true,
-  $is_void__K_V: true,
   $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
@@ -11174,13 +11174,13 @@ Storage_keys_closure: {"": "Closure;keys_0",
   },
   $isFunction: true,
   $asObject: null,
+  $is_void__K_V: true,
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
   $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
   $is_dynamic__dynamic_dynamic: true,
-  $is_void__K_V: true,
   $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
@@ -11192,13 +11192,13 @@ Storage_values_closure: {"": "Closure;values_0",
   },
   $isFunction: true,
   $asObject: null,
+  $is_void__K_V: true,
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
   $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
   $is_dynamic__dynamic_dynamic: true,
-  $is_void__K_V: true,
   $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
@@ -11708,13 +11708,13 @@ _convertJsonToDart_closure: {"": "Closure;",
   },
   $isFunction: true,
   $asObject: null,
+  $is_void__K_V: true,
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
   $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
   $is_dynamic__dynamic_dynamic: true,
-  $is_void__K_V: true,
   $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
@@ -13450,13 +13450,13 @@ GameLoopTouchSet__verifyTouchList_closure: {"": "Closure;this_0,touches_1",
   },
   $isFunction: true,
   $asObject: null,
+  $is_void__K_V: true,
   $is_dynamic__int_dynamic: true,
   $is_bool__DigitalButtonEvent_bool: true,
   $is_void__GameLoop_GameLoopTouch: true,
   $is_void__int_String: true,
   $is_void__dynamic_SendPort: true,
   $is_dynamic__dynamic_dynamic: true,
-  $is_void__K_V: true,
   $is_void__K_V0: true,
   $is_void__RenderingContext_GameLoopHtml: true,
   $is_void__String_String: true
@@ -14009,12 +14009,10 @@ main_closure0: {"": "Closure;gl_1",
 
 initGL: function(canvas) {
   var gl;
-  $.print("WebGL: initializing");
+  $.print("initGL: FIXME: ERASEME: preserveDrawingBuffer: true");
   gl = $.getContext3d$1$preserveDrawingBuffer$x(canvas, true);
-  if (gl != null) {
-    $.print("WebGL: initialized");
+  if (gl != null)
     return gl;
-  }
   $.print("WebGL: initialization failure");
   return;
 },
@@ -14089,7 +14087,6 @@ boot: function() {
   $.assertHelper(canvasbox != null);
   t1 = $.getInterceptor$x(canvasbox);
   t1.append$1(canvasbox, $.canvas);
-  $.print("canvas '" + $.canvas.id + "' created: width=" + $.S($.canvas.width) + " height=" + $.S($.canvas.height));
   gl = $.initGL($.canvas);
   if (gl == null) {
     $.remove$0$ax($.canvas);
@@ -14106,7 +14103,6 @@ boot: function() {
   $.initShowPicking();
   sid = $.Cookie_getCookie("sid");
   $.assertHelper(sid != null);
-  $.print("session id sid=" + sid);
   wsUri = $.query("#wsUri").textContent;
   $.assertHelper(wsUri != null);
   statusElem = $.query("#ws_status");
@@ -14319,8 +14315,6 @@ main: function() {
   }
   gameLoop = $.GameLoopHtml$($.canvas);
   gameLoop.get$pointerLock().lockOnClick = false;
-  $.print("gameLoop lockOnClick = " + gameLoop.get$pointerLock().lockOnClick);
-  $.print("gameLoop updateStep = " + $.S(gameLoop.updateTimeStep) + " seconds");
   if ($.debugLostContext)
     $.initDebugLostContext(gl, $.canvas, gameLoop, $.initContext$closure);
   gameLoop.onUpdate = $.assertFunctionSubtype(new $.main_closure(gl), "void__GameLoop");
@@ -15200,7 +15194,6 @@ PickerShader: {"": "ShaderProgram;u_Color,programList,instanceList<,framebuffer,
   getLocations$0: function() {
     $.ShaderProgram.prototype.getLocations$0.call(this);
     this.u_Color = $.getUniformLocation$2$x(this.gl, this.program, "u_Color");
-    $.print("PickerShader: locations ready");
   },
   drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2;
@@ -15288,7 +15281,6 @@ ShaderProgram: {"": "Object;program,gl<,a_Position,u_MV,u_P,shaderReady,modelLis
     this.a_Position = t2.getAttribLocation$2(t1, this.program, "a_Position");
     this.u_MV = t2.getUniformLocation$2(t1, this.program, "u_MV");
     this.u_P = t2.getUniformLocation$2(t1, this.program, "u_P");
-    $.print("ShaderProgram: locations ready");
   },
   fetch$3: function(shaderCache, vertexShaderURL, fragmentShaderURL) {
     var t1, t2, t3, t4;
@@ -15347,8 +15339,9 @@ ShaderProgram_fetch_compileShader: {"": "Closure;this_1,shaderCache_2",
       return;
     }
     t1 = this.shaderCache_2;
+    if (t1.$index(t1, shaderURL) != null)
+      $.print($.JSString_methods.$add($.JSString_methods.$add("compileShader: ", shaderURL), ": FIXME: overwriting shader cache"));
     t1.$indexSet(t1, shaderURL, shader);
-    $.print($.JSString_methods.$add($.JSString_methods.$add("compileShader: ", shaderURL), ": compiled and cached"));
     return shader;
   },
   $isFunction: true,
@@ -15374,7 +15367,6 @@ ShaderProgram_fetch_tryLink: {"": "Closure;box_0,this_3",
         $.print("tryLink: shader program link FAILURE: " + infoLog + ": context is lost");
       return;
     }
-    $.print("ShaderProgram: program linked");
     t2.set$program(p);
     t2.getLocations$0();
     t2.set$shaderReady(true);
@@ -15393,9 +15385,8 @@ ShaderProgram_fetch_fetchVertexShader: {"": "Closure;box_0,vertexShaderURL_4,com
     requestVert = $.HttpRequest_HttpRequest();
     $.HttpRequest_methods.open$2(requestVert, "GET", url);
     $.HttpRequest_methods.get$onLoad(requestVert).listen$1(new $.ShaderProgram_fetch_fetchVertexShader_closure(this.box_0, this.compileShader_5, this.tryLink_6, url, requestVert));
-    $.HttpRequest_methods.get$onError(requestVert).listen$1(new $.ShaderProgram_fetch_fetchVertexShader_closure0());
+    $.HttpRequest_methods.get$onError(requestVert).listen$1(new $.ShaderProgram_fetch_fetchVertexShader_closure0(url));
     requestVert.send();
-    $.print("vertexShader: url=" + url + ": sent, waiting");
   },
   $isFunction: true,
   $asObject: null,
@@ -15414,9 +15405,7 @@ ShaderProgram_fetch_fetchVertexShader_closure: {"": "Closure;box_0,compileShader
       $.print("vertexShader: url=" + this.url_9 + ": error: [" + response + "]");
       return;
     }
-    t1 = this.url_9;
-    $.print("vertexShader: url=" + t1 + ": loaded");
-    this.box_0.vertexShader_0 = $.interceptedTypeCheck(this.compileShader_7.call$3(t1, response, 35633), "$isShader");
+    this.box_0.vertexShader_0 = $.interceptedTypeCheck(this.compileShader_7.call$3(this.url_9, response, 35633), "$isShader");
     this.tryLink_8.call$0();
   },
   $isFunction: true,
@@ -15424,23 +15413,23 @@ ShaderProgram_fetch_fetchVertexShader_closure: {"": "Closure;box_0,compileShader
   $signature: function () { return {func: "dynamic__ProgressEvent", args: [$.ProgressEvent]}; }
 },
 
-ShaderProgram_fetch_fetchVertexShader_closure0: {"": "Closure;",
+ShaderProgram_fetch_fetchVertexShader_closure0: {"": "Closure;url_11",
   call$1: function(e) {
-    $.print("vertexShader: error: [" + $.S(e) + "]");
+    $.print("vertexShader: url=" + this.url_11 + ": error: [" + $.S(e) + "]");
   },
   $isFunction: true,
   $asObject: null,
   $signature: function () { return {func: "dynamic__dynamic", args: [null]}; }
 },
 
-ShaderProgram_fetch_fetchFragmentShader: {"": "Closure;box_0,fragmentShaderURL_11,compileShader_12,tryLink_13",
+ShaderProgram_fetch_fetchFragmentShader: {"": "Closure;box_0,fragmentShaderURL_12,compileShader_13,tryLink_14",
   call$0: function() {
     var url, requestFrag;
-    url = this.fragmentShaderURL_11;
+    url = this.fragmentShaderURL_12;
     requestFrag = $.HttpRequest_HttpRequest();
     $.HttpRequest_methods.open$2(requestFrag, "GET", url);
-    $.HttpRequest_methods.get$onLoad(requestFrag).listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_closure(this.box_0, this.compileShader_12, this.tryLink_13, url, requestFrag));
-    $.HttpRequest_methods.get$onError(requestFrag).listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_closure0());
+    $.HttpRequest_methods.get$onLoad(requestFrag).listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_closure(this.box_0, this.compileShader_13, this.tryLink_14, url, requestFrag));
+    $.HttpRequest_methods.get$onError(requestFrag).listen$1(new $.ShaderProgram_fetch_fetchFragmentShader_closure0(url));
     requestFrag.send();
   },
   $isFunction: true,
@@ -15450,27 +15439,27 @@ ShaderProgram_fetch_fetchFragmentShader: {"": "Closure;box_0,fragmentShaderURL_1
   $is_Object_: true
 },
 
-ShaderProgram_fetch_fetchFragmentShader_closure: {"": "Closure;box_0,compileShader_14,tryLink_15,url_16,requestFrag_17",
+ShaderProgram_fetch_fetchFragmentShader_closure: {"": "Closure;box_0,compileShader_15,tryLink_16,url_17,requestFrag_18",
   call$1: function(e) {
     var t1, response;
     $.interceptedTypeCheck(e, "$isProgressEvent");
-    t1 = this.requestFrag_17;
+    t1 = this.requestFrag_18;
     response = t1.responseText;
     if (t1.status !== 200) {
-      $.print("fragmentShader: error: [" + response + "]");
+      $.print("fragmentShader: url=" + this.url_17 + ": error: [" + response + "]");
       return;
     }
-    this.box_0.fragmentShader_1 = $.interceptedTypeCheck(this.compileShader_14.call$3(this.url_16, response, 35632), "$isShader");
-    this.tryLink_15.call$0();
+    this.box_0.fragmentShader_1 = $.interceptedTypeCheck(this.compileShader_15.call$3(this.url_17, response, 35632), "$isShader");
+    this.tryLink_16.call$0();
   },
   $isFunction: true,
   $asObject: null,
   $signature: function () { return {func: "dynamic__ProgressEvent", args: [$.ProgressEvent]}; }
 },
 
-ShaderProgram_fetch_fetchFragmentShader_closure0: {"": "Closure;",
+ShaderProgram_fetch_fetchFragmentShader_closure0: {"": "Closure;url_19",
   call$1: function(e) {
-    $.print("fragmentShader: error: [" + $.S(e) + "]");
+    $.print("fragmentShader: url=" + this.url_19 + ": error: [" + $.S(e) + "]");
   },
   $isFunction: true,
   $asObject: null,
@@ -15507,7 +15496,6 @@ TexShaderProgram: {"": "ShaderProgram;a_TextureCoord,u_Sampler,program,gl,a_Posi
     t2 = $.getInterceptor$x(t1);
     this.a_TextureCoord = t2.getAttribLocation$2(t1, this.program, "a_TextureCoord");
     this.u_Sampler = t2.getUniformLocation$2(t1, this.program, "u_Sampler");
-    $.print("TexShaderProgram: locations ready");
   },
   drawModels$3: function(gameLoop, cam, pMatrix) {
     var t1, t2;
@@ -15872,7 +15860,6 @@ SkyboxProgram: {"": "ShaderProgram;u_Skybox,program,gl,a_Position,u_MV,u_P,shade
   getLocations$0: function() {
     $.ShaderProgram.prototype.getLocations$0.call(this);
     this.u_Skybox = $.getUniformLocation$2$x(this.gl, this.program, "u_Skybox");
-    $.print("SkyboxProgram: locations ready");
   },
   fetch$3: function(shaderCache, vertexShaderURL, fragmentShaderURL) {
     $.ShaderProgram.prototype.fetch$3.call(this, $.interceptedTypeCheck(shaderCache, "$isMap"), vertexShaderURL, fragmentShaderURL);
@@ -17243,9 +17230,10 @@ initWebSocket_scheduleReconnect_closure: {"": "Closure;box_0,wsUri_5,sid_6,statu
 
 initWebSocket_closure: {"": "Closure;wsUri_9,sid_10,status_11,scheduleReconnect_12",
   call$1: function(e) {
-    var jsonMsg, e0, msg, exception, t1;
-    this.status_11.textContent = "connected to " + this.wsUri_9;
-    $.print("websocket: CONNECTED");
+    var jsonMsg, e0, t1, msg, exception;
+    t1 = this.status_11;
+    t1.textContent = "connected to " + this.wsUri_9;
+    $.print("websocket: " + t1.textContent);
     msg = $.Map_Map(null, null);
     msg.$indexSet(msg, "Code", 2);
     msg.$indexSet(msg, "Data", this.sid_10);
@@ -17289,11 +17277,8 @@ initWebSocket_closure1: {"": "Closure;scheduleReconnect_16",
 
 initWebSocket_closure2: {"": "Closure;box_0,status_17",
   call$1: function(e) {
-    var t1, msg, code, data, m, t2;
-    $.interceptedTypeCheck(e, "$isMessageEvent");
-    t1 = $.getInterceptor$x(e);
-    $.print("websocket: received: [" + $.S(t1.get$data(e)) + "]");
-    msg = $.interceptedTypeCheck($.parse(t1.get$data(e), null), "$isMap");
+    var msg, t1, code, data, m, t2;
+    msg = $.interceptedTypeCheck($.parse($.get$data$x($.interceptedTypeCheck(e, "$isMessageEvent")), null), "$isMap");
     t1 = $.getInterceptor$asx(msg);
     code = $.intTypeCheck(t1.$index(msg, "Code"));
     data = $.stringTypeCheck(t1.$index(msg, "Data"));
@@ -17330,7 +17315,6 @@ requestZone: function() {
 
 _write: function(msg) {
   $.stringTypeCheck(msg);
-  $.Primitives_printString("websocket: writing: [" + msg + "]");
   $.send$1$x($._ws, msg);
 },
 
@@ -17373,7 +17357,6 @@ wsFlush: function() {
       }
       $.assertSubtypeOfRuntimeType(t2, t1);
       $.stringTypeCheck(t2);
-      $.Primitives_printString("websocket: writing: [" + $.S(t2) + "]");
       $.send$1$x($._ws, t2);
     } catch (exception) {
       t1 = $.unwrapException(exception);
@@ -17908,6 +17891,9 @@ $.framebufferTexture2D$5$x = function(receiver, a0, a1, a2, a3, a4) {
 };
 $.get$children$x = function(receiver) {
   return $.getInterceptor$x(receiver).get$children(receiver);
+};
+$.get$data$x = function(receiver) {
+  return $.getInterceptor$x(receiver).get$data(receiver);
 };
 $.get$hashCode$ = function(receiver) {
   return $.getInterceptor(receiver).get$hashCode(receiver);

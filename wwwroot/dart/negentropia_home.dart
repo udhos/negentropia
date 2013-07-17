@@ -41,15 +41,15 @@ PickerShader picker;
 int fullRateFrames = 0; // periodic rendering
 
 RenderingContext initGL(CanvasElement canvas) {
-  print("WebGL: initializing");
+  //print("WebGL: initializing");
 
   RenderingContext gl;
 
-  // FIXME: ERASEME: preserveDrawingBuffer: true
+  print("initGL: FIXME: ERASEME: preserveDrawingBuffer: true");
   gl = canvas.getContext3d(preserveDrawingBuffer: true);
   //gl = canvas.getContext3d();
   if (gl != null) {
-    print("WebGL: initialized");
+    //print("WebGL: initialized");
     return gl;
   }
 
@@ -135,7 +135,7 @@ RenderingContext boot() {
   DivElement canvasbox = query("#canvasbox");
   assert(canvasbox != null);  
   canvasbox.append(canvas);  
-  print("canvas '${canvas.id}' created: width=${canvas.width} height=${canvas.height}");
+  //print("canvas '${canvas.id}' created: width=${canvas.width} height=${canvas.height}");
   
   RenderingContext gl = initGL(canvas);
   if (gl == null) {
@@ -155,7 +155,7 @@ RenderingContext boot() {
     
   var sid = Cookie.getCookie("sid");
   assert(sid != null);
-  print("session id sid=${sid}");
+  //print("session id sid=${sid}");
   
   var wsUri = query("#wsUri").text;
   assert(wsUri != null);
@@ -407,9 +407,9 @@ void main() {
   
   gameLoop.pointerLock.lockOnClick = false; // disable pointer lock
 
-  print("gameLoop lockOnClick = ${gameLoop.pointerLock.lockOnClick}");
+  //print("gameLoop lockOnClick = ${gameLoop.pointerLock.lockOnClick}");
 
-  print("gameLoop updateStep = ${gameLoop.updateTimeStep} seconds");
+  //print("gameLoop updateStep = ${gameLoop.updateTimeStep} seconds");
 
   if (debugLostContext) {
     initDebugLostContext(gl, canvas, gameLoop, initContext);

@@ -19,7 +19,7 @@ class TexShaderProgram extends ShaderProgram {
     u_Sampler      = gl.getUniformLocation(program, "u_Sampler");
     //u_Color        = gl.getUniformLocation(program, "u_Color");
     
-    print("TexShaderProgram: locations ready");      
+    //print("TexShaderProgram: locations ready");      
   }
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {

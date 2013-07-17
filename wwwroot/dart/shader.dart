@@ -40,7 +40,7 @@ class ShaderProgram {
     u_MV       = gl.getUniformLocation(program, "u_MV");
     u_P        = gl.getUniformLocation(program, "u_P");      
 
-    print("ShaderProgram: locations ready");      
+    //print("ShaderProgram: locations ready");      
   }
   
   void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, String fragmentShaderURL) {
@@ -63,8 +63,11 @@ class ShaderProgram {
         return null;
       }
       
+      if (shaderCache[shaderURL] != null) {
+        print("compileShader: " + shaderURL + ": FIXME: overwriting shader cache");
+      }
       shaderCache[shaderURL] = shader;
-      print("compileShader: " + shaderURL + ": compiled and cached");
+      //print("compileShader: " + shaderURL + ": compiled and cached");
       
       return shader;
     }
@@ -92,7 +95,7 @@ class ShaderProgram {
         return;
       }
 
-      print("ShaderProgram: program linked");      
+      //print("ShaderProgram: program linked");      
 
       this.program = p;
       
@@ -113,15 +116,15 @@ class ShaderProgram {
           print("vertexShader: url=$url: error: [$response]");
           return;
         }
-        print("vertexShader: url=$url: loaded");
+        //print("vertexShader: url=$url: loaded");
         vertexShader = compileShader(url, response, RenderingContext.VERTEX_SHADER);
         tryLink();
       });
       requestVert.onError.listen((e) {
-        print("vertexShader: error: [$e]");
+        print("vertexShader: url=$url: error: [$e]");
       });
       requestVert.send();
-      print("vertexShader: url=$url: sent, waiting");
+      //print("vertexShader: url=$url: sent, waiting");
     }
 
     void fetchFragmentShader() {
@@ -133,7 +136,7 @@ class ShaderProgram {
       requestFrag.onLoad.listen((ProgressEvent e) {
         String response = requestFrag.responseText;
         if (requestFrag.status != 200) {
-          print("fragmentShader: error: [$response]");
+          print("fragmentShader: url=$url: error: [$response]");
           return;
         }
         //print("fragmentShader: loaded: [$response]");
@@ -141,7 +144,7 @@ class ShaderProgram {
         tryLink();      
       });
       requestFrag.onError.listen((e) {
-        print("fragmentShader: error: [$e]");
+        print("fragmentShader: url=$url: error: [$e]");
       });
       requestFrag.send();
     }

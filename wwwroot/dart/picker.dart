@@ -118,7 +118,7 @@ class PickerShader extends ShaderProgram {
 
     u_Color = gl.getUniformLocation(program, "u_Color");
     
-    print("PickerShader: locations ready");      
+    //print("PickerShader: locations ready");      
   }
   
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {

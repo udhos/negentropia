@@ -31,7 +31,7 @@ void requestZone() {
 }
 
 void _write(String msg) {
-  print("websocket: writing: [${msg}]");
+  //print("websocket: writing: [${msg}]");
   _ws.send(msg);
 }
 
@@ -90,7 +90,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
 
   subOpen = _ws.onOpen.listen((e) {
     status.text = "connected to $wsUri";   
-    print("websocket: CONNECTED");
+    print("websocket: ${status.text}");
 
     var msg = new Map();
     msg["Code"] = CM_CODE_AUTH;
@@ -119,8 +119,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
   });
   
   subMessage = _ws.onMessage.listen((MessageEvent e) {
-    //print('websocket: received: w.onMessage.listen');
-    print('websocket: received: [${e.data}]');
+    //print('websocket: received: [${e.data}]');
     
     Map msg = parse(e.data);
     int code = msg["Code"];

@@ -22,7 +22,7 @@ class SkyboxProgram extends ShaderProgram {
     
     u_Skybox = gl.getUniformLocation(program, "u_Skybox");
     
-    print("SkyboxProgram: locations ready");      
+    //print("SkyboxProgram: locations ready");      
   }
 
   void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {
