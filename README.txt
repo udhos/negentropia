@@ -21,13 +21,20 @@ REQUIREMENTS
 # Redis 2.4.5 for Windows 7 64-bit:
 # https://github.com/dmajkic/redis/downloads
 
+# Install Dart Editor
+# http://www.dartlang.org/tools/editor/
+
 
 GENERAL BUILDING GUIDELINES:
 
 # 1. Clone the git repository:
+export DEVEL=/c/tmp/devel
+mkdir -p $DEVEL
+cd $DEVEL
 git clone https://code.google.com/p/negentropia/
 
-# 2. Set GOPATH to negentropia\webserv
+# 2. Set GOPATH to negentropia/webserv
+export GOPATH=$DEVEL/negentropia/webserv
 
 # 3. install goauth2
 #
@@ -41,17 +48,27 @@ go get github.com/HairyMezican/goauth2/oauth
 # 4. Install redis client library
 go get github.com/vmihailenco/redis
 
-# 5. Install websocket
+# 5. Install websocket library
 go get code.google.com/p/go.net/websocket
 
-# 6. Build and install (to negentropia\webserv\bin)
+# 6. Build and install server (to negentropia/webserv/bin)
 go install negentropia\webserv
 go install negentropia\world
 
-# 7. Start redis
+# 7. Build client
+set DEVEL=c:\tmp\devel
+set NEG_DART_MAIN=%DEVEL%\negentropia\wwwroot\dart\negentropia_home.dart
+\dart\dart-sdk\bin\dart2js -c -o %NEG_DART_MAIN%.js %NEG_DART_MAIN%
+
+# 8. Start redis
 redis-server
 
-# 8. Run
+# 9. Configure server
+	copy \tmp\devel\negentropia\config-common-sample.txt \tmp\devel\config-common.txt
+	copy \tmp\devel\negentropia\config-webserv-sample.txt \tmp\devel\config-webserv.txt
+	copy \tmp\devel\negentropia\config-world-sample.txt \tmp\devel\config-world.txt
+
+# 10. Run server
 negentropia\webserv\bin\webserv
 negentropia\webserv\bin\world
 

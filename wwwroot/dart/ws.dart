@@ -12,7 +12,10 @@ const CM_CODE_ECHO  = 3; // client->server: please echo this
 const CM_CODE_KILL  = 4; // server->client: do not attempt reconnect on same session
 const CM_CODE_REQZ  = 5; // client->server: please send current zone
 const CM_CODE_ZONE  = 6; // server->client: current zone
-
+const CM_CODE_SKYBOX   = 7;  // server->client: set full skybox
+const CM_CODE_PROGRAM  = 8;  // server->client: set shader program
+const CM_CODE_MODEL    = 9;  // server->client: set model
+const CM_CODE_INSTANCE = 10; // server->client: set instance
 
 WebSocket _ws;
 ListQueue<String> _wsQueue = new ListQueue<String>();

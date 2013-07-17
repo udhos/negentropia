@@ -3,6 +3,9 @@
 set DEVEL=c:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv
 
+set DART_SDK=c:\dart\dart-sdk
+set NEG_DART_MAIN=%DEVEL%\negentropia\wwwroot\dart\negentropia_home.dart
+
 @rem install goauth2
 @rem
 @rem facebook broken:
@@ -20,8 +23,11 @@ set GOPATH=%DEVEL%\negentropia\webserv
 @rem untested:
 @rem go get bitbucket.org/gosimple/oauth2
 
-@rem build
-go install negentropia/webserv
-go install negentropia/world
+@rem build server
+go install negentropia\webserv
+go install negentropia\world
+
+@rem build client
+%DART_SDK%\bin\dart2js -c -o %NEG_DART_MAIN%.js %NEG_DART_MAIN%
 
 @rem eof
