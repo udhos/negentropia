@@ -29,7 +29,7 @@ class Obj {
   
   void trimTable(String url) {
     // remove empty objects from _partTable
-    
+    /*
     List<String> emptyList = new List<String>(); // create a copy to avoid concurrent modifications
     _partTable.keys.forEach((String name) { 
       if (_partTable[name].indexListSize < 1) {
@@ -38,8 +38,8 @@ class Obj {
       } 
     });
     emptyList.forEach((String name) => _partTable.remove(name)); // remove selected keys
+    */
     
-    /*
     _partTable.keys
       .where((name) { // where: filter keys
         bool empty = _partTable[name].indexListSize < 1;
@@ -50,7 +50,6 @@ class Obj {
       })
       .toList() // create a copy to avoid concurrent modifications
       .forEach(_partTable.remove); // remove selected keys
-      */
     
     /*
     Iterable<String> keys = _partTable.keys;
@@ -67,7 +66,7 @@ class Obj {
     print("DEBUG got copy");
     copy.forEach(_partTable.remove);
     print("DEBUG got result");
-    */    
+    */        
   }
   
   Obj.fromString(String url, String str) {
