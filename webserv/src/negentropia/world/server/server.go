@@ -16,7 +16,10 @@ const (
 	CM_CODE_ECHO  = 3 // client->server: please echo this
 	CM_CODE_KILL  = 4 // server->client: do not attempt reconnect on same session
     CM_CODE_REQZ  = 5 // client->server: please send current zone	
-    CM_CODE_ZONE  = 6 // server->client: current zone
+    CM_CODE_ZONE     = 6  // server->client: reset client zone info
+    CM_CODE_SKYBOX   = 7  // server->client: set full skybox
+    CM_CODE_PROGRAM  = 8  // server->client: set shader program
+    CM_CODE_INSTANCE = 9  // server->client: set instance	
 )
 
 type ClientMsg struct {
@@ -30,14 +33,6 @@ type Player struct {
 	Websocket    *websocket.Conn
 	SendToPlayer  chan *ClientMsg
 	Quit          chan int
-}
-
-func (p *Player) getLocation() string {
-	var location string
-	if location = store.QueryField(p.Email, "location"); location == "" {
-		return "demo"
-	}
-	return location
 }
 
 type PlayerMsg struct {
@@ -74,8 +69,14 @@ func input(p *Player, m *ClientMsg) {
 	case CM_CODE_ECHO:
 		p.SendToPlayer <- &ClientMsg{CM_CODE_INFO, "echo: " + m.Data}
 	case CM_CODE_REQZ:
-		log.Printf("server.input: CM_CODE_REQZ FIXME WRITEME");
-		p.SendToPlayer <- &ClientMsg{CM_CODE_ZONE, p.getLocation()}
+		if loc := store.QueryField(p.Email, "location"); loc == "" {
+			p.SendToPlayer <- &ClientMsg{CM_CODE_ZONE, "demo"}
+		} else {
+			p.SendToPlayer <- &ClientMsg{CM_CODE_ZONE, "zone FIXME WRITEME"}
+			p.SendToPlayer <- &ClientMsg{CM_CODE_SKYBOX, "skybox FIXME WRITEME"}
+			p.SendToPlayer <- &ClientMsg{CM_CODE_PROGRAM, "program FIXME WRITEME"}
+			p.SendToPlayer <- &ClientMsg{CM_CODE_INSTANCE, "instance FIXME WRITEME"}
+		}
 	default:
 		log.Printf("server.input: unknown code=%d", m.Code);
 		p.SendToPlayer <- &ClientMsg{CM_CODE_INFO, fmt.Sprintf("unknown code=%d", m.Code)}
