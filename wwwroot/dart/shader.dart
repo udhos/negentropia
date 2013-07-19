@@ -32,8 +32,10 @@ class ShaderProgram {
  
   ShaderProgram(RenderingContext this.gl);
   
+  /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
   }
+  */
 
   void getLocations() {
     a_Position = gl.getAttribLocation(program, "a_Position");

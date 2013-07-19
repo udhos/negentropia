@@ -8,9 +8,11 @@ class TexShaderProgram extends ShaderProgram {
    
   TexShaderProgram(RenderingContext gl) : super(gl);
   
+  /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
     modelList.forEach((TexModel m) => m.initContext(gl, textureTable));
   }
+  */
 
   void getLocations() {
     super.getLocations();
@@ -69,12 +71,14 @@ class TexModel extends Model {
 
   //List<TextureInfo> textureInfoList = new List<TextureInfo>();
   
+  /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
     
     //textureInfoList.forEach((TextureInfo ti) => ti.forceCreateTexture(gl, textureTable));
     pieceList.forEach((TexPiece pi) => pi.texInfo.loadTexture(gl, textureTable));
     
   }
+  */
   
   // redefine _createBuffers() used by Model's constructor
   void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {

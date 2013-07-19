@@ -112,6 +112,9 @@ void dispatcher(RenderingContext gl, int code, String data) {
       break;
       
     case CM_CODE_ZONE:
+      
+      resetZone(gl);
+      
       String zoneInfo = data;
       print("dispatcher: zoneInfo=$zoneInfo");
       if (zoneInfo == "demo") {
@@ -270,13 +273,15 @@ void initPicker(RenderingContext gl) {
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 
-void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
-    
+void resetZone(RenderingContext gl) {
   programList = new List<ShaderProgram>();  // drop existing programs 
   shaderCache = new Map<String,Shader>();   // drop existing compile shader cache
-  textureTable = new Map<String,Texture>(); // drop existing texture table
+  textureTable = new Map<String,Texture>(); // drop existing texture table  
+}
 
-  programList.forEach((ShaderProgram p) => p.initContext(gl, textureTable));
+void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
+    
+  //programList.forEach((ShaderProgram p) => p.initContext(gl, textureTable));
 
   requestZone();  
   
