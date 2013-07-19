@@ -349,6 +349,9 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, picker.framebuffer);
   gl.clear(RenderingContext.COLOR_BUFFER_BIT | RenderingContext.DEPTH_BUFFER_BIT);
   
+  // restore drawing to default canvas framebuffer
+  gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
+  
   if (showPicking) {
     // draw picking on both framebuffers
     
