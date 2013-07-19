@@ -124,6 +124,18 @@ void dispatcher(RenderingContext gl, int code, String data) {
       print("dispatcher: FIXME WRITEME load non-demo zone: zoneInfo=$zoneInfo");
       break;
       
+    case CM_CODE_SKYBOX:
+      print("dispatcher: FIXME WRITEME skybox: data=$data");
+      break;
+      
+    case CM_CODE_PROGRAM:
+      print("dispatcher: FIXME WRITEME program: data=$data");
+      break;
+      
+    case CM_CODE_INSTANCE:
+      print("dispatcher: FIXME WRITEME instance: data=$data");
+      break;
+      
     default:
       print("dispatcher: unknown code=$code");
   }  
@@ -386,22 +398,30 @@ void readColor(String label, RenderingContext gl, int x, int y, Framebuffer fram
   print("$label: readPixels: x=$x y=$y color=$color");     
 }
 
+void mouseLeftClick(RenderingContext gl, Mouse m) {
+  print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas}");
+  
+  if (picker == null) {
+    print("picker not available");
+    return;
+  }
+  
+  int y = canvas.height - m.y;
+
+  Uint8List color = new Uint8List(4);
+  readColor("canvas-framebuffer", gl, m.x, y, null, color);
+  readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
+  
+  PickerInstance pi = mouseClickHit(picker.instanceList, color);
+  print("mouse hit: $pi");  
+}
+
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
 
   Mouse m = gameLoop.mouse;
   if (m.pressed(Mouse.LEFT)) {
-
-    print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas}");
-    
-    int y = canvas.height - m.y;
-
-    Uint8List color = new Uint8List(4);
-    readColor("canvas-framebuffer", gl, m.x, y, null, color);
-    readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
-    
-    PickerInstance pi = mouseClickHit(picker.instanceList, color);
-    print("mouse hit: $pi");
+    mouseLeftClick(gl, m);
   }  
   
   cam.update(gameLoop);
