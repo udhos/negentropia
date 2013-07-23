@@ -111,7 +111,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
   
   subClose = _ws.onClose.listen((Event e) {
     status.text = "disconnected from $wsUri";    
-    print("websocket: DISCONNECTED");
+    print("websocket: ${status.text}: [$e]");
     scheduleReconnect();
   });
   

@@ -107,21 +107,26 @@ class SkyboxModel extends Model {
 }
 
 class SkyboxInstance extends Instance {
+
+  bool demoAnimate;
   
-  SkyboxInstance(Model model, Vector3 center, double scale) : super(model, center, scale);
+  SkyboxInstance(Model model, Vector3 center, double scale, this.demoAnimate) : super(model, center, scale);
   
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
     
-    double r = cam.getRad(gameLoop.renderInterpolationFactor);
-
-    double size = 15 * math.sin(r).abs() + 1;
-
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
     MV.translate(center[0], center[1], center[2]);
     
-    double s = scale * size;
-    MV.scale(s, s, s);
+    if (demoAnimate) {
+      double r = cam.getRad(gameLoop.renderInterpolationFactor);
+      double size = 15 * math.sin(r).abs() + 1;
+      double s = scale * size;
+      MV.scale(s, s, s);
+    }
+    else {
+      MV.scale(scale, scale, scale);      
+    }
 
     //ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;

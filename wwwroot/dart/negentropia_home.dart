@@ -97,6 +97,22 @@ void loadDemo(RenderingContext gl) {
   initPicker(gl);
 }
 
+void addSkybox(RenderingContext gl) {
+  SkyboxProgram skyboxProgram = new SkyboxProgram(gl);
+  programList.add(skyboxProgram);
+  skyboxProgram.fetch(shaderCache, "${asset.shader}/skybox_vs.txt", "${asset.shader}/skybox_fs.txt");
+  SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, "/mesh/cube.json", true, 0);
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y, '/texture/space_up.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y, '/texture/space_dn.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');  
+  skyboxProgram.addModel(skyboxModel);
+  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new Vector3(0.0, 0.0, 0.0), 100.0, false);
+  skyboxModel.addInstance(skyboxInstance);
+}
+
 void dispatcher(RenderingContext gl, int code, String data) {
   
   switch (code) {
@@ -126,6 +142,9 @@ void dispatcher(RenderingContext gl, int code, String data) {
       
     case CM_CODE_SKYBOX:
       print("dispatcher: FIXME WRITEME skybox: data=$data");
+      
+      addSkybox(gl);
+      
       break;
       
     case CM_CODE_PROGRAM:
@@ -230,7 +249,7 @@ void initSkybox(RenderingContext gl) {
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');  
   skyboxProgram.addModel(skyboxModel);
-  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new Vector3(0.0, 0.0, 0.0), 1.0);
+  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new Vector3(0.0, 0.0, 0.0), 1.0, true);
   skyboxModel.addInstance(skyboxInstance);
 }
 

@@ -6,7 +6,7 @@ import 'package:vector_math/vector_math.dart';
 import 'package:game_loop/game_loop_html.dart';
 
 class Camera {
-  final double degreesPerSec = 30.0;
+  final double degreesPerSec = 45.0;
   final double camOrbitRadius = 15.0;
   Vector3 eye, center, up;
   double oldAngle = 0.0;
