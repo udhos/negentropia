@@ -109,10 +109,18 @@ class SkyboxModel extends Model {
 class SkyboxInstance extends Instance {
 
   bool demoAnimate;
+  //int debugCounter = 0;
   
   SkyboxInstance(Model model, Vector3 center, double scale, this.demoAnimate) : super(model, center, scale);
   
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
+    
+    /*
+    ++debugCounter;
+    if (debugCounter % 120 == 0) {
+      print("SkyboxInstance.draw: $debugCounter");
+    }
+    */
     
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
