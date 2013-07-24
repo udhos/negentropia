@@ -1,10 +1,8 @@
-//import 'dart:html';
 import 'dart:io';
 import 'dart:async';
 
 import 'package:benchmark_harness/benchmark_harness.dart';
 
-import 'asset.dart';
 import 'obj.dart';
 
 String objURL;
@@ -22,12 +20,6 @@ class ObjBenchmark extends BenchmarkBase {
   void run() {
     Obj obj = new Obj.fromString(objURL, objString);
   }
-
-  // Not measured setup code executed prior to the benchmark runs.
-  void setup() { }
-
-  // Not measures teardown code executed after the benchark runs.
-  void teardown() { }
 }
 
 class MtlBenchmark extends BenchmarkBase {
@@ -40,12 +32,6 @@ class MtlBenchmark extends BenchmarkBase {
   void run() {
     Map<String,Material> lib = mtllib_parse(mtlString, mtlURL);
   }
-
-  // Not measured setup code executed prior to the benchmark runs.
-  void setup() { }
-
-  // Not measures teardown code executed after the benchark runs.
-  void teardown() { }
 }
 
 void main() {
@@ -55,9 +41,7 @@ void main() {
     void done(String response) {
       mtlURL    = URL;
       mtlString = response;
-
-      // Run TemplateBenchmark
-      MtlBenchmark.main();
+      MtlBenchmark.main(); // run benchmark
     }
             
     var file = new File(URL);    
@@ -70,9 +54,7 @@ void main() {
     void done(String response) {
       objURL    = URL;
       objString = response;
-
-      // Run TemplateBenchmark
-      ObjBenchmark.main();
+      ObjBenchmark.main(); // run benchmark
       
       fetchMtl("C:/tmp/devel/negentropia/wwwroot/mtl/Colony Ship Ogame Fleet.mtl");
     }
