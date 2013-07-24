@@ -44,7 +44,7 @@ class Obj {
       .where((name) { // where: filter keys
         bool empty = _partTable[name].indexListSize < 1;
         if (empty) {
-          print("OBJ: deleting empty object=$name loaded from url=$url");
+          //print("OBJ: deleting empty object=$name loaded from url=$url");
         }       
         return empty;
       })
@@ -365,7 +365,7 @@ Map<String,Material> mtllib_parse(String str, String url) {
   List<String> lines = str.split('\n');
   lines.forEach((String line) => parseLine(line));
   
-  print("mtllib_parse: url=$url: materials: ${lib.length}");
+  //print("mtllib_parse: url=$url: materials: ${lib.length}");
   
   //lib.forEach((name, material) { print("mtllib_parse: url=$url material=$name: Kd=${material.Kd} map_Kd=${material.map_Kd}"); });
 
