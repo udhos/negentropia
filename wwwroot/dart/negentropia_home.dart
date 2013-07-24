@@ -138,6 +138,10 @@ void dispatcher(RenderingContext gl, int code, String data) {
       
     case CM_CODE_INSTANCE:
       print("dispatcher: FIXME WRITEME instance: data=$data");
+      
+      print("dispatcher: FIXME WRITEME update picker incrementally instead of fully rebuilding it for each instance");
+      addPicker(gl);
+      
       break;
       
     default:
@@ -297,9 +301,13 @@ void initShips(RenderingContext gl) {
   initAirshipTex(gl);
 }
 
+void addPicker(RenderingContext gl) {
+  picker = new PickerShader(gl, programList, canvas.width, canvas.height);
+  picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
+}
+
 void initPicker(RenderingContext gl) {
   picker = new PickerShader(gl, programList, canvas.width, canvas.height);
-  //programList.add(picker);
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 
