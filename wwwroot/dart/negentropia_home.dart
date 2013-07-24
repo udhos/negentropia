@@ -299,7 +299,7 @@ void initShips(RenderingContext gl) {
 
 void initPicker(RenderingContext gl) {
   picker = new PickerShader(gl, programList, canvas.width, canvas.height);
-  programList.add(picker);
+  //programList.add(picker);
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 
@@ -380,7 +380,7 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   gl.clear(RenderingContext.COLOR_BUFFER_BIT | RenderingContext.DEPTH_BUFFER_BIT);
   
   if (picker == null) {
-    // draw models and skip picking drawing
+    // only regular draw -- skip picking drawing
     regularDraw(gl, gameLoop);
     return;
   }
@@ -393,20 +393,22 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
   
   if (showPicking) {
-    // draw picking on both framebuffers
+    // draw only picking -- draw picking on both framebuffers
     
     picker.offscreen = true; // offscreen framebuffer
     picker.drawModels(gameLoop, cam, pMatrix);
     
     picker.offscreen = false; // canvas framebuffer
     picker.drawModels(gameLoop, cam, pMatrix);
+    
+    return;
   }
-  else {
-    // draw picking on offscreen framebuffer
-    // and actual object colors on canvas framebuffer
-    picker.offscreen = true;
-    regularDraw(gl, gameLoop);
-  }
+
+  // draw picking on offscreen framebuffer
+  picker.offscreen = true;
+  picker.drawModels(gameLoop, cam, pMatrix);
+  
+  regularDraw(gl, gameLoop);
 }
 
 void render(RenderingContext gl, GameLoopHtml gameLoop) {
