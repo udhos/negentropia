@@ -23,6 +23,7 @@ class ShaderProgram {
     
   Program program;
   RenderingContext gl;
+  String programName;
   int a_Position;
   UniformLocation u_MV;
   UniformLocation u_P;
@@ -30,7 +31,7 @@ class ShaderProgram {
   
   List<Model> modelList = new List<Model>();  
  
-  ShaderProgram(RenderingContext this.gl);
+  ShaderProgram(this.gl, this.programName);
   
   /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {

@@ -14,8 +14,7 @@ class SkyboxProgram extends ShaderProgram {
   
   UniformLocation u_Skybox;
   
-  SkyboxProgram(RenderingContext gl) : super(gl) {
-  }
+  SkyboxProgram(RenderingContext gl, String programName) : super(gl, programName);
 
   void getLocations() {
     super.getLocations();

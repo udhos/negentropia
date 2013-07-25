@@ -6,7 +6,7 @@ class TexShaderProgram extends ShaderProgram {
   UniformLocation u_Sampler;
   //UniformLocation u_Color;  
    
-  TexShaderProgram(RenderingContext gl) : super(gl);
+  TexShaderProgram(RenderingContext gl, String programName) : super(gl, programName);
   
   /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {

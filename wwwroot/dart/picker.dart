@@ -98,7 +98,7 @@ class PickerShader extends ShaderProgram {
     gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
   }
 
-  PickerShader(RenderingContext gl, this.programList, int width, int height) : super(gl) {
+  PickerShader(RenderingContext gl, String programName, this.programList, int width, int height) : super(gl, programName) {
 
     // copy clickable instances
     programList.forEach((p) {

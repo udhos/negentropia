@@ -76,7 +76,13 @@ func input(p *Player, m *ClientMsg) {
 		} else {
 			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE}
 			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_SKYBOX, Tab: map[string]string {"skyboxURL": "/skybox/skybox_galaxy.json"}}
-			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_PROGRAM, Data: "program FIXME WRITEME"}
+			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_PROGRAM,
+				Tab: map[string]string {
+					"programName":		"simpleTexturizer",
+					"vertexShader":		"/shader/simpleTex_vs.txt",
+					"fragmentShader":	"/shader/simpleTex_fs.txt",
+				},
+			}
 			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INSTANCE, Data: "instance FIXME WRITEME"}
 		}
 	default:

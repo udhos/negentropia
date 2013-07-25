@@ -140,7 +140,26 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       break;
       
     case CM_CODE_PROGRAM:
-      print("dispatcher: FIXME WRITEME program: data=$data");
+      print("dispatcher: FIXME WRITEME program: data=$data tab=$tab");
+            
+      String programName = tab['programName'];
+      TexShaderProgram prog;
+      try {
+        prog = programList.firstWhere((p) { return p.programName == programName; });
+      }
+      on StateError {
+        // not found
+      }
+      if (prog != null) {
+        print("dispatcher: failure redefining program programName=$programName");
+      }
+      else {
+        print("dispatcher: loading programName=$programName");
+        prog = new TexShaderProgram(gl, programName);
+        programList.add(prog);
+        prog.fetch(shaderCache, tab['vertexShader'], tab['fragmentShader']);        
+      }
+      
       break;
       
     case CM_CODE_INSTANCE:
@@ -205,7 +224,7 @@ RenderingContext boot() {
 }
 
 void initSquares(RenderingContext gl) {
-  ShaderProgram squareProgram = new ShaderProgram(gl);
+  ShaderProgram squareProgram = new ShaderProgram(gl, "clip");
   programList.add(squareProgram);
   squareProgram.fetch(shaderCache, "${asset.shader}/clip_vs.txt", "${asset.shader}/clip_fs.txt");
   Model squareModel = new Model.fromJson(gl, "${asset.mesh}/square.json");
@@ -213,7 +232,7 @@ void initSquares(RenderingContext gl) {
   Instance squareInstance = new Instance(squareModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel.addInstance(squareInstance);
 
-  ShaderProgram squareProgram2 = new ShaderProgram(gl);
+  ShaderProgram squareProgram2 = new ShaderProgram(gl, "clip2");
   programList.add(squareProgram2);
   // execute after 2 secs, giving time to first program populate shadeCache
   new Timer(new Duration(seconds:2), () {
@@ -224,7 +243,7 @@ void initSquares(RenderingContext gl) {
   Instance squareInstance2 = new Instance(squareModel2, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel2.addInstance(squareInstance2);
   
-  ShaderProgram squareProgram3 = new ShaderProgram(gl);
+  ShaderProgram squareProgram3 = new ShaderProgram(gl, "clip3");
   programList.add(squareProgram3);
   squareProgram3.fetch(shaderCache, "${asset.shader}/clip_vs.txt", "${asset.shader}/clip3_fs.txt");
   Model squareModel3 = new Model.fromJson(gl, "${asset.mesh}/square3.json");
@@ -234,7 +253,7 @@ void initSquares(RenderingContext gl) {
 }
 
 void addSkybox(RenderingContext gl, Map<String,String> s) {
-  skybox = new SkyboxProgram(gl);
+  skybox = new SkyboxProgram(gl, "skybox");
   skybox.fetch(shaderCache, s['vertexShader'], s['fragmentShader']);
   SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, s['cube'], true, 0);
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, s['faceRight']);
@@ -249,7 +268,7 @@ void addSkybox(RenderingContext gl, Map<String,String> s) {
 }
 
 void initSkybox(RenderingContext gl) {
-  skybox = new SkyboxProgram(gl);
+  skybox = new SkyboxProgram(gl, "skybox");
   skybox.fetch(shaderCache, "${asset.shader}/skybox_vs.txt", "${asset.shader}/skybox_fs.txt");
   SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, "${asset.mesh}/cube.json", true, 0);
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, '${asset.texture}/space_rt.jpg');
@@ -264,7 +283,7 @@ void initSkybox(RenderingContext gl) {
 }
 
 void initAirship(RenderingContext gl) {
-  ShaderProgram prog = new ShaderProgram(gl);
+  ShaderProgram prog = new ShaderProgram(gl, "simple");
   programList.add(prog);
   prog.fetch(shaderCache, "${asset.shader}/simple_vs.txt", "${asset.shader}/simple_fs.txt");
   Model airshipModel = new Model.fromOBJ(gl, "${asset.obj}/airship.obj");
@@ -274,7 +293,7 @@ void initAirship(RenderingContext gl) {
 }
 
 void initAirshipTex(RenderingContext gl) {
-  TexShaderProgram prog = new TexShaderProgram(gl);
+  TexShaderProgram prog = new TexShaderProgram(gl, "simpleTexturizer");
   programList.add(prog);
   prog.fetch(shaderCache, "${asset.shader}/simpleTex_vs.txt", "${asset.shader}/simpleTex_fs.txt");
   
@@ -309,12 +328,12 @@ void initShips(RenderingContext gl) {
 }
 
 void addPicker(RenderingContext gl) {
-  picker = new PickerShader(gl, programList, canvas.width, canvas.height);
+  picker = new PickerShader(gl, "picker", programList, canvas.width, canvas.height);
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 
 void initPicker(RenderingContext gl) {
-  picker = new PickerShader(gl, programList, canvas.width, canvas.height);
+  picker = new PickerShader(gl, "picker", programList, canvas.width, canvas.height);
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 
