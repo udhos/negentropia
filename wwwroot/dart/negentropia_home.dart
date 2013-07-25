@@ -119,13 +119,9 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       
       resetZone(gl);
       
-      String zoneInfo = data;
-      print("dispatcher: zoneInfo=$zoneInfo");
-      if (zoneInfo == "demo") {
+      if (data == "demo") {
         loadDemo(gl);
-        return;
       }
-      print("dispatcher: FIXME WRITEME load non-demo zone: zoneInfo=$zoneInfo");
       break;
       
     case CM_CODE_SKYBOX:
@@ -133,7 +129,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       String skyboxURL = tab['skyboxURL'];
 
       void handleResponse(String response) {
-        //print("dispatcher: skyboxURL=$skyboxURL response=[$response]");
         Map<String,String> skybox = parse(response);
         addSkybox(gl, skybox);
       }
