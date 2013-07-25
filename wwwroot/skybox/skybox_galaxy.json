@@ -1,0 +1,11 @@
+{
+	"vertexShader":		"/shader/skybox_vs.txt",
+	"fragmentShader":	"/shader/skybox_fs.txt",
+	"cube":				"/mesh/cube.json",
+	"faceRight":		"/texture/space_rt.jpg",
+	"faceLeft":			"/texture/space_lf.jpg",
+	"faceUp":			"/texture/space_up.jpg",
+	"faceDown":			"/texture/space_dn.jpg",
+	"faceFront":		"/texture/space_fr.jpg",
+	"faceBack":			"/texture/space_bk.jpg"
+}

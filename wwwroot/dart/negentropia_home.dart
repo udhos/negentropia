@@ -35,6 +35,9 @@ bool showPicking = false;
 Asset asset = new Asset("/");
 SkyboxProgram skybox;
 PickerShader picker;
+double planeNear   = 1.0;
+double planeFar    = 2000.0;
+double skyboxScale = 1000.0;
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -126,10 +129,19 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       break;
       
     case CM_CODE_SKYBOX:
-      print("dispatcher: FIXME WRITEME skybox: data=$data tab=$tab");
+
+      String skyboxURL = tab['skyboxURL'];
+
+      void handleResponse(String response) {
+        //print("dispatcher: skyboxURL=$skyboxURL response=[$response]");
+        Map<String,String> skybox = parse(response);
+        addSkybox(gl, skybox);
+      }
       
-      addSkybox(gl);
-      
+      HttpRequest.getString(skyboxURL)
+        .then(handleResponse)
+        .catchError((e) { print("dispatcher: failure fetching skyboxURL=$skyboxURL: $e"); });
+
       break;
       
     case CM_CODE_PROGRAM:
@@ -226,31 +238,31 @@ void initSquares(RenderingContext gl) {
   squareModel3.addInstance(squareInstance3);  
 }
 
-void addSkybox(RenderingContext gl) {
+void addSkybox(RenderingContext gl, Map<String,String> s) {
   skybox = new SkyboxProgram(gl);
-  skybox.fetch(shaderCache, "${asset.shader}/skybox_vs.txt", "${asset.shader}/skybox_fs.txt");
-  SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, "/mesh/cube.json", true, 0);
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y, '/texture/space_up.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y, '/texture/space_dn.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');  
+  skybox.fetch(shaderCache, s['vertexShader'], s['fragmentShader']);
+  SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, s['cube'], true, 0);
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, s['faceRight']);
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X, s['faceLeft']);
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y, s['faceUp']);
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y, s['faceDown']);
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, s['faceFront']);
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, s['faceBack']);  
   skybox.addModel(skyboxModel);
-  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new Vector3(0.0, 0.0, 0.0), 100.0, false);
+  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new Vector3(0.0, 0.0, 0.0), skyboxScale, false);
   skyboxModel.addInstance(skyboxInstance);
 }
 
 void initSkybox(RenderingContext gl) {
   skybox = new SkyboxProgram(gl);
   skybox.fetch(shaderCache, "${asset.shader}/skybox_vs.txt", "${asset.shader}/skybox_fs.txt");
-  SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, "/mesh/cube.json", true, 0);
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, '/texture/space_rt.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X, '/texture/space_lf.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y, '/texture/space_up.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y, '/texture/space_dn.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, '/texture/space_fr.jpg');
-  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, '/texture/space_bk.jpg');  
+  SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, "${asset.mesh}/cube.json", true, 0);
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, '${asset.texture}/space_rt.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X, '${asset.texture}/space_lf.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y, '${asset.texture}/space_up.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y, '${asset.texture}/space_dn.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, '${asset.texture}/space_fr.jpg');
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, '${asset.texture}/space_bk.jpg');  
   skybox.addModel(skyboxModel);
   SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new Vector3(0.0, 0.0, 0.0), 1.0, true);
   skyboxModel.addInstance(skyboxInstance);
@@ -379,7 +391,7 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   // h = 0.828
   //
   // aspect = canvas.width / canvas.height
-  setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, 1.0, 1000.0);
+  setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, planeNear, planeFar);
 
   cam.render(gameLoop);
 
