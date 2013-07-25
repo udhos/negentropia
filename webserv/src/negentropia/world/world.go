@@ -46,7 +46,7 @@ func auth(ws *websocket.Conn) *server.Player {
 	
 	if (msg.Code != server.CM_CODE_AUTH) {
 		log.Printf("auth: non-auth code: %d", msg.Code)
-		websocket.JSON.Send(ws, server.ClientMsg{server.CM_CODE_FATAL, "auth required"})
+		websocket.JSON.Send(ws, server.ClientMsg{Code: server.CM_CODE_FATAL, Data: "auth required"})
 		return nil
 	}
 	
@@ -55,7 +55,7 @@ func auth(ws *websocket.Conn) *server.Player {
 	session := session.Load(sid)
 	if (session == nil) {
 		log.Printf("Dispatch: Auth: sid=%s: invalid session id", sid)
-		websocket.JSON.Send(ws, server.ClientMsg{server.CM_CODE_FATAL, "bad auth"})
+		websocket.JSON.Send(ws, server.ClientMsg{Code: server.CM_CODE_FATAL, Data: "bad auth"})
 		return nil
 	}
 	
@@ -75,7 +75,7 @@ func sender(p *server.Player) {
 				store.Del(p.Sid)
 	
 				// tells the client the session is destroyed -- otherwise a sane client would hopelessy retry
-				websocket.JSON.Send(p.Websocket, server.ClientMsg{server.CM_CODE_KILL, "session destroyed due to newer login"})
+				websocket.JSON.Send(p.Websocket, server.ClientMsg{Code: server.CM_CODE_KILL, Data: "session destroyed due to newer login"})
 
 				break LOOP
 			case msg := <- p.SendToPlayer: 
@@ -118,7 +118,7 @@ func dispatch(ws *websocket.Conn) {
 		return
 	}
 
-	websocket.JSON.Send(ws, server.ClientMsg{server.CM_CODE_INFO, "welcome " + newPlayer.Email})
+	websocket.JSON.Send(ws, server.ClientMsg{Code: server.CM_CODE_INFO, Data: "welcome " + newPlayer.Email})
 	
 	server.PlayerAddCh <- newPlayer
 	defer func() { server.PlayerDelCh <- newPlayer  }()

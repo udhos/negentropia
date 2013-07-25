@@ -18,7 +18,7 @@ const CM_CODE_INSTANCE = 9;  // server->client: set instance
 
 WebSocket _ws;
 ListQueue<String> _wsQueue = new ListQueue<String>();
-typedef void dispatcherFunc(int code, String data);
+typedef void dispatcherFunc(int code, String data, Map<String,String> tab);
 dispatcherFunc _dispatcher;
 
 void requestZone() {
@@ -126,6 +126,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
     Map msg = parse(e.data);
     int code = msg["Code"];
     String data = msg["Data"];
+    Map<String,String> tab = msg["Tab"];
     
     if (code == CM_CODE_KILL) {
       
@@ -145,7 +146,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
       return;
     }
     
-    _dispatcher(code, data);
+    _dispatcher(code, data, tab);
   });
 }
 

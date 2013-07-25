@@ -25,6 +25,7 @@ const (
 type ClientMsg struct {
 	Code	int
 	Data	string
+	Tab		map[string]string
 }
 
 type Player struct {
@@ -41,6 +42,7 @@ type PlayerMsg struct {
 }
 
 var (
+	//EmptyTable                  = map[string]string {}
 	playerTable	                = map[string]*Player {}
 	PlayerAddCh	chan *Player    = make(chan *Player)
 	PlayerDelCh	chan *Player    = make(chan *Player)
@@ -67,19 +69,19 @@ func input(p *Player, m *ClientMsg) {
 	
 	switch m.Code {
 	case CM_CODE_ECHO:
-		p.SendToPlayer <- &ClientMsg{CM_CODE_INFO, "echo: " + m.Data}
+		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: "echo: " + m.Data}
 	case CM_CODE_REQZ:
 		if loc := store.QueryField(p.Email, "location"); loc == "" {
-			p.SendToPlayer <- &ClientMsg{CM_CODE_ZONE, "demo"}
+			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE, Data: "demo"}
 		} else {
-			p.SendToPlayer <- &ClientMsg{CM_CODE_ZONE, "zone FIXME WRITEME"}
-			p.SendToPlayer <- &ClientMsg{CM_CODE_SKYBOX, "skybox FIXME WRITEME"}
-			p.SendToPlayer <- &ClientMsg{CM_CODE_PROGRAM, "program FIXME WRITEME"}
-			p.SendToPlayer <- &ClientMsg{CM_CODE_INSTANCE, "instance FIXME WRITEME"}
+			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE, Data: "zone FIXME WRITEME"}
+			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_SKYBOX, Tab: map[string]string {"skyboxURL": "skybox_galaxyZero.json"}}
+			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_PROGRAM, Data: "program FIXME WRITEME"}
+			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INSTANCE, Data: "instance FIXME WRITEME"}
 		}
 	default:
 		log.Printf("server.input: unknown code=%d", m.Code);
-		p.SendToPlayer <- &ClientMsg{CM_CODE_INFO, fmt.Sprintf("unknown code=%d", m.Code)}
+		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: fmt.Sprintf("unknown code=%d", m.Code)}
 	}
 }
 

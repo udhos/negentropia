@@ -98,7 +98,7 @@ void loadDemo(RenderingContext gl) {
   initPicker(gl);
 }
 
-void dispatcher(RenderingContext gl, int code, String data) {
+void dispatcher(RenderingContext gl, int code, String data, Map<String,String> tab) {
   
   switch (code) {
     case CM_CODE_INFO:
@@ -126,7 +126,7 @@ void dispatcher(RenderingContext gl, int code, String data) {
       break;
       
     case CM_CODE_SKYBOX:
-      print("dispatcher: FIXME WRITEME skybox: data=$data");
+      print("dispatcher: FIXME WRITEME skybox: data=$data tab=$tab");
       
       addSkybox(gl);
       
@@ -186,8 +186,8 @@ RenderingContext boot() {
   var statusElem = query("#ws_status");
   assert(statusElem != null);
   
-  void dispatch(int code, String data) {
-    dispatcher(gl, code, data);
+  void dispatch(int code, String data, Map<String,String> tab) {
+    dispatcher(gl, code, data, tab);
   }
 
   initWebSocket(wsUri, sid, 1, statusElem, dispatch);
