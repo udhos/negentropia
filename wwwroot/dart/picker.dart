@@ -122,6 +122,10 @@ class PickerShader extends ShaderProgram {
   }
   
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
+    
+    if (!shaderReady) {
+      return;
+    }
 
     if (offscreen) {
       gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, framebuffer);

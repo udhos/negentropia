@@ -49,11 +49,10 @@ RenderingContext initGL(CanvasElement canvas) {
 
   RenderingContext gl;
 
-  print("initGL: FIXME: ERASEME: preserveDrawingBuffer: true");
-  gl = canvas.getContext3d(preserveDrawingBuffer: true);
-  //gl = canvas.getContext3d();
+  //print("initGL: FIXME: ERASEME: preserveDrawingBuffer: true");
+  //gl = canvas.getContext3d(preserveDrawingBuffer: true);
+  gl = canvas.getContext3d();
   if (gl != null) {
-    //print("WebGL: initialized");
     return gl;
   }
 
@@ -154,7 +153,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
         print("dispatcher: failure redefining program programName=$programName");
       }
       else {
-        print("dispatcher: loading programName=$programName");
         prog = new TexShaderProgram(gl, programName);
         programList.add(prog);
         prog.fetch(shaderCache, tab['vertexShader'], tab['fragmentShader']);        
@@ -388,8 +386,12 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
 }
 
 void regularDraw(RenderingContext gl, GameLoopHtml gameLoop) {
-  programList.forEach((p) => p.drawModels(gameLoop, cam, pMatrix));
-  skybox.drawModels(gameLoop, cam, pMatrix);
+  if (programList != null) {
+    programList.where((p) => !p.modelList.isEmpty).forEach((p) => p.drawModels(gameLoop, cam, pMatrix));
+  }
+  if (skybox != null) {
+    skybox.drawModels(gameLoop, cam, pMatrix);
+  }
 }
 
 void draw(RenderingContext gl, GameLoopHtml gameLoop) {
@@ -468,7 +470,7 @@ void mouseLeftClick(RenderingContext gl, Mouse m) {
   int y = canvas.height - m.y;
 
   Uint8List color = new Uint8List(4);
-  readColor("canvas-framebuffer", gl, m.x, y, null, color);
+  //readColor("canvas-framebuffer", gl, m.x, y, null, color);
   readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
   
   PickerInstance pi = mouseClickHit(picker.instanceList, color);
@@ -485,7 +487,9 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   
   cam.update(gameLoop);
     
-  programList.forEach((ShaderProgram p) => p.update(gameLoop));  
+  if (programList != null) {
+    programList.forEach((ShaderProgram p) => p.update(gameLoop));
+  }
 }
 
 void main() {

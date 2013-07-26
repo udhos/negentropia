@@ -64,8 +64,8 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
   if (retrySeconds < 1) {
     retrySeconds = 1;    
   } 
-  else if (retrySeconds > 120) {
-    retrySeconds = 120;
+  else if (retrySeconds > 20) {
+    retrySeconds = 20;
   }
   
   print("websocket: opening: ${wsUri} (retry=${retrySeconds})");
