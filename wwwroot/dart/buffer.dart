@@ -22,7 +22,6 @@ class Instance {
     
     MV.scale(scale, scale, scale);
     
-    //ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;
 
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
@@ -55,19 +54,6 @@ class Model {
   
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
-  //ShaderProgram program; // parent program
-
-  /*
-  Model.copy(Model m) {
-    this.vertexPositionBuffer = m.vertexPositionBuffer;
-    this.vertexIndexBuffer = m.vertexIndexBuffer;
-    this.vertexPositionBufferItemSize = m.vertexPositionBufferItemSize;
-    this.vertexIndexBufferItemSize = m.vertexIndexBufferItemSize;
-    
-    this.pieceList = m.pieceList;
-    // do not copy instance list: this.instanceList = m.instanceList;
-  }
-  */
   
   void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
         
@@ -115,7 +101,7 @@ class Model {
     */
     
     void handleResponse(String response) {
-      //print("Model.fromJson: fetched JSON from URL: $URL: [$response]");
+
       Map m;
       try {
         m = parse(response);
@@ -124,7 +110,6 @@ class Model {
         print("Model.fromJson: failure parsing JSON: $e");
         return;
       }
-      //print("Model.fromJson: JSON parsed: [$m]");
       
       List<int> indices = m['vertInd'];
       List<double> vertCoord = m['vertCoord'];

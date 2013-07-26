@@ -231,9 +231,7 @@ class Obj {
         if (currObj.usemtl != null) {
           print("OBJ: object=${currObj.name} usemtl redefinition: from usemtl=${currObj.usemtl} to usemtl=$new_usemtl");          
         }
-        //usemtl = new_usemtl;
         currObj.usemtl = new_usemtl;
-        //print("part: name=${currObj.name} usemtl=${currObj.usemtl} offset=${currObj.indexFirst}");        
         return;
       }
 

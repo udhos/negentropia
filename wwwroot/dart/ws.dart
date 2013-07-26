@@ -33,7 +33,6 @@ void requestZone() {
 }
 
 void _write(String msg) {
-  //print("websocket: writing: [${msg}]");
   _ws.send(msg);
 }
 
@@ -121,7 +120,6 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
   });
   
   subMessage = _ws.onMessage.listen((MessageEvent e) {
-    //print('websocket: received: [${e.data}]');
     
     Map msg = parse(e.data);
     int code = msg["Code"];

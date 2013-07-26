@@ -37,12 +37,6 @@ class TexShaderProgram extends ShaderProgram {
     // send perspective projection matrix uniform
     gl.uniformMatrix4fv(u_P, false, pMatrix.storage);
     
-    /*
-    // fallback solid color for textured objects
-    List<double> white = [1.0, 1.0, 1.0, 1.0]; // neutral color in multiplication
-    gl.uniform4fv(u_Color, new Float32List.fromList(white));
-    */    
-
     modelList.forEach((TexModel m) => m.drawInstances(gameLoop, this, cam));
 
     // clean up
@@ -69,8 +63,6 @@ class TexModel extends Model {
   Asset asset;
   Map<String,Texture> textureTable;
 
-  //List<TextureInfo> textureInfoList = new List<TextureInfo>();
-  
   /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
     
@@ -122,7 +114,6 @@ class TexModel extends Model {
         if (texFile != null) {
           textureURL = "${asset.texture}/$texFile";
         }
-        //print("loadObj $i: usemtl=$usemtl map_Kd=$texFile textureURL=$textureURL");
         
         TextureInfo texInfo = new TextureInfo(gl, textureTable, textureURL, temporaryColor);
         
@@ -151,7 +142,6 @@ class TexModel extends Model {
   void addTexture(int indexOffset, int indexLength, TextureInfo tex) {
     TexPiece pi = addPiece(indexOffset, indexLength) as TexPiece;
     pi.texInfo = tex;
-    //print("addTexture: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
   }
 
   void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
@@ -185,24 +175,10 @@ class TexInstance extends Instance {
     
     MV.scale(scale, scale, scale);
     
-    //ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;
 
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
     
-    /*
-    (model as TexModel).textureInfoList.forEach((TextureInfo ti) {
-      
-      // set texture sampler
-      int unit = 1;
-      gl.activeTexture(RenderingContext.TEXTURE0 + unit);
-      gl.bindTexture(RenderingContext.TEXTURE_2D, ti.texture);
-      gl.uniform1i((prog as TexShaderProgram).u_Sampler, unit);
-      
-      gl.drawElements(RenderingContext.TRIANGLES, ti.indexNumber, RenderingContext.UNSIGNED_SHORT,
-        ti.indexOffset * model.vertexIndexBufferItemSize);
-    });
-    */
     (model as TexModel).pieceList.forEach((Piece pi) {
       
       TexPiece tp = pi as TexPiece;

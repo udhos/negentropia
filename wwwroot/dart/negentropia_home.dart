@@ -139,7 +139,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       break;
       
     case CM_CODE_PROGRAM:
-      print("dispatcher: FIXME WRITEME program: data=$data tab=$tab");
             
       String programName = tab['programName'];
       TexShaderProgram prog;
@@ -182,7 +181,6 @@ RenderingContext boot() {
   DivElement canvasbox = query("#canvasbox");
   assert(canvasbox != null);  
   canvasbox.append(canvas);  
-  //print("canvas '${canvas.id}' created: width=${canvas.width} height=${canvas.height}");
   
   RenderingContext gl = initGL(canvas);
   if (gl == null) {
@@ -202,7 +200,6 @@ RenderingContext boot() {
     
   var sid = Cookie.getCookie("sid");
   assert(sid != null);
-  //print("session id sid=${sid}");
   
   var wsUri = query("#wsUri").text;
   assert(wsUri != null);
@@ -343,8 +340,6 @@ void resetZone(RenderingContext gl) {
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
     
-  //programList.forEach((ShaderProgram p) => p.initContext(gl, textureTable));
-
   requestZone();  
   
   gl.clearColor(0.5, 0.5, 0.5, 1.0);       // clear color
@@ -381,7 +376,6 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
     print("duration = $duration framerate = $rate fps");
   }
 
-  //render(gl); // render loop
   gameLoop.start();
 }
 
@@ -493,6 +487,8 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 }
 
 void main() {
+  print("main: negentropia dart client starting");
+  
   RenderingContext gl = boot();
   
   if (gl == null) {

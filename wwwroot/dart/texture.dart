@@ -90,7 +90,6 @@ class TextureInfo {
     if (textureName != null) {
       texture = textureTable[textureName];
       if (texture != null) {
-        //print("TextureInfo: texture table HIT: $textureName");
         return;
       }
     }

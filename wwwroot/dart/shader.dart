@@ -54,9 +54,6 @@ class ShaderProgram {
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
       bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
-      //bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS).toString() == "true";
-      //print("DEBUG gl.getShaderParameter: shader=$shaderURL bool=${parameter is bool} parameter=$parameter");
-      //print("FIXME work-around https://code.google.com/p/dart/issues/detail?id=11487");
       if (!parameter) {
         String infoLog = gl.getShaderInfoLog(shader);
         print("compileShader: compilation FAILURE: $shaderURL: info=$infoLog");
@@ -70,7 +67,6 @@ class ShaderProgram {
         print("compileShader: " + shaderURL + ": FIXME: overwriting shader cache");
       }
       shaderCache[shaderURL] = shader;
-      //print("compileShader: " + shaderURL + ": compiled and cached");
       
       return shader;
     }
@@ -88,7 +84,6 @@ class ShaderProgram {
       gl.attachShader(p, fragmentShader);
       gl.linkProgram(p);
       bool parameter = gl.getProgramParameter(p, RenderingContext.LINK_STATUS);
-      //print("DEBUG gl.getProgramParameter: bool=${parameter is bool} parameter=$parameter");
       if (!parameter) {
         String infoLog = gl.getProgramInfoLog(p);
         print("tryLink: shader program link FAILURE: $infoLog");
@@ -97,8 +92,6 @@ class ShaderProgram {
         }
         return;
       }
-
-      //print("ShaderProgram: program linked");      
 
       this.program = p;
       
@@ -119,7 +112,6 @@ class ShaderProgram {
           print("vertexShader: url=$url: error: [$response]");
           return;
         }
-        //print("vertexShader: url=$url: loaded");
         vertexShader = compileShader(url, response, RenderingContext.VERTEX_SHADER);
         tryLink();
       });
@@ -127,7 +119,6 @@ class ShaderProgram {
         print("vertexShader: url=$url: error: [$e]");
       });
       requestVert.send();
-      //print("vertexShader: url=$url: sent, waiting");
     }
 
     void fetchFragmentShader() {
@@ -142,7 +133,6 @@ class ShaderProgram {
           print("fragmentShader: url=$url: error: [$response]");
           return;
         }
-        //print("fragmentShader: loaded: [$response]");
         fragmentShader = compileShader(url, response, RenderingContext.FRAGMENT_SHADER);
         tryLink();      
       });
@@ -154,13 +144,11 @@ class ShaderProgram {
     
     vertexShader = shaderCache[vertexShaderURL];
     if (vertexShader == null) {
-      //print("vertexShader: " + vertexShaderURL + ": cache MISS");
       fetchVertexShader();
     }
     
     fragmentShader = shaderCache[fragmentShaderURL];
     if (fragmentShader == null) {
-      //print("fragmentShader: " + fragmentShaderURL + ": cache MISS");
       fetchFragmentShader();
     }
     

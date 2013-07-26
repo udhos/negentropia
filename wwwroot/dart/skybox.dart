@@ -69,8 +69,6 @@ class SkyboxModel extends Model {
     ImageElement image = new ImageElement();
 
     void handleDone(Event e) {
-      //print("addCubemapFace: handleDone: loaded image from URL: $URL");
-      
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);      
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP, RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP, RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.NEAREST);
@@ -108,18 +106,10 @@ class SkyboxModel extends Model {
 class SkyboxInstance extends Instance {
 
   bool demoAnimate;
-  //int debugCounter = 0;
   
   SkyboxInstance(Model model, Vector3 center, double scale, this.demoAnimate) : super(model, center, scale);
   
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
-    
-    /*
-    ++debugCounter;
-    if (debugCounter % 120 == 0) {
-      print("SkyboxInstance.draw: $debugCounter");
-    }
-    */
     
     setViewMatrix(MV, cam.eye, cam.center, cam.up);
     
@@ -135,7 +125,6 @@ class SkyboxInstance extends Instance {
       MV.scale(scale, scale, scale);      
     }
 
-    //ShaderProgram prog = model.program;
     RenderingContext gl = prog.gl;
 
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
