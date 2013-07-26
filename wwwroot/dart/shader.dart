@@ -42,8 +42,6 @@ class ShaderProgram {
     a_Position = gl.getAttribLocation(program, "a_Position");
     u_MV       = gl.getUniformLocation(program, "u_MV");
     u_P        = gl.getUniformLocation(program, "u_P");      
-
-    //print("ShaderProgram: locations ready");      
   }
   
   void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, String fragmentShaderURL) {

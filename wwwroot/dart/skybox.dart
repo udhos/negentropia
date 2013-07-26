@@ -14,14 +14,12 @@ class SkyboxProgram extends ShaderProgram {
   
   UniformLocation u_Skybox;
   
-  SkyboxProgram(RenderingContext gl, String programName) : super(gl, programName);
+  SkyboxProgram(RenderingContext gl) : super(gl, "skyboxShader");
 
   void getLocations() {
     super.getLocations();
     
     u_Skybox = gl.getUniformLocation(program, "u_Skybox");
-    
-    //print("SkyboxProgram: locations ready");      
   }
 
   void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, fragmentShaderURL) {

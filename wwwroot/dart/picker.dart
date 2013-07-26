@@ -98,7 +98,7 @@ class PickerShader extends ShaderProgram {
     gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
   }
 
-  PickerShader(RenderingContext gl, String programName, this.programList, int width, int height) : super(gl, programName) {
+  PickerShader(RenderingContext gl, this.programList, int width, int height) : super(gl, "pickerShader") {
 
     // copy clickable instances
     programList.forEach((p) {
@@ -117,8 +117,6 @@ class PickerShader extends ShaderProgram {
     super.getLocations();
 
     u_Color = gl.getUniformLocation(program, "u_Color");
-    
-    //print("PickerShader: locations ready");      
   }
   
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {

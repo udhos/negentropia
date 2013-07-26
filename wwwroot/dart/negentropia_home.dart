@@ -248,7 +248,7 @@ void initSquares(RenderingContext gl) {
 }
 
 void addSkybox(RenderingContext gl, Map<String,String> s) {
-  skybox = new SkyboxProgram(gl, "skybox");
+  skybox = new SkyboxProgram(gl);
   skybox.fetch(shaderCache, s['vertexShader'], s['fragmentShader']);
   SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, s['cube'], true, 0);
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, s['faceRight']);
@@ -263,7 +263,7 @@ void addSkybox(RenderingContext gl, Map<String,String> s) {
 }
 
 void initSkybox(RenderingContext gl) {
-  skybox = new SkyboxProgram(gl, "skybox");
+  skybox = new SkyboxProgram(gl);
   skybox.fetch(shaderCache, "${asset.shader}/skybox_vs.txt", "${asset.shader}/skybox_fs.txt");
   SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, "${asset.mesh}/cube.json", true, 0);
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, '${asset.texture}/space_rt.jpg');
@@ -323,12 +323,12 @@ void initShips(RenderingContext gl) {
 }
 
 void addPicker(RenderingContext gl) {
-  picker = new PickerShader(gl, "picker", programList, canvas.width, canvas.height);
+  picker = new PickerShader(gl, programList, canvas.width, canvas.height);
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 
 void initPicker(RenderingContext gl) {
-  picker = new PickerShader(gl, "picker", programList, canvas.width, canvas.height);
+  picker = new PickerShader(gl, programList, canvas.width, canvas.height);
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 

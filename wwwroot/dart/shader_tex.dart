@@ -4,7 +4,6 @@ class TexShaderProgram extends ShaderProgram {
   
   int a_TextureCoord;
   UniformLocation u_Sampler;
-  //UniformLocation u_Color;  
    
   TexShaderProgram(RenderingContext gl, String programName) : super(gl, programName);
   
@@ -19,9 +18,6 @@ class TexShaderProgram extends ShaderProgram {
 
     a_TextureCoord = gl.getAttribLocation(program, "a_TextureCoord");
     u_Sampler      = gl.getUniformLocation(program, "u_Sampler");
-    //u_Color        = gl.getUniformLocation(program, "u_Color");
-    
-    //print("TexShaderProgram: locations ready");      
   }
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
