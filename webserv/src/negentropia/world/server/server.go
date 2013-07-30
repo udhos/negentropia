@@ -83,7 +83,19 @@ func input(p *Player, m *ClientMsg) {
 					"fragmentShader":	"/shader/simpleTex_fs.txt",
 				},
 			}
-			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INSTANCE, Data: "instance FIXME WRITEME"}
+			
+			coord := []float32{0.0, 0.0, 0.0}
+			coordStr := fmt.Sprintf("%f,%f,%f", coord[0], coord[1], coord[2])
+			scale := 1.0
+			scaleStr := fmt.Sprintf("%f", scale)
+			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INSTANCE,
+				Tab: map[string]string {
+					"programName":		"simpleTexturizer",
+					"obj":				"/obj/airship.obj",
+					"coord":			coordStr,
+					"scale":			scaleStr,					
+				},
+			}
 		}
 	default:
 		log.Printf("server.input: unknown code=%d", m.Code);

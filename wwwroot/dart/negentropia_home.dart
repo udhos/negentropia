@@ -94,10 +94,10 @@ void initShowPicking() {
 }
 
 void loadDemo(RenderingContext gl) {
-  initSquares(gl);
-  initShips(gl);
-  initSkybox(gl);
-  initPicker(gl);
+  demoInitSquares(gl);
+  demoInitShips(gl);
+  demoInitSkybox(gl);
+  demoInitPicker(gl);
 }
 
 void dispatcher(RenderingContext gl, int code, String data, Map<String,String> tab) {
@@ -160,7 +160,21 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       break;
       
     case CM_CODE_INSTANCE:
-      print("dispatcher: FIXME WRITEME instance: data=$data");
+      print("dispatcher: FIXME WRITEME instance: data=$data tab=$tab");
+
+      /*
+      TexModel airshipModel2 = new TexModel.fromOBJ(gl, objURL, textureTable, asset);
+      prog.addModel(airshipModel2);
+      TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0, generatePickColor());
+      airshipModel2.addInstance(airshipInstance2);
+      */
+      
+      String programName = tab['programName'];
+      String obj         = tab['obj'];
+      String coord       = tab['coord'];
+      String scale       = tab['scale'];
+      
+      print("dispatcher: instance: programName=$programName obj=$obj coord=$coord scale=$scale");      
       
       print("dispatcher: FIXME WRITEME update picker incrementally instead of fully rebuilding it for each instance");
       addPicker(gl);
@@ -218,7 +232,7 @@ RenderingContext boot() {
   return gl;
 }
 
-void initSquares(RenderingContext gl) {
+void demoInitSquares(RenderingContext gl) {
   ShaderProgram squareProgram = new ShaderProgram(gl, "clip");
   programList.add(squareProgram);
   squareProgram.fetch(shaderCache, "${asset.shader}/clip_vs.txt", "${asset.shader}/clip_fs.txt");
@@ -262,7 +276,7 @@ void addSkybox(RenderingContext gl, Map<String,String> s) {
   skyboxModel.addInstance(skyboxInstance);
 }
 
-void initSkybox(RenderingContext gl) {
+void demoInitSkybox(RenderingContext gl) {
   skybox = new SkyboxProgram(gl);
   skybox.fetch(shaderCache, "${asset.shader}/skybox_vs.txt", "${asset.shader}/skybox_fs.txt");
   SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, "${asset.mesh}/cube.json", true, 0);
@@ -277,7 +291,7 @@ void initSkybox(RenderingContext gl) {
   skyboxModel.addInstance(skyboxInstance);
 }
 
-void initAirship(RenderingContext gl) {
+void demoInitAirship(RenderingContext gl) {
   ShaderProgram prog = new ShaderProgram(gl, "simple");
   programList.add(prog);
   prog.fetch(shaderCache, "${asset.shader}/simple_vs.txt", "${asset.shader}/simple_fs.txt");
@@ -287,7 +301,7 @@ void initAirship(RenderingContext gl) {
   airshipModel.addInstance(airshipInstance);  
 }
 
-void initAirshipTex(RenderingContext gl) {
+void demoInitAirshipTex(RenderingContext gl) {
   TexShaderProgram prog = new TexShaderProgram(gl, "simpleTexturizer");
   programList.add(prog);
   prog.fetch(shaderCache, "${asset.shader}/simpleTex_vs.txt", "${asset.shader}/simpleTex_fs.txt");
@@ -317,9 +331,9 @@ void initAirshipTex(RenderingContext gl) {
   coneModel.addInstance(coneInstance);
 }
 
-void initShips(RenderingContext gl) {
-  initAirship(gl);
-  initAirshipTex(gl);
+void demoInitShips(RenderingContext gl) {
+  demoInitAirship(gl);
+  demoInitAirshipTex(gl);
 }
 
 void addPicker(RenderingContext gl) {
@@ -327,7 +341,7 @@ void addPicker(RenderingContext gl) {
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 
-void initPicker(RenderingContext gl) {
+void demoInitPicker(RenderingContext gl) {
   picker = new PickerShader(gl, programList, canvas.width, canvas.height);
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
