@@ -100,6 +100,17 @@ void loadDemo(RenderingContext gl) {
   demoInitPicker(gl);
 }
 
+TexShaderProgram findTexShader(String programName) {
+  TexShaderProgram prog;
+  try {
+    prog = programList.firstWhere((p) { return p.programName == programName; });
+  }
+  on StateError {
+    // not found
+  }
+  return prog;
+}
+
 void dispatcher(RenderingContext gl, int code, String data, Map<String,String> tab) {
   
   switch (code) {
@@ -141,13 +152,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
     case CM_CODE_PROGRAM:
             
       String programName = tab['programName'];
-      TexShaderProgram prog;
-      try {
-        prog = programList.firstWhere((p) { return p.programName == programName; });
-      }
-      on StateError {
-        // not found
-      }
+      TexShaderProgram prog = findTexShader(programName);
       if (prog != null) {
         print("dispatcher: failure redefining program programName=$programName");
       }
@@ -160,21 +165,28 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       break;
       
     case CM_CODE_INSTANCE:
-      print("dispatcher: FIXME WRITEME instance: data=$data tab=$tab");
 
-      /*
-      TexModel airshipModel2 = new TexModel.fromOBJ(gl, objURL, textureTable, asset);
-      prog.addModel(airshipModel2);
-      TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0, generatePickColor());
-      airshipModel2.addInstance(airshipInstance2);
-      */
-      
       String programName = tab['programName'];
       String obj         = tab['obj'];
       String coord       = tab['coord'];
-      String scale       = tab['scale'];
+      String scale       = tab['scale'];      
+
+      TexShaderProgram prog = findTexShader(programName);
+      if (prog == null) {
+        print("dispatcher: instance: could not find programName=$programName");
+        return;
+      }
+
+      TexModel model = prog.findModel(obj);
+      if (model == null) {
+        model = new TexModel.fromOBJ(gl, obj, textureTable, asset);
+        prog.addModel(model);
+      }
       
-      print("dispatcher: instance: programName=$programName obj=$obj coord=$coord scale=$scale");      
+      List<String> coordStr = coord.split(',');
+      Vector3 vec3 = new Vector3(double.parse(coordStr[0]), double.parse(coordStr[1]), double.parse(coordStr[2]));
+      TexInstance instance = new TexInstance(model, vec3, 1.0, generatePickColor());
+      model.addInstance(instance);
       
       print("dispatcher: FIXME WRITEME update picker incrementally instead of fully rebuilding it for each instance");
       addPicker(gl);

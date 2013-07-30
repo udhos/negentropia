@@ -52,6 +52,9 @@ class Model {
   final int vertexPositionBufferItemSize = 3; // coord x,y,z
   final int vertexIndexBufferItemSize = 2; // size of Uint16Array
   
+  String _name;
+  String get modelName => _name;
+  
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
   
@@ -142,6 +145,8 @@ class Model {
       print("Model.fromOBJ: fetched OBJ from URL: $URL");
       
       Obj obj = new Obj.fromString(URL, response);
+      
+      _name = URL;
       
       loadObj(gl, obj);
       

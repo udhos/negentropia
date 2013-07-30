@@ -157,6 +157,17 @@ class ShaderProgram {
     this.modelList.add(m);
   }
   
+  Model findModel(String name) {
+    Model mod;
+    try {
+      mod = modelList.firstWhere((m) { return m.modelName == name; });
+    }
+    on StateError {
+      // not found
+    }
+    return mod;
+  }
+  
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
     
     if (!shaderReady) {
