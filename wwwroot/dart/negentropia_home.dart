@@ -171,6 +171,10 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       String coord       = tab['coord'];
       String scale       = tab['scale'];      
 
+      List<String> coordList = coord.split(',');
+      Vector3 vec3 = new Vector3(double.parse(coordList[0]), double.parse(coordList[1]), double.parse(coordList[2]));
+      double sc = double.parse(scale);
+      
       TexShaderProgram prog = findTexShader(programName);
       if (prog == null) {
         print("dispatcher: instance: could not find programName=$programName");
@@ -183,9 +187,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
         prog.addModel(model);
       }
       
-      List<String> coordStr = coord.split(',');
-      Vector3 vec3 = new Vector3(double.parse(coordStr[0]), double.parse(coordStr[1]), double.parse(coordStr[2]));
-      TexInstance instance = new TexInstance(model, vec3, 1.0, generatePickColor());
+      TexInstance instance = new TexInstance(model, vec3, sc, generatePickColor());
       model.addInstance(instance);
       
       print("dispatcher: FIXME WRITEME update picker incrementally instead of fully rebuilding it for each instance");

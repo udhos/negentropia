@@ -320,6 +320,7 @@ Map<String,Material> mtllib_parse(String str, String url) {
     "newmtl": _parse_newmtl,
     "map_Kd": _parse_map_Kd,
     "Kd":     _parse_Kd,
+    "map_Bump": _parse_noop,
     "Ns":     _parse_noop,
     "Ka":     _parse_noop,
     "Ks":     _parse_noop,
