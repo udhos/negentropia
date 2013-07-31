@@ -126,6 +126,14 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       break;
       
     case CM_CODE_ZONE:
+
+      if (tab != null) {
+        String culling = tab['backfaceCulling'];
+        if (culling != null) {
+          backfaceCulling = culling.toLowerCase().startsWith("t");
+          print("dispatcher: backfaceCulling=$backfaceCulling");
+        }
+      }
       
       resetZone(gl);
       

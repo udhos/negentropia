@@ -74,7 +74,11 @@ func input(p *Player, m *ClientMsg) {
 		if loc := store.QueryField(p.Email, "location"); loc == "" {
 			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE, Data: "demo"}
 		} else {
-			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE}
+			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE,
+				Tab: map[string]string {
+					"backfaceCulling":	"true",
+				},
+			}
 			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_SKYBOX, Tab: map[string]string {"skyboxURL": "/skybox/skybox_galaxy.json"}}
 			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_PROGRAM,
 				Tab: map[string]string {
