@@ -79,7 +79,7 @@ class Model {
     return pi;
   }
   
-  Model.fromJson(RenderingContext gl, String URL) {
+  Model.fromJson(RenderingContext gl, String URL, bool reverse) {
 
     /*
     // load JSON from URL
@@ -115,6 +115,9 @@ class Model {
       }
       
       List<int> indices = m['vertInd'];
+      if (reverse) {
+        indices = indices.reversed.toList();
+      }
       List<double> vertCoord = m['vertCoord'];
       
       addPiece(0, indices.length); // single-piece model

@@ -58,7 +58,7 @@ class SkyboxModel extends Model {
   Texture cubemapTexture;
   
   SkyboxModel.fromJson(RenderingContext gl, String URL, bool reverse, num rescale):
-    super.fromJson(gl, URL) {
+    super.fromJson(gl, URL, reverse) {
     cubemapTexture = gl.createTexture();
   }
     

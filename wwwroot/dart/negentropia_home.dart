@@ -132,6 +132,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
         if (culling != null) {
           backfaceCulling = culling.toLowerCase().startsWith("t");
           print("dispatcher: backfaceCulling=$backfaceCulling");
+          updateCulling(gl);
         }
       }
       
@@ -258,7 +259,7 @@ void demoInitSquares(RenderingContext gl) {
   ShaderProgram squareProgram = new ShaderProgram(gl, "clip");
   programList.add(squareProgram);
   squareProgram.fetch(shaderCache, "${asset.shader}/clip_vs.txt", "${asset.shader}/clip_fs.txt");
-  Model squareModel = new Model.fromJson(gl, "${asset.mesh}/square.json");
+  Model squareModel = new Model.fromJson(gl, "${asset.mesh}/square.json", false);
   squareProgram.addModel(squareModel);
   Instance squareInstance = new Instance(squareModel, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel.addInstance(squareInstance);
@@ -269,7 +270,7 @@ void demoInitSquares(RenderingContext gl) {
   new Timer(new Duration(seconds:2), () {
     squareProgram2.fetch(shaderCache, "${asset.shader}/clip_vs.txt", "${asset.shader}/clip2_fs.txt");
   });
-  Model squareModel2 = new Model.fromJson(gl, "${asset.mesh}/square2.json");
+  Model squareModel2 = new Model.fromJson(gl, "${asset.mesh}/square2.json", false);
   squareProgram2.addModel(squareModel2);
   Instance squareInstance2 = new Instance(squareModel2, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel2.addInstance(squareInstance2);
@@ -277,7 +278,7 @@ void demoInitSquares(RenderingContext gl) {
   ShaderProgram squareProgram3 = new ShaderProgram(gl, "clip3");
   programList.add(squareProgram3);
   squareProgram3.fetch(shaderCache, "${asset.shader}/clip_vs.txt", "${asset.shader}/clip3_fs.txt");
-  Model squareModel3 = new Model.fromJson(gl, "${asset.mesh}/square3.json");
+  Model squareModel3 = new Model.fromJson(gl, "${asset.mesh}/square3.json", false);
   squareProgram3.addModel(squareModel3);
   Instance squareInstance3 = new Instance(squareModel3, new Vector3(0.0, 0.0, 0.0), 1.0);
   squareModel3.addInstance(squareInstance3);  
@@ -374,6 +375,17 @@ void resetZone(RenderingContext gl) {
   textureTable = new Map<String,Texture>(); // drop existing texture table  
 }
 
+void updateCulling(RenderingContext gl) {
+  if (backfaceCulling) {
+    gl.frontFace(RenderingContext.CCW);
+    gl.cullFace(RenderingContext.BACK);
+    gl.enable(RenderingContext.CULL_FACE);
+    return;
+  }  
+  
+  gl.disable(RenderingContext.CULL_FACE);
+}
+
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
     
   requestZone();  
@@ -387,12 +399,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   gl.viewport(0, 0, canvas.width, canvas.height);
   canvasAspect = canvas.width / canvas.height; // save aspect for render loop mat4.perspective
 
-  // enable backface culling
-  if (backfaceCulling) {
-    gl.frontFace(RenderingContext.CCW);
-    gl.cullFace(RenderingContext.BACK);
-    gl.enable(RenderingContext.CULL_FACE);
-  }
+  updateCulling(gl);
   
   if (fullRateFrames > 0) {
     print("firing $fullRateFrames frames at full rate");
