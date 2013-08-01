@@ -5,6 +5,7 @@ package store
 	s:xxx	session id
 	c:xxx	signup confirmation id
 	r:xxx	reset password confirmation id
+	z:xxx	zone id
 	i:xxx	id generator		session.go		i:sessionIdGenerator
 								signup.go		i:confirmationIdGenerator
 								password.go		i:resetPassConfirmationIdGenerator

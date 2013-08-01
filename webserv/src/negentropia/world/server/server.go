@@ -3,6 +3,7 @@ package server
 import (
 	"log"
 	"fmt"
+	"strings"
 
 	"code.google.com/p/go.net/websocket"
 	
@@ -64,6 +65,50 @@ func serve() {
 	}
 }
 
+func sendZoneStatic(p *Player) {
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE,
+		Tab: map[string]string {
+			"backfaceCulling":	"true",
+		},
+	}
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_SKYBOX, Tab: map[string]string {"skyboxURL": "/skybox/skybox_galaxy.json"}}
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_PROGRAM,
+		Tab: map[string]string {
+			"programName":		"simpleTexturizer",
+			"vertexShader":		"/shader/simpleTex_vs.txt",
+			"fragmentShader":	"/shader/simpleTex_fs.txt",
+		},
+	}
+			
+	coord := []float32{0.0, 0.0, 0.0}
+	coordStr := fmt.Sprintf("%f,%f,%f", coord[0], coord[1], coord[2])
+	scale := 1.0
+	scaleStr := fmt.Sprintf("%f", scale)
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INSTANCE,
+		Tab: map[string]string {
+			"programName":		"simpleTexturizer",
+			"obj":				"/obj/airship.obj",
+			"coord":			coordStr,
+			"scale":			scaleStr,					
+			},
+	}
+}
+
+func sendZoneDynamic(p *Player, loc string) {
+	m := "server.sendZoneDynamic: FIXME WRITEME"
+	log.Printf(m)
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: m}
+}
+
+func sendZone(p *Player, loc string) {
+	if strings.HasPrefix(loc, "z:") {
+		sendZoneDynamic(p, loc)
+		return
+	}
+	
+	sendZoneStatic(p)
+}
+
 func input(p *Player, m *ClientMsg) {
 	log.Printf("server.input: %s: %q", p.Email, m)
 	
@@ -74,35 +119,10 @@ func input(p *Player, m *ClientMsg) {
 		if loc := store.QueryField(p.Email, "location"); loc == "" {
 			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE, Data: "demo"}
 		} else {
-			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE,
-				Tab: map[string]string {
-					"backfaceCulling":	"true",
-				},
-			}
-			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_SKYBOX, Tab: map[string]string {"skyboxURL": "/skybox/skybox_galaxy.json"}}
-			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_PROGRAM,
-				Tab: map[string]string {
-					"programName":		"simpleTexturizer",
-					"vertexShader":		"/shader/simpleTex_vs.txt",
-					"fragmentShader":	"/shader/simpleTex_fs.txt",
-				},
-			}
-			
-			coord := []float32{0.0, 0.0, 0.0}
-			coordStr := fmt.Sprintf("%f,%f,%f", coord[0], coord[1], coord[2])
-			scale := 1.0
-			scaleStr := fmt.Sprintf("%f", scale)
-			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INSTANCE,
-				Tab: map[string]string {
-					"programName":		"simpleTexturizer",
-					"obj":				"/obj/airship.obj",
-					"coord":			coordStr,
-					"scale":			scaleStr,					
-				},
-			}
+			sendZone(p, loc)
 		}
 	default:
-		log.Printf("server.input: unknown code=%d", m.Code);
+		log.Printf("server.input: unknown code=%d", m.Code)
 		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: fmt.Sprintf("unknown code=%d", m.Code)}
 	}
 }
