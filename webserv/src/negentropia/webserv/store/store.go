@@ -6,6 +6,9 @@ package store
 	c:xxx	signup confirmation id
 	r:xxx	reset password confirmation id
 	z:xxx	zone id
+	p:xxx   shader program id
+	m:xxx	model instance
+	l:xxx	instance list
 	i:xxx	id generator		session.go		i:sessionIdGenerator
 								signup.go		i:confirmationIdGenerator
 								password.go		i:resetPassConfirmationIdGenerator
@@ -60,6 +63,8 @@ var (
 	getReq         chan string        = make(chan string)
 	getRep         chan string        = make(chan string)
 	delFieldReq    chan KeyField      = make(chan KeyField)
+	querySetReq    chan string        = make(chan string)
+	querySetRep    chan []string      = make(chan []string)
 )
 
 func serve() {
@@ -88,6 +93,8 @@ func serve() {
 				getRep <- redisClient.Get(key).Val()
 			case r := <- delFieldReq:
 				redisClient.HDel(r.key, r.field)
+			case key := <- querySetReq:
+				querySetRep <- redisClient.SMembers(key).Val()
 		}
 	}
 }
@@ -145,4 +152,9 @@ func Get(key string) string {
 
 func DelField(key, field string) {
 	delFieldReq <- KeyField{key, field} // send key,field
+}
+
+func QuerySet(key string) []string {
+	querySetReq <- key // send key,field
+	return <- querySetRep // read reply and return it
 }

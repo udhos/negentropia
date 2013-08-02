@@ -159,6 +159,8 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       break;
       
     case CM_CODE_PROGRAM:
+      
+      print("program: tab=$tab");
             
       String programName = tab['programName'];
       TexShaderProgram prog = findTexShader(programName);

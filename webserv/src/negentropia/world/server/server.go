@@ -66,13 +66,20 @@ func serve() {
 }
 
 func sendZoneStatic(p *Player) {
-	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE,
+	p.SendToPlayer <- &ClientMsg{
+		Code: CM_CODE_ZONE,
 		Tab: map[string]string {
 			"backfaceCulling":	"true",
 		},
 	}
-	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_SKYBOX, Tab: map[string]string {"skyboxURL": "/skybox/skybox_galaxy.json"}}
-	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_PROGRAM,
+	p.SendToPlayer <- &ClientMsg{
+		Code: CM_CODE_SKYBOX,
+		Tab: map[string]string {
+			"skyboxURL": "/skybox/skybox_galaxy.json",
+		},
+	}
+	p.SendToPlayer <- &ClientMsg{
+		Code: CM_CODE_PROGRAM,
 		Tab: map[string]string {
 			"programName":		"simpleTexturizer",
 			"vertexShader":		"/shader/simpleTex_vs.txt",
@@ -84,20 +91,73 @@ func sendZoneStatic(p *Player) {
 	coordStr := fmt.Sprintf("%f,%f,%f", coord[0], coord[1], coord[2])
 	scale := 1.0
 	scaleStr := fmt.Sprintf("%f", scale)
-	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INSTANCE,
+	p.SendToPlayer <- &ClientMsg{
+		Code: CM_CODE_INSTANCE,
 		Tab: map[string]string {
 			"programName":		"simpleTexturizer",
 			"obj":				"/obj/airship.obj",
 			"coord":			coordStr,
 			"scale":			scaleStr,					
-			},
+		},
 	}
 }
 
 func sendZoneDynamic(p *Player, loc string) {
-	m := "server.sendZoneDynamic: FIXME WRITEME"
-	log.Printf(m)
-	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: m}
+
+	if culling := store.QueryField(loc, "backfaceCulling"); culling != "" {	
+		p.SendToPlayer <- &ClientMsg{
+			Code: CM_CODE_ZONE,
+			Tab: map[string]string {
+				"backfaceCulling":	culling,
+			},
+		}	
+	}
+
+	if skybox := store.QueryField(loc, "skyboxURL"); skybox != "" {	
+		p.SendToPlayer <- &ClientMsg{
+			Code: CM_CODE_SKYBOX,
+			Tab: map[string]string {
+				"skyboxURL":	skybox,
+			},
+		}	
+	}
+
+	if program := store.QueryField(loc, "programName"); program != "" {	
+		vertex := store.QueryField(program, "vertexShader")
+		fragment := store.QueryField(program, "fragmentShader")
+		
+		p.SendToPlayer <- &ClientMsg{
+			Code: CM_CODE_PROGRAM,
+			Tab: map[string]string {
+				"programName":		program,
+				"vertexShader":		vertex,
+				"fragmentShader":	fragment,
+			},
+		}	
+	}
+
+	if instanceList := store.QueryField(loc, "instanceList"); instanceList != "" {	
+		instances := store.QuerySet(instanceList);
+
+		for _, inst := range instances {
+		
+			program := store.QueryField(inst, "programName")
+			obj := store.QueryField(inst, "obj")
+			coord := store.QueryField(inst, "coord")
+			scale := store.QueryField(inst, "scale")
+		
+			p.SendToPlayer <- &ClientMsg{
+				Code: CM_CODE_INSTANCE,
+				Tab: map[string]string {
+					"programName":		program,
+					"obj":				obj,
+					"coord":			coord,
+					"scale":			scale,					
+				},
+			}
+		
+		}
+	}
 }
 
 func sendZone(p *Player, loc string) {
