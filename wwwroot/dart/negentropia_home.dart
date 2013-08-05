@@ -5,6 +5,7 @@ import 'dart:web_gl';
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:json';
+import 'dart:collection';
 
 import 'package:stats/stats.dart';
 import 'package:vector_math/vector_math.dart';
@@ -21,6 +22,7 @@ import 'obj.dart';
 import 'asset.dart';
 
 CanvasElement canvas;
+DivElement messagebox;
 double canvasAspect;
 ShaderProgram shaderProgram;
 bool debugLostContext = true;
@@ -111,11 +113,49 @@ TexShaderProgram findTexShader(String programName) {
   return prog;
 }
 
+int maxList = 3;
+ListQueue<String> msgList = new ListQueue<String>(maxList);
+
+void messageUser(String m) {
+  print("messageUser: $m");
+  
+  msgList.add(m);
+  
+  if (msgList.length > maxList) {
+    msgList.removeFirst();
+  }
+  
+  while (messagebox.children.length > 0) {
+    messagebox.children[0].remove();
+  }
+  
+  int i = 10;
+  
+  msgList.forEach((m) {
+    DivElement d = new DivElement();
+    
+    d.text = m;
+    
+    i += 30;
+    d.style.zIndex = "1";
+    d.style.position = "absolute";
+    d.style.color = "green";
+    d.style.width = "400px";
+    d.style.height = "30px";
+    d.style.left = "10px";
+    d.style.top = "${i}px";
+    
+    messagebox.children.add(d);
+  });
+}
+
 void dispatcher(RenderingContext gl, int code, String data, Map<String,String> tab) {
   
   switch (code) {
     case CM_CODE_INFO:
+      
       print("dispatcher: server sent info: $data");
+      
       if (data.startsWith("welcome")) {
         // test echo loop thru server
         var m = new Map();
@@ -203,7 +243,11 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       addPicker(gl);
       
       break;
-      
+
+    case CM_CODE_MESSAGE:
+      messageUser(data);
+      break;      
+
     default:
       print("dispatcher: unknown code=$code");
   }  
@@ -217,8 +261,8 @@ RenderingContext boot() {
   canvas.height = 500;
   DivElement canvasbox = query("#canvasbox");
   assert(canvasbox != null);  
-  canvasbox.append(canvas);  
-  
+  canvasbox.append(canvas);
+    
   RenderingContext gl = initGL(canvas);
   if (gl == null) {
     canvas.remove();
@@ -232,6 +276,9 @@ RenderingContext boot() {
     canvasbox.style.backgroundColor = 'lightblue';    
     return null;
   }
+
+  messagebox = new DivElement();
+  canvasbox.append(messagebox);
   
   initShowPicking();
     

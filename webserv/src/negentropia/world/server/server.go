@@ -21,6 +21,7 @@ const (
     CM_CODE_SKYBOX   = 7  // server->client: set full skybox
     CM_CODE_PROGRAM  = 8  // server->client: set shader program
     CM_CODE_INSTANCE = 9  // server->client: set instance	
+    CM_CODE_MESSAGE  = 10 // server->client: message for user
 )
 
 type ClientMsg struct {
@@ -158,6 +159,12 @@ func sendZoneDynamic(p *Player, loc string) {
 		
 		}
 	}
+	
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: "line 1"}
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: "line 2"}
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: "line 3"}
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: "line 4"}
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: "line 5"}
 }
 
 func sendZone(p *Player, loc string) {
