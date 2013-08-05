@@ -24,6 +24,7 @@ void initDebugLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHtm
   canvas.onWebGlContextLost.listen(onContextLost);
   canvas.onWebGlContextRestored.listen(onContextRestored);
   
+  /*
   LoseContext ext;
   print("initDebugLostContext: FIXME: work-around for 'dart2js -c' bug affecting Firefox 22");
   try {
@@ -32,6 +33,12 @@ void initDebugLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHtm
   catch (e) {
     print("getExtension('WEBGL_lose_context'): exception: $e");
   }
+  if (ext == null) {
+    print("WEBGL_lose_context: NOT AVAILABLE");
+    return;
+  }
+  */
+  LoseContext ext = gl.getExtension('WEBGL_lose_context');
   if (ext == null) {
     print("WEBGL_lose_context: NOT AVAILABLE");
     return;
