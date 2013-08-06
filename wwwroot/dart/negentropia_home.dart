@@ -113,37 +113,43 @@ TexShaderProgram findTexShader(String programName) {
   return prog;
 }
 
-int maxList = 3;
+int maxList = 10;
 ListQueue<String> msgList = new ListQueue<String>(maxList);
 
 void messageUser(String m) {
-  print("messageUser: $m");
   
   msgList.add(m);
   
-  if (msgList.length > maxList) {
+  while (msgList.length > maxList) {
     msgList.removeFirst();
   }
   
-  while (messagebox.children.length > 0) {
-    messagebox.children[0].remove();
-  }
+  messagebox.children.clear();
+
+  int w = 200;
+  int h = 20;
+  int left = 10;
+  int top = 10;
   
-  int i = 10;
-  
+  left += canvas.offsetLeft;
+  top += canvas.offsetTop;
+
+  int i = 0;
   msgList.forEach((m) {
     DivElement d = new DivElement();
-    
+    d.id = "messagebox_line${i}";
     d.text = m;
     
-    i += 30;
     d.style.zIndex = "1";
     d.style.position = "absolute";
-    d.style.color = "green";
-    d.style.width = "400px";
-    d.style.height = "30px";
-    d.style.left = "10px";
-    d.style.top = "${i}px";
+    d.style.color = "lightgreen";
+    d.style.background = "rgba(50,50,50,0.7)";
+    d.style.width = "${w}px";
+    d.style.height = "${h}px";
+    d.style.left = "${left}px";
+    d.style.top = "${top}px";
+    
+    top += h;    
     
     messagebox.children.add(d);
   });
@@ -278,6 +284,7 @@ RenderingContext boot() {
   }
 
   messagebox = new DivElement();
+  messagebox.id = 'messagebox';
   canvasbox.append(messagebox);
   
   initShowPicking();
