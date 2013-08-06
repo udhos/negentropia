@@ -125,32 +125,12 @@ void messageUser(String m) {
   }
   
   messagebox.children.clear();
-
-  int w = 200;
-  int h = 20;
-  int left = 10;
-  int top = 10;
   
-  left += canvas.offsetLeft;
-  top += canvas.offsetTop;
-
   int i = 0;
   msgList.forEach((m) {
     DivElement d = new DivElement();
     d.id = "messagebox_line${i}";
     d.text = m;
-    
-    d.style.zIndex = "1";
-    d.style.position = "absolute";
-    d.style.color = "lightgreen";
-    d.style.background = "rgba(50,50,50,0.7)";
-    d.style.width = "${w}px";
-    d.style.height = "${h}px";
-    d.style.left = "${left}px";
-    d.style.top = "${top}px";
-    
-    top += h;    
-    
     messagebox.children.add(d);
   });
 }
@@ -259,6 +239,27 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
   }  
 }
 
+DivElement createMessagebox(String id, CanvasElement c) {
+  
+  DivElement mbox = new DivElement();
+  mbox.id = id;
+  
+  int left = 10 + canvas.offsetLeft;
+  int top  = 28 + canvas.offsetTop;
+
+  mbox.style.border = '2px solid #FFF';
+  mbox.style.zIndex = "1";
+  mbox.style.position = "absolute";
+  mbox.style.color = "lightgreen";
+  mbox.style.background = "rgba(50,50,50,0.7)";
+  mbox.style.left = "${left}px";
+  mbox.style.top = "${top}px";
+  mbox.style.textAlign = "left";
+  mbox.style.padding = "4px";
+  
+  return mbox;
+}
+
 RenderingContext boot() {
   canvas = new CanvasElement();
   assert(canvas != null);
@@ -283,8 +284,8 @@ RenderingContext boot() {
     return null;
   }
 
-  messagebox = new DivElement();
-  messagebox.id = 'messagebox';
+  
+  messagebox = createMessagebox('messagebox', canvas);
   canvasbox.append(messagebox);
   
   initShowPicking();
