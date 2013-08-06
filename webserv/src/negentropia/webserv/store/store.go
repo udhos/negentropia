@@ -17,7 +17,7 @@ package store
 
 import (
 	"log"
-	
+
 	"github.com/vmihailenco/redis"
 )
 
@@ -43,10 +43,10 @@ type KeyExpire struct {
 }
 
 var (
-	redisPassword  string        = ""
-	redisDb        int64         = -1
-	redisClient   *redis.Client
-	redisExpire    int64         = 2 * 86400 // expire keys after 2 days
+	redisPassword  string = ""
+	redisDb        int64  = -1
+	redisClient    *redis.Client
+	redisExpire    int64              = 2 * 86400 // expire keys after 2 days
 	queryFieldReq  chan KeyField      = make(chan KeyField)
 	queryFieldRep  chan string        = make(chan string)
 	setFieldReq    chan KeyFieldValue = make(chan KeyFieldValue)
@@ -54,7 +54,7 @@ var (
 	existsReq      chan string        = make(chan string)
 	existsRep      chan bool          = make(chan bool)
 	incrReq        chan string        = make(chan string)
-	incrRep        chan int64         = make(chan int64)	
+	incrRep        chan int64         = make(chan int64)
 	delReq         chan string        = make(chan string)
 	fieldExistsReq chan KeyField      = make(chan KeyField)
 	fieldExistsRep chan bool          = make(chan bool)
@@ -71,30 +71,30 @@ func serve() {
 	log.Printf("store.serve: goroutine started")
 	for {
 		select {
-			case r := <- queryFieldReq:
-				queryFieldRep <- redisClient.HGet(r.key, r.field).Val()
-			case r := <- setFieldReq:
-				redisClient.HSet(r.key, r.field, r.value)
-			case r := <- expReq:
-				redisClient.Expire(r.key, r.expire)
-			case key := <- existsReq:
-				existsRep <- redisClient.Exists(key).Val()
-			case key := <- incrReq:
-				incrRep <- redisClient.Incr(key).Val()
-			case key := <- delReq:
-				redisClient.Del(key)
-			case r := <- fieldExistsReq:
-				fieldExistsRep <- redisClient.HExists(r.key, r.field).Val()
-			case r := <- setReq:
-				redisClient.Set(r.key, r.value)
-			case key := <- persistReq:
-				redisClient.Persist(key)
-			case key := <- getReq:
-				getRep <- redisClient.Get(key).Val()
-			case r := <- delFieldReq:
-				redisClient.HDel(r.key, r.field)
-			case key := <- querySetReq:
-				querySetRep <- redisClient.SMembers(key).Val()
+		case r := <-queryFieldReq:
+			queryFieldRep <- redisClient.HGet(r.key, r.field).Val()
+		case r := <-setFieldReq:
+			redisClient.HSet(r.key, r.field, r.value)
+		case r := <-expReq:
+			redisClient.Expire(r.key, r.expire)
+		case key := <-existsReq:
+			existsRep <- redisClient.Exists(key).Val()
+		case key := <-incrReq:
+			incrRep <- redisClient.Incr(key).Val()
+		case key := <-delReq:
+			redisClient.Del(key)
+		case r := <-fieldExistsReq:
+			fieldExistsRep <- redisClient.HExists(r.key, r.field).Val()
+		case r := <-setReq:
+			redisClient.Set(r.key, r.value)
+		case key := <-persistReq:
+			redisClient.Persist(key)
+		case key := <-getReq:
+			getRep <- redisClient.Get(key).Val()
+		case r := <-delFieldReq:
+			redisClient.HDel(r.key, r.field)
+		case key := <-querySetReq:
+			querySetRep <- redisClient.SMembers(key).Val()
 		}
 	}
 }
@@ -107,7 +107,7 @@ func Init(serverAddr string) {
 
 func QueryField(key, field string) string {
 	queryFieldReq <- KeyField{key, field} // send key,field
-	return <- queryFieldRep // read reply and return it
+	return <-queryFieldRep                // read reply and return it
 }
 
 func SetField(key, field, value string) {
@@ -119,13 +119,13 @@ func Expire(key string, expire int64) {
 }
 
 func Exists(key string) bool {
-	existsReq <- key // send key
-	return <- existsRep // read reply and return it
+	existsReq <- key   // send key
+	return <-existsRep // read reply and return it
 }
 
 func Incr(key string) int64 {
-	incrReq <- key // send key
-	return <- incrRep // read reply and return it
+	incrReq <- key   // send key
+	return <-incrRep // read reply and return it
 }
 
 func Del(key string) {
@@ -134,7 +134,7 @@ func Del(key string) {
 
 func FieldExists(key, field string) bool {
 	fieldExistsReq <- KeyField{key, field} // send key,field
-	return <- fieldExistsRep // read reply and return it
+	return <-fieldExistsRep                // read reply and return it
 }
 
 func Set(key, value string) {
@@ -146,8 +146,8 @@ func Persist(key string) {
 }
 
 func Get(key string) string {
-	getReq <- key // send key
-	return <- getRep // read reply and return it
+	getReq <- key   // send key
+	return <-getRep // read reply and return it
 }
 
 func DelField(key, field string) {
@@ -155,6 +155,6 @@ func DelField(key, field string) {
 }
 
 func QuerySet(key string) []string {
-	querySetReq <- key // send key,field
-	return <- querySetRep // read reply and return it
+	querySetReq <- key   // send key,field
+	return <-querySetRep // read reply and return it
 }

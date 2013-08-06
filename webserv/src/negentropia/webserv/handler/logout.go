@@ -10,7 +10,7 @@ import (
 	//"io/ioutil"
 	"net/http"
 	//"encoding/json"
-	
+
 	"negentropia/webserv/cfg"
 	"negentropia/webserv/session"
 )
@@ -22,6 +22,6 @@ func Logout(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	if s != nil {
 		session.Delete(w, s)
 	}
-	
+
 	http.Redirect(w, r, cfg.LoginPath(), http.StatusFound)
 }

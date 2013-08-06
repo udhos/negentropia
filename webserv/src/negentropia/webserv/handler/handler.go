@@ -4,12 +4,12 @@ import (
 	//"log"
 	"path"
 	"strings"
-		
+
 	"negentropia/webserv/session"
 )
 
 var (
-	templateRootPath  string
+	templateRootPath string
 	GoogleId         *string
 	GoogleSecret     *string
 	FacebookId       *string
@@ -32,7 +32,7 @@ func accountLabel(s *session.Session) string {
 	if s == nil {
 		return ""
 	}
-	
+
 	return s.ProfileName + " (" + s.ProfileEmail + ")"
 }
 

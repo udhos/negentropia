@@ -11,10 +11,10 @@ import (
 	"net/http"
 
 	"negentropia/webserv/cfg"
+	"negentropia/webserv/configflag"
 	"negentropia/webserv/handler"
 	"negentropia/webserv/session"
 	"negentropia/webserv/store"
-	"negentropia/webserv/configflag"
 	"negentropia/webserv/util"
 )
 
@@ -152,7 +152,7 @@ func main() {
 	}
 
 	http.HandleFunc(cfg.HomePath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.HomeDart) })
-	http.HandleFunc(cfg.HomeJSPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.HomeJS) })	
+	http.HandleFunc(cfg.HomeJSPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.HomeJS) })
 	http.HandleFunc(cfg.LogoutPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) })
 	http.HandleFunc(cfg.LoginPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) })
 	http.HandleFunc(cfg.LoginAuthPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) })
@@ -168,6 +168,6 @@ func main() {
 	http.HandleFunc(cfg.ResetPassConfirmProcessPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.ResetPassConfirmProcess) })
 
 	log.Printf("webserv boot complete")
-	
+
 	serve(listenAddr)
 }

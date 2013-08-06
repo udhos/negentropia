@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"strings"
 	"net/smtp"
+	"strings"
 )
 
 var (

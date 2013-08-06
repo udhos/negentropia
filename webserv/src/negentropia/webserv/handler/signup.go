@@ -7,40 +7,40 @@ import (
 	"log"
 	//"time"
 	//"io/ioutil"
-	"strings"
-	"strconv"
-	"net/smtp"
 	"net/http"
+	"net/smtp"
+	"strconv"
+	"strings"
 	//"crypto/sha1"
 	"html/template"
 
 	"negentropia/webserv/cfg"
-	"negentropia/webserv/util"
-	"negentropia/webserv/store"	
 	"negentropia/webserv/session"
+	"negentropia/webserv/store"
+	"negentropia/webserv/util"
 )
 
 type SignupPage struct {
-	HomePath		  string
-	SignupPath		  string	
-	LoginPath		  string
-	LogoutPath		  string
+	HomePath          string
+	SignupPath        string
+	LoginPath         string
+	LogoutPath        string
 	SignupProcessPath string
-	ConfirmPath       string	
+	ConfirmPath       string
 
-	EmailValue        string
-	BadEmailMsg       string
-	BadPasswdMsg      string
-	BadConfirmMsg     string
-	BadSignupMsg      string
-	SignupDoneMsg     string	
-	
-	Account         string
-	ShowNavAccount  bool
-	ShowNavHome     bool
-	ShowNavSignup	bool
-	ShowNavLogin    bool
-	ShowNavLogout   bool	
+	EmailValue    string
+	BadEmailMsg   string
+	BadPasswdMsg  string
+	BadConfirmMsg string
+	BadSignupMsg  string
+	SignupDoneMsg string
+
+	Account        string
+	ShowNavAccount bool
+	ShowNavHome    bool
+	ShowNavSignup  bool
+	ShowNavLogin   bool
+	ShowNavLogout  bool
 }
 
 var (
@@ -48,17 +48,17 @@ var (
 )
 
 func sendSignup(w http.ResponseWriter, p SignupPage) error {
-	p.HomePath          = cfg.HomePath()
-	p.SignupPath        = cfg.SignupPath()	
-	p.LoginPath         = cfg.LoginPath()
-	p.LogoutPath        = cfg.LogoutPath()
+	p.HomePath = cfg.HomePath()
+	p.SignupPath = cfg.SignupPath()
+	p.LoginPath = cfg.LoginPath()
+	p.LogoutPath = cfg.LogoutPath()
 	p.SignupProcessPath = cfg.SignupProcessPath()
-	p.ConfirmPath       = cfg.ConfirmPath()
+	p.ConfirmPath = cfg.ConfirmPath()
 
 	p.ShowNavSignup = false
-	
+
 	// FIXME: we're loading template every time
-    t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("signup.tpl"))
+	t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("signup.tpl"))
 	if err != nil {
 		return err
 	}
@@ -73,10 +73,10 @@ func Signup(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	log.Printf("handler.Signup url=%s", path)
 
 	account := accountLabel(s)
-	
+
 	email := formatEmail(r.FormValue("Email"))
-	
-	if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,EmailValue:email}); err != nil {
+
+	if err := sendSignup(w, SignupPage{Account: account, ShowNavAccount: true, ShowNavHome: true, EmailValue: email}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -118,7 +118,7 @@ func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, s
 		"Content-Type: text/html; charset=ISO-8859-1\r\n" +
 		"\r\n" +
 		"%s" +
-		"\r\n" + 
+		"\r\n" +
 		"--" + boundary + "--" +
 		"\r\n"
 
@@ -175,7 +175,7 @@ func sendMail(email, confId string) {
 
 	msgPlain := fmt.Sprintf(mPlain, email, confId, clickURL, confURL)
 	msgHtml := fmt.Sprintf(mHtml, email, confId, clickURL, clickURL, confURL, confURL)
-	
+
 	sendSmtp(cfg.SmtpAuthUser, cfg.SmtpAuthPass, cfg.SmtpAuthServer, cfg.SmtpHostPort, cfg.SmtpAuthUser, email, "Negentropia mail confirmation", msgPlain, msgHtml)
 }
 
@@ -184,15 +184,15 @@ func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	log.Printf("handler.SignupProcess url=%s", path)
 
 	account := accountLabel(s)
-	
+
 	name := r.FormValue("Name")
 	email := formatEmail(r.FormValue("Email"))
 	password := r.FormValue("Passwd")
 	confirm := r.FormValue("Confirm")
-	
+
 	if email == "" {
 		msg := "Please enter email address."
-		if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg}); err != nil {
+		if err := sendSignup(w, SignupPage{Account: account, ShowNavAccount: true, ShowNavHome: true, BadEmailMsg: msg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
@@ -200,20 +200,20 @@ func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 
 	if store.Exists(email) && !store.FieldExists(email, "unconfirmed") {
 		msg := "The address " + email + " is already taken."
-		if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadEmailMsg:msg,EmailValue:email}); err != nil {
+		if err := sendSignup(w, SignupPage{Account: account, ShowNavAccount: true, ShowNavHome: true, BadEmailMsg: msg, EmailValue: email}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
 	}
-	
+
 	if password != confirm {
 		msg := "Passwords don't match."
-		if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,BadConfirmMsg:msg,EmailValue:email}); err != nil {
+		if err := sendSignup(w, SignupPage{Account: account, ShowNavAccount: true, ShowNavHome: true, BadConfirmMsg: msg, EmailValue: email}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
 	}
-	
+
 	confId := newConfirmationId()
 	store.Set(confId, email)
 	store.Expire(confId, unconfirmedExpire) // Expire confirmation id after 2 days
@@ -221,12 +221,12 @@ func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	store.SetField(email, "name", name)
 	store.SetField(email, "password-sha1-hex", passDigest(password))
 	store.SetField(email, "unconfirmed", confId) // Save confirmation id here only for informational purpose
-	store.Expire(email, unconfirmedExpire) // Expire unconfirmed email after 2 days
+	store.Expire(email, unconfirmedExpire)       // Expire unconfirmed email after 2 days
 
-	go sendMail(email, confId)	
-	
+	go sendMail(email, confId)
+
 	msg := "The new account has been created, and a confirmation email has been sent to " + email + ". Please check your email to enable the account."
-	if err := sendSignup(w, SignupPage{Account:account,ShowNavAccount:true,ShowNavHome:true,SignupDoneMsg:msg,EmailValue:email}); err != nil {
+	if err := sendSignup(w, SignupPage{Account: account, ShowNavAccount: true, ShowNavHome: true, SignupDoneMsg: msg, EmailValue: email}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

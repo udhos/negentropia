@@ -27,6 +27,8 @@ set NEG_DART_MAIN=%NEG_DART_SRC%\negentropia_home.dart
 @rem untested:
 @rem go get bitbucket.org/gosimple/oauth2
 
+gofmt -s -w %DEVEL%\negentropia\webserv\src\negentropia
+
 @rem build server
 go install negentropia\webserv
 go install negentropia\world

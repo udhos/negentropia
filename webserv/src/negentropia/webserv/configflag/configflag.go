@@ -4,9 +4,9 @@ import (
 	"io"
 	"os"
 	//"log"
-	"fmt"
-	"flag"
 	"bufio"
+	"flag"
+	"fmt"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ func (fl *FileList) Set(value string) error {
 	return nil
 }
 
-func loadOneFile(config string, flags *[]string) (error) {
+func loadOneFile(config string, flags *[]string) error {
 
 	//log.Printf("loadOneFile: %s", config)
 
@@ -62,12 +62,12 @@ func loadOneFile(config string, flags *[]string) (error) {
 
 func Load(fs *flag.FlagSet, configs FileList) error {
 	var f []string
-	
-    for _, cfg := range configs {
-        if err := loadOneFile(cfg, &f); err != nil {
+
+	for _, cfg := range configs {
+		if err := loadOneFile(cfg, &f); err != nil {
 			return fmt.Errorf("failure loading config file: %s: %s", cfg, err)
 		}
-    }
+	}
 
 	//log.Printf("Load: %d total flags", len(f))
 

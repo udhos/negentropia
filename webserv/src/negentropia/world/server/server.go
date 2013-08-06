@@ -1,41 +1,41 @@
 package server
 
 import (
-	"log"
 	"fmt"
+	"log"
 	"strings"
 
 	"code.google.com/p/go.net/websocket"
-	
+
 	"negentropia/webserv/store"
 )
 
 const (
-	CM_CODE_FATAL = 0
-	CM_CODE_INFO  = 1
-	CM_CODE_AUTH  = 2 // client->server: let me in
-	CM_CODE_ECHO  = 3 // client->server: please echo this
-	CM_CODE_KILL  = 4 // server->client: do not attempt reconnect on same session
-    CM_CODE_REQZ  = 5 // client->server: please send current zone	
-    CM_CODE_ZONE     = 6  // server->client: reset client zone info
-    CM_CODE_SKYBOX   = 7  // server->client: set full skybox
-    CM_CODE_PROGRAM  = 8  // server->client: set shader program
-    CM_CODE_INSTANCE = 9  // server->client: set instance	
-    CM_CODE_MESSAGE  = 10 // server->client: message for user
+	CM_CODE_FATAL    = 0
+	CM_CODE_INFO     = 1
+	CM_CODE_AUTH     = 2  // client->server: let me in
+	CM_CODE_ECHO     = 3  // client->server: please echo this
+	CM_CODE_KILL     = 4  // server->client: do not attempt reconnect on same session
+	CM_CODE_REQZ     = 5  // client->server: please send current zone
+	CM_CODE_ZONE     = 6  // server->client: reset client zone info
+	CM_CODE_SKYBOX   = 7  // server->client: set full skybox
+	CM_CODE_PROGRAM  = 8  // server->client: set shader program
+	CM_CODE_INSTANCE = 9  // server->client: set instance
+	CM_CODE_MESSAGE  = 10 // server->client: message for user
 )
 
 type ClientMsg struct {
-	Code	int
-	Data	string
-	Tab		map[string]string
+	Code int
+	Data string
+	Tab  map[string]string
 }
 
 type Player struct {
-	Sid	          string
-	Email         string
+	Sid          string
+	Email        string
 	Websocket    *websocket.Conn
-	SendToPlayer  chan *ClientMsg
-	Quit          chan int
+	SendToPlayer chan *ClientMsg
+	Quit         chan int
 }
 
 type PlayerMsg struct {
@@ -44,24 +44,23 @@ type PlayerMsg struct {
 }
 
 var (
-	//EmptyTable                  = map[string]string {}
-	playerTable	                = map[string]*Player {}
-	PlayerAddCh	chan *Player    = make(chan *Player)
-	PlayerDelCh	chan *Player    = make(chan *Player)
+	playerTable                 = map[string]*Player{}
+	PlayerAddCh chan *Player    = make(chan *Player)
+	PlayerDelCh chan *Player    = make(chan *Player)
 	InputCh     chan *PlayerMsg = make(chan *PlayerMsg)
 )
 
 func serve() {
 	log.Printf("world server.serve: goroutine started")
-	
+
 	for {
 		select {
-			case p := <- PlayerAddCh:
-				playerAdd(p)
-			case p := <- PlayerDelCh:
-				playerDel(p)
-			case m := <- InputCh:
-				input(m.Player, m.Msg)
+		case p := <-PlayerAddCh:
+			playerAdd(p)
+		case p := <-PlayerDelCh:
+			playerDel(p)
+		case m := <-InputCh:
+			input(m.Player, m.Msg)
 		}
 	}
 }
@@ -69,94 +68,94 @@ func serve() {
 func sendZoneStatic(p *Player) {
 	p.SendToPlayer <- &ClientMsg{
 		Code: CM_CODE_ZONE,
-		Tab: map[string]string {
-			"backfaceCulling":	"true",
+		Tab: map[string]string{
+			"backfaceCulling": "true",
 		},
 	}
 	p.SendToPlayer <- &ClientMsg{
 		Code: CM_CODE_SKYBOX,
-		Tab: map[string]string {
+		Tab: map[string]string{
 			"skyboxURL": "/skybox/skybox_galaxy.json",
 		},
 	}
 	p.SendToPlayer <- &ClientMsg{
 		Code: CM_CODE_PROGRAM,
-		Tab: map[string]string {
-			"programName":		"simpleTexturizer",
-			"vertexShader":		"/shader/simpleTex_vs.txt",
-			"fragmentShader":	"/shader/simpleTex_fs.txt",
+		Tab: map[string]string{
+			"programName":    "simpleTexturizer",
+			"vertexShader":   "/shader/simpleTex_vs.txt",
+			"fragmentShader": "/shader/simpleTex_fs.txt",
 		},
 	}
-			
+
 	coord := []float32{0.0, 0.0, 0.0}
 	coordStr := fmt.Sprintf("%f,%f,%f", coord[0], coord[1], coord[2])
 	scale := 1.0
 	scaleStr := fmt.Sprintf("%f", scale)
 	p.SendToPlayer <- &ClientMsg{
 		Code: CM_CODE_INSTANCE,
-		Tab: map[string]string {
-			"programName":		"simpleTexturizer",
-			"obj":				"/obj/airship.obj",
-			"coord":			coordStr,
-			"scale":			scaleStr,					
+		Tab: map[string]string{
+			"programName": "simpleTexturizer",
+			"obj":         "/obj/airship.obj",
+			"coord":       coordStr,
+			"scale":       scaleStr,
 		},
 	}
 }
 
 func sendZoneDynamic(p *Player, loc string) {
 
-	if culling := store.QueryField(loc, "backfaceCulling"); culling != "" {	
+	if culling := store.QueryField(loc, "backfaceCulling"); culling != "" {
 		p.SendToPlayer <- &ClientMsg{
 			Code: CM_CODE_ZONE,
-			Tab: map[string]string {
-				"backfaceCulling":	culling,
+			Tab: map[string]string{
+				"backfaceCulling": culling,
 			},
-		}	
+		}
 	}
 
-	if skybox := store.QueryField(loc, "skyboxURL"); skybox != "" {	
+	if skybox := store.QueryField(loc, "skyboxURL"); skybox != "" {
 		p.SendToPlayer <- &ClientMsg{
 			Code: CM_CODE_SKYBOX,
-			Tab: map[string]string {
-				"skyboxURL":	skybox,
+			Tab: map[string]string{
+				"skyboxURL": skybox,
 			},
-		}	
+		}
 	}
 
-	if program := store.QueryField(loc, "programName"); program != "" {	
+	if program := store.QueryField(loc, "programName"); program != "" {
 		vertex := store.QueryField(program, "vertexShader")
 		fragment := store.QueryField(program, "fragmentShader")
-		
+
 		p.SendToPlayer <- &ClientMsg{
 			Code: CM_CODE_PROGRAM,
-			Tab: map[string]string {
-				"programName":		program,
-				"vertexShader":		vertex,
-				"fragmentShader":	fragment,
+			Tab: map[string]string{
+				"programName":    program,
+				"vertexShader":   vertex,
+				"fragmentShader": fragment,
 			},
-		}	
+		}
 	}
 
-	if instanceList := store.QueryField(loc, "instanceList"); instanceList != "" {	
-		instances := store.QuerySet(instanceList);
+	if instanceList := store.QueryField(loc, "instanceList"); instanceList != "" {
+		instances := store.QuerySet(instanceList)
 
 		for _, inst := range instances {
-		
+
 			program := store.QueryField(inst, "programName")
 			obj := store.QueryField(inst, "obj")
 			coord := store.QueryField(inst, "coord")
 			scale := store.QueryField(inst, "scale")
-		
+
 			p.SendToPlayer <- &ClientMsg{
 				Code: CM_CODE_INSTANCE,
-				Tab: map[string]string {
-					"programName":		program,
-					"obj":				obj,
-					"coord":			coord,
-					"scale":			scale,					
+				Tab: map[string]string{
+					"programName": program,
+					"obj":         obj,
+					"coord":       coord,
+					"scale":       scale,
 				},
 			}
-		
+
 		}
 	}
 
@@ -171,13 +170,13 @@ func sendZone(p *Player, loc string) {
 		sendZoneDynamic(p, loc)
 		return
 	}
-	
+
 	sendZoneStatic(p)
 }
 
 func input(p *Player, m *ClientMsg) {
 	log.Printf("server.input: %s: %q", p.Email, m)
-	
+
 	switch m.Code {
 	case CM_CODE_ECHO:
 		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: "echo: " + m.Data}
@@ -202,14 +201,14 @@ func playerAdd(newPlayer *Player) {
 		log.Printf("server.playerAdd: sending quit to existing %s", p.Email)
 		p.Quit <- 1
 	}
-	
+
 	// notice this immediately unregisters the previous player
 	playerTable[newPlayer.Email] = newPlayer
 }
 
 func playerDel(oldPlayer *Player) {
 	log.Printf("server.playerDel: %s %s", oldPlayer.Email, oldPlayer.Sid)
-	
+
 	if p, ok := playerTable[oldPlayer.Email]; ok && p.Sid == oldPlayer.Sid {
 		// do not unregister wrong player
 		delete(playerTable, oldPlayer.Email)
