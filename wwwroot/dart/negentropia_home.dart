@@ -250,12 +250,14 @@ DivElement createMessagebox(String id, CanvasElement c) {
   mbox.style.border = '2px solid #FFF';
   mbox.style.zIndex = "1";
   mbox.style.position = "absolute";
+  mbox.style.width = "300px";
   mbox.style.color = "lightgreen";
   mbox.style.background = "rgba(50,50,50,0.7)";
   mbox.style.left = "${left}px";
   mbox.style.top = "${top}px";
   mbox.style.textAlign = "left";
-  mbox.style.padding = "4px";
+  mbox.style.padding = "2px";
+  mbox.style.fontSize = 'x-small';
   
   return mbox;
 }
