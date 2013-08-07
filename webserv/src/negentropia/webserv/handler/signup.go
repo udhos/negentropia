@@ -142,41 +142,25 @@ func sendSmtp(authUser, authPass, authServer, smtpHostPort, sender, recipient, s
 	log.Printf("sendSmtp: sub=[%s] auth=[%s] pass=[%s] sender=[%s] recipient=[%s] %s", subject, authUser, pass, sender, recipient, result)
 }
 
-func sendMail(email, confId string) {
+func sendSignupMail(email, confId string) {
 	confURL := cfg.ConfirmURL()
 	clickURL := fmt.Sprintf("%s?%s=%s&%s=%s", cfg.ConfirmProcessURL(), FORM_VAR_EMAIL, email, FORM_VAR_CONFIRM_ID, confId)
-	mPlain := "This is an automatic message from an unattended mailbox. Please do not reply.\r\n" +
-		"\r\n" +
-		"The confirmation id for address %s is: %s\r\n" +
-		"\r\n" +
-		"If you want to confirm the signup for the new account, please:\r\n" +
-		"\r\n" +
-		"Either open: %s\r\n" +
-		"\r\n" +
-		"OR\r\n" +
-		"\r\n" +
-		"Enter the confirmation id at: %s\r\n" +
-		"\r\n" +
-		"Otherwise just ignore this message.\r\n"
+	emailInfo := EmailFields{email, confId, clickURL, confURL}
 
-	mHtml := "This is an automatic message from an unattended mailbox. Please do not reply.\r\n" +
-		"\r\n" +
-		"The confirmation id for address %s is: %s\r\n" +
-		"\r\n" +
-		"If you want to confirm the signup for the new account, please:\r\n" +
-		"\r\n" +
-		"Either click <a href=\"%s\">%s</a>\r\n" +
-		"\r\n" +
-		"OR\r\n" +
-		"\r\n" +
-		"Enter the confirmation id at <a href=\"%s\">%s</a>\r\n" +
-		"\r\n" +
-		"Otherwise just ignore this message.\r\n"
+	var err error
+	var msgPlain string
+	if msgPlain, err = loadEmailTemplate("signupEmailPlain.tpl", emailInfo); err != nil {
+		log.Printf("handler.sendSignupEmail: failure loading PLAIN template for signup confirmation email: %s", err)
+		return
+	}
 
-	msgPlain := fmt.Sprintf(mPlain, email, confId, clickURL, confURL)
-	msgHtml := fmt.Sprintf(mHtml, email, confId, clickURL, clickURL, confURL, confURL)
+	var msgHtml string
+	if msgHtml, err = loadEmailTemplate("signupEmailHtml.tpl", emailInfo); err != nil {
+		log.Printf("handler.sendSignupEmail: failure loading HTML template for signup confirmation email: %s", err)
+		return
+	}
 
-	sendSmtp(cfg.SmtpAuthUser, cfg.SmtpAuthPass, cfg.SmtpAuthServer, cfg.SmtpHostPort, cfg.SmtpAuthUser, email, "Negentropia mail confirmation", msgPlain, msgHtml)
+	sendSmtp(cfg.SmtpAuthUser, cfg.SmtpAuthPass, cfg.SmtpAuthServer, cfg.SmtpHostPort, cfg.SmtpAuthUser, email, "Negentropia signup confirmation", msgPlain, msgHtml)
 }
 
 func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
@@ -223,7 +207,7 @@ func SignupProcess(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	store.SetField(email, "unconfirmed", confId) // Save confirmation id here only for informational purpose
 	store.Expire(email, unconfirmedExpire)       // Expire unconfirmed email after 2 days
 
-	go sendMail(email, confId)
+	go sendSignupMail(email, confId)
 
 	msg := "The new account has been created, and a confirmation email has been sent to " + email + ". Please check your email to enable the account."
 	if err := sendSignup(w, SignupPage{Account: account, ShowNavAccount: true, ShowNavHome: true, SignupDoneMsg: msg, EmailValue: email}); err != nil {

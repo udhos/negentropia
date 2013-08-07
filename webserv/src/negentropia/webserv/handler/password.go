@@ -40,14 +40,14 @@ type PasswordPage struct {
 	ShowNavLogout  bool
 }
 
-type ResetPassEmail struct {
+type EmailFields struct {
 	Email      string
 	ConfirmId  string
 	ClickURL   string
 	ConfirmURL string
 }
 
-func loadEmailTemplate(filename string, e ResetPassEmail) (string, error) {
+func loadEmailTemplate(filename string, e EmailFields) (string, error) {
 	// FIXME: we're loading template every time
 	t, err := template.ParseFiles(TemplatePath(filename))
 	if err != nil {
@@ -100,13 +100,15 @@ func newResetPassConfirmationId() string {
 func sendResetPassEmail(email, confId string) {
 	confURL := cfg.ResetPassConfirmURL()
 	clickURL := fmt.Sprintf("%s?%s=%s&%s=%s", confURL, FORM_VAR_EMAIL, email, FORM_VAR_CONFIRM_ID, confId)
-	emailInfo := ResetPassEmail{email, confId, clickURL, confURL}
+	emailInfo := EmailFields{email, confId, clickURL, confURL}
+
 	var err error
 	var msgPlain string
 	if msgPlain, err = loadEmailTemplate("resetPassEmailPlain.tpl", emailInfo); err != nil {
 		log.Printf("handler.sendResetPassEmail: failure loading PLAIN template for password recovery email: %s", err)
 		return
 	}
+
 	var msgHtml string
 	if msgHtml, err = loadEmailTemplate("resetPassEmailHtml.tpl", emailInfo); err != nil {
 		log.Printf("handler.sendResetPassEmail: failure loading HTML template for password recovery email: %s", err)
