@@ -89,9 +89,13 @@ class TexModel extends Model {
     void onMtlLibLoaded(String materialResponse) {
       
       assert(!piecesReady);
+      
+      print("loadObj: fetched: $mtlURL");
 
       Map<String,Material> lib = mtllib_parse(materialResponse, mtlURL);
       assert(lib != null);
+
+      print("loadObj: parsed: $mtlURL");
       
       int i = 0;
 
@@ -126,7 +130,7 @@ class TexModel extends Model {
       
       piecesReady = true;
       
-      //print("loadObj: ${obj.partList.length} parts fed into ${pieceList.length} pieces");
+      print("loadObj: ${obj.partList.length} parts fed into ${pieceList.length} pieces");
     }
 
     HttpRequest.getString(mtlURL)

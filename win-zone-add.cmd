@@ -11,7 +11,7 @@
 
 @rem add instance list to zone
 \redisbin\redis-cli hset z:0 instanceList l:0
-\redisbin\redis-cli sadd l:0 m:0 m:1
+\redisbin\redis-cli sadd l:0 m:0 m:1 m:2
 
 @rem create instance m:0
 \redisbin\redis-cli hset m:0 programName p:simpleTexturizer
@@ -24,6 +24,12 @@
 \redisbin\redis-cli hset m:1 obj /obj/airship.obj
 \redisbin\redis-cli hset m:1 coord 0.0,4.0,0.0
 \redisbin\redis-cli hset m:1 scale .5
+
+@rem create instance m:2
+\redisbin\redis-cli hset m:2 programName p:simpleTexturizer
+\redisbin\redis-cli hset m:2 obj /obj/ssimpossible_sun.obj
+\redisbin\redis-cli hset m:2 coord 0.0,0.0,10.0
+\redisbin\redis-cli hset m:2 scale 1.0
 
 @rem eof
 
