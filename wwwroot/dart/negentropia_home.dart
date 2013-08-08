@@ -285,7 +285,6 @@ RenderingContext boot() {
     canvasbox.style.backgroundColor = 'lightblue';    
     return null;
   }
-
   
   messagebox = createMessagebox('messagebox', canvas);
   canvasbox.append(messagebox);
@@ -591,11 +590,16 @@ void main() {
   print("main: negentropia dart client starting");
   
   RenderingContext gl = boot();
-  
   if (gl == null) {
     print("WebGL: not available");
     return;
   }
+  
+  bool antialias = gl.getContextAttributes().antialias;
+  print("Antialias: $antialias");
+  
+  int size = gl.getParameter(RenderingContext.SAMPLES);
+  print("Antialias MSSA size: $size");
   
   GameLoopHtml gameLoop = new GameLoopHtml(canvas);
   
