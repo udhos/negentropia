@@ -157,7 +157,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
         String culling = tab['backfaceCulling'];
         if (culling != null) {
           backfaceCulling = culling.toLowerCase().startsWith("t");
-          print("dispatcher: backfaceCulling=$backfaceCulling");
+          //print("dispatcher: backfaceCulling=$backfaceCulling");
           updateCulling(gl);
         }
       }
@@ -587,6 +587,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 }
 
 void main() {
+  print("--");
   print("main: negentropia dart client starting");
   
   RenderingContext gl = boot();

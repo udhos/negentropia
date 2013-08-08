@@ -235,6 +235,11 @@ class Obj {
         return;
       }
 
+      if (line.startsWith("g ")) {
+        // ignore
+        return;
+      }
+      
       print("OBJ: unknown pattern at line=$lineNum from url=$url: [$line]");
     }
     

@@ -70,12 +70,16 @@ class TexModel extends Model {
   
   // redefine _createBuffers() used by Model's constructor
   void _createBuffers(RenderingContext gl, List<int> indices, List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
-            
+
+    assert(!modelReady);
+    
     textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
     gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(textCoord), RenderingContext.STATIC_DRAW);
 
     super._createBuffers(gl, indices, vertCoord, textCoord, normCoord);
+    
+    assert(modelReady);
 }
 
   void loadObj(RenderingContext gl, Obj obj) {
@@ -83,6 +87,8 @@ class TexModel extends Model {
     String mtlURL = "${asset.mtl}/${obj.mtllib}";
 
     void onMtlLibLoaded(String materialResponse) {
+      
+      assert(!piecesReady);
 
       Map<String,Material> lib = mtllib_parse(materialResponse, mtlURL);
       assert(lib != null);
@@ -118,7 +124,9 @@ class TexModel extends Model {
         ++i;
       });
       
-      print("loadObj: ${obj.partList.length} parts fed into ${pieceList.length} pieces");
+      piecesReady = true;
+      
+      //print("loadObj: ${obj.partList.length} parts fed into ${pieceList.length} pieces");
     }
 
     HttpRequest.getString(mtlURL)
@@ -141,6 +149,9 @@ class TexModel extends Model {
   }
 
   void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
+    if (!modelReady || !piecesReady) {
+      return;
+    }
 
     RenderingContext gl = program.gl;
 

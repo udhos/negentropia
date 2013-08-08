@@ -56,6 +56,7 @@ class SkyboxProgram extends ShaderProgram {
 class SkyboxModel extends Model {
   
   Texture cubemapTexture;
+  bool cubemapReady = false;
   
   SkyboxModel.fromJson(RenderingContext gl, String URL, bool reverse, num rescale):
     super.fromJson(gl, URL, reverse) {
@@ -77,6 +78,8 @@ class SkyboxModel extends Model {
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP, RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
       
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, null);
+      
+      cubemapReady = true;
     }
 
     void handleError(Event e) {
@@ -90,6 +93,9 @@ class SkyboxModel extends Model {
   }
   
   void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
+    if (!modelReady || !cubemapReady) {
+      return;
+    }
 
     RenderingContext gl = program.gl;
     

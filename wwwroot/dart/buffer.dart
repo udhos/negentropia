@@ -52,6 +52,9 @@ class Model {
   final int vertexPositionBufferItemSize = 3; // coord x,y,z
   final int vertexIndexBufferItemSize = 2; // size of Uint16Array
   
+  bool modelReady = false;  // buffers
+  bool piecesReady = false; // multiple OBJ pieces
+  
   String _name;
   String get modelName => _name;
   
@@ -71,6 +74,8 @@ class Model {
     // clean-up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
+    
+    modelReady = true;    
   }
 
   Piece addPiece(int offset, int length) {
@@ -136,16 +141,20 @@ class Model {
   }
   
   void loadObj(RenderingContext gl, Obj o) {
+    assert(!piecesReady);
+    
     o.partList.forEach((Part pa) {
       Piece pi = addPiece(pa.indexFirst, pa.indexListSize);
-      print("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
-    });    
+      //print("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
+    });
+    
+    piecesReady = true;
   }
   
   Model.fromOBJ(RenderingContext gl, String URL) {
 
     void handleResponse(String response) {
-      print("Model.fromOBJ: fetched OBJ from URL: $URL");
+      //print("Model.fromOBJ: fetched OBJ from URL: $URL");
       
       Obj obj = new Obj.fromString(URL, response);
       
@@ -170,6 +179,10 @@ class Model {
   }
  
   void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
+    if (!modelReady || !piecesReady) {
+      return;
+    }
+    
     this.instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
   }  
 
