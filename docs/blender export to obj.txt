@@ -1,0 +1,28 @@
+=====================
+blender export to obj
+=====================
+
+4. These are the options for the Export OBJ panel:
+
+- selection only: unckecked
+- animation: unckecked
+- apply modifiers: CHECKED
+- include edges: unchecked
+- include normals: unchecked
+- include UVs: CHECKED
+- write materials: CHECKED
+- triangulate faces: CHECKED
+- write nurbs: unchecked
+- polygroups: unchecked
+- objects as OBJ objects: CHECKED
+- objects as OBJ groups: unchecked
+- material groups: CHECKED
+- keep vertex order: unchecked
+- scale = 1.0
+- forward: "-Z Forward"
+- up: "Y Up"
+- path mode: "Auto"
+
+Source:
+https://groups.google.com/d/msg/webgl-dev-list/tMxxH_-w9t8/gXVaCwwpfW4J
+
