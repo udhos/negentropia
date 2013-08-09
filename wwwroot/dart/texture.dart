@@ -64,22 +64,13 @@ class TextureInfo {
 
     texture = gl.createTexture();
     if (texture == null) {
-      String fail = "could not create texture for: $textureName"; 
-      print("TextureInfo: $fail");
+      print("TextureInfo: could not create texture for: $textureName");
       return;    
     }
 
     if (textureName == null) {
       loadSolidColor(gl);
       return;
-    }
-    
-    void handleDone(Event e) {
-      print("TextureInfo: handleDone: loaded image from URL: $textureName");
-    }
-
-    void handleError(Event e) {
-      print("TextureInfo: handleError: failure loading image from URL: $textureName: $e");
     }
     
     _loadTexture2D(gl, textureTable);    
