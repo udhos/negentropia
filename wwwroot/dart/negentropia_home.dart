@@ -17,9 +17,8 @@ import 'shader.dart';
 import 'skybox.dart';
 import 'lost_context.dart';
 import 'camera.dart';
-import 'texture.dart';
-import 'obj.dart';
 import 'asset.dart';
+import 'anisotropic.dart';
 
 CanvasElement canvas;
 DivElement messagebox;
@@ -40,6 +39,7 @@ PickerShader picker;
 double planeNear   = 1.0;
 double planeFar    = 2000.0;
 double skyboxScale = 1000.0;
+
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -585,6 +585,14 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   }
 }
 
+void antialias(RenderingContext gl) {
+  bool antialias = gl.getContextAttributes().antialias;
+  print("Antialias: $antialias");
+  
+  int size = gl.getParameter(RenderingContext.SAMPLES);
+  print("Antialias MSSA size: $size");  
+}
+
 void main() {
   print("--");
   print("main: negentropia dart client starting");
@@ -595,11 +603,9 @@ void main() {
     return;
   }
   
-  bool antialias = gl.getContextAttributes().antialias;
-  print("Antialias: $antialias");
+  antialias(gl);
   
-  int size = gl.getParameter(RenderingContext.SAMPLES);
-  print("Antialias MSSA size: $size");
+  anisotropic_filtering_detect(gl);
   
   GameLoopHtml gameLoop = new GameLoopHtml(canvas);
   

@@ -9,6 +9,7 @@ import 'package:game_loop/game_loop_html.dart';
 
 import 'shader.dart';
 import 'camera.dart';
+import 'anisotropic.dart';
 
 class SkyboxProgram extends ShaderProgram {
   
@@ -76,6 +77,8 @@ class SkyboxModel extends Model {
 
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP, RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP, RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
+      
+      //anisotropic_filtering_enable(gl);
       
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, null);
       

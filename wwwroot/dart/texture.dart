@@ -5,6 +5,8 @@ import 'dart:async';
 import 'dart:web_gl';
 import 'dart:typed_data';
 
+import 'anisotropic.dart';
+
 class TextureInfo {
   
   String textureName;
@@ -35,7 +37,7 @@ class TextureInfo {
     loadSolidColor(gl);
     
     void onDone(Event e) {
-      
+            
       gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
       //gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, true);
       gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
@@ -45,7 +47,10 @@ class TextureInfo {
       gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
       gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.NEAREST);
       gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
-      gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);   
+      gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
+      
+      anisotropic_filtering_enable(gl);
+      
       gl.bindTexture(RenderingContext.TEXTURE_2D, null);
     }
 

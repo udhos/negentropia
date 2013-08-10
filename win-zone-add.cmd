@@ -25,11 +25,5 @@
 \redisbin\redis-cli hset m:1 coord 0.0,4.0,0.0
 \redisbin\redis-cli hset m:1 scale .5
 
-@rem create instance m:2
-\redisbin\redis-cli hset m:2 programName p:simpleTexturizer
-\redisbin\redis-cli hset m:2 obj /obj/ssimpossible_sun.obj
-\redisbin\redis-cli hset m:2 coord 0.0,0.0,10.0
-\redisbin\redis-cli hset m:2 scale 1.0
-
 @rem eof
 
