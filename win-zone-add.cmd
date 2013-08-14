@@ -11,7 +11,7 @@
 
 @rem add instance list to zone
 \redisbin\redis-cli hset z:0 instanceList l:0
-\redisbin\redis-cli sadd l:0 m:0 m:1 m:2
+\redisbin\redis-cli sadd l:0 m:0 m:1
 
 @rem create instance m:0
 \redisbin\redis-cli hset m:0 programName p:simpleTexturizer

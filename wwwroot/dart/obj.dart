@@ -259,7 +259,7 @@ class Obj {
     
     lines.forEach((String line) => parseLine(line));
     
-    print("Obj.fromString: url=$url: lines=${lines.length}");
+    //print("Obj.fromString: url=$url: lines=${lines.length}");
     
     trimTable(url); // remove empty objects from _partTable
     
