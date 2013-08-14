@@ -26,10 +26,16 @@ void anisotropic_filtering_detect(RenderingContext gl) {
   }
 
   for (int i = 0; i < _names.length; ++i) {
-    String e = _names[i];
-    ExtTextureFilterAnisotropic ext = gl.getExtension(e);
+    String extName = _names[i];
+    ExtTextureFilterAnisotropic ext;
+    try {
+      ext = gl.getExtension(extName);
+    }
+    catch (exc) {
+      print("gl.getExtension('$extName') exception: $exc");
+    }
     if (ext != null) {
-      enable(ext, e);
+      enable(ext, extName);
       return;
     }
   }

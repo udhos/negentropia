@@ -586,11 +586,12 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 }
 
 void antialias(RenderingContext gl) {
-  bool antialias = gl.getContextAttributes().antialias;
-  print("Antialias: $antialias");
+  ContextAttributes attr = gl.getContextAttributes();
+  bool antialias = attr.antialias;
+  print("antialias: $antialias");
   
   int size = gl.getParameter(RenderingContext.SAMPLES);
-  print("Antialias MSSA size: $size");  
+  print("antialias MSSA size: $size");  
 }
 
 void main() {
