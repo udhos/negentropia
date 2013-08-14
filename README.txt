@@ -21,6 +21,9 @@ REQUIREMENTS
 # Redis 2.4.5 for Windows 7 64-bit:
 # https://github.com/dmajkic/redis/downloads
 
+# Install Java Runtime - needed for the Dart Editor
+# http://java.com/en/download/
+#
 # Install Dart Editor
 # http://www.dartlang.org/tools/editor/
 
