@@ -74,6 +74,7 @@ class Obj {
     Map<String,int> indexTable = new Map<String,int>();
     List<double> _vertCoord = new List<double>();
     List<double> _textCoord = new List<double>();
+    List<double> _normCoord = new List<double>();
     int indexCounter = 0;
     int lineNum = 0;
     Part currObj;
@@ -166,6 +167,14 @@ class Obj {
 
       if (line.startsWith("vn ")) {
         // normal
+        List<String> n = line.split(' ');
+        if (n.length != 4) {
+          print("OBJ: wrong number of normal coordinates (${n.length - 1} != 3) at line=$lineNum from url=$url: [$line]");
+          return;
+        }
+        _normCoord.add(double.parse(n[1])); // x
+        _normCoord.add(double.parse(n[2])); // y
+        _normCoord.add(double.parse(n[3])); // z
         return;
       }
       
@@ -213,7 +222,10 @@ class Obj {
             String ni = v[2];
             if (ni != null && !ni.isEmpty) {
               int nIndex = int.parse(ni) - 1;
-              // FIXME WRITEME
+              int nOffset = 3 * nIndex; 
+              normCoord.add(_normCoord[nOffset + 0]); // x
+              normCoord.add(_normCoord[nOffset + 1]); // y
+              normCoord.add(_normCoord[nOffset + 2]); // z
             }
           }
           
@@ -246,6 +258,8 @@ class Obj {
     List<String> lines = str.split('\n');
     
     lines.forEach((String line) => parseLine(line));
+    
+    print("Obj.fromString: url=$url: lines=${lines.length}");
     
     trimTable(url); // remove empty objects from _partTable
     
