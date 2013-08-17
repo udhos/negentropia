@@ -19,6 +19,7 @@ import 'lost_context.dart';
 import 'camera.dart';
 import 'asset.dart';
 import 'anisotropic.dart';
+import 'visibility.dart';
 
 CanvasElement canvas;
 DivElement messagebox;
@@ -474,8 +475,8 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
     
     print("duration = $duration framerate = $rate fps");
   }
-
-  gameLoop.start();
+  
+  updateGameLoop(gameLoop, contextIsLost(), pageHidden());
 }
 
 void regularDraw(RenderingContext gl, GameLoopHtml gameLoop) {
@@ -585,7 +586,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   }
 }
 
-void antialias(RenderingContext gl) {
+void checkAntialias(RenderingContext gl) {
   ContextAttributes attr = gl.getContextAttributes();
   bool antialias = attr.antialias;
   print("antialias: $antialias");
@@ -604,7 +605,7 @@ void main() {
     return;
   }
   
-  antialias(gl);
+  checkAntialias(gl);
   
   anisotropic_filtering_detect(gl);
   
@@ -617,8 +618,10 @@ void main() {
   //print("gameLoop updateStep = ${gameLoop.updateTimeStep} seconds");
 
   if (debugLostContext) {
-    initDebugLostContext(gl, canvas, gameLoop, initContext);
+    initHandleLostContext(gl, canvas, gameLoop, initContext);
   }
+  
+  initPageVisibility(gameLoop);
   
   gameLoop.onUpdate = ((GameLoopHtml gameLoop) { 
     update(gl, gameLoop);

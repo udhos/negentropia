@@ -5,18 +5,32 @@ import 'dart:web_gl';
 
 import 'package:game_loop/game_loop_html.dart';
 
-void initDebugLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHtml gameLoop,
-                          void initContextCall(RenderingContext gl, GameLoopHtml gameLoop)) {
+import 'visibility.dart';
+
+bool _lost;
+
+bool contextIsLost() {
+  assert(_lost != null);
+  return _lost;
+}
+
+void initHandleLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHtml gameLoop,
+                           void initContextCall(RenderingContext, GameLoopHtml)) {
+  
+  _lost = gl.isContextLost();
+  assert(_lost != null);
   
   void onContextLost(Event e) {
     e.preventDefault();
-    gameLoop.stop();
+    _lost = true;
     print("webgl context: lost");
+    updateGameLoop(gameLoop, contextIsLost(), pageHidden()); // gameLoop.stop();
   }
 
   void onContextRestored(Event e) {
-    initContextCall(gl, gameLoop); // recreate resources and restart gameLoop
+    _lost = false;
     print("webgl context: restored");
+    initContextCall(gl, gameLoop); // recreate resources and // gameLoop.start();
   }
 
   //canvas.on['webglcontextlost'].listen((Event e) => onContextLost(e));
