@@ -127,10 +127,8 @@ void messageUser(String m) {
   
   messagebox.children.clear();
   
-  int i = 0;
   msgList.forEach((m) {
     DivElement d = new DivElement();
-    d.id = "messagebox_line${i}";
     d.text = m;
     messagebox.children.add(d);
   });
