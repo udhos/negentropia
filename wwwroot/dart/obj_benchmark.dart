@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:benchmark_harness/benchmark_harness.dart';
 
@@ -45,7 +46,7 @@ void main() {
     }
             
     var file = new File(URL);    
-    Future<String> finishedReading = file.readAsString(encoding: Encoding.ASCII);
+    Future<String> finishedReading = file.readAsString(encoding: ASCII);
     finishedReading.then(done); 
   }
   
@@ -60,7 +61,7 @@ void main() {
     }
             
     var file = new File(URL);    
-    Future<String> finishedReading = file.readAsString(encoding: Encoding.ASCII);
+    Future<String> finishedReading = file.readAsString(encoding: ASCII);
     finishedReading.then(done); 
   }
 
