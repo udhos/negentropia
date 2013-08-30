@@ -2,12 +2,14 @@
 @rem assign zone
 \redisbin\redis-cli hset everton.marques@gmail.com location z:0
 
+@rem add shader program
+\redisbin\redis-cli hset p:simpleTexturizer vertexShader /shader/simpleTex_vs.txt
+\redisbin\redis-cli hset p:simpleTexturizer fragmentShader /shader/simpleTex_fs.txt
+
 @rem add zone
 \redisbin\redis-cli hset z:0 backfaceCulling true
 \redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_galaxy.json
 \redisbin\redis-cli hset z:0 programName p:simpleTexturizer
-\redisbin\redis-cli hset p:simpleTexturizer vertexShader /shader/simpleTex_vs.txt
-\redisbin\redis-cli hset p:simpleTexturizer fragmentShader /shader/simpleTex_fs.txt
 
 @rem add instance list to zone
 \redisbin\redis-cli hset z:0 instanceList l:0
