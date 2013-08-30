@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:web_gl';
 import 'dart:math' as math;
 import 'dart:typed_data';
-import 'dart:json';
+import 'dart:convert';
 import 'dart:collection';
 
 import 'package:stats/stats.dart';
@@ -146,7 +146,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
         var m = new Map();
         m["Code"] = CM_CODE_ECHO;
         m["Data"] = "hi there";
-        wsSend(stringify(m));        
+        wsSend(JSON.encode(m));        
       }
       break;
       
@@ -173,7 +173,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       String skyboxURL = tab['skyboxURL'];
 
       void handleResponse(String response) {
-        Map<String,String> skybox = parse(response);
+        Map<String,String> skybox = JSON.decode(response);
         addSkybox(gl, skybox);
       }
       

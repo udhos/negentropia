@@ -2,9 +2,8 @@ library shader;
 
 import 'dart:html';
 import 'dart:async';
-import 'dart:json';
-import 'dart:math' as math;
 import 'dart:web_gl';
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:vector_math/vector_math.dart';

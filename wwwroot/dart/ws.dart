@@ -2,7 +2,7 @@ library ws;
 
 import 'dart:html';
 import 'dart:async';
-import 'dart:json';
+import 'dart:convert';
 import 'dart:collection';
 
 const CM_CODE_FATAL = 0;
@@ -28,7 +28,7 @@ void requestZone() {
   msg["Code"] = CM_CODE_REQZ;
   msg["Data"] = "";
   
-  String json = stringify(msg);
+  String json = JSON.encode(msg);
   
   wsSend(json);  
 }
@@ -98,7 +98,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
     msg["Code"] = CM_CODE_AUTH;
     msg["Data"] = sid;
     
-    String jsonMsg = stringify(msg);
+    String jsonMsg = JSON.encode(msg);    
     
     try {
       _write(jsonMsg);
@@ -122,7 +122,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
   
   subMessage = _ws.onMessage.listen((MessageEvent e) {
     
-    Map msg = parse(e.data);
+    Map msg = JSON.decode(e.data);    
     int code = msg["Code"];
     String data = msg["Data"];
     Map<String,String> tab = msg["Tab"];

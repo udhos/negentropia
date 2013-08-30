@@ -112,7 +112,7 @@ class Model {
 
       Map m;
       try {
-        m = parse(response);
+        m = JSON.decode(response);
       }
       catch (e) {
         print("Model.fromJson: failure parsing JSON: $e");
