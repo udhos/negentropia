@@ -2,12 +2,15 @@ library cookies;
 
 import 'dart:html';
 
+const ONEDAY_MILLISEC = 24*60*60*1000;
+
 class Cookie {
-  static _readCookie() {
-    var cookie = new Map();
-    var c = document.cookie;
+  
+  static Map<String,String> _readCookie() {
+    Map<String,String> cookie = new Map<String,String>();
+    String c = document.cookie;
     c.split(';').forEach((t) {
-      var k = t.indexOf('=');
+      int k = t.indexOf('=');
       if (k > 0) {
         cookie[Uri.decodeComponent(t.substring(0, k))] = Uri.decodeComponent(t.substring(k + 1));
       }
@@ -15,11 +18,11 @@ class Cookie {
     return cookie;
   }
 
-  static _writeCookie(Map m) {
+  static void _writeCookie(Map<String,String> m) {
     String sb;
-    var t = m.keys.iterator;
+    Iterator<String> t = m.keys.iterator;
     if (!t.moveNext()) {
-      var k = t.current;
+      String k = t.current;
       sb = '${Uri.encodeComponent(k)}=${Uri.encodeComponent(m[k])}';
       while (t.moveNext()) {
         k = t.current;
@@ -30,18 +33,18 @@ class Cookie {
   }
 
   static void setCookie(String name, String value, int days) {
-    var t = _readCookie();
+    Map<String,String> t = _readCookie();
     t[name] = value;
 
     DateTime now = new DateTime.now();
-    DateTime date = new DateTime.fromMillisecondsSinceEpoch(now.millisecondsSinceEpoch + days*24*60*60*1000);
+    DateTime date = new DateTime.fromMillisecondsSinceEpoch(now.millisecondsSinceEpoch + days * ONEDAY_MILLISEC);
     t['expires'] = date.toString();
 
     _writeCookie(t);
   }
 
   static String getCookie(String name) {
-    var t = _readCookie();
+    Map<String,String> t = _readCookie();
     if (t.containsKey(name))
       return t[name];
     return null;
