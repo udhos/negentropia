@@ -580,7 +580,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   cam.update(gameLoop);
     
   if (programList != null) {
-    programList.forEach((ShaderProgram p) => p.update(gameLoop));
+    programList.forEach((p) => p.update(gameLoop));
   }
 }
 

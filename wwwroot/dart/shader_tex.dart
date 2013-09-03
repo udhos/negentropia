@@ -33,7 +33,7 @@ class TexShaderProgram extends ShaderProgram {
     // send perspective projection matrix uniform
     gl.uniformMatrix4fv(u_P, false, pMatrix.storage);
     
-    modelList.forEach((TexModel m) => m.drawInstances(gameLoop, this, cam));
+    modelList.forEach((m) => m.drawInstances(gameLoop, this, cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -99,7 +99,7 @@ class TexModel extends Model {
       
       int i = 0;
 
-      obj.partList.forEach((Part pa) {
+      obj.partList.forEach((pa) {
 
         String usemtl = pa.usemtl;      
         
@@ -169,7 +169,7 @@ class TexModel extends Model {
     
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
     
-    instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
+    instanceList.forEach((i) => i.draw(gameLoop, program, cam));
   }  
   
 }
@@ -190,7 +190,7 @@ class TexInstance extends Instance {
 
     gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
     
-    (model as TexModel).pieceList.forEach((Piece pi) {
+    (model as TexModel).pieceList.forEach((pi) {
       
       TexPiece tp = pi as TexPiece;
       TextureInfo ti = tp.texInfo;

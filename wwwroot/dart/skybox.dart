@@ -43,7 +43,7 @@ class SkyboxProgram extends ShaderProgram {
     // send perspective projection matrix uniform
     gl.uniformMatrix4fv(this.u_P, false, pMatrix.storage);
 
-    modelList.forEach((Model m) => m.drawInstances(gameLoop, this, cam));
+    modelList.forEach((m) => m.drawInstances(gameLoop, this, cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -141,7 +141,7 @@ class SkyboxInstance extends Instance {
   
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
     
-    model.pieceList.forEach((Piece piece) {
+    model.pieceList.forEach((piece) {
       gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength, RenderingContext.UNSIGNED_SHORT,
           piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });

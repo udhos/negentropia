@@ -257,7 +257,7 @@ class Obj {
     
     List<String> lines = str.split('\n');
     
-    lines.forEach((String line) => parseLine(line));
+    lines.forEach((line) => parseLine(line));
     
     //print("Obj.fromString: url=$url: lines=${lines.length}");
     
@@ -381,7 +381,7 @@ Map<String,Material> mtllib_parse(String str, String url) {
   }
   
   List<String> lines = str.split('\n');
-  lines.forEach((String line) => parseLine(line));
+  lines.forEach((line) => parseLine(line));
   
   //print("mtllib_parse: url=$url: materials: ${lib.length}");
   

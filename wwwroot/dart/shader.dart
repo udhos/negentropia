@@ -189,7 +189,7 @@ class ShaderProgram {
   }
   
   void update(GameLoopHtml gameLoop) {
-    modelList.forEach((Model m) => m.update(gameLoop));    
+    modelList.forEach((m) => m.update(gameLoop));    
   }
 }
 

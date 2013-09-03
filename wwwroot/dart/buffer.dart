@@ -183,11 +183,11 @@ class Model {
       return;
     }
     
-    this.instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
+    this.instanceList.forEach((i) => i.draw(gameLoop, program, cam));
   }  
 
   void update(GameLoopHtml gameLoop) {
-    this.instanceList.forEach((Instance i) => i.update(gameLoop));
+    this.instanceList.forEach((i) => i.update(gameLoop));
   }  
 
 }
