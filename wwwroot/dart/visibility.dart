@@ -6,24 +6,35 @@ import 'package:game_loop/game_loop_html.dart';
 
 import 'lost_context.dart';
 
-bool _pageHidden; 
+//bool _pageHidden; 
 
 bool pageHidden() {
-  assert(pageHidden != null);
-  return _pageHidden;  
+  //assert(pageHidden != null);
+  //return _pageHidden;
+  return document.hidden;
 }
 
+/*
 void _updateHidden() {
   _pageHidden = document.hidden;
   if (_pageHidden == null) {
     _pageHidden = false;
   }
 }
+*/
 
 void initPageVisibility(GameLoopHtml gameLoop) {
 
-  _updateHidden();
+  //_updateHidden();
   
+  document.onVisibilityChange.listen((e) {
+    //_updateHidden();
+    bool hidden = pageHidden();
+    print("onVisibilityChange: visibility changed to hidden=$hidden");
+    updateGameLoop(gameLoop, contextIsLost(), hidden);    
+  });
+
+  /*
   void register(String eventName) {
     
     print("registering page visibility event: $eventName");
@@ -39,7 +50,8 @@ void initPageVisibility(GameLoopHtml gameLoop) {
   register('visibilitychange'); 
   register('webkitvisibilitychange'); 
   register('mozvisibilitychange');   
-  register('msvisibilitychange'); 
+  register('msvisibilitychange');
+  */ 
 }
 
 void updateGameLoop(GameLoopHtml gameLoop, bool contextLost, bool pageHidden) {
