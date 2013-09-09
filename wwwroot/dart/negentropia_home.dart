@@ -143,9 +143,15 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       
       if (data.startsWith("welcome")) {
         // test echo loop thru server
+        /*
         var m = new Map();
         m["Code"] = CM_CODE_ECHO;
         m["Data"] = "hi there";
+        */
+        Map m = {
+          "Code": CM_CODE_ECHO,
+          "Data": "hi there"
+        };
         wsSend(JSON.encode(m));        
       }
       break;

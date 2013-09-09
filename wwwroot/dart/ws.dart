@@ -23,10 +23,15 @@ typedef void dispatcherFunc(int code, String data, Map<String,String> tab);
 dispatcherFunc _dispatcher;
 
 void requestZone() {
-  Map msg = new Map();
-  
+  /*
+  Map msg = new Map();  
   msg["Code"] = CM_CODE_REQZ;
   msg["Data"] = "";
+  */
+  Map msg = {
+    'Code': CM_CODE_REQZ,
+    'Data': ""
+  };
   
   String json = JSON.encode(msg);
   
@@ -94,9 +99,15 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
     status.text = "connected to $wsUri";   
     print("websocket: ${status.text}");
 
+    /*
     var msg = new Map();
     msg["Code"] = CM_CODE_AUTH;
     msg["Data"] = sid;
+    */
+    Map msg = {
+      'Code': CM_CODE_AUTH,
+      'Data': sid
+    };
     
     String jsonMsg = JSON.encode(msg);    
     
