@@ -9,7 +9,6 @@ import 'package:game_loop/game_loop_html.dart';
 
 import 'shader.dart';
 import 'camera.dart';
-import 'anisotropic.dart';
 
 class SkyboxProgram extends ShaderProgram {
   
