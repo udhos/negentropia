@@ -11,7 +11,14 @@ import 'lost_context.dart';
 bool pageHidden() {
   //assert(pageHidden != null);
   //return _pageHidden;
-  return document.hidden;
+  bool hidden = document.hidden;
+  if (hidden == null) { 
+    print("FIXME work-around for https://code.google.com/p/dart/issues/detail?id=13411");
+    hidden = false;
+  }
+  assert(hidden != null);
+  assert(hidden is bool);
+  return hidden;
 }
 
 /*
@@ -55,6 +62,12 @@ void initPageVisibility(GameLoopHtml gameLoop) {
 }
 
 void updateGameLoop(GameLoopHtml gameLoop, bool contextLost, bool pageHidden) {
+  
+  assert(contextLost != null);
+  assert(pageHidden != null);
+  assert(contextLost is bool);
+  assert(pageHidden is bool);
+  
   if (contextLost || pageHidden) {
     gameLoop.stop();
     print("updateGameLoop: game loop stopped");
