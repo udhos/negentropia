@@ -507,7 +507,7 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   // aspect = canvas.width / canvas.height
   setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, planeNear, planeFar);
 
-  cam.render(gameLoop);
+  cam.render(gameLoop.renderInterpolationFactor);
 
   // clear canvas framebuffer
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
@@ -583,7 +583,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     mouseLeftClick(gl, m);
   }  
   
-  cam.update(gameLoop);
+  cam.update(gameLoop.gameTime);
     
   if (programList != null) {
     programList.forEach((p) => p.update(gameLoop));

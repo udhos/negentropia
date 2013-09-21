@@ -3,7 +3,6 @@ library camera;
 import 'dart:math' as math;
 
 import 'package:vector_math/vector_math.dart';
-import 'package:game_loop/game_loop_html.dart';
 
 class Camera {
   final double degreesPerSec = 20.0;
@@ -37,13 +36,13 @@ class Camera {
     angle = gameTime * this.degreesPerSec % 360;    
   }
    
-  void update(GameLoopHtml gameLoop) {
-    _update(gameLoop.gameTime);
+  void update(double gameTime) {
+    _update(gameTime);
   }
     
-  void render(GameLoopHtml gameLoop) {
+  void render(double renderInterpolationFactor) {
     
-    double r = getRad(gameLoop.renderInterpolationFactor);
+    double r = getRad(renderInterpolationFactor);
     
     eye[0] = camOrbitRadius * math.sin(r);
     eye[2] = camOrbitRadius * math.cos(r);
