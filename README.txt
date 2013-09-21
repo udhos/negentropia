@@ -166,8 +166,11 @@ If you want to enable support for Facebook login:
 
 RUNNING / TESTING UNDER WINDOWS
 
-@rem run:
+@rem launch the servers:
 \tmp\devel\negentropia\win-run.cmd
+
+@rem this script initializes an example world:
+\tmp\devel\negentropia\win-zone-add.cmd
 
 Point your web browser to http://localhost:8080/ne/
 
