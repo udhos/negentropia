@@ -31,7 +31,7 @@ Map<String,Shader> shaderCache;
 Map<String,Texture> textureTable;
 Matrix4 pMatrix = new Matrix4.zero();
 double fieldOfViewYRadians = 45 * math.PI / 180;
-Camera cam = new Camera(new Vector3(0.0,0.0,15.0), new Vector3(0.0,0.0,-1.0), new Vector3(0.0,1.0,0.0));
+Camera cam = new Camera(new Vector3(0.0, 0.0, 15.0));
 bool backfaceCulling = false;
 bool showPicking = false;
 Asset asset = new Asset("/");

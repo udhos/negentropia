@@ -116,24 +116,21 @@ class SkyboxInstance extends Instance {
   SkyboxInstance(Model model, Vector3 center, double scale, this.demoAnimate) : super(model, center, scale);
   
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
-    
-    setViewMatrix(MV, cam.eye, cam.center, cam.up);
-    
-    MV.translate(center[0], center[1], center[2]);
+
+    double rescale;
     
     if (demoAnimate) {
       double r = cam.getRad(gameLoop.renderInterpolationFactor);
       double size = 15 * math.sin(r).abs() + 1;
-      double s = scale * size;
-      MV.scale(s, s, s);
+      rescale = scale * size;
     }
     else {
-      MV.scale(scale, scale, scale);      
-    }
-
+      rescale = scale;
+    }      
+    
     RenderingContext gl = prog.gl;
 
-    gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
+    modelView(gl, prog.u_MV, cam, rescale); // set up MV matrix    
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
     gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);

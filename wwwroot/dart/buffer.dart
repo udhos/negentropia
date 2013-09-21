@@ -8,23 +8,47 @@ class Instance {
   Float32List pickColor;
 
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
-  
+
   Instance(this.model, this.center, this.scale, [this.pickColor=null]);
   
   void update(GameLoopHtml gameLoop) {
   }
   
-  void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
+  void modelView(RenderingContext gl, UniformLocation u_MV, Camera cam, double rescale) {
     
-    setViewMatrix(MV, cam.eye, cam.center, cam.up);
+    // grand world coordinate system:
+    // 1. obj scale
+    // 2. obj rotate
+    // 3. obj orbit translate
+    // 4. obj orbit rotate
+    // 5. obj translate
+    // 6. camera orbit rotate
+    // 7. camera translate
+    // 8. camera rotate
     
+    //setViewMatrix(MV, cam.eye, cam.center, cam.up);
+    MV.setIdentity();
+        
+    // 7. camera translate
+    cam.translate(MV);
+
+    // 6. camera orbit rotate
+    cam.rotate(MV);
+    
+    // 5. obj translate
     MV.translate(center[0], center[1], center[2]);
     
-    MV.scale(scale, scale, scale);
+    // 1. obj scale
+    MV.scale(rescale, rescale, rescale);
     
+    gl.uniformMatrix4fv(u_MV, false, MV.storage);    
+  }
+  
+  void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
+
     RenderingContext gl = prog.gl;
 
-    gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
+    modelView(gl, prog.u_MV, cam, scale); // set up MV matrix    
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
     gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);

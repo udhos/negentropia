@@ -180,15 +180,9 @@ class TexInstance extends Instance {
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
 
-    setViewMatrix(MV, cam.eye, cam.center, cam.up);
-    
-    MV.translate(center[0], center[1], center[2]);
-    
-    MV.scale(scale, scale, scale);
-    
     RenderingContext gl = prog.gl;
 
-    gl.uniformMatrix4fv(prog.u_MV, false, MV.storage);
+    modelView(gl, prog.u_MV, cam, scale); // set up MV matrix    
     
     (model as TexModel).pieceList.forEach((pi) {
       

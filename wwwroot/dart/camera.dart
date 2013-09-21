@@ -7,44 +7,51 @@ import 'package:vector_math/vector_math.dart';
 class Camera {
   final double degreesPerSec = 20.0;
   final double camOrbitRadius = 15.0;
-  Vector3 eye, center, up;
-  double oldAngle = 0.0;
-  double angle = 0.0;
   
-  Camera(this.eye, this.center, this.up) {
-    _update(0.0);
+  Quaternion _orientation = new Quaternion.identity();
+  Vector3 _position = new Vector3.zero();
+  
+  double _oldAngle = 0.0;
+  double _angle = 0.0;
+  
+  Camera(this._position) {
+    update(0.0);
   }
   
-  //double get rad => _getRad(1.0);
-  double get rad => getRad(0.0);
+  void rotate(Matrix4 MV) {
+    MV.setRotation(_orientation.asRotationMatrix());
+  }
+  
+  void translate(Matrix4 MV) {
+    MV.translate(- _position);
+  }
+  
+  void update(double gameTime) {
+    _oldAngle = _angle;
+    _angle = gameTime * this.degreesPerSec % 360.0;    
+  }  
+  
+  //double get animationRad => _getRad(0.0);
   
   double getRad(double interpolation) {
-    //double deg = interpolation * angle + (1 - interpolation) * oldAngle;
     double deg;
-    if (angle > oldAngle) {
-      deg = interpolation * (angle       - oldAngle) + oldAngle;
+    if (_angle > _oldAngle) {
+      deg = interpolation * (_angle         - _oldAngle) + _oldAngle;
     } else {
       // undo modulo 360 for correct interpolation
-      deg = interpolation * (angle + 360 - oldAngle) + oldAngle;
+      deg = interpolation * (_angle + 360.0 - _oldAngle) + _oldAngle;
     }
     double r = deg * math.PI / 180.0;
     return r;
   }
-  
-  double _update(double gameTime) {
-    oldAngle = angle;
-    angle = gameTime * this.degreesPerSec % 360;    
-  }
-   
-  void update(double gameTime) {
-    _update(gameTime);
-  }
-    
+
+  static final Vector3 Y = new Vector3(0.0, 1.0, 0.0);
+
   void render(double renderInterpolationFactor) {
     
     double r = getRad(renderInterpolationFactor);
-    
-    eye[0] = camOrbitRadius * math.sin(r);
-    eye[2] = camOrbitRadius * math.cos(r);
+
+    // FIXME: should apply a rotation quaternion
+    _orientation = new Quaternion.axisAngle(Y, r).conjugated();
   }
 }
