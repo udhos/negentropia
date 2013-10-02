@@ -6,7 +6,7 @@ import 'package:vector_math/vector_math.dart';
 
 class Camera {
   final double degreesPerSec = 20.0;
-  final double camOrbitRadius = 15.0;
+  //final double camOrbitRadius = 15.0;
   
   Quaternion _orientation = new Quaternion.identity();
   Vector3 _position = new Vector3.zero();
@@ -30,8 +30,6 @@ class Camera {
     _oldAngle = _angle;
     _angle = gameTime * this.degreesPerSec % 360.0;    
   }  
-  
-  //double get animationRad => _getRad(0.0);
   
   double getRad(double interpolation) {
     double deg;

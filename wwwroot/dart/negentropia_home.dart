@@ -258,11 +258,23 @@ DivElement createMessagebox(String id, CanvasElement c) {
   mbox.style.width = "300px";
   mbox.style.color = "lightgreen";
   mbox.style.background = "rgba(50,50,50,0.7)";
-  mbox.style.left = "${left}px";
-  mbox.style.top = "${top}px";
   mbox.style.textAlign = "left";
   mbox.style.padding = "2px";
   mbox.style.fontSize = 'x-small';
+  
+  void repositionBox(Event e) {
+    int left = 10 + canvas.offsetLeft;
+    int top  = 28 + canvas.offsetTop;
+    
+    mbox.style.left = "${left}px";
+    mbox.style.top = "${top}px";
+    
+    print("repositionBox: event=$e: left=${mbox.style.left} top=${mbox.style.top}");
+  }
+  
+  repositionBox(null);
+  
+  c.onChange.listen(repositionBox);
   
   return mbox;
 }
@@ -280,10 +292,10 @@ RenderingContext boot() {
   RenderingContext gl = initGL(canvas);
   if (gl == null) {
     canvas.remove();
-    var p = new ParagraphElement();
+    ParagraphElement p = new ParagraphElement();
     p.text = 'WebGL is currently not available on this system.';
     canvasbox.append(p);
-    var a = new AnchorElement();
+    AnchorElement a = new AnchorElement();
     a.href = 'http://get.webgl.org/';
     a.text = 'Get more information';
     canvasbox.append(a);
@@ -296,14 +308,17 @@ RenderingContext boot() {
   
   initShowPicking();
     
-  var sid = Cookie.getCookie("sid");
+  String sid = Cookie.getCookie("sid");
   assert(sid != null);
+  assert(sid is String);
   
-  var wsUri = query("#wsUri").text;
+  String wsUri = query("#wsUri").text;
   assert(wsUri != null);
+  assert(wsUri is String);
   
-  var statusElem = query("#ws_status");
+  Element statusElem = query("#ws_status");
   assert(statusElem != null);
+  assert(statusElem is Element);
   
   void dispatch(int code, String data, Map<String,String> tab) {
     dispatcher(gl, code, data, tab);

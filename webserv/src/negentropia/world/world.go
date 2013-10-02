@@ -136,8 +136,7 @@ func serve(addr string) {
 	log.Printf("saving websocket address: %s=%s", share.WORLD_WEBSOCKET, wsAddr)
 	store.Set(share.WORLD_WEBSOCKET, wsAddr)
 
-	err := http.ListenAndServe(addr, nil)
-	if err != nil {
+	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Printf("ListenAndServe: %s: %s", addr, err)
 	}
 }
