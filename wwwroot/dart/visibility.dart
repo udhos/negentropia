@@ -20,7 +20,6 @@ bool pageHidden() {
 void initPageVisibility(GameLoopHtml gameLoop) {
 
   document.onVisibilityChange.listen((e) {
-    //_updateHidden();
     bool hidden = pageHidden();
     print("onVisibilityChange: visibility changed to hidden=$hidden");
     updateGameLoop(gameLoop, contextIsLost(), hidden);    

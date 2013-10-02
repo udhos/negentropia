@@ -31,8 +31,6 @@ class Camera {
     _angle = gameTime * this.degreesPerSec % 360.0;    
   }  
   
-  //double get animationRad => _getRad(0.0);
-  
   double getRad(double interpolation) {
     double deg;
     if (_angle > _oldAngle) {
