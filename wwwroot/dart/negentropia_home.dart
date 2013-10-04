@@ -34,6 +34,7 @@ double fieldOfViewYRadians = 45 * math.PI / 180;
 Camera cam = new Camera(new Vector3(0.0, 0.0, 15.0));
 bool backfaceCulling = false;
 bool showPicking = false;
+Set<PickerInstance> selection = new HashSet<PickerInstance>();
 Asset asset = new Asset("/");
 SkyboxProgram skybox;
 PickerShader picker;
@@ -569,15 +570,15 @@ void render(RenderingContext gl, GameLoopHtml gameLoop) {
 void readColor(String label, RenderingContext gl, int x, int y, Framebuffer framebuffer, Uint8List color) {
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, framebuffer);
   gl.readPixels(x, y, 1, 1, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, color);
-  print("$label: readPixels: x=$x y=$y color=$color");     
+  //print("$label: readPixels: x=$x y=$y color=$color");     
 }
 
-void mouseLeftClick(RenderingContext gl, Mouse m) {
-  print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas}");
+PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
+  //print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas}");
   
   if (picker == null) {
     print("picker not available");
-    return;
+    return null;
   }
   
   int y = canvas.height - m.y;
@@ -587,15 +588,49 @@ void mouseLeftClick(RenderingContext gl, Mouse m) {
   readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
   
   PickerInstance pi = mouseClickHit(picker.instanceList, color);
-  print("mouse hit: $pi");  
+  
+  return pi;
+}
+
+void mouseSelection(PickerInstance pi, bool shift) {
+  
+  assert(shift != null);
+  
+  if (pi == null) {
+    // didn't hit anything
+    if (!shift) {
+      // shift is released
+      selection.clear();
+    }
+    return;
+  }
+  
+  assert(pi != null);
+  
+  if (shift) {
+    if (selection.contains(pi)) {
+      selection.remove(pi);
+    }
+    else {
+      selection.add(pi);      
+    }
+    return;
+  }
+  
+  selection.clear();
+  selection.add(pi);
 }
 
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
 
   Mouse m = gameLoop.mouse;
-  if (m.pressed(Mouse.LEFT)) {
-    mouseLeftClick(gl, m);
+  bool mouseLeftPressed = m.pressed(Mouse.LEFT);
+  bool shiftDown = gameLoop.keyboard.isDown(Keyboard.SHIFT);
+  if (mouseLeftPressed) {
+    PickerInstance pi = mouseLeftClick(gl, m);
+    mouseSelection(pi, shiftDown);
+    print("selection: $selection");
   }  
   
   cam.update(gameLoop.gameTime);
