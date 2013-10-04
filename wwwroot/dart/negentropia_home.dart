@@ -642,8 +642,27 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 
 void checkAntialias(RenderingContext gl) {
   ContextAttributes attr = gl.getContextAttributes();
-  bool antialias = attr.antialias;
-  print("antialias: $antialias");
+  
+  if (attr == null) {
+    print("ugh: gl.getContextAttributes() returned null -- gl.isContextLost() is ${gl.isContextLost()}");
+    print("antialias: UNKNOWN");
+  }
+  else if (attr is! ContextAttributes) {
+    print("ugh: gl.getContextAttributes() returned non-ContextAttributes: $attr");    
+    print("antialias: UNKNOWN");
+  }
+  else if (attr.antialias == null) {
+    print("ugh: attr.antialias == null");    
+    print("antialias: UNKNOWN");    
+  }
+  else if (attr.antialias is! bool) {
+    print("ugh: attr.antialias is! bool");    
+    print("antialias: UNKNOWN");    
+  }
+  else {
+    bool antialias = attr.antialias;
+    print("antialias: $antialias");
+  }
   
   int size = gl.getParameter(RenderingContext.SAMPLES);
   print("antialias MSSA size: $size");  
