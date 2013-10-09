@@ -41,7 +41,10 @@ PickerShader picker;
 double planeNear   = 1.0;
 double planeFar    = 2000.0;
 double skyboxScale = 1000.0;
-
+int mouseDragBeginX = null;
+int mouseDragBeginY = null;
+int mouseDragCurrX = null;
+int mouseDragCurrY = null;    
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -250,8 +253,8 @@ DivElement createMessagebox(String id, CanvasElement c) {
   DivElement mbox = new DivElement();
   mbox.id = id;
   
-  int left = 10 + canvas.offsetLeft;
-  int top  = 28 + canvas.offsetTop;
+  int left = 10 + c.offsetLeft;
+  int top  = 28 + c.offsetTop;
 
   mbox.style.border = '2px solid #FFF';
   mbox.style.zIndex = "1";
@@ -264,8 +267,8 @@ DivElement createMessagebox(String id, CanvasElement c) {
   mbox.style.fontSize = 'x-small';
   
   void repositionBox(Event e) {
-    int left = 10 + canvas.offsetLeft;
-    int top  = 28 + canvas.offsetTop;
+    int left = 10 + c.offsetLeft;
+    int top  = 28 + c.offsetTop;
     
     mbox.style.left = "${left}px";
     mbox.style.top = "${top}px";
@@ -582,7 +585,7 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
   }
   
   int y = canvas.height - m.y;
-
+  
   Uint8List color = new Uint8List(4);
   //readColor("canvas-framebuffer", gl, m.x, y, null, color);
   readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
@@ -621,17 +624,81 @@ void mouseSelection(PickerInstance pi, bool shift) {
   selection.add(pi);
 }
 
+void deleteBandSelectionBox(CanvasElement c) {
+  DivElement box = query("#dragbox");
+  if (box != null) {
+    box.remove();
+  }
+}
+
+void createBandSelectionBox(CanvasElement c) {
+  
+  DivElement canvasbox = query("#canvasbox");
+  assert(canvasbox != null);
+
+  DivElement box = query("#dragbox");
+  if (box == null) {
+    box = new DivElement();
+    box.id = 'dragbox';
+    canvasbox.append(box);
+  }  
+  //int left = canvas.offsetLeft + mouseDragBeginX;
+  //int top  = canvas.offsetTop + mouseDragBeginY;
+  int left = math.min(mouseDragBeginX, mouseDragCurrX) + c.offsetLeft;
+  int top  = math.min(mouseDragBeginY, mouseDragCurrY) + c.offsetTop;
+  
+  int w = 1 + (mouseDragCurrX - mouseDragBeginX).abs();
+  int h = 1 + (mouseDragCurrY - mouseDragBeginY).abs();
+  
+  box.style.border = '1px solid #FFF';
+  box.style.zIndex = "2";
+  box.style.position = "absolute";
+  box.style.width = "${w}px";
+  box.style.height = "${h}px";
+  //box.style.color = "lightgreen";
+  //box.style.background = "rgba(50,50,50,0.7)";
+  //box.style.textAlign = "left";
+  //box.style.padding = "2px";
+  //box.style.fontSize = 'x-small';
+  box.style.left = "${left}px";
+  box.style.top = "${top}px";
+}
+
+
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
 
   Mouse m = gameLoop.mouse;
   bool mouseLeftPressed = m.pressed(Mouse.LEFT);
+  bool mouseLeftReleased = m.released(Mouse.LEFT);
   bool shiftDown = gameLoop.keyboard.isDown(Keyboard.SHIFT);
+  bool mouseDown = m.isDown(Mouse.LEFT);
   if (mouseLeftPressed) {
+    //int y = canvas.height - m.y;
+    int y = m.y;
+    mouseDragBeginX = m.x;
+    mouseDragBeginY = y;
+    
     PickerInstance pi = mouseLeftClick(gl, m);
     mouseSelection(pi, shiftDown);
     print("selection: $selection");
-  }  
+  }
+  if (mouseDown) {
+    //int y = canvas.height - m.y;
+    int y = m.y;
+    if (mouseDragCurrX != m.x || mouseDragCurrY != y) {
+      mouseDragCurrX = m.x;
+      mouseDragCurrY = y;
+      print("mouse drag: ($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)");
+      
+      createBandSelectionBox(canvas);
+    }
+  }
+  if (mouseLeftReleased) {
+    deleteBandSelectionBox(canvas);
+    mouseDragBeginX = null;
+    mouseDragBeginY = null;    
+  }
   
   cam.update(gameLoop.gameTime);
     
