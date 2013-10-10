@@ -662,6 +662,11 @@ void createBandSelectionBox(CanvasElement c) {
   //box.style.fontSize = 'x-small';
   box.style.left = "${left}px";
   box.style.top = "${top}px";
+  
+  box.children.clear();
+  DivElement d = new DivElement();
+  d.text = "($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)";
+  box.children.add(d);
 }
 
 
@@ -669,35 +674,48 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
 
   Mouse m = gameLoop.mouse;
+  Keyboard k = gameLoop.keyboard;
   bool mouseLeftPressed = m.pressed(Mouse.LEFT);
-  bool mouseLeftReleased = m.released(Mouse.LEFT);
-  bool shiftDown = gameLoop.keyboard.isDown(Keyboard.SHIFT);
-  bool mouseDown = m.isDown(Mouse.LEFT);
+  //bool mouseLeftReleased = m.released(Mouse.LEFT);
+  bool shiftDown = k.isDown(Keyboard.SHIFT);
+  //bool mouseDown = m.isDown(Mouse.LEFT);
+  bool altPressed = k.pressed(Keyboard.ALT);
+  bool altDown = k.isDown(Keyboard.ALT);
+  bool altReleased = k.released(Keyboard.ALT);
   if (mouseLeftPressed) {
-    //int y = canvas.height - m.y;
-    int y = m.y;
-    mouseDragBeginX = m.x;
-    mouseDragBeginY = y;
-    
     PickerInstance pi = mouseLeftClick(gl, m);
     mouseSelection(pi, shiftDown);
     print("selection: $selection");
   }
-  if (mouseDown) {
+  /*
+  if (altPressed) {
     //int y = canvas.height - m.y;
     int y = m.y;
-    if (mouseDragCurrX != m.x || mouseDragCurrY != y) {
+    mouseDragBeginX = m.x;
+    mouseDragBeginY = y;    
+  }
+  */
+  if (altDown) {
+    //int y = canvas.height - m.y;
+    int y = m.y;
+    //if ((mouseDragCurrX != m.x) || (mouseDragCurrY != y)) {
       mouseDragCurrX = m.x;
       mouseDragCurrY = y;
-      print("mouse drag: ($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)");
+      if (mouseDragBeginX == null) {
+        mouseDragBeginX = m.x;
+      }
+      if (mouseDragBeginY == null) {
+        mouseDragBeginY = y;
+      }
+      //print("mouse drag: ($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)");
       
       createBandSelectionBox(canvas);
-    }
+    //}
   }
-  if (mouseLeftReleased) {
-    deleteBandSelectionBox(canvas);
+  else {
     mouseDragBeginX = null;
-    mouseDragBeginY = null;    
+    mouseDragBeginY = null;
+    deleteBandSelectionBox(canvas);
   }
   
   cam.update(gameLoop.gameTime);
