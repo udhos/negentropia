@@ -675,47 +675,38 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 
   Mouse m = gameLoop.mouse;
   Keyboard k = gameLoop.keyboard;
+  
   bool mouseLeftPressed = m.pressed(Mouse.LEFT);
-  //bool mouseLeftReleased = m.released(Mouse.LEFT);
   bool shiftDown = k.isDown(Keyboard.SHIFT);
-  //bool mouseDown = m.isDown(Mouse.LEFT);
-  bool altPressed = k.pressed(Keyboard.ALT);
-  bool altDown = k.isDown(Keyboard.ALT);
-  bool altReleased = k.released(Keyboard.ALT);
+  bool ctrlPressed = k.pressed(Keyboard.CTRL);
+  bool ctrlReleased = k.released(Keyboard.CTRL);
+  
   if (mouseLeftPressed) {
     PickerInstance pi = mouseLeftClick(gl, m);
     mouseSelection(pi, shiftDown);
     print("selection: $selection");
   }
-  /*
-  if (altPressed) {
-    //int y = canvas.height - m.y;
+  if (ctrlPressed) {
     int y = m.y;
     mouseDragBeginX = m.x;
     mouseDragBeginY = y;    
+    mouseDragCurrX = null;
+    mouseDragCurrY = null;
   }
-  */
-  if (altDown) {
-    //int y = canvas.height - m.y;
+  if (ctrlReleased) {
+    deleteBandSelectionBox(canvas);
+    mouseDragBeginX = null;
+    mouseDragBeginY = null;    
+    mouseDragCurrX = null;
+    mouseDragCurrY = null;
+  }
+  if (mouseDragBeginX != null) {
     int y = m.y;
-    //if ((mouseDragCurrX != m.x) || (mouseDragCurrY != y)) {
+    if ((mouseDragCurrX != m.x) || (mouseDragCurrY != y)) {
       mouseDragCurrX = m.x;
       mouseDragCurrY = y;
-      if (mouseDragBeginX == null) {
-        mouseDragBeginX = m.x;
-      }
-      if (mouseDragBeginY == null) {
-        mouseDragBeginY = y;
-      }
-      //print("mouse drag: ($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)");
-      
       createBandSelectionBox(canvas);
-    //}
-  }
-  else {
-    mouseDragBeginX = null;
-    mouseDragBeginY = null;
-    deleteBandSelectionBox(canvas);
+    }
   }
   
   cam.update(gameLoop.gameTime);

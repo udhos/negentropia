@@ -25,4 +25,8 @@
 
 <div id="toggle">switch to <a href="{{.HomeJSPath}}">javascript</a></div>
 
+<div>mouse left click: select single item</div>
+<div>hold shift + mouse left click: add/remove item to/from group selection</div>
+<div>hold ctrl + drag mouse: band select multiple items</div>
+
 {{ end }}
