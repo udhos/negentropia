@@ -77,14 +77,14 @@ RenderingContext initGL(CanvasElement canvas) {
 Stats stats = null;
 
 void initStats() {
-  DivElement div = query("#framerate");
+  DivElement div = querySelector("#framerate");
   assert(div != null);
   stats = new Stats();
   div.children.add(stats.container);
 }
 
 void initShowPicking() {
-  DivElement control = query("#control");
+  DivElement control = querySelector("#control");
   assert(control != null);
 
   InputElement showPickingCheck = new InputElement();
