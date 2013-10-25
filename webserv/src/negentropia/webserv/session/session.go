@@ -64,10 +64,6 @@ func newSession(sid string, provider int, profId, profName, profEmail string) *S
 	return s
 }
 
-func RedisQueryField(key, field string) string {
-	return store.QueryField(key, field)
-}
-
 func Load(sessionId string) *Session {
 
 	if !store.Exists(sessionId) {

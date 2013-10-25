@@ -156,7 +156,7 @@ func sessionStart(w http.ResponseWriter, r *http.Request, s *session.Session, em
 	if s != nil {
 		session.Delete(w, s)
 	}
-	name := session.RedisQueryField(email, "name")
+	name := store.QueryField(email, "name")
 	s = session.Set(w, session.AUTH_PROV_PASSWORD, email, name, email)
 	if s == nil {
 		log.Printf("login.LoginAuth url=%s could not establish session", r.URL.Path)
