@@ -289,7 +289,7 @@ RenderingContext boot() {
   canvas.id = "main_canvas";
   canvas.width = 780;
   canvas.height = 500;
-  DivElement canvasbox = query("#canvasbox");
+  DivElement canvasbox = querySelector("#canvasbox");
   assert(canvasbox != null);  
   canvasbox.append(canvas);
     
@@ -316,11 +316,11 @@ RenderingContext boot() {
   assert(sid != null);
   assert(sid is String);
   
-  String wsUri = query("#wsUri").text;
+  String wsUri = querySelector("#wsUri").text;
   assert(wsUri != null);
   assert(wsUri is String);
   
-  Element statusElem = query("#ws_status");
+  Element statusElem = querySelector("#ws_status");
   assert(statusElem != null);
   assert(statusElem is Element);
   
@@ -625,7 +625,7 @@ void mouseSelection(PickerInstance pi, bool shift) {
 }
 
 void deleteBandSelectionBox(CanvasElement c) {
-  DivElement box = query("#dragbox");
+  DivElement box = querySelector("#dragbox");
   if (box != null) {
     box.remove();
   }
@@ -633,10 +633,10 @@ void deleteBandSelectionBox(CanvasElement c) {
 
 void createBandSelectionBox(CanvasElement c) {
   
-  DivElement canvasbox = query("#canvasbox");
+  DivElement canvasbox = querySelector("#canvasbox");
   assert(canvasbox != null);
 
-  DivElement box = query("#dragbox");
+  DivElement box = querySelector("#dragbox");
   if (box == null) {
     box = new DivElement();
     box.id = 'dragbox';
