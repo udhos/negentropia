@@ -42,7 +42,7 @@ void initHandleLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHt
     return;
   }
 
-  DivElement control = query("#control");
+  DivElement control = querySelector("#control");
   assert(control != null);
   
   InputElement loseContextButton = new InputElement();
