@@ -663,6 +663,11 @@ void createBandSelectionBox(CanvasElement c) {
   box.style.left = "${left}px";
   box.style.top = "${top}px";
   
+  // Pass through pointer events
+  // http://stackoverflow.com/questions/1009753/pass-mouse-events-through-absolutely-positioned-element
+  // https://developer.mozilla.org/en/css/pointer-events
+  box.style.pointerEvents = "none";
+  
   box.children.clear();
   DivElement d = new DivElement();
   d.text = "($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)";
