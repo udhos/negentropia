@@ -36,9 +36,9 @@ go install negentropia\world
 @rem build client
 set OLD_CD=%CD%
 cd %NEG_DART_SRC%
-call %NEG_DART_SDK%\bin\pub install
+call %NEG_DART_SDK%\bin\pub get
 @echo on
-call %NEG_DART_SDK%\bin\pub update
+call %NEG_DART_SDK%\bin\pub upgrade
 @echo on
 cd %OLD_CD%
 call %NEG_DART_SDK%\bin\dartanalyzer %NEG_DART_MAIN%
