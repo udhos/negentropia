@@ -20,6 +20,7 @@
 </div>
 
 <div id="canvasbox"></div>
+<div id="debug"></div>
 <div id="framerate"></div>
 <div id="control"></div>
 

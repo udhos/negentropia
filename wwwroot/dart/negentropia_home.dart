@@ -283,13 +283,15 @@ DivElement createMessagebox(String id, CanvasElement c) {
   return mbox;
 }
 
+DivElement canvasbox;
+
 RenderingContext boot() {
   canvas = new CanvasElement();
   assert(canvas != null);
   canvas.id = "main_canvas";
   canvas.width = 780;
   canvas.height = 500;
-  DivElement canvasbox = querySelector("#canvasbox");
+  canvasbox = querySelector("#canvasbox");
   assert(canvasbox != null);  
   canvasbox.append(canvas);
     
@@ -624,56 +626,57 @@ void mouseSelection(PickerInstance pi, bool shift) {
   selection.add(pi);
 }
 
+DivElement dragBox;
+
 void deleteBandSelectionBox(CanvasElement c) {
-  DivElement box = querySelector("#dragbox");
-  if (box != null) {
-    box.remove();
+  if (dragBox != null) {
+    dragBox.remove();
+    dragBox = null;
   }
 }
 
 void createBandSelectionBox(CanvasElement c) {
   
-  DivElement canvasbox = querySelector("#canvasbox");
   assert(canvasbox != null);
 
-  DivElement box = querySelector("#dragbox");
-  if (box == null) {
-    box = new DivElement();
-    box.id = 'dragbox';
-    canvasbox.append(box);
-  }  
-  //int left = canvas.offsetLeft + mouseDragBeginX;
-  //int top  = canvas.offsetTop + mouseDragBeginY;
-  int left = math.min(mouseDragBeginX, mouseDragCurrX) + c.offsetLeft;
-  int top  = math.min(mouseDragBeginY, mouseDragCurrY) + c.offsetTop;
+  if (dragBox == null) {
+    dragBox = new DivElement();
+    
+    dragBox.style.border = '1px solid #FFF';
+    dragBox.style.zIndex = "2";
+    dragBox.style.position = "absolute";
+    //dragBo.style.color = "lightgreen";
+    //dragBo.style.background = "rgba(50,50,50,0.7)";
+    //dragBo.style.textAlign = "left";
+    //dragBo.style.padding = "2px";
+    //dragBox.style.fontSize = 'x-small';
+    
+    // Pass through pointer events
+    // http://stackoverflow.com/questions/1009753/pass-mouse-events-through-absolutely-positioned-element
+    // https://developer.mozilla.org/en/css/pointer-events
+    dragBox.style.pointerEvents = "none";
+    
+    canvasbox.append(dragBox);
+  }
   
+  int left = math.min(mouseDragBeginX, mouseDragCurrX) + c.offsetLeft;
+  int top  = math.min(mouseDragBeginY, mouseDragCurrY) + c.offsetTop;  
   int w = 1 + (mouseDragCurrX - mouseDragBeginX).abs();
   int h = 1 + (mouseDragCurrY - mouseDragBeginY).abs();
   
-  box.style.border = '1px solid #FFF';
-  box.style.zIndex = "2";
-  box.style.position = "absolute";
-  box.style.width = "${w}px";
-  box.style.height = "${h}px";
-  //box.style.color = "lightgreen";
-  //box.style.background = "rgba(50,50,50,0.7)";
-  //box.style.textAlign = "left";
-  //box.style.padding = "2px";
-  //box.style.fontSize = 'x-small';
-  box.style.left = "${left}px";
-  box.style.top = "${top}px";
-  
-  // Pass through pointer events
-  // http://stackoverflow.com/questions/1009753/pass-mouse-events-through-absolutely-positioned-element
-  // https://developer.mozilla.org/en/css/pointer-events
-  box.style.pointerEvents = "none";
-  
-  box.children.clear();
+  dragBox.style.left = "${left}px";
+  dragBox.style.top = "${top}px";
+  dragBox.style.width = "${w}px";
+  dragBox.style.height = "${h}px";
+    
+  /*
+  // show drag box coordinates
+  dragBox.children.clear();
   DivElement d = new DivElement();
   d.text = "($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)";
-  box.children.add(d);
+  dragBox.children.add(d);
+  */
 }
-
 
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
@@ -682,22 +685,13 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   Keyboard k = gameLoop.keyboard;
   
   bool mouseLeftPressed = m.pressed(Mouse.LEFT);
+  bool within = m.withinCanvas;
   bool shiftDown = k.isDown(Keyboard.SHIFT);
   bool ctrlPressed = k.pressed(Keyboard.CTRL);
   bool ctrlReleased = k.released(Keyboard.CTRL);
   
-  if (mouseLeftPressed) {
-    PickerInstance pi = mouseLeftClick(gl, m);
-    mouseSelection(pi, shiftDown);
-    print("selection: $selection");
-  }
-  if (ctrlPressed) {
-    int y = m.y;
-    mouseDragBeginX = m.x;
-    mouseDragBeginY = y;    
-    mouseDragCurrX = null;
-    mouseDragCurrY = null;
-  }
+  querySelector("#debug").text = "$within"; // FIXME
+  
   if (ctrlReleased) {
     deleteBandSelectionBox(canvas);
     mouseDragBeginX = null;
@@ -705,12 +699,25 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     mouseDragCurrX = null;
     mouseDragCurrY = null;
   }
-  if (mouseDragBeginX != null) {
-    int y = m.y;
-    if ((mouseDragCurrX != m.x) || (mouseDragCurrY != y)) {
-      mouseDragCurrX = m.x;
-      mouseDragCurrY = y;
-      createBandSelectionBox(canvas);
+  if (within) {
+    if (mouseLeftPressed) {
+      PickerInstance pi = mouseLeftClick(gl, m);
+      mouseSelection(pi, shiftDown);
+      print("selection: $selection");
+    }
+    if (ctrlPressed) {
+      mouseDragBeginX = m.x;
+      mouseDragBeginY = m.y;    
+      mouseDragCurrX = null;
+      mouseDragCurrY = null;
+    }
+    if (mouseDragBeginX != null) {
+      if ((mouseDragCurrX != m.x) || (mouseDragCurrY != m.y)) {
+        // mouse moved
+        mouseDragCurrX = m.x;
+        mouseDragCurrY = m.y;
+        createBandSelectionBox(canvas);
+      }
     }
   }
   
@@ -776,13 +783,15 @@ void main() {
   }
   
   initPageVisibility(gameLoop);
-  
-  gameLoop.onUpdate = ((GameLoopHtml gameLoop) { 
-    update(gl, gameLoop);
+    
+  gameLoop.onUpdate = ((gLoop) { 
+    update(gl, gLoop);
   });
-  gameLoop.onRender = ((GameLoopHtml gameLoop) {
-    render(gl, gameLoop);
+  gameLoop.onRender = ((gLoop) {
+    render(gl, gLoop);
   });
 
   initContext(gl, gameLoop);
+  
+  print("main: negentropia dart client ready");
 }
