@@ -3,8 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:benchmark_harness/benchmark_harness.dart';
-
-import 'obj.dart';
+import 'package:obj/obj.dart';
 
 String objURL;
 String objString;

@@ -8,10 +8,10 @@ import 'dart:typed_data';
 
 import 'package:vector_math/vector_math.dart';
 import 'package:game_loop/game_loop_html.dart';
+import 'package:obj/obj.dart';
 
 import 'camera.dart';
 import 'texture.dart';
-import 'obj.dart';
 import 'asset.dart';
 
 part 'buffer.dart';
