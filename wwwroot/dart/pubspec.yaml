@@ -8,5 +8,8 @@ dependencies:
   stats: any
   vector_math:
     git: https://github.com/johnmccutchan/vector_math.git
+  #obj: any
   obj:
     git: https://github.com/udhos/obj
+  #obj:    
+    #path: c:/tmp/devel/obj
