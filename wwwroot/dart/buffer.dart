@@ -164,6 +164,37 @@ class Model {
     .catchError(handleError);
   }
   
+  void printObjStats(Obj o) {
+    
+    double min_x = double.INFINITY;
+    double min_y = double.INFINITY;
+    double min_z = double.INFINITY;
+
+    double max_x = double.NEGATIVE_INFINITY;
+    double max_y = double.NEGATIVE_INFINITY;
+    double max_z = double.NEGATIVE_INFINITY;
+    
+    for (int i = 0; i < o.vertCoord.length; i += 3) {
+      double x = o.vertCoord[i];
+      double y = o.vertCoord[i + 1];
+      double z = o.vertCoord[i + 2];
+      
+      min_x = math.min(min_x, x);
+      min_y = math.min(min_y, y);
+      min_z = math.min(min_z, z);      
+
+      max_x = math.max(max_x, x);
+      max_y = math.max(max_y, y);
+      max_z = math.max(max_z, z);
+    }
+
+    double size_x = (max_x - min_x).abs();
+    double size_y = (max_y - min_y).abs();
+    double size_z = (max_z - min_z).abs();
+        
+    print("model=$_name indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z]");
+  }
+  
   void loadObj(RenderingContext gl, Obj o) {
     assert(!piecesReady);
     
@@ -180,10 +211,12 @@ class Model {
     void handleResponse(String response) {
       //print("Model.fromOBJ: fetched OBJ from URL: $URL");
       
-      Obj obj = new Obj.fromString(URL, response);
+      Obj obj = new Obj.fromString(URL, response);    
       
       _name = URL;
-      
+
+      printObjStats(obj);      
+
       loadObj(gl, obj);
       
       _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);

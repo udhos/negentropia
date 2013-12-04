@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:web_gl';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:math' as math;
 
 import 'package:vector_math/vector_math.dart';
 import 'package:game_loop/game_loop_html.dart';
