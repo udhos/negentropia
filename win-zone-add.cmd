@@ -30,7 +30,7 @@
 @rem create instance m:2
 \redisbin\redis-cli hset m:2 programName p:simpleTexturizer
 \redisbin\redis-cli hset m:2 obj /obj/old_house.obj
-\redisbin\redis-cli hset m:2 coord 0.0,0.0,0.0
+\redisbin\redis-cli hset m:2 coord -50.0,0.0,0.0
 \redisbin\redis-cli hset m:2 scale 1.0
 
 @rem eof
