@@ -48,6 +48,7 @@
 !wwwroot/shader
 !wwwroot/mesh
 !wwwroot/texture
+!wwwroot/texture/skybox_*
 !wwwroot/obj
 !wwwroot/mtl
 !wwwroot/skybox

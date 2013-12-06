@@ -8,7 +8,9 @@
 
 @rem add zone
 \redisbin\redis-cli hset z:0 backfaceCulling true
-\redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_galaxy.json
+@rem \redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_galaxy.json
+@rem \redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_alien.json
+\redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_sky30.json
 \redisbin\redis-cli hset z:0 programName p:simpleTexturizer
 
 @rem add instance list to zone

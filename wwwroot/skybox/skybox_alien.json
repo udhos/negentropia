@@ -1,0 +1,11 @@
+{
+	"vertexShader":		"/shader/skybox_vs.txt",
+	"fragmentShader":	"/shader/skybox_fs.txt",
+	"cube":				"/mesh/cube.json",
+	"faceRight":		"/texture/skybox_alien/jajalien1_right.jpg",
+	"faceLeft":			"/texture/skybox_alien/jajalien1_left.jpg",
+	"faceUp":			"/texture/skybox_alien/jajalien1_top.jpg",
+	"faceDown":			"/texture/skybox_alien/jajalien1_top.jpg",
+	"faceFront":		"/texture/skybox_alien/jajalien1_front.jpg",
+	"faceBack":			"/texture/skybox_alien/jajalien1_back.jpg"
+}
