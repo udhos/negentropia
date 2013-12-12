@@ -2,6 +2,8 @@ library anisotropic;
 
 import 'dart:web_gl';
 
+import 'logg.dart';
+
 final List<String> _names = ["EXT_texture_filter_anisotropic",
                              "MOZ_EXT_texture_filter_anisotropic",
                              "WEBKIT_EXT_texture_filter_anisotropic"];
@@ -20,7 +22,7 @@ void anisotropic_filtering_detect(RenderingContext gl) {
       _anisotropy = max_anisotropy;
     }
 
-    print("using anisotropy=$_anisotropy");
+    debug("using anisotropy=$_anisotropy");
     
     _extAnisotropic = ext;
   }
@@ -32,7 +34,7 @@ void anisotropic_filtering_detect(RenderingContext gl) {
       ext = gl.getExtension(extName);
     }
     catch (exc) {
-      print("gl.getExtension('$extName') exception: $exc");
+      warn("gl.getExtension('$extName') exception: $exc");
     }
     if (ext != null) {
       enable(ext, extName);
@@ -42,7 +44,7 @@ void anisotropic_filtering_detect(RenderingContext gl) {
     
   _anisotropy = 0; // disabled  
 
-  print("anisotropic filtering: NOT SUPPORTED");
+  warn("anisotropic filtering: NOT SUPPORTED");
 }
 
 void anisotropic_filtering_enable(RenderingContext gl) {
@@ -58,9 +60,9 @@ void anisotropic_filtering_enable(RenderingContext gl) {
 
   int result = gl.getTexParameter(RenderingContext.TEXTURE_2D, ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT);
   
-  print("texture anisotropy=$result");        
+  debug("texture anisotropy=$result");        
   
   if (result != _anisotropy) {
-    print("anisotropic_filtering_enable: anisotropy set to texParameterf=$_anisotropy but got getTexParameter=$result");
+    warn("anisotropic_filtering_enable: anisotropy set to texParameterf=$_anisotropy but got getTexParameter=$result");
   }
 }

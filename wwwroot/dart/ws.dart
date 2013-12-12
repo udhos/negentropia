@@ -5,6 +5,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:collection';
 
+import 'logg.dart';
+
 const CM_CODE_FATAL = 0;
 const CM_CODE_INFO  = 1;
 const CM_CODE_AUTH  = 2; // client->server: let me in
@@ -53,7 +55,7 @@ void wsFlush() {
       _write(_wsQueue.first);
     }
     catch(e) {
-      print("websocket flush: send failure: $e");
+      err("websocket flush: send failure: $e");
       return;
     }
     _wsQueue.removeFirst();
@@ -73,7 +75,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
     retrySeconds = 20;
   }
   
-  print("websocket: opening: ${wsUri} (retry=${retrySeconds})");
+  debug("websocket: opening: ${wsUri} (retry=${retrySeconds})");
   
   _ws = new WebSocket(wsUri);
 
@@ -89,7 +91,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
       return;
     }
     
-    print("websocket: retrying in $retrySeconds seconds");
+    debug("websocket: retrying in $retrySeconds seconds");
     new Timer(new Duration(seconds: retrySeconds), () => initWebSocket(wsUri, sid, 2 * retrySeconds, status, dispatch));
       
     reconnectScheduled = true;
@@ -97,7 +99,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
 
   subOpen = _ws.onOpen.listen((e) {
     status.text = "connected to $wsUri";   
-    print("websocket: ${status.text}");
+    debug("websocket: ${status.text}");
 
     /*
     var msg = new Map();
@@ -115,19 +117,19 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
       _write(jsonMsg);
     }
     catch (e) {
-      print("websocket auth: send failure: $e");
+      err("websocket auth: send failure: $e");
       scheduleReconnect();
     }
   });
   
   subClose = _ws.onClose.listen((Event e) {
     status.text = "disconnected from $wsUri";    
-    print("websocket: ${status.text}: [$e]");
+    warn("websocket: ${status.text}: [$e]");
     scheduleReconnect();
   });
   
   subError = _ws.onError.listen((Event e) {
-    print("websocket: error: [$e]");
+    err("websocket: error: [$e]");
     scheduleReconnect();
   });
   
@@ -143,7 +145,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status, d
       String killInfo = data;
       String m = "server killed our session: $killInfo";
 
-      print(m);
+      warn(m);
       status.text = m;
 
       subOpen.cancel();

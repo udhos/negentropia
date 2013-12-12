@@ -6,6 +6,7 @@ import 'dart:web_gl';
 import 'package:game_loop/game_loop_html.dart';
 
 import 'visibility.dart';
+import 'logg.dart';
 
 bool _lost;
 
@@ -23,13 +24,13 @@ void initHandleLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHt
   void onContextLost(Event e) {
     e.preventDefault();
     _lost = true;
-    print("webgl context: lost");
+    debug("webgl context: lost");
     updateGameLoop(gameLoop, contextIsLost(), pageHidden()); // gameLoop.stop();
   }
 
   void onContextRestored(Event e) {
     _lost = false;
-    print("webgl context: restored");
+    debug("webgl context: restored");
     initContextCall(gl, gameLoop); // recreate resources and // gameLoop.start();
   }
 
@@ -38,7 +39,7 @@ void initHandleLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHt
   
   LoseContext ext = gl.getExtension('WEBGL_lose_context');
   if (ext == null) {
-    print("WEBGL_lose_context: NOT AVAILABLE");
+    warn("WEBGL_lose_context: NOT AVAILABLE");
     return;
   }
 

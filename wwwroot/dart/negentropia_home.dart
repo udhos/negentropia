@@ -20,6 +20,7 @@ import 'camera.dart';
 import 'asset.dart';
 import 'anisotropic.dart';
 import 'visibility.dart';
+import 'logg.dart';
 
 CanvasElement canvas;
 DivElement messagebox;
@@ -234,7 +235,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       TexInstance instance = new TexInstance(model, vec3, sc, generatePickColor());
       model.addInstance(instance);
       
-      print("dispatcher: FIXME WRITEME update picker incrementally instead of fully rebuilding it for each instance");
+      fixme("dispatcher: WRITEME update picker incrementally instead of fully rebuilding it for each instance");
       addPicker(gl);
       
       break;

@@ -43,6 +43,6 @@ call %NEG_DART_SDK%\bin\pub upgrade
 cd %OLD_CD%
 call %NEG_DART_SDK%\bin\dartanalyzer %NEG_DART_MAIN%
 @echo on
-call %NEG_DART_SDK%\bin\dart2js -c -o %NEG_DART_MAIN%.js %NEG_DART_MAIN%
+call %NEG_DART_SDK%\bin\dart2js -c -DDEBUG=true -o %NEG_DART_MAIN%.js %NEG_DART_MAIN%
 
 @rem eof
