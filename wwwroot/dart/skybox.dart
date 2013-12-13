@@ -9,6 +9,7 @@ import 'package:game_loop/game_loop_html.dart';
 
 import 'shader.dart';
 import 'camera.dart';
+import 'interpolate.dart';
 
 class SkyboxProgram extends ShaderProgram {
   
@@ -111,17 +112,31 @@ class SkyboxModel extends Model {
 
 class SkyboxInstance extends Instance {
 
+  // demo animate fields:
+  final double degreesPerSec = 20.0;
   bool demoAnimate;
+  double _oldAngle = 0.0;
+  double _angle = 0.0;
   
   SkyboxInstance(Model model, Vector3 center, double scale, this.demoAnimate) : super(model, center, scale);
+
+  void update(GameLoopHtml gameLoop) {
+    
+    if (demoAnimate) {
+      _oldAngle = _angle;
+      _angle = gameLoop.gameTime * this.degreesPerSec % 360.0;
+    }
+  }
   
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
 
     double rescale;
     
     if (demoAnimate) {
-      double r = cam.getRad(gameLoop.renderInterpolationFactor);
-      double size = 15 * math.sin(r).abs() + 1;
+      //double r = cam.getRad(gameLoop.renderInterpolationFactor);
+      double deg = interpolateDegree(_angle, _oldAngle, gameLoop.renderInterpolationFactor);
+      double rad = deg * math.PI / 180.0;
+      double size = 15 * math.sin(rad).abs() + 1;
       rescale = scale * size;
     }
     else {

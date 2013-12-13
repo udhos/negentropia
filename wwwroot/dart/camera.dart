@@ -1,6 +1,7 @@
 library camera;
 
 import 'dart:math' as math;
+import 'interpolate.dart';
 
 import 'package:vector_math/vector_math.dart';
 
@@ -31,7 +32,8 @@ class Camera {
     _angle = gameTime * this.degreesPerSec % 360.0;    
   }  
   
-  double getRad(double interpolation) {
+  /*
+  double _getRad(double interpolation) {
     double deg;
     if (_angle > _oldAngle) {
       deg = interpolation * (_angle         - _oldAngle) + _oldAngle;
@@ -42,14 +44,16 @@ class Camera {
     double r = deg * math.PI / 180.0;
     return r;
   }
+  */
 
   static final Vector3 Y = new Vector3(0.0, 1.0, 0.0);
 
   void render(double renderInterpolationFactor) {
     
-    double r = getRad(renderInterpolationFactor);
+    //double r = _getRad(renderInterpolationFactor);
+    double rad = interpolateDegree(_angle, _oldAngle, renderInterpolationFactor) * math.PI / 180.0;
 
     // FIXME: should apply a rotation quaternion
-    _orientation = new Quaternion.axisAngle(Y, r).conjugated();
+    _orientation = new Quaternion.axisAngle(Y, rad).conjugated();
   }
 }
