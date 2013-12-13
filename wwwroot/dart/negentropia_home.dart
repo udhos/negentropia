@@ -728,7 +728,9 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     programList.forEach((p) => p.update(gameLoop));
   }
   
-  skybox.update(gameLoop);
+  if (skybox != null) {
+    skybox.update(gameLoop);
+  }
 }
 
 void checkAntialias(RenderingContext gl) {
