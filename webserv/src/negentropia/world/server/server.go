@@ -87,19 +87,28 @@ func sendZoneStatic(p *Player) {
 		},
 	}
 
+	front := []float32{1.0, 0.0, 0.0}
+	up := []float32{0.0, 1.0, 0.0}
 	coord := []float32{0.0, 0.0, 0.0}
-	coordStr := fmt.Sprintf("%f,%f,%f", coord[0], coord[1], coord[2])
 	scale := 1.0
+
+	frontStr := fmt.Sprintf("%f,%f,%f", front[0], front[1], front[2])
+	upStr := fmt.Sprintf("%f,%f,%f", up[0], up[1], up[2])
+	coordStr := fmt.Sprintf("%f,%f,%f", coord[0], coord[1], coord[2])
 	scaleStr := fmt.Sprintf("%f", scale)
+
 	p.SendToPlayer <- &ClientMsg{
 		Code: CM_CODE_INSTANCE,
 		Tab: map[string]string{
-			"programName": "simpleTexturizer",
-			"obj":         "/obj/airship.obj",
-			"coord":       coordStr,
-			"scale":       scaleStr,
+			"objURL":         "/obj/airship.obj",
+			"programName":    "simpleTexturizer",
+			"directionFront": frontStr,
+			"directionUp":    upStr,
+			"coord":          coordStr,
+			"scale":          scaleStr,
 		},
 	}
+
 }
 
 func sendZoneDynamic(p *Player, loc string) {
@@ -149,18 +158,24 @@ func sendZoneDynamic(p *Player, loc string) {
 
 		for _, inst := range instances {
 
-			program := store.QueryField(inst, "programName")
 			obj := store.QueryField(inst, "obj")
 			coord := store.QueryField(inst, "coord")
 			scale := store.QueryField(inst, "scale")
 
+			url := store.QueryField(obj, "objURL")
+			program := store.QueryField(obj, "programName")
+			front := store.QueryField(obj, "directionFront")
+			up := store.QueryField(obj, "directionUp")
+
 			p.SendToPlayer <- &ClientMsg{
 				Code: CM_CODE_INSTANCE,
 				Tab: map[string]string{
-					"programName": program,
-					"obj":         obj,
-					"coord":       coord,
-					"scale":       scale,
+					"objURL":         url,
+					"programName":    program,
+					"directionFront": front,
+					"directionUp":    up,
+					"coord":          coord,
+					"scale":          scale,
 				},
 			}
 

@@ -79,8 +79,11 @@ class Model {
   bool modelReady = false;  // buffers
   bool piecesReady = false; // multiple OBJ pieces
   
-  String _name;
-  String get modelName => _name;
+  String _URL;
+  String get modelName => _URL;
+  
+  Vector3 _front;
+  Vector3 _up;
   
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
@@ -192,7 +195,7 @@ class Model {
     double size_y = (max_y - min_y).abs();
     double size_z = (max_z - min_z).abs();
         
-    print("model=$_name indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z]");
+    print("model=$_URL indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z]");
   }
   
   void loadObj(RenderingContext gl, Obj o) {
@@ -206,15 +209,18 @@ class Model {
     piecesReady = true;
   }
   
-  Model.fromOBJ(RenderingContext gl, String URL) {
+  Model.fromOBJ(RenderingContext gl, this._URL, Vector3 front, Vector3 up) {
 
     void handleResponse(String response) {
       //print("Model.fromOBJ: fetched OBJ from URL: $URL");
       
-      Obj obj = new Obj.fromString(URL, response);    
+      _front = front.clone();
+      _up = up.clone();
       
-      _name = URL;
-
+      debug("model=$_URL front=$_front up=$_up");
+      
+      Obj obj = new Obj.fromString(_URL, response);    
+      
       printObjStats(obj);      
 
       loadObj(gl, obj);
@@ -223,10 +229,10 @@ class Model {
     }
 
     void handleError(Object err) {
-      print("Model.fromOBJ: failure fetching OBJ from URL: $URL: $err");
+      print("Model.fromOBJ: failure fetching OBJ from URL=$_URL: $err");
     }
 
-    HttpRequest.getString(URL)
+    HttpRequest.getString(_URL)
     .then(handleResponse)
     .catchError(handleError);    
   }

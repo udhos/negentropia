@@ -1,6 +1,21 @@
 library interpolate;
 
+bool _paused = true;
+
+void pause(bool on) {
+  _paused = on;
+}
+
+bool paused() {
+  return _paused;
+}
+
 double interpolateDegree(double angleNew, double angleOld, double interpolationFactor) {
+  
+  if (paused()) {
+    return angleNew;  
+  }
+  
   double deg;
   if (angleNew > angleOld) {
     deg = interpolationFactor * (angleNew         - angleOld) + angleOld;

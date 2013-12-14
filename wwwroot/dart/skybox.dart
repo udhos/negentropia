@@ -133,7 +133,6 @@ class SkyboxInstance extends Instance {
     double rescale;
     
     if (demoAnimate) {
-      //double r = cam.getRad(gameLoop.renderInterpolationFactor);
       double deg = interpolateDegree(_angle, _oldAngle, gameLoop.renderInterpolationFactor);
       double rad = deg * math.PI / 180.0;
       double size = 15 * math.sin(rad).abs() + 1;

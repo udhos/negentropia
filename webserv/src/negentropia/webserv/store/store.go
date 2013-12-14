@@ -7,6 +7,7 @@ package store
 	r:xxx	reset password confirmation id
 	z:xxx	zone id
 	p:xxx   shader program id
+	o:xxx	object/model
 	m:xxx	model instance
 	l:xxx	instance list
 	i:xxx	id generator		session.go		i:sessionIdGenerator

@@ -21,6 +21,8 @@ import 'asset.dart';
 import 'anisotropic.dart';
 import 'visibility.dart';
 import 'logg.dart';
+import 'interpolate.dart';
+import 'vec.dart';
 
 CanvasElement canvas;
 DivElement messagebox;
@@ -45,7 +47,7 @@ double skyboxScale = 1000.0;
 int mouseDragBeginX = null;
 int mouseDragBeginY = null;
 int mouseDragCurrX = null;
-int mouseDragCurrY = null;    
+int mouseDragCurrY = null;
 
 // >0  : render at max rate then stop
 // <=0 : periodic rendering
@@ -173,6 +175,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
         }
 
         String camCoord = tab['cameraCoord'];
+        /*
         if (camCoord != null) {
           List<double> c = new List<double>();
           camCoord.split(',').forEach((i) => c.add(double.parse(i)));
@@ -184,6 +187,14 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
           else {
             err("cameraCoord: $camCoord => $coord: bad length=${c.length}");
           }
+        }
+        */
+        Vector3 coord = parseVector3(camCoord);
+        if (coord != null) {
+          cam.moveTo(coord);
+        }
+        else {
+          err("cameraCoord: parsing failure: camCoord=$camCoord");
         }
         
       }
@@ -224,16 +235,38 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       }
       
       break;
-      
-    case CM_CODE_INSTANCE:
 
+    case CM_CODE_INSTANCE:
+      
+      String objURL      = tab['objURL'];
       String programName = tab['programName'];
-      String obj         = tab['obj'];
+      String front       = tab['directionFront'];
+      String up          = tab['directionUp'];
       String coord       = tab['coord'];
       String scale       = tab['scale'];      
 
+      Vector3 f = parseVector3(front);
+      if (f == null) {
+        err("obj=$objURL: parsing failure: front=$front");        
+        return;
+      }
+
+      Vector3 u = parseVector3(up);
+      if (u == null) {
+        err("obj=$objURL: parsing failure: up=$up");        
+        return;
+      }
+      
+      /*
       List<String> coordList = coord.split(',');
       Vector3 vec3 = new Vector3(double.parse(coordList[0]), double.parse(coordList[1]), double.parse(coordList[2]));
+      */
+      Vector3 c = parseVector3(coord);
+      if (c == null) {
+        err("obj=$objURL: parsing failure: coord=$coord");        
+        return;
+      }
+      
       double sc = double.parse(scale);
       
       TexShaderProgram prog = findTexShader(programName);
@@ -242,13 +275,13 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
         return;
       }
 
-      TexModel model = prog.findModel(obj);
+      TexModel model = prog.findModel(objURL);
       if (model == null) {
-        model = new TexModel.fromOBJ(gl, obj, textureTable, asset);
+        model = new TexModel.fromOBJ(gl, objURL, f, u, textureTable, asset);
         prog.addModel(model);
       }
       
-      TexInstance instance = new TexInstance(model, vec3, sc, generatePickColor());
+      TexInstance instance = new TexInstance(model, c, sc, generatePickColor());
       model.addInstance(instance);
       
       fixme("dispatcher: WRITEME update picker incrementally instead of fully rebuilding it for each instance");
@@ -417,7 +450,7 @@ void demoInitAirship(RenderingContext gl) {
   ShaderProgram prog = new ShaderProgram(gl, "simple");
   programList.add(prog);
   prog.fetch(shaderCache, "${asset.shader}/simple_vs.txt", "${asset.shader}/simple_fs.txt");
-  Model airshipModel = new Model.fromOBJ(gl, "${asset.obj}/airship.obj");
+  Model airshipModel = new Model.fromOBJ(gl, "${asset.obj}/airship.obj", new Vector3.zero(), new Vector3.zero());
   prog.addModel(airshipModel);
   Instance airshipInstance = new Instance(airshipModel, new Vector3(-8.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel.addInstance(airshipInstance);  
@@ -430,24 +463,24 @@ void demoInitAirshipTex(RenderingContext gl) {
   
   String objURL = "${asset.obj}/airship.obj"; 
 
-  TexModel airshipModel = new TexModel.fromOBJ(gl, objURL, textureTable, asset);
+  TexModel airshipModel = new TexModel.fromOBJ(gl, objURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset);
   prog.addModel(airshipModel);
   TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel.addInstance(airshipInstance);
 
-  TexModel airshipModel2 = new TexModel.fromOBJ(gl, objURL, textureTable, asset);
+  TexModel airshipModel2 = new TexModel.fromOBJ(gl, objURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset);
   prog.addModel(airshipModel2);
   TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel2.addInstance(airshipInstance2);
   
   String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";  
-  TexModel colonyShipModel = new TexModel.fromOBJ(gl, colonyShipURL, textureTable, asset);
+  TexModel colonyShipModel = new TexModel.fromOBJ(gl, colonyShipURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset);
   prog.addModel(colonyShipModel);
   TexInstance colonyShipInstance = new TexInstance(colonyShipModel, new Vector3(0.0, -5.0, -50.0), 1.0, generatePickColor());
   colonyShipModel.addInstance(colonyShipInstance);
     
   String coneURL = "${asset.obj}/cone.obj";  
-  TexModel coneModel = new TexModel.fromOBJ(gl, coneURL, textureTable, asset);
+  TexModel coneModel = new TexModel.fromOBJ(gl, coneURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset);
   prog.addModel(coneModel);
   TexInstance coneInstance = new TexInstance(coneModel, new Vector3(0.0, 2.0, -10.0), 1.0, generatePickColor());
   coneModel.addInstance(coneInstance);
@@ -736,6 +769,14 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
         createBandSelectionBox(canvas);
       }
     }
+  }
+  
+  if (k.pressed(Keyboard.P)) {
+    pause(!paused());
+  }
+  
+  if (paused()) {
+    return; // skip all updates below
   }
   
   cam.update(gameLoop.gameTime);

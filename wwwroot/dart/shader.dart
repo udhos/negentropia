@@ -14,6 +14,7 @@ import 'package:obj/obj.dart';
 import 'camera.dart';
 import 'texture.dart';
 import 'asset.dart';
+import 'logg.dart';
 
 part 'buffer.dart';
 part 'shader_tex.dart';

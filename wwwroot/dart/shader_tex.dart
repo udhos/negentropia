@@ -138,8 +138,8 @@ class TexModel extends Model {
     .catchError((err) { print("loadObj: failure fetching mtllib: $mtlURL: $err"); });    
   }
   
-  TexModel.fromOBJ(RenderingContext gl, String URL,
-      this.textureTable, this.asset): super.fromOBJ(gl, URL);
+  TexModel.fromOBJ(RenderingContext gl, String URL, Vector3 front, Vector3 up,
+      this.textureTable, this.asset): super.fromOBJ(gl, URL, front, up);
 
   Piece addPiece(int offset, int length) {
     Piece pi = new TexPiece(offset, length);

@@ -16,7 +16,7 @@ const CM_CODE_REQZ  = 5; // client->server: please send current zone
 const CM_CODE_ZONE     = 6;  // server->client: reset client zone info
 const CM_CODE_SKYBOX   = 7;  // server->client: set full skybox
 const CM_CODE_PROGRAM  = 8;  // server->client: set shader program
-const CM_CODE_INSTANCE = 9;  // server->client: set instance
+const CM_CODE_INSTANCE = 9; // server->client: set instance
 const CM_CODE_MESSAGE  = 10; // server->client: message for user
 
 WebSocket _ws;
