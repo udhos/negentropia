@@ -21,7 +21,7 @@ class Camera {
   }
   
   void moveTo(Vector3 coord) {
-    _position.setFrom(coord.clone());
+    _position.setFrom(coord);
   }
   
   void rotate(Matrix4 MV) {
