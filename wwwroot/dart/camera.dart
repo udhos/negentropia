@@ -15,12 +15,13 @@ class Camera {
   double _oldAngle = 0.0;
   double _angle = 0.0;
   
-  Camera(this._position) {
+  Camera(Vector3 coord) {
+    moveTo(coord);
     update(0.0);
   }
   
   void moveTo(Vector3 coord) {
-    _position = coord.clone();
+    _position.setFrom(coord.clone());
   }
   
   void rotate(Matrix4 MV) {
