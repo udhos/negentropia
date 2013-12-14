@@ -104,13 +104,21 @@ func sendZoneStatic(p *Player) {
 
 func sendZoneDynamic(p *Player, loc string) {
 
+	zoneMsg := ClientMsg{
+		Code: CM_CODE_ZONE,
+		Tab:  map[string]string{},
+	}
+
 	if culling := store.QueryField(loc, "backfaceCulling"); culling != "" {
-		p.SendToPlayer <- &ClientMsg{
-			Code: CM_CODE_ZONE,
-			Tab: map[string]string{
-				"backfaceCulling": culling,
-			},
-		}
+		zoneMsg.Tab["backfaceCulling"] = culling
+	}
+
+	if camCoord := store.QueryField(loc, "cameraCoord"); camCoord != "" {
+		zoneMsg.Tab["cameraCoord"] = camCoord
+	}
+
+	if len(zoneMsg.Tab) > 0 {
+		p.SendToPlayer <- &zoneMsg
 	}
 
 	if skybox := store.QueryField(loc, "skyboxURL"); skybox != "" {

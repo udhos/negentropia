@@ -19,6 +19,10 @@ class Camera {
     update(0.0);
   }
   
+  void moveTo(Vector3 coord) {
+    _position = coord.clone();
+  }
+  
   void rotate(Matrix4 MV) {
     MV.setRotation(_orientation.asRotationMatrix());
   }

@@ -164,12 +164,28 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
     case CM_CODE_ZONE:
 
       if (tab != null) {
+        
         String culling = tab['backfaceCulling'];
         if (culling != null) {
           backfaceCulling = culling.toLowerCase().startsWith("t");
           //print("dispatcher: backfaceCulling=$backfaceCulling");
           updateCulling(gl);
         }
+
+        String camCoord = tab['cameraCoord'];
+        if (camCoord != null) {
+          List<double> c = new List<double>();
+          camCoord.split(',').forEach((i) => c.add(double.parse(i)));
+          Vector3 coord = new Vector3.array(c);
+          debug("cameraCoord: $camCoord => $coord");
+          if (c.length == 3) {
+            cam.moveTo(coord);
+          }
+          else {
+            err("cameraCoord: $camCoord => $coord: bad length=${c.length}");
+          }
+        }
+        
       }
       
       resetZone(gl);
