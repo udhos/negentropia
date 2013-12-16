@@ -1,0 +1,7 @@
+attribute vec3 a_Position;
+uniform mat4 u_MV;         // model-view
+uniform mat4 u_P;          // projection
+
+void main() {
+  gl_Position = u_P * u_MV * vec4(a_Position, 1.0);
+}

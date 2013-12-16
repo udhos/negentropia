@@ -15,6 +15,7 @@ import 'cookies/cookies.dart';
 import 'ws.dart';
 import 'shader.dart';
 import 'skybox.dart';
+import 'solid.dart';
 import 'lost_context.dart';
 import 'camera.dart';
 import 'asset.dart';
@@ -41,6 +42,7 @@ Set<PickerInstance> selection = new HashSet<PickerInstance>();
 Asset asset = new Asset("/");
 SkyboxProgram skybox;
 PickerShader picker;
+SolidShader solidShader;
 double planeNear   = 1.0;
 double planeFar    = 2000.0;
 double skyboxScale = 1000.0;
@@ -200,6 +202,8 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       }
       
       resetZone(gl);
+      
+      addSolidShader(gl);
       
       if (data == "demo") {
         loadDemo(gl);
@@ -501,6 +505,11 @@ void demoInitPicker(RenderingContext gl) {
   picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt", "${asset.shader}/picker_fs.txt");  
 }
 
+void addSolidShader(RenderingContext gl) {
+  solidShader = new SolidShader(gl, "solidShader");
+  solidShader.fetch(shaderCache, "${asset.shader}/solidShader_vs.txt", "${asset.shader}/solidShader_fs.txt");  
+}
+
 void resetZone(RenderingContext gl) {
   programList = new List<ShaderProgram>();  // drop existing programs 
   shaderCache = new Map<String,Shader>();   // drop existing compile shader cache
@@ -555,6 +564,9 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
 }
 
 void regularDraw(RenderingContext gl, GameLoopHtml gameLoop) {
+  if (solidShader != null) {
+    solidShader.drawModels(gameLoop, cam, pMatrix);
+  }
   if (programList != null) {
     programList.where((p) => !p.modelList.isEmpty).forEach((p) => p.drawModels(gameLoop, cam, pMatrix));
   }
