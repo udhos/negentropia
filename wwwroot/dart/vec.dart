@@ -9,10 +9,20 @@ Vector3 parseVector3(String s) {
     err("parseVector3($s): null");
     return null;
   }
+
+  s = s.trim();
   
+  if (s.startsWith('[')) {
+    s = s.substring(1);
+  }
+  
+  if (s.endsWith(']')) {
+    s = s.substring(0, s.length - 1);
+  }
+
   List<String> list = s.split(',');
   if (list.length != 3) {
-    err("parseVector3($s): bad length: ${s.length}");
+    err("parseVector3($s): bad length: ${list.length}");
     return null;
   }
   
