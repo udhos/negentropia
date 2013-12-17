@@ -55,7 +55,7 @@ class Instance {
   
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
     
-    model.pieceList.forEach((Piece piece) {
+    model.pieceList.forEach((piece) {
         gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength, RenderingContext.UNSIGNED_SHORT,
         piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
       });
@@ -68,6 +68,8 @@ class Piece {
   
   Piece(this.vertexIndexOffset, this.vertexIndexLength);
 }
+
+typedef void frontUpCallbackFunc();
 
 class Model {
     
@@ -110,6 +112,17 @@ class Model {
     pieceList.add(pi);
     return pi;
   }
+  
+  Model.init();
+
+  /*
+  Model.fromVert(RenderingContext gl, List<int> indices, List<double> vertCoord) {
+    addPiece(0, indices.length); // single-piece model
+    assert(pieceList.length == 1);
+
+    _createBuffers(gl, indices, vertCoord, null, null);    
+  }
+  */
   
   Model.fromJson(RenderingContext gl, String URL, bool reverse) {
 
@@ -209,6 +222,14 @@ class Model {
     piecesReady = true;
   }
   
+  frontUpCallbackFunc frontUpCallback;
+  
+  void callWhenFrontUpDone(frontUpCallbackFunc callback) {
+    //assert(frontUpCallback == null);
+    frontUpCallback = callback;
+    assert(frontUpCallback != null);
+  }
+  
   Model.fromOBJ(RenderingContext gl, this._URL, Vector3 front, Vector3 up) {
 
     void handleResponse(String response) {
@@ -218,6 +239,10 @@ class Model {
       _up = up.clone();
       
       debug("model=$_URL front=$_front up=$_up");
+      
+      if (frontUpCallback != null) {
+        frontUpCallback();
+      }
       
       Obj obj = new Obj.fromString(_URL, response);    
       

@@ -21,14 +21,14 @@
 @rem add object/model o:airship
 \redisbin\redis-cli hset o:airship objURL /obj/airship.obj
 \redisbin\redis-cli hset o:airship programName p:simpleTexturizer
-\redisbin\redis-cli hset o:airship directionFront 1.0,0.0,0.0
-\redisbin\redis-cli hset o:airship directionUp 0.0,1.0,0.0
+\redisbin\redis-cli hset o:airship directionFront 5.0,0.0,0.0
+\redisbin\redis-cli hset o:airship directionUp 0.0,5.0,0.0
 
 @rem add object/model o:old_house
 \redisbin\redis-cli hset o:old_house objURL /obj/old_house.obj
 \redisbin\redis-cli hset o:old_house programName p:simpleTexturizer
-\redisbin\redis-cli hset o:old_house directionFront 1.0,0.0,0.0
-\redisbin\redis-cli hset o:old_house directionUp 0.0,1.0,0.0
+\redisbin\redis-cli hset o:old_house directionFront 40.0,0.0,0.0
+\redisbin\redis-cli hset o:old_house directionUp 0.0,40.0,0.0
 
 @rem create instance m:0
 \redisbin\redis-cli hset m:0 obj o:airship
@@ -37,7 +37,7 @@
 
 @rem create instance m:1
 \redisbin\redis-cli hset m:1 obj o:airship
-\redisbin\redis-cli hset m:1 coord 0.0,4.0,0.0
+\redisbin\redis-cli hset m:1 coord 0.0,7.0,0.0
 \redisbin\redis-cli hset m:1 scale .5
 
 @rem create instance m:2

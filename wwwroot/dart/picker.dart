@@ -62,7 +62,6 @@ class PickerInstance extends Instance {
 class PickerShader extends ShaderProgram {
 
   UniformLocation u_Color;
-  List<ShaderProgram> programList;
   List<PickerInstance> instanceList = new List<PickerInstance>();
   
   Framebuffer framebuffer;
@@ -93,7 +92,7 @@ class PickerShader extends ShaderProgram {
     gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
   }
 
-  PickerShader(RenderingContext gl, this.programList, int width, int height) : super(gl, "pickerShader") {
+  PickerShader(RenderingContext gl, List<ShaderProgram> programList, int width, int height) : super(gl, "pickerShader") {
 
     // copy clickable instances
     programList.forEach((p) {

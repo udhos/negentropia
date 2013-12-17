@@ -19,6 +19,7 @@ import 'logg.dart';
 part 'buffer.dart';
 part 'shader_tex.dart';
 part 'picker.dart';
+part 'solid.dart';
 
 class ShaderProgram {
     

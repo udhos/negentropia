@@ -15,7 +15,7 @@ import 'cookies/cookies.dart';
 import 'ws.dart';
 import 'shader.dart';
 import 'skybox.dart';
-import 'solid.dart';
+//import 'solid.dart';
 import 'lost_context.dart';
 import 'camera.dart';
 import 'asset.dart';
@@ -202,9 +202,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       }
       
       resetZone(gl);
-      
-      addSolidShader(gl);
-      
+            
       if (data == "demo") {
         loadDemo(gl);
       }
@@ -288,8 +286,11 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       TexInstance instance = new TexInstance(model, c, sc, generatePickColor());
       model.addInstance(instance);
       
-      fixme("dispatcher: WRITEME update picker incrementally instead of fully rebuilding it for each instance");
+      fixme("dispatcher: update picker incrementally instead of fully rebuilding it for each instance");
       addPicker(gl);
+      
+      fixme("dispatcher: update axis shader incrementally instead of fully rebuilding it for each instance");
+      addSolidShader(gl);     
       
       break;
 
@@ -506,8 +507,8 @@ void demoInitPicker(RenderingContext gl) {
 }
 
 void addSolidShader(RenderingContext gl) {
-  solidShader = new SolidShader(gl, "solidShader");
-  solidShader.fetch(shaderCache, "${asset.shader}/solidShader_vs.txt", "${asset.shader}/solidShader_fs.txt");  
+  solidShader = new SolidShader(gl, programList);
+  solidShader.fetch(shaderCache, "${asset.shader}/uniformColor_vs.txt", "${asset.shader}/uniformColor_fs.txt");  
 }
 
 void resetZone(RenderingContext gl) {
