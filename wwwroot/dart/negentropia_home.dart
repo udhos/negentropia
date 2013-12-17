@@ -539,7 +539,8 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   
   // define viewport size
   gl.viewport(0, 0, canvas.width, canvas.height);
-  canvasAspect = canvas.width / canvas.height; // save aspect for render loop mat4.perspective
+  canvasAspect = canvas.width.toDouble() / canvas.height.toDouble(); // save aspect for render loop mat4.perspective
+  debug("canvas aspect ratio: $canvasAspect");
 
   updateCulling(gl);
   
