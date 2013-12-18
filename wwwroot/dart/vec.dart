@@ -12,11 +12,19 @@ Vector3 parseVector3(String s) {
 
   s = s.trim();
   
-  if (s.startsWith('[')) {
+  bool bracket_open = s.startsWith('['); 
+  bool bracket_close = s.endsWith(']');
+  
+  if (bracket_open != bracket_close) {
+    err("bracket open/close mismatch");
+    return null;
+  }
+  
+  if (bracket_open) {
     s = s.substring(1);
   }
   
-  if (s.endsWith(']')) {
+  if (bracket_close) {
     s = s.substring(0, s.length - 1);
   }
 
