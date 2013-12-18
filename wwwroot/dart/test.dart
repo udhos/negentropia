@@ -8,11 +8,15 @@ void main() {
   vec_test();
 }
 
+typedef void echo_func(String);
+
 void vec_test() {
+  
+  echo_func echo = null;
      
   void testParseVector3(var expected, String target, String str) {
     test("parseVector3: '$str' => '$target'", () =>
-        expect(parseVector3(str).toString(), expected)
+        expect(parseVector3(str, echoFunc: echo).toString(), expected)
     );    
   }
   
@@ -42,7 +46,7 @@ void vec_test() {
 
   void testParseVector3bad(String str) {
     test("parseVector3: '$str' => null", () =>
-        expect(parseVector3(str).toString(), equals(null.toString()))
+        expect(parseVector3(str, echoFunc: echo).toString(), equals(null.toString()))
     );    
   }
   
