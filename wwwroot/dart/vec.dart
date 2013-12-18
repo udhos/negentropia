@@ -69,7 +69,7 @@ Vector3 parseVector3(String s, { void echoFunc(String): _log_error, bool throwEx
   return null; }
   try { z = double.parse(list[2]); }
   catch (e) { _fail(echoFunc, throwException, LABEL, save, "failure parsing z=${list[2]}: exception: $e");
-  err("parseVector3($s): failure parsing z=${list[2]}: exception: $e"); return null; }
+  return null; }
   
   return new Vector3(x, y, z);
 }
