@@ -644,14 +644,23 @@ void readColor(String label, RenderingContext gl, int x, int y, Framebuffer fram
 
 DivElement dragBox;
 
-void deleteBandSelectionBox(CanvasElement c) {
-  if (dragBox != null) {
-    dragBox.remove();
-    dragBox = null;
+void deleteBandSelectionBox(RenderingContext gl, CanvasElement c, bool shift) {
+  if (dragBox == null) {
+    return;
   }
+
+  int minX = math.min(mouseDragBeginX, mouseDragCurrX);
+  int minY = c.height - math.max(mouseDragBeginY, mouseDragCurrY);
+  int w = 1 + (mouseDragCurrX - mouseDragBeginX).abs();
+  int h = 1 + (mouseDragCurrY - mouseDragBeginY).abs(); 
+    
+  bandSelection(minX, minY, w, h, picker, gl, shift);  
+
+  dragBox.remove();
+  dragBox = null;
 }
 
-void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
+void createBandSelectionBox(RenderingContext gl, CanvasElement c, bool shift) {
   
   assert(canvasbox != null);
 
@@ -695,8 +704,6 @@ dragBox.children.add(d);
   dragBox.style.top = "${top}px";
   dragBox.style.width = "${w}px";
   dragBox.style.height = "${h}px";
-
-  bandSelection(minX, minY, w, h, picker, gl);  
 }
 
 PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
@@ -714,7 +721,8 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
   //readColor("canvas-framebuffer", gl, m.x, y, null, color);
   readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
   
-  PickerInstance pi = mouseClickHit(picker.instanceList, color);
+  //PickerInstance pi = mouseClickHit(picker.instanceList, color);
+  PickerInstance pi = picker.findInstanceByColor(color[0], color[1], color[2]);
   
   return pi;
 }
@@ -735,7 +743,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   bool ctrlReleased = k.released(Keyboard.CTRL);
     
   if (ctrlReleased) {
-    deleteBandSelectionBox(canvas);
+    deleteBandSelectionBox(gl, canvas, shiftDown);
     mouseDragBeginX = null;
     mouseDragBeginY = null;    
     mouseDragCurrX = null;
@@ -757,7 +765,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
       // mouse moved
       mouseDragCurrX = m.x;
       mouseDragCurrY = m.y;
-      createBandSelectionBox(gl, canvas);
+      createBandSelectionBox(gl, canvas, shiftDown);
     }
   }
 

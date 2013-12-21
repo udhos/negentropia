@@ -20,31 +20,11 @@ Float32List generatePickColor() {
   return new Float32List.fromList(_currentPickColor);  
 }
 
-bool matchColor(Uint8List i, Float32List f) {
-  
-  double d0 = (255.0*f[0] - i[0].toDouble()).abs();
-  double d1 = (255.0*f[1] - i[1].toDouble()).abs();
-  double d2 = (255.0*f[2] - i[2].toDouble()).abs();
-  
-  return d0 < 1.0 && d1 < 1.0 && d2 < 1.0;
+/*
+PickerInstance mouseClickHit(Iterable<Instance> list, Uint8List color) {  
+  return colorHit(list, color[0], color[1], color[2]);
 }
-
-PickerInstance mouseClickHit(Iterable<Instance> list, Uint8List color) {
-  
-  bool match(Instance i) {
-    return matchColor(color, i.pickColor);
-  }
-  
-  Instance pi;
-    
-  try {
-    pi = list.firstWhere(match);
-  } catch (e) {
-    return null;
-  }
-  
-  return pi as PickerInstance;
-}
+*/
 
 class PickerInstance extends Instance {
   
@@ -62,7 +42,13 @@ class PickerInstance extends Instance {
 class PickerShader extends ShaderProgram {
 
   UniformLocation u_Color;
-  List<PickerInstance> instanceList = new List<PickerInstance>();
+  List<PickerInstance> _instanceList = new List<PickerInstance>();
+  
+  int get numberOfInstances => _instanceList.length;
+  
+  PickerInstance findInstanceByColor(int r, g, b) {
+    return colorHit(_instanceList, r, g, b);
+  }
   
   Framebuffer framebuffer;
   bool offscreen;
@@ -93,13 +79,13 @@ class PickerShader extends ShaderProgram {
   }
 
   PickerShader(RenderingContext gl, List<ShaderProgram> programList, int width, int height) : super(gl, "pickerShader") {
-
+    
     // copy clickable instances
     programList.forEach((p) {
       p.modelList.forEach((m) {
         m.instanceList.where((i) => i.pickColor != null).forEach((ii) {
           PickerInstance pi = new PickerInstance(ii);
-          instanceList.add(pi);
+          _instanceList.add(pi);
         });
       });
     });
@@ -129,7 +115,7 @@ class PickerShader extends ShaderProgram {
     // send perspective projection matrix uniform
     gl.uniformMatrix4fv(this.u_P, false, pMatrix.storage);
 
-    instanceList.forEach((i) => i.draw(gameLoop, this, cam));
+    _instanceList.forEach((i) => i.draw(gameLoop, this, cam));
 
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
