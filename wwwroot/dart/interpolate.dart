@@ -2,12 +2,25 @@ library interpolate;
 
 bool _paused = true;
 
-void pause(bool on) {
-  _paused = on;
-}
-
 bool paused() {
   return _paused;
+}
+
+bool _wasDown;
+
+void pauseKey(bool isDown) {
+  if (_wasDown == isDown) {
+    return; // no status change
+  }
+  
+  // status has switched:
+
+  if (isDown) {
+    // only on UP->DOWN: toogle pause on/off
+    _paused = !_paused;
+  }
+
+  _wasDown = isDown; // update status
 }
 
 double interpolateDegree(double angleNew, double angleOld, double interpolationFactor) {

@@ -24,6 +24,7 @@ import 'visibility.dart';
 import 'logg.dart';
 import 'interpolate.dart';
 import 'vec.dart';
+import 'selection.dart';
 
 CanvasElement canvas;
 DivElement messagebox;
@@ -38,7 +39,6 @@ double fieldOfViewYRadians = 45 * math.PI / 180;
 Camera cam = new Camera(new Vector3(0.0, 0.0, 15.0));
 bool backfaceCulling = false;
 bool showPicking = false;
-Set<PickerInstance> selection = new HashSet<PickerInstance>();
 Asset asset = new Asset("/");
 SkyboxProgram skybox;
 PickerShader picker;
@@ -642,54 +642,6 @@ void readColor(String label, RenderingContext gl, int x, int y, Framebuffer fram
   //print("$label: readPixels: x=$x y=$y color=$color");     
 }
 
-PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
-  //print("Mouse.LEFT pressed: withinCanvas=${m.withinCanvas}");
-  
-  if (picker == null) {
-    print("picker not available");
-    return null;
-  }
-  
-  int y = canvas.height - m.y;
-  
-  Uint8List color = new Uint8List(4);
-  //readColor("canvas-framebuffer", gl, m.x, y, null, color);
-  readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
-  
-  PickerInstance pi = mouseClickHit(picker.instanceList, color);
-  
-  return pi;
-}
-
-void mouseSelection(PickerInstance pi, bool shift) {
-  
-  assert(shift != null);
-  
-  if (pi == null) {
-    // didn't hit anything
-    if (!shift) {
-      // shift is released
-      selection.clear();
-    }
-    return;
-  }
-  
-  assert(pi != null);
-  
-  if (shift) {
-    if (selection.contains(pi)) {
-      selection.remove(pi);
-    }
-    else {
-      selection.add(pi);      
-    }
-    return;
-  }
-  
-  selection.clear();
-  selection.add(pi);
-}
-
 DivElement dragBox;
 
 void deleteBandSelectionBox(CanvasElement c) {
@@ -699,7 +651,7 @@ void deleteBandSelectionBox(CanvasElement c) {
   }
 }
 
-void createBandSelectionBox(CanvasElement c) {
+void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
   
   assert(canvasbox != null);
 
@@ -723,39 +675,65 @@ void createBandSelectionBox(CanvasElement c) {
     canvasbox.append(dragBox);
   }
   
-  int left = math.min(mouseDragBeginX, mouseDragCurrX) + c.offsetLeft;
+/*
+// show drag box coordinates
+dragBox.children.clear();
+DivElement d = new DivElement();
+d.text = "($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)";
+dragBox.children.add(d);
+*/
+  
+  int minX = math.min(mouseDragBeginX, mouseDragCurrX);
+  int minY = c.height - math.max(mouseDragBeginY, mouseDragCurrY);  
+  
+  int left = minX + c.offsetLeft;
   int top  = math.min(mouseDragBeginY, mouseDragCurrY) + c.offsetTop;  
   int w = 1 + (mouseDragCurrX - mouseDragBeginX).abs();
   int h = 1 + (mouseDragCurrY - mouseDragBeginY).abs();
-  
+    
   dragBox.style.left = "${left}px";
   dragBox.style.top = "${top}px";
   dragBox.style.width = "${w}px";
   dragBox.style.height = "${h}px";
-    
-  /*
-  // show drag box coordinates
-  dragBox.children.clear();
-  DivElement d = new DivElement();
-  d.text = "($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)";
-  dragBox.children.add(d);
-  */
+
+  bandSelection(minX, minY, w, h, picker, gl);  
+}
+
+PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
+  
+  if (picker == null) {
+    err("mouseLeftClick: picker not available");
+    return null;
+  }
+  
+  int y = canvas.height - m.y;
+  
+  debug("mouseLeftClick: mouse=${m.x},${m.y} webgl=${m.x},${y}");
+  
+  Uint8List color = new Uint8List(4);
+  //readColor("canvas-framebuffer", gl, m.x, y, null, color);
+  readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
+  
+  PickerInstance pi = mouseClickHit(picker.instanceList, color);
+  
+  return pi;
 }
 
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
+  
+  //
+  // handle input
+  //
 
   Mouse m = gameLoop.mouse;
   Keyboard k = gameLoop.keyboard;
   
   bool mouseLeftPressed = m.pressed(Mouse.LEFT);
-  bool within = m.withinCanvas;
   bool shiftDown = k.isDown(Keyboard.SHIFT);
   bool ctrlPressed = k.pressed(Keyboard.CTRL);
   bool ctrlReleased = k.released(Keyboard.CTRL);
-  
-  querySelector("#debug").text = "$within"; // FIXME
-  
+    
   if (ctrlReleased) {
     deleteBandSelectionBox(canvas);
     mouseDragBeginX = null;
@@ -763,35 +741,35 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     mouseDragCurrX = null;
     mouseDragCurrY = null;
   }
-  if (within) {
-    if (mouseLeftPressed) {
-      PickerInstance pi = mouseLeftClick(gl, m);
-      mouseSelection(pi, shiftDown);
-      print("selection: $selection");
-    }
-    if (ctrlPressed) {
-      mouseDragBeginX = m.x;
-      mouseDragBeginY = m.y;    
-      mouseDragCurrX = null;
-      mouseDragCurrY = null;
-    }
-    if (mouseDragBeginX != null) {
-      if ((mouseDragCurrX != m.x) || (mouseDragCurrY != m.y)) {
-        // mouse moved
-        mouseDragCurrX = m.x;
-        mouseDragCurrY = m.y;
-        createBandSelectionBox(canvas);
-      }
-    }
-  }
   
-  if (k.pressed(Keyboard.P)) {
-    pause(!paused());
+  if (mouseLeftPressed) {
+    PickerInstance pi = mouseLeftClick(gl, m);
+    mouseSelection(pi, shiftDown);
   }
+  if (ctrlPressed) {
+    mouseDragBeginX = m.x;
+    mouseDragBeginY = m.y;    
+    mouseDragCurrX = null;
+    mouseDragCurrY = null;
+  }
+  if (mouseDragBeginX != null) {
+    if ((mouseDragCurrX != m.x) || (mouseDragCurrY != m.y)) {
+      // mouse moved
+      mouseDragCurrX = m.x;
+      mouseDragCurrY = m.y;
+      createBandSelectionBox(gl, canvas);
+    }
+  }
+
+  pauseKey(k.isDown(Keyboard.P));
   
   if (paused()) {
     return; // skip all updates below
   }
+
+  //
+  // handle non-input updates
+  //
   
   cam.update(gameLoop.gameTime);
     
