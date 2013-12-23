@@ -89,6 +89,8 @@ void bandSelection(int x, y, width, height, PickerShader picker, RenderingContex
     return;
   }
   
+  DateTime begin = new DateTime.now();
+  
   int size = 4 * width * height;
   if (size > _color.length) {
     _color = new Uint8List(size);
@@ -125,7 +127,7 @@ void bandSelection(int x, y, width, height, PickerShader picker, RenderingContex
       continue;
     }
     
-    int cacheKey = r.toInt() << 16 + g.toInt() << 8 + b.toInt();
+    int cacheKey = r << 16 + g << 8 + b;
     PickerInstance cacheEntry = cache[cacheKey];
     if (cacheEntry != null) {
       // optimization: cache
@@ -142,5 +144,8 @@ void bandSelection(int x, y, width, height, PickerShader picker, RenderingContex
     _selection.add(pi);
   }
   
-  debug("bandSelection: $_selection (pixels total=$size scanned=$pixels, background hits=$bgHits, cache size=${cache.length} hits=$cacheHits)");  
+  DateTime end = new DateTime.now();
+  Duration elapsed = end.difference(begin);
+  
+  log("bandSelection: $_selection took ${elapsed.inMilliseconds} msecs (pixels total=$size scanned=$pixels, background hits=$bgHits, cache size=${cache.length} hits=$cacheHits)");  
 }
