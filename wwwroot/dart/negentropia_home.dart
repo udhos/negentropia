@@ -528,11 +528,16 @@ void updateCulling(RenderingContext gl) {
   gl.disable(RenderingContext.CULL_FACE);
 }
 
+void clearColor(RenderingContext gl, double r, g, b, a) {
+  pickerClearColor(r, g, b); // save clear color for picking
+  gl.clearColor(r, g, b, a);
+}
+
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
     
   requestZone();  
-  
-  gl.clearColor(0.5, 0.5, 0.5, 1.0);       // clear color
+
+  clearColor(gl, 0.5, 0.5, 0.5, 1.0);
   gl.enable(RenderingContext.DEPTH_TEST);  // enable depth testing
   gl.depthFunc(RenderingContext.LESS);     // gl.LESS is default depth test
   gl.depthRange(0.0, 1.0);                 // default

@@ -1,11 +1,8 @@
 library selection;
 
-//import 'dart:html';
 import 'dart:web_gl';
 import 'dart:typed_data';
 import 'dart:collection';
-
-//import 'package:game_loop/game_loop_html.dart';
 
 import 'shader.dart';
 import 'logg.dart';
@@ -13,17 +10,6 @@ import 'logg.dart';
 Set<PickerInstance> _selection = new HashSet<PickerInstance>();
 
 PickerInstance colorHit(Iterable<Instance> list, int r,g,b) {
-
-  /*
-  bool matchColor(Float32List f, int r,g,b) {
-    
-    double d0 = (255.0*f[0] - r.toDouble()).abs();
-    double d1 = (255.0*f[1] - g.toDouble()).abs();
-    double d2 = (255.0*f[2] - b.toDouble()).abs();
-    
-    return d0 < 1.0 && d1 < 1.0 && d2 < 1.0;
-  }
-  */
 
   bool match(Instance i) {
     Float32List f = i.pickColor;
@@ -77,6 +63,22 @@ void mouseSelection(PickerInstance pi, bool shift) {
   debug("mouseSelection: $_selection");
 }
 
+double _bgColorR;
+double _bgColorG;
+double _bgColorB;
+
+void pickerClearColor(double r, g, b) {
+  _bgColorR = r;
+  _bgColorG = g;
+  _bgColorB = b;  
+}
+
+bool backgroundColor(int r, g, b) {
+  return (r.toDouble() - 255.0 * _bgColorR).abs() < 1.0
+      && (g.toDouble() - 255.0 * _bgColorG).abs() < 1.0
+      && (b.toDouble() - 255.0 * _bgColorB).abs() < 1.0;
+}
+
 Uint8List _color = new Uint8List(4);
 
 void bandSelection(int x, y, width, height, PickerShader picker, RenderingContext gl, bool shift) {
@@ -86,11 +88,8 @@ void bandSelection(int x, y, width, height, PickerShader picker, RenderingContex
     err("bandSelection: picker not available");
     return;
   }
-
+  
   int size = 4 * width * height;
-  
-  debug("bandSelection: color buffer current=${_color.length} needed=$size");
-  
   if (size > _color.length) {
     _color = new Uint8List(size);
   }
@@ -103,20 +102,45 @@ void bandSelection(int x, y, width, height, PickerShader picker, RenderingContex
     _selection.clear();
   }
   
-  for (int i = 0; i < size; i += 4) {
+  Map<int,PickerInstance> cache = new Map<int,PickerInstance>(); 
+  
+  int pixels = 0;
+  int bgHits = 0;
+  int cacheHits = 0;
+  
+  for (int i = 0; i < size; i += 4, ++pixels) {
     
     if (_selection.length >= picker.numberOfInstances) {
-      // selected all available objects, no need to keep searching
+      // optimization: selected all available objects, no need to keep searching
       break;
     }
     
-    PickerInstance pi = picker.findInstanceByColor(_color[i], _color[i+1], _color[i+2]);
+    int r = _color[i];
+    int g = _color[i + 1];
+    int b = _color[i + 2];
+    
+    if (backgroundColor(r, g, b)) {
+      // optimization: hit background clear color -- no object
+      ++bgHits;
+      continue;
+    }
+    
+    int cacheKey = r.toInt() << 16 + g.toInt() << 8 + b.toInt();
+    PickerInstance cacheEntry = cache[cacheKey];
+    if (cacheEntry != null) {
+      // optimization: cache
+      ++cacheHits;
+      continue;
+    }
+    
+    PickerInstance pi = picker.findInstanceByColor(r, g, b);
     if (pi == null) {
       continue;
     }
     
+    cache[cacheKey] = pi;    
     _selection.add(pi);
   }
   
-  debug("bandSelection: $_selection");  
+  debug("bandSelection: $_selection (pixels total=$size scanned=$pixels, background hits=$bgHits, cache size=${cache.length} hits=$cacheHits)");  
 }
