@@ -167,6 +167,8 @@ func sendZoneDynamic(p *Player, loc string) {
 			front := store.QueryField(obj, "directionFront")
 			up := store.QueryField(obj, "directionUp")
 
+			log.Printf("sendZoneDynamic: obj=%s objURL=%s", obj, url)
+
 			p.SendToPlayer <- &ClientMsg{
 				Code: CM_CODE_INSTANCE,
 				Tab: map[string]string{

@@ -109,6 +109,7 @@ void bandSelection(int x, y, width, height, PickerShader picker, RenderingContex
   int pixels = 0;
   int bgHits = 0;
   int cacheHits = 0;
+  int searches = 0;
   
   for (int i = 0; i < size; i += 4, ++pixels) {
     
@@ -135,6 +136,8 @@ void bandSelection(int x, y, width, height, PickerShader picker, RenderingContex
       continue;
     }
     
+    ++searches;
+    
     PickerInstance pi = picker.findInstanceByColor(r, g, b);
     if (pi == null) {
       continue;
@@ -147,5 +150,5 @@ void bandSelection(int x, y, width, height, PickerShader picker, RenderingContex
   DateTime end = new DateTime.now();
   Duration elapsed = end.difference(begin);
   
-  log("bandSelection: $_selection took ${elapsed.inMilliseconds} msecs (pixels total=$size scanned=$pixels, background hits=$bgHits, cache size=${cache.length} hits=$cacheHits)");  
+  log("bandSelection: $_selection took ${elapsed.inMilliseconds} msecs (pixels total=$size scanned=$pixels, background hits=$bgHits, cache size=${cache.length} hits=$cacheHits, searches=$searches)");  
 }

@@ -84,6 +84,8 @@ class TexModel extends Model {
 
   void loadObj(RenderingContext gl, Obj obj) {
     
+    assert(obj != null);
+
     String mtlURL = "${asset.mtl}/${obj.mtllib}";
 
     void onMtlLibLoaded(String materialResponse) {
@@ -105,8 +107,7 @@ class TexModel extends Model {
         
         Material mtl = lib[usemtl];
         if (mtl == null) {
-          print("loadObj $i: material usemtl=$usemtl NOT FOUND on mtllib=$mtlURL");
-          return;
+          err("loadObj $i: material usemtl=$usemtl NOT FOUND on mtllib=$mtlURL");
         }
         
         int r = (mtl.Kd[0] * 255.0).round();
@@ -132,10 +133,15 @@ class TexModel extends Model {
       
       //print("loadObj: ${obj.partList.length} parts fed into ${pieceList.length} pieces");
     }
+    
+    if (obj.mtllib == null) {
+      err("loadObj: model=$modelName undefined OBJ mtllib URL");
+      return;
+    }
 
     HttpRequest.getString(mtlURL)
     .then(onMtlLibLoaded)
-    .catchError((err) { print("loadObj: failure fetching mtllib: $mtlURL: $err"); });    
+    .catchError((e) { err("loadObj: failure fetching mtllib: $mtlURL: $e"); });    
   }
   
   TexModel.fromOBJ(RenderingContext gl, String URL, Vector3 front, Vector3 up,

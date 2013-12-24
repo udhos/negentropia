@@ -245,7 +245,9 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
       String front       = tab['directionFront'];
       String up          = tab['directionUp'];
       String coord       = tab['coord'];
-      String scale       = tab['scale'];      
+      String scale       = tab['scale'];
+      
+      debug("dispatcher: instance: obj='$objURL'");
 
       Vector3 f = parseVector3(front);
       if (f == null) {

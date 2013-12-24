@@ -53,7 +53,7 @@ Vector3 parseVector3(String s, { void echoFunc(String): _log_error, bool throwEx
 
   List<String> list = s.split(',');
   if (list.length != 3) {
-    _fail(echoFunc, throwException, LABEL, save, "bad length: ${list.length}");
+    _fail(echoFunc, throwException, LABEL, save, "bad length=${list.length}: string='$save'");
     return null;
   }
   
