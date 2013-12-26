@@ -40,8 +40,8 @@
 !wwwroot
 !wwwroot/dart
 !wwwroot/dart/cookies
-!wwwroot/dart/packages
-!wwwroot/dart/packages/browser
+!wwwroot/dart/test
+!wwwroot/dart/benchmark
 !wwwroot/hello
 !wwwroot/js
 !wwwroot/js/lib

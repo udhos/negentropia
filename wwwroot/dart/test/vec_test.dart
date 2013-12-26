@@ -2,7 +2,7 @@
 import 'package:unittest/unittest.dart';
 import 'package:vector_math/vector_math.dart';
 
-import 'vec.dart';
+import '../vec.dart';
 
 void main() {
   vec_test();

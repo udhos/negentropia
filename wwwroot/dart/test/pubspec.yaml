@@ -1,0 +1,6 @@
+name: test
+description: Test
+dependencies:
+  vector_math:
+    git: https://github.com/johnmccutchan/vector_math.git
+  unittest: any

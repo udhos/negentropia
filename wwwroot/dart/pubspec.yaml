@@ -1,7 +1,6 @@
 name: negentropia_home
 description: Negentropia home in Dart
 dependencies:
-  benchmark_harness: any
   browser: any
   game_loop:
     git: https://github.com/johnmccutchan/game_loop.git
@@ -13,4 +12,3 @@ dependencies:
     git: https://github.com/udhos/obj
   #obj:    
     #path: c:/tmp/devel/obj
-  unittest: any
