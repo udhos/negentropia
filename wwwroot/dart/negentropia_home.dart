@@ -659,7 +659,13 @@ void deleteBandSelectionBox(RenderingContext gl, CanvasElement c, bool shift) {
   int minX = math.min(mouseDragBeginX, mouseDragCurrX);
   int minY = c.height - math.max(mouseDragBeginY, mouseDragCurrY);
   int w = 1 + (mouseDragCurrX - mouseDragBeginX).abs();
-  int h = 1 + (mouseDragCurrY - mouseDragBeginY).abs(); 
+  int h = 1 + (mouseDragCurrY - mouseDragBeginY).abs();
+
+  // Clamp to canvas
+  minX = math.max(minX, 0);
+  minY = math.max(minY, 0);
+  w = math.min(w, c.width - minX);
+  h = math.min(h, c.height - minY);
     
   bandSelection(minX, minY, w, h, picker, gl, shift);  
 
