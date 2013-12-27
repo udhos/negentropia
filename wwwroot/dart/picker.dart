@@ -72,7 +72,28 @@ class PickerShader extends ShaderProgram {
     gl.framebufferTexture2D(RenderingContext.FRAMEBUFFER, RenderingContext.COLOR_ATTACHMENT0, RenderingContext.TEXTURE_2D, texture, 0);
     gl.framebufferRenderbuffer(RenderingContext.FRAMEBUFFER, RenderingContext.DEPTH_ATTACHMENT, RenderingContext.RENDERBUFFER, renderbuffer);
 
-    // 4. Clean up
+    // 4. Check Frame Buffer status
+    int status = gl.checkFramebufferStatus(RenderingContext.FRAMEBUFFER);
+    switch (status) {
+      case RenderingContext.FRAMEBUFFER_COMPLETE:
+      break;
+      case RenderingContext.FRAMEBUFFER_UNSUPPORTED:
+        err("_createRenderbuffer: FRAMEBUFFER_UNSUPPORTED");
+      break;
+      case RenderingContext.FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+        err("_createRenderbuffer: FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+      break;
+      case RenderingContext.FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+        err("_createRenderbuffer: FRAMEBUFFER_INCOMPLETE_DIMENSIONS");
+      break;
+      case RenderingContext.FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+        err("_createRenderbuffer: FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
+      break;
+      default:
+        err("_createRenderbuffer: Framebuffer unexpected status: $status");
+    }
+    
+    // 5. Clean up
     gl.bindTexture(RenderingContext.TEXTURE_2D, null);
     gl.bindRenderbuffer(RenderingContext.RENDERBUFFER, null);
     gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
