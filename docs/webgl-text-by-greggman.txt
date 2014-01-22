@@ -1,0 +1,24 @@
+webgl-text-by-greggman
+
+WebGL has no fillText function.
+
+When you call canvas.getContext you can choose one of 2 APIs. "2d" or "experimental-webgl". Once you pick one that canvas can only use that API and not the other.
+
+For WebGL there are no text functions. You have to write your own by one of the following methods
+
+1. Make textures filled with text (use another offscreen canvas with a 2D API to draw text into and then copy the result into a WebGL texture with texImage2D). Then render quads to show those textures.
+
+2. Make a font texture will all the font characters. Then draw a polygon for each character with the UVs set to select one character from your font texture.
+
+3. Create meshes of text.
+
+Otherwise if you don't need the text to z-buffer/sort with the 3D scene you can use one of these methods:
+
+1. Make 2 canvases, overlap them with CSS, make the back one use the WebGL API and make the front one have a 2D API. Doing the correct math you can draw the text in the 2D canvas to match the 3D in the WebGL canvas.
+
+2. Make 1 canvas with WebGL and a bunch of divs for your text. Using CSS you can make the divs appear above the canvas and position them where want.
+
+Source:
+http://stackoverflow.com/questions/21248056/how-to-create-a-treemap-webgl
+
+--eof--
