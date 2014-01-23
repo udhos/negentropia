@@ -261,6 +261,11 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,String> t
         return;
       }
       
+      if (!vector3Orthogonal(f, u)) {
+        err("obj=$objURL: front=$f up=$u vectors are not orthogonal");
+        return;
+      }
+      
       /*
       List<String> coordList = coord.split(',');
       Vector3 vec3 = new Vector3(double.parse(coordList[0]), double.parse(coordList[1]), double.parse(coordList[2]));

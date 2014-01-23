@@ -73,3 +73,5 @@ Vector3 parseVector3(String s, { void echoFunc(String): _log_error, bool throwEx
   
   return new Vector3(x, y, z);
 }
+
+bool vector3Orthogonal(Vector3 v1, Vector3 v2) => v1.dot(v2) == 0.0;
