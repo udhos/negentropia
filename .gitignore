@@ -23,6 +23,7 @@
 !sample
 !sample/pixel_framebuffer
 !sample/pixel_framebuffer/web
+!sample/triangle
 !template
 !webserv
 !webserv/src
