@@ -73,6 +73,14 @@ void pickerClearColor(double r, g, b) {
   _bgColorB = b;  
 }
 
+bool backgroundColorDouble(double r, g, b) {
+  const double MIN_COLOR_DELTA = 1.0/255.0;
+  
+  return (r.toDouble() - _bgColorR).abs() < MIN_COLOR_DELTA
+      && (g.toDouble() - _bgColorG).abs() < MIN_COLOR_DELTA
+      && (b.toDouble() - _bgColorB).abs() < MIN_COLOR_DELTA;
+}
+
 bool backgroundColor(int r, g, b) {
   return (r.toDouble() - 255.0 * _bgColorR).abs() < 1.0
       && (g.toDouble() - 255.0 * _bgColorG).abs() < 1.0
