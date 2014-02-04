@@ -20,9 +20,7 @@ void _nextColor(List<double> color) {
   //log("_nextColor: $color");  
 }
 
-//List<double> _currentPickColor = [0.0, 0.0, 0.0, 1.0];
-//List<double> _currentPickColor = [0.5 - 1.0/16.0, 0.5, 0.5, 1.0]; // picker color generation failure
-List<double> _currentPickColor = [0.4375, 0.5, 0.5, 1.0]; // picker color generation failure
+List<double> _currentPickColor = [0.0, 0.0, 0.0, 1.0];
 
 Float32List generatePickColor() {
   
