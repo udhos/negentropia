@@ -11,7 +11,7 @@ String mtlURL;
 String mtlString;
 
 class ObjBenchmark extends BenchmarkBase {
-  const ObjBenchmark() : super("Benchmark: Obj.fromString");
+  const ObjBenchmark(): super("Benchmark: Obj.fromString");
 
   static void main() {
     new ObjBenchmark().report();
@@ -23,46 +23,47 @@ class ObjBenchmark extends BenchmarkBase {
 }
 
 class MtlBenchmark extends BenchmarkBase {
-  const MtlBenchmark() : super("Benchmark: mtllib_parse");
+  const MtlBenchmark(): super("Benchmark: mtllib_parse");
 
   static void main() {
     new MtlBenchmark().report();
   }
 
   void run() {
-    Map<String,Material> lib = mtllib_parse(mtlString, mtlURL);
+    Map<String, Material> lib = mtllib_parse(mtlString, mtlURL);
   }
 }
 
 void main() {
 
   void fetchMtl(String URL) {
-    
+
     void done(String response) {
-      mtlURL    = URL;
+      mtlURL = URL;
       mtlString = response;
       MtlBenchmark.main(); // run benchmark
     }
-            
-    var file = new File(URL);    
+
+    var file = new File(URL);
     Future<String> finishedReading = file.readAsString(encoding: ASCII);
-    finishedReading.then(done); 
-  }
-  
-  void fetchObj(String URL) {
-    
-    void done(String response) {
-      objURL    = URL;
-      objString = response;
-      ObjBenchmark.main(); // run benchmark
-      
-      fetchMtl("C:/tmp/devel/negentropia/wwwroot/mtl/Colony Ship Ogame Fleet.mtl");
-    }
-            
-    var file = new File(URL);    
-    Future<String> finishedReading = file.readAsString(encoding: ASCII);
-    finishedReading.then(done); 
+    finishedReading.then(done);
   }
 
-  fetchObj("C:/tmp/devel/negentropia/wwwroot/obj/Colony Ship Ogame Fleet.obj");    
+  void fetchObj(String URL) {
+
+    void done(String response) {
+      objURL = URL;
+      objString = response;
+      ObjBenchmark.main(); // run benchmark
+
+      fetchMtl(
+          "C:/tmp/devel/negentropia/wwwroot/mtl/Colony Ship Ogame Fleet.mtl");
+    }
+
+    var file = new File(URL);
+    Future<String> finishedReading = file.readAsString(encoding: ASCII);
+    finishedReading.then(done);
+  }
+
+  fetchObj("C:/tmp/devel/negentropia/wwwroot/obj/Colony Ship Ogame Fleet.obj");
 }

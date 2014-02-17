@@ -1,7 +1,7 @@
 library logg;
 
 void log(String msg) {
-  print(msg);  
+  print(msg);
 }
 
 void warn(String msg) {

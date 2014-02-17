@@ -23,7 +23,7 @@ part 'picker.dart';
 part 'solid.dart';
 
 class ShaderProgram {
-    
+
   Program program;
   RenderingContext gl;
   String programName;
@@ -31,11 +31,11 @@ class ShaderProgram {
   UniformLocation u_MV;
   UniformLocation u_P;
   bool shaderReady = false;
-  
-  List<Model> modelList = new List<Model>();  
- 
+
+  List<Model> modelList = new List<Model>();
+
   ShaderProgram(this.gl, this.programName);
-  
+
   /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
   }
@@ -43,43 +43,49 @@ class ShaderProgram {
 
   void getLocations() {
     a_Position = gl.getAttribLocation(program, "a_Position");
-    u_MV       = gl.getUniformLocation(program, "u_MV");
-    u_P        = gl.getUniformLocation(program, "u_P");      
+    u_MV = gl.getUniformLocation(program, "u_MV");
+    u_P = gl.getUniformLocation(program, "u_P");
   }
-  
-  void fetch(Map<String,Shader> shaderCache, String vertexShaderURL, String fragmentShaderURL) {
+
+  void fetch(Map<String, Shader> shaderCache, String vertexShaderURL, String
+      fragmentShaderURL) {
     //print("Program.fetch: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
-    
-    Shader compileShader(String shaderURL, String shaderSource, int shaderType) {
+
+    Shader compileShader(String shaderURL, String shaderSource, int shaderType)
+        {
       Shader shader = gl.createShader(shaderType);
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
-      bool parameter = gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
+      bool parameter = gl.getShaderParameter(shader,
+          RenderingContext.COMPILE_STATUS);
       if (!parameter) {
         String infoLog = gl.getShaderInfoLog(shader);
         print("compileShader: compilation FAILURE: $shaderURL: info=$infoLog");
         if (gl.isContextLost()) {
-          print("compileShader: compilation FAILURE: $shaderURL: info=$infoLog: context is lost");
+          print(
+              "compileShader: compilation FAILURE: $shaderURL: info=$infoLog: context is lost"
+              );
         }
         return null;
       }
-      
+
       if (shaderCache[shaderURL] != null) {
-        print("compileShader: " + shaderURL + ": FIXME: overwriting shader cache");
+        print("compileShader: " + shaderURL +
+            ": FIXME: overwriting shader cache");
       }
       shaderCache[shaderURL] = shader;
-      
+
       return shader;
     }
 
     Shader vertexShader, fragmentShader;
-    
+
     void tryLink() {
       if (vertexShader == null || fragmentShader == null) {
         // not ready to link
         return;
       }
-      
+
       Program p = gl.createProgram();
       gl.attachShader(p, vertexShader);
       gl.attachShader(p, fragmentShader);
@@ -89,22 +95,23 @@ class ShaderProgram {
         String infoLog = gl.getProgramInfoLog(p);
         print("tryLink: shader program link FAILURE: $infoLog");
         if (gl.isContextLost()) {
-          print("tryLink: shader program link FAILURE: $infoLog: context is lost");          
+          print(
+              "tryLink: shader program link FAILURE: $infoLog: context is lost");
         }
         return;
       }
 
       this.program = p;
-      
+
       getLocations();
-      
+
       shaderReady = true;
     }
-    
+
     void fetchVertexShader() {
 
       String url = vertexShaderURL;
-      
+
       var requestVert = new HttpRequest();
       requestVert.open("GET", url);
       requestVert.onLoad.listen((ProgressEvent e) {
@@ -113,7 +120,8 @@ class ShaderProgram {
           print("vertexShader: url=$url: error: [$response]");
           return;
         }
-        vertexShader = compileShader(url, response, RenderingContext.VERTEX_SHADER);
+        vertexShader = compileShader(url, response,
+            RenderingContext.VERTEX_SHADER);
         tryLink();
       });
       requestVert.onError.listen((e) {
@@ -123,9 +131,9 @@ class ShaderProgram {
     }
 
     void fetchFragmentShader() {
-      
+
       String url = fragmentShaderURL;
-      
+
       var requestFrag = new HttpRequest();
       requestFrag.open("GET", url);
       requestFrag.onLoad.listen((ProgressEvent e) {
@@ -134,49 +142,52 @@ class ShaderProgram {
           print("fragmentShader: url=$url: error: [$response]");
           return;
         }
-        fragmentShader = compileShader(url, response, RenderingContext.FRAGMENT_SHADER);
-        tryLink();      
+        fragmentShader = compileShader(url, response,
+            RenderingContext.FRAGMENT_SHADER);
+        tryLink();
       });
       requestFrag.onError.listen((e) {
         print("fragmentShader: url=$url: error: [$e]");
       });
       requestFrag.send();
     }
-    
+
     vertexShader = shaderCache[vertexShaderURL];
     if (vertexShader == null) {
       fetchVertexShader();
     }
-    
+
     fragmentShader = shaderCache[fragmentShaderURL];
     if (fragmentShader == null) {
       fetchFragmentShader();
     }
-    
-    tryLink(); // needed when both vertexShader and fragmentShader are found in cache
+
+    tryLink();
+    // needed when both vertexShader and fragmentShader are found in cache
   }
-   
+
   void addModel(Model m) {
     this.modelList.add(m);
   }
-  
+
   Model findModel(String name) {
     Model mod;
     try {
-      mod = modelList.firstWhere((m) { return m.modelName == name; });
-    }
-    on StateError {
+      mod = modelList.firstWhere((m) {
+        return m.modelName == name;
+      });
+    } on StateError {
       // not found
     }
     return mod;
   }
-  
+
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
-    
+
     if (!shaderReady) {
       return;
     }
-    
+
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
 
@@ -188,12 +199,12 @@ class ShaderProgram {
     // clean up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
-    
+
     //gl.disableVertexAttribArray(a_Position); // needed ??
   }
-  
+
   void update(GameLoopHtml gameLoop) {
-    modelList.forEach((m) => m.update(gameLoop));    
+    modelList.forEach((m) => m.update(gameLoop));
   }
 }
 

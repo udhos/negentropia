@@ -8,40 +8,41 @@ import 'package:vector_math/vector_math.dart';
 class Camera {
   final double degreesPerSec = 20.0;
   //final double camOrbitRadius = 15.0;
-  
+
   Quaternion _orientation = new Quaternion.identity();
   Vector3 _position = new Vector3.zero();
-  
+
   double _oldAngle = 0.0;
   double _angle = 0.0;
-  
+
   Camera(Vector3 coord) {
     moveTo(coord);
     update(0.0);
   }
-  
+
   void moveTo(Vector3 coord) {
     _position.setFrom(coord);
   }
-  
+
   void rotate(Matrix4 MV) {
     MV.setRotation(_orientation.asRotationMatrix());
   }
-  
+
   void translate(Matrix4 MV) {
-    MV.translate(- _position);
+    MV.translate(-_position);
   }
-  
+
   void update(double gameTime) {
     _oldAngle = _angle;
-    _angle = gameTime * this.degreesPerSec % 360.0;    
-  }  
-  
+    _angle = gameTime * this.degreesPerSec % 360.0;
+  }
+
   static final Vector3 Y = new Vector3(0.0, 1.0, 0.0);
 
   void render(double renderInterpolationFactor) {
-    
-    double deg = interpolateDegree(_angle, _oldAngle, renderInterpolationFactor);
+
+    double deg = interpolateDegree(_angle, _oldAngle, renderInterpolationFactor
+        );
     double rad = deg * math.PI / 180.0;
 
     // FIXME: should apply a rotation quaternion

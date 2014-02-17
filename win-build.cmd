@@ -33,6 +33,8 @@ gofmt -s -w %DEVEL%\negentropia\webserv\src\negentropia
 go install negentropia\webserv
 go install negentropia\world
 
+call %NEG_DART_SDK%\bin\dartfmt -w %NEG_DART_SRC%
+
 @rem build client
 set OLD_CD=%CD%
 cd %NEG_DART_SRC%

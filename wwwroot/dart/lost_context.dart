@@ -15,12 +15,13 @@ bool contextIsLost() {
   return _lost;
 }
 
-void initHandleLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHtml gameLoop,
-                           void initContextCall(RenderingContext, GameLoopHtml)) {
-  
+void initHandleLostContext(RenderingContext gl, CanvasElement
+    canvas, GameLoopHtml gameLoop, void
+    initContextCall(RenderingContext, GameLoopHtml)) {
+
   _lost = gl.isContextLost();
   assert(_lost != null);
-  
+
   void onContextLost(Event e) {
     e.preventDefault();
     _lost = true;
@@ -31,12 +32,13 @@ void initHandleLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHt
   void onContextRestored(Event e) {
     _lost = false;
     debug("webgl context: restored");
-    initContextCall(gl, gameLoop); // recreate resources and // gameLoop.start();
+    initContextCall(gl, gameLoop);
+    // recreate resources and // gameLoop.start();
   }
 
   canvas.onWebGlContextLost.listen(onContextLost);
   canvas.onWebGlContextRestored.listen(onContextRestored);
-  
+
   LoseContext ext = gl.getExtension('WEBGL_lose_context');
   if (ext == null) {
     warn("WEBGL_lose_context: NOT AVAILABLE");
@@ -45,16 +47,20 @@ void initHandleLostContext(RenderingContext gl, CanvasElement canvas, GameLoopHt
 
   DivElement control = querySelector("#control");
   assert(control != null);
-  
+
   InputElement loseContextButton = new InputElement();
   loseContextButton.type = 'button';
   loseContextButton.value = 'lose context';
-  loseContextButton.onClick.listen((Event e) { ext.loseContext(); });
+  loseContextButton.onClick.listen((Event e) {
+    ext.loseContext();
+  });
   control.append(loseContextButton);
-  
+
   InputElement restoreContextButton = new InputElement();
   restoreContextButton.type = 'button';
   restoreContextButton.value = 'restore context';
-  restoreContextButton.onClick.listen((Event e) { ext.restoreContext(); });
-  control.append(restoreContextButton);  
+  restoreContextButton.onClick.listen((Event e) {
+    ext.restoreContext();
+  });
+  control.append(restoreContextButton);
 }
