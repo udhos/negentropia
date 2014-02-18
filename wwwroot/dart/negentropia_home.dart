@@ -17,6 +17,7 @@ import 'skybox.dart';
 //import 'solid.dart';
 import 'lost_context.dart';
 import 'camera.dart';
+import 'camera_control.dart';
 import 'asset.dart';
 import 'anisotropic.dart';
 import 'visibility.dart';
@@ -36,6 +37,7 @@ Map<String, Texture> textureTable;
 Matrix4 pMatrix = new Matrix4.zero();
 double fieldOfViewYRadians = 45 * math.PI / 180;
 Camera cam = new Camera(new Vector3(0.0, 0.0, 15.0));
+CameraControl camControl = new CameraControl();
 bool backfaceCulling = false;
 bool showPicking = false;
 Asset asset = new Asset("/");
@@ -655,7 +657,7 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, planeNear,
       planeFar);
 
-  cam.render(gameLoop.renderInterpolationFactor);
+  //cam.render(gameLoop.renderInterpolationFactor);
 
   // clear canvas framebuffer
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
@@ -852,7 +854,8 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   // handle non-input updates
   //
 
-  cam.update(gameLoop.gameTime);
+  //cam.update(gameLoop.gameTime);
+  camControl.update(gameLoop.dt, cam);
 
   if (programList != null) {
     programList.forEach((p) => p.update(gameLoop));

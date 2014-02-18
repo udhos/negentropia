@@ -28,6 +28,7 @@ class Instance {
     // 8. camera rotate
 
     //setViewMatrix(MV, cam.eye, cam.center, cam.up);
+    /*
     MV.setIdentity();
 
     // 7. camera translate
@@ -35,6 +36,8 @@ class Instance {
 
     // 6. camera orbit rotate
     cam.rotate(MV);
+    */
+    cam.copyViewMatrix(MV);
 
     // 5. obj translate
     MV.translate(center[0], center[1], center[2]);
