@@ -6,6 +6,7 @@ import 'package:vector_math/vector_math.dart';
 
 //import 'interpolate.dart';
 import 'logg.dart';
+import 'vec.dart';
 
 bool _cameraTracking = false;
 bool get cameraTracking => _cameraTracking;
@@ -57,7 +58,17 @@ class Camera {
     moveTo(coord);
     _focusPosition = new Vector3(0.0, 0.0, -1.0);
     _upDirection = new Vector3(0.0, 1.0, 0.0);
+
     debug("new camera: $this");
+
+    if (!vector3Orthogonal(_upDirection, frontDirection)) {
+      String fail =
+          "new camera: NOT ORTHOGONAL: up=$_upDirection x front=$frontDirection";
+      err(fail);
+      throw fail;
+    }
+
+    assert(vector3Orthogonal(_upDirection, frontDirection));
   }
 
   void moveTo(Vector3 coord) {
@@ -67,13 +78,24 @@ class Camera {
 
   void focusAt(Vector3 coord) {
     assert(coord != null);
-    /*
+    assert(vector3Orthogonal(_upDirection, frontDirection));
+
     if (coord[0] != _focusPosition[0] || coord[1] != _focusPosition[1] ||
         coord[2] != _focusPosition[2]) {
+      double x = _focusPosition[0];
+      double y = _focusPosition[1];
+      double z = _focusPosition[2];
+      _focusPosition.setFrom(coord);
       debug("camera focusAt: from=$_focusPosition to=$coord");
+      if (!vector3Orthogonal(_upDirection, frontDirection)) {
+        String fail =
+            "camera focusAt: NOT ORTHOGONAL: up=$_upDirection x front=$frontDirection";
+        err(fail);
+        throw fail;
+      }
     }
-    */
-    _focusPosition.setFrom(coord);
+
+    assert(vector3Orthogonal(_upDirection, frontDirection));
   }
 
   /*
