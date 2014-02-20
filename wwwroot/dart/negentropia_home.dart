@@ -844,7 +844,26 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     }
   }
 
+  trackKey(k.isDown(Keyboard.T));
+
   pauseKey(k.isDown(Keyboard.P));
+
+  /*
+  if (k.isDown(Keyboard.D)) {
+    Vector3 pos = getSelectionPosition();
+    log("dump: tracking=$cameraTracking cam:{$cam} new_focus=$pos");
+  }
+  */
+
+  if (cameraTracking) {
+    Vector3 pos = getSelectionPosition();
+    if (pos != null) {
+      cam.focusAt(pos);
+    }
+  }
+
+  //cam.update(gameLoop.gameTime);
+  camControl.update(gameLoop.dt, cam);
 
   if (paused()) {
     return; // skip all updates below
@@ -853,9 +872,6 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //
   // handle non-input updates
   //
-
-  //cam.update(gameLoop.gameTime);
-  camControl.update(gameLoop.dt, cam);
 
   if (programList != null) {
     programList.forEach((p) => p.update(gameLoop));

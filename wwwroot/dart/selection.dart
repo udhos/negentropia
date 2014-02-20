@@ -4,10 +4,18 @@ import 'dart:web_gl';
 import 'dart:typed_data';
 import 'dart:collection';
 
+import 'package:vector_math/vector_math.dart';
+
 import 'shader.dart';
 import 'logg.dart';
 
 Set<PickerInstance> _selection = new HashSet<PickerInstance>();
+
+Vector3 getSelectionPosition() {
+  if (_selection.isEmpty) return null;
+
+  return _selection.first.center;
+}
 
 PickerInstance colorHit(Iterable<Instance> list, int r, g, b) {
 

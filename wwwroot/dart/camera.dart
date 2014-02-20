@@ -7,6 +7,28 @@ import 'package:vector_math/vector_math.dart';
 //import 'interpolate.dart';
 import 'logg.dart';
 
+bool _cameraTracking = false;
+bool get cameraTracking => _cameraTracking;
+
+bool _trackWasDown = false;
+
+void trackKey(bool isDown) {
+  if (_trackWasDown == isDown) {
+    return; // no status change
+  }
+
+  // status has switched:
+
+  if (isDown) {
+    // only on UP->DOWN: toogle pause on/off
+    _cameraTracking = !_cameraTracking;
+    String t = cameraTracking ? "on" : "off";
+    debug("Camera tracking: $t");
+  }
+
+  _trackWasDown = isDown; // update status
+}
+
 class Camera {
 
   Vector3 _position = new Vector3(0.0, 0.0, 10.0);
@@ -16,7 +38,7 @@ class Camera {
   Vector3 get frontDirection => (_focusPosition - _position).normalize();
 
   String toString() {
-    return 'pos=$_position focus=$_focusPosition up=_upDirection';
+    return 'pos=$_position focus=$_focusPosition up=$_upDirection';
   }
 
   //final double degreesPerSec = 20.0;
@@ -35,11 +57,23 @@ class Camera {
     moveTo(coord);
     _focusPosition = new Vector3(0.0, 0.0, -1.0);
     _upDirection = new Vector3(0.0, 1.0, 0.0);
-    debug("camera: $this");
+    debug("new camera: $this");
   }
 
   void moveTo(Vector3 coord) {
+    assert(coord != null);
     _position.setFrom(coord);
+  }
+
+  void focusAt(Vector3 coord) {
+    assert(coord != null);
+    /*
+    if (coord[0] != _focusPosition[0] || coord[1] != _focusPosition[1] ||
+        coord[2] != _focusPosition[2]) {
+      debug("camera focusAt: from=$_focusPosition to=$coord");
+    }
+    */
+    _focusPosition.setFrom(coord);
   }
 
   /*
