@@ -886,32 +886,31 @@ void checkAntialias(RenderingContext gl) {
   ContextAttributes attr = gl.getContextAttributes();
 
   if (attr == null) {
-    print(
+    err(
         "ugh: gl.getContextAttributes() returned null -- gl.isContextLost() is ${gl.isContextLost()}"
         );
-    print("antialias: UNKNOWN");
+    err("antialias: UNKNOWN");
   } else if (attr is! ContextAttributes) {
-    print("ugh: gl.getContextAttributes() returned non-ContextAttributes: $attr"
-        );
-    print("antialias: UNKNOWN");
+    err("ugh: gl.getContextAttributes() returned non-ContextAttributes: $attr");
+    err("antialias: UNKNOWN");
   } else if (attr.antialias == null) {
-    print("ugh: attr.antialias == null");
-    print("antialias: UNKNOWN");
+    err("ugh: attr.antialias == null");
+    err("antialias: UNKNOWN");
   } else if (attr.antialias is! bool) {
-    print("ugh: attr.antialias is! bool");
-    print("antialias: UNKNOWN");
+    err("ugh: attr.antialias is! bool");
+    err("antialias: UNKNOWN");
   } else {
     bool antialias = attr.antialias;
-    print("antialias: $antialias");
+    err("antialias: $antialias");
   }
 
   int size = gl.getParameter(RenderingContext.SAMPLES);
-  print("antialias MSSA size: $size");
+  err("antialias MSSA size: $size");
 }
 
 void main() {
-  print("--");
-  print("main: negentropia dart client starting");
+  log("--");
+  log("main: negentropia dart client starting");
 
   RenderingContext gl = boot();
   if (gl == null) {
@@ -946,5 +945,5 @@ void main() {
 
   initContext(gl, gameLoop);
 
-  print("main: negentropia dart client ready");
+  log("main: negentropia dart client ready");
 }

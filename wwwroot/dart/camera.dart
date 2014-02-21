@@ -37,6 +37,7 @@ class Camera {
   Vector3 _upDirection = new Vector3(0.0, 1.0, 0.0);
 
   Vector3 get frontDirection => (_focusPosition - _position).normalize();
+  Vector3 get rightDirection => frontDirection.cross(_upDirection);
 
   String toString() {
     return 'pos=$_position focus=$_focusPosition up=$_upDirection';
@@ -82,14 +83,16 @@ class Camera {
 
     if (coord[0] != _focusPosition[0] || coord[1] != _focusPosition[1] ||
         coord[2] != _focusPosition[2]) {
-      double x = _focusPosition[0];
-      double y = _focusPosition[1];
-      double z = _focusPosition[2];
-      _focusPosition.setFrom(coord);
       debug("camera focusAt: from=$_focusPosition to=$coord");
+
+      Vector3 oldRightDirection = rightDirection; // saves old right direction
+      _focusPosition.setFrom(coord); // changes front direction
+      _upDirection = oldRightDirection.cross(frontDirection);
+          // new up direction
+
       if (!vector3Orthogonal(_upDirection, frontDirection)) {
         String fail =
-            "camera focusAt: NOT ORTHOGONAL: up=$_upDirection x front=$frontDirection";
+            "camera focusAt: NOT ORTHOGONAL: up=$_upDirection x front=$frontDirection: dot=${_upDirection.dot(frontDirection)}";
         err(fail);
         throw fail;
       }
