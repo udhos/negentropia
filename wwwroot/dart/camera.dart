@@ -64,12 +64,36 @@ class Camera {
 
     if (!vector3Orthogonal(_upDirection, frontDirection)) {
       String fail =
-          "new camera: NOT ORTHOGONAL: up=$_upDirection x front=$frontDirection";
+          "new camera: NOT ORTHOGONAL: up=$_upDirection x front=$frontDirection: dot=${_upDirection.dot(frontDirection)}";
+      err(fail);
+      throw fail;
+    }
+
+    if (!vector3Unit(_upDirection)) {
+      String fail =
+          "new camera: NOT UNIT: up=$_upDirection length=${_upDirection.length}";
+      err(fail);
+      throw fail;
+    }
+
+    if (!vector3Unit(frontDirection)) {
+      String fail =
+          "new camera: NOT UNIT: front=$frontDirection length=${frontDirection.length}";
+      err(fail);
+      throw fail;
+    }
+
+    if (!vector3Unit(rightDirection)) {
+      String fail =
+          "new camera: NOT UNIT: right=$rightDirection length=${rightDirection.length}";
       err(fail);
       throw fail;
     }
 
     assert(vector3Orthogonal(_upDirection, frontDirection));
+    assert(vector3Unit(_upDirection));
+    assert(vector3Unit(frontDirection));
+    assert(vector3Unit(rightDirection));
   }
 
   void moveTo(Vector3 coord) {
@@ -80,6 +104,9 @@ class Camera {
   void focusAt(Vector3 coord) {
     assert(coord != null);
     assert(vector3Orthogonal(_upDirection, frontDirection));
+    assert(vector3Unit(_upDirection));
+    assert(vector3Unit(frontDirection));
+    assert(vector3Unit(rightDirection));
 
     if (coord[0] != _focusPosition[0] || coord[1] != _focusPosition[1] ||
         coord[2] != _focusPosition[2]) {
@@ -87,8 +114,8 @@ class Camera {
 
       Vector3 oldRightDirection = rightDirection; // saves old right direction
       _focusPosition.setFrom(coord); // changes front direction
-      _upDirection = oldRightDirection.cross(frontDirection);
-          // new up direction
+      _upDirection = oldRightDirection.cross(frontDirection).normalize();
+      // new up direction
 
       if (!vector3Orthogonal(_upDirection, frontDirection)) {
         String fail =
@@ -96,9 +123,34 @@ class Camera {
         err(fail);
         throw fail;
       }
+
+      if (!vector3Unit(_upDirection)) {
+        String fail =
+            "camera focusAt: NOT UNIT: up=$_upDirection length=${_upDirection.length}";
+        err(fail);
+        throw fail;
+      }
+
+      if (!vector3Unit(frontDirection)) {
+        String fail =
+            "camera focusAt: NOT UNIT: front=$frontDirection length=${frontDirection.length}";
+        err(fail);
+        throw fail;
+      }
+
+      if (!vector3Unit(rightDirection)) {
+        String fail =
+            "camera focusAt: NOT UNIT: right=$rightDirection length=${rightDirection.length}";
+        err(fail);
+        throw fail;
+      }
+
     }
 
     assert(vector3Orthogonal(_upDirection, frontDirection));
+    assert(vector3Unit(_upDirection));
+    assert(vector3Unit(frontDirection));
+    assert(vector3Unit(rightDirection));
   }
 
   /*
