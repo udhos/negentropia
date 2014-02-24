@@ -1,6 +1,6 @@
 library camera_control;
 
-import 'package:vector_math/vector_math.dart';
+//import 'package:vector_math/vector_math.dart';
 
 import 'camera.dart';
 

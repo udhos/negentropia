@@ -599,7 +599,10 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   gl.depthRange(0.0, 1.0); // default
 
   // define viewport size
+  gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
+      // viewport for default on-screen canvas
   gl.viewport(0, 0, canvas.width, canvas.height);
+
   canvasAspect = canvas.width.toDouble() / canvas.height.toDouble();
   // save aspect for render loop mat4.perspective
   debug("canvas aspect ratio: $canvasAspect");
@@ -616,7 +619,6 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
       draw(gl, gameLoop);
       stats.end();
     }
-    ;
 
     var after = new DateTime.now();
     var duration = after.difference(before);
