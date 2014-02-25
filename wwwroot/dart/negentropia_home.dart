@@ -600,7 +600,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
 
   // define viewport size
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
-      // viewport for default on-screen canvas
+  // viewport for default on-screen canvas
   gl.viewport(0, 0, canvas.width, canvas.height);
 
   canvasAspect = canvas.width.toDouble() / canvas.height.toDouble();
