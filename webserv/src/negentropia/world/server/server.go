@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"code.google.com/p/go.net/websocket"
 
@@ -50,8 +51,16 @@ var (
 	InputCh     chan *PlayerMsg = make(chan *PlayerMsg)
 )
 
+func tick(t time.Time) {
+	log.Printf("server: tick: periodic: %s", t)
+}
+
 func serve() {
 	log.Printf("world server.serve: goroutine started")
+
+	var tickPeriod time.Duration = 5000
+	log.Printf("world server.serve: ticker at %d ms", tickPeriod)
+	ticker := time.NewTicker(time.Millisecond * tickPeriod)
 
 	for {
 		select {
@@ -61,6 +70,8 @@ func serve() {
 			playerDel(p)
 		case m := <-InputCh:
 			input(m.Player, m.Msg)
+		case t := <-ticker.C:
+			tick(t)
 		}
 	}
 }
