@@ -1,12 +1,14 @@
 
 @rem assign zone
 \redisbin\redis-cli hset everton.marques@gmail.com location z:0
+\redisbin\redis-cli hset udhos0@gmail.com          location z:1
 
 @rem add shader program
 \redisbin\redis-cli hset p:simpleTexturizer vertexShader /shader/simpleTex_vs.txt
 \redisbin\redis-cli hset p:simpleTexturizer fragmentShader /shader/simpleTex_fs.txt
 
-@rem add zone
+@rem add zone ------------------------------------------------------------
+
 \redisbin\redis-cli hset z:0 backfaceCulling true
 @rem \redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_galaxy.json
 @rem \redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_alien.json
@@ -46,5 +48,18 @@
 \redisbin\redis-cli hset m:2 coord -50.0,0.0,0.0
 \redisbin\redis-cli hset m:2 scale 1.0
 
-@rem eof
+@rem add zone ------------------------------------------------------------
 
+\redisbin\redis-cli hset z:1 backfaceCulling true
+@rem \redisbin\redis-cli hset z:1 skyboxURL /skybox/skybox_galaxy.json
+\redisbin\redis-cli hset z:1 skyboxURL /skybox/skybox_alien.json
+@rem \redisbin\redis-cli hset z:1 skyboxURL /skybox/skybox_sky30.json
+\redisbin\redis-cli hset z:1 programName p:simpleTexturizer
+\redisbin\redis-cli hset z:1 cameraCoord 0.0,0.0,90.0
+
+@rem add instance list to zone
+\redisbin\redis-cli hset z:1 instanceList l:1
+\redisbin\redis-cli del l:1
+\redisbin\redis-cli sadd l:1 m:2
+
+@rem eof
