@@ -913,6 +913,7 @@ void checkAntialias(RenderingContext gl) {
 void main() {
   log("--");
   log("main: negentropia dart client starting");
+  logg_init();
 
   RenderingContext gl = boot();
   if (gl == null) {

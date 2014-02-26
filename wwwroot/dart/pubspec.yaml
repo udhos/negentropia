@@ -1,5 +1,15 @@
 name: negentropia_home
 description: Negentropia home in Dart
+transformers:
+- $dart2js:
+    checked: true
+    minify: false
+    verbose: true
+    environment: {DEBUG: "true"}
+    analyzeAll: true
+    suppressWarnings: false
+    suppressHints: false
+    terse: true
 dependencies:
   browser: any
   game_loop:

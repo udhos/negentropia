@@ -1,4 +1,10 @@
-library logg;
+library log;
+
+final String _compile_time_env_debug = const String.fromEnvironment('DEBUG');
+
+void logg_init() {
+  log("compile time environment: DEBUG=$_compile_time_env_debug");
+}
 
 void log(String msg) {
   print(msg);
@@ -13,7 +19,7 @@ void err(String msg) {
 }
 
 void debug(String msg) {
-  if (const String.fromEnvironment('DEBUG') != null) {
+  if (_compile_time_env_debug != null) {
     log("DEBUG: $msg");
   }
 }
