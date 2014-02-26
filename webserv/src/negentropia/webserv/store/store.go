@@ -105,13 +105,11 @@ func Init(serverAddr string) {
 
 	log.Printf("store.Init: redisExpire = %d seconds", redisExpire/time.Second)
 
-	//redisClient = redis.NewTCPClient(serverAddr, redisPassword, redisDb)
-	redisClient := redis.NewTCPClient(&redis.Options{
+	redisClient = redis.NewTCPClient(&redis.Options{
 		Addr:     serverAddr,
 		Password: redisPassword,
 		DB:       0, // use default DB
 	})
-	defer redisClient.Close()
 
 	pong, err := redisClient.Ping().Result()
 	log.Printf("store.Init: PING redis server: reply=%s err=%s", pong, err)
@@ -152,6 +150,9 @@ func FieldExists(key, field string) bool {
 }
 
 func Set(key, value string) {
+	if key == "" {
+		log.Panicf("store.Set: empty key: key=%s value=%s", key, value)
+	}
 	setReq <- KeyValue{key, value} // send key,value
 }
 
