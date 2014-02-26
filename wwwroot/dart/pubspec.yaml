@@ -6,7 +6,7 @@ transformers:
     minify: false
     verbose: true
     environment: {DEBUG: "true"}
-    analyzeAll: true
+    analyzeAll: false
     suppressWarnings: false
     suppressHints: false
     terse: true
