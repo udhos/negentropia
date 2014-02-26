@@ -174,3 +174,11 @@ func QuerySet(key string) []string {
 	querySetReq <- key   // send key,field
 	return <-querySetRep // read reply and return it
 }
+
+func QueryKeys(pattern string) []string {
+	str, err := redisClient.Keys(pattern).Result()
+	if err != nil {
+		log.Printf("store.QueryKeys: pattern=[%s] err=%s", pattern, err)
+	}
+	return str
+}
