@@ -112,7 +112,11 @@ func Init(serverAddr string) {
 	})
 
 	pong, err := redisClient.Ping().Result()
-	log.Printf("store.Init: PING redis server: reply=%s err=%s", pong, err)
+	if err == nil {
+		log.Printf("store.Init: PING redis server: reply=%s", pong)
+	} else {
+		log.Printf("store.Init: PING redis server: reply=%s err=%s", pong, err)
+	}
 
 	go serve()
 }
@@ -150,9 +154,6 @@ func FieldExists(key, field string) bool {
 }
 
 func Set(key, value string) {
-	if key == "" {
-		log.Panicf("store.Set: empty key: key=%s value=%s", key, value)
-	}
 	setReq <- KeyValue{key, value} // send key,value
 }
 
