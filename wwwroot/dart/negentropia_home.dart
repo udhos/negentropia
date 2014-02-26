@@ -14,7 +14,6 @@ import 'cookies/cookies.dart';
 import 'ws.dart';
 import 'shader.dart';
 import 'skybox.dart';
-//import 'solid.dart';
 import 'lost_context.dart';
 import 'camera.dart';
 import 'camera_control.dart';
@@ -246,10 +245,11 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
 
       String objURL = tab['objURL'];
       String programName = tab['programName'];
-      String front = tab['directionFront'];
-      String up = tab['directionUp'];
+      String front = tab['modelFront'];
+      String up = tab['modelUp'];
       String coord = tab['coord'];
       String scale = tab['scale'];
+      String mission = tab['mission'];
 
       debug("dispatcher: instance: obj='$objURL'");
 

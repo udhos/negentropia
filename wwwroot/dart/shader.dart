@@ -1,7 +1,6 @@
 library shader;
 
 import 'dart:html';
-//import 'dart:async';
 import 'dart:web_gl';
 import 'dart:convert';
 import 'dart:typed_data';

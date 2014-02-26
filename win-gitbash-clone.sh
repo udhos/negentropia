@@ -15,7 +15,8 @@ go_get () {
 }
 
 # fetch from github with git bash
-go_get github.com/vmihailenco/redis
+#go_get github.com/vmihailenco/redis
+go_get github.com/vmihailenco/redis/v2
 go_get github.com/HairyMezican/goauth2/oauth
 
 # fetch from google code (could be under cmd prompt)

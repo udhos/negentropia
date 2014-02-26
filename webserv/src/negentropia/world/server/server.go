@@ -52,7 +52,8 @@ var (
 )
 
 func tick(t time.Time) {
-	log.Printf("server: tick: periodic: %s", t)
+	log.Printf("server: tick: %s", t)
+	updateAllZones()
 }
 
 func serve() {
@@ -172,23 +173,25 @@ func sendZoneDynamic(p *Player, loc string) {
 			obj := store.QueryField(inst, "obj")
 			coord := store.QueryField(inst, "coord")
 			scale := store.QueryField(inst, "scale")
+			mission := store.QueryField(inst, "mission")
 
 			url := store.QueryField(obj, "objURL")
 			program := store.QueryField(obj, "programName")
-			front := store.QueryField(obj, "directionFront")
-			up := store.QueryField(obj, "directionUp")
+			front := store.QueryField(obj, "modelFront")
+			up := store.QueryField(obj, "modelUp")
 
 			log.Printf("sendZoneDynamic: obj=%s objURL=%s", obj, url)
 
 			p.SendToPlayer <- &ClientMsg{
 				Code: CM_CODE_INSTANCE,
 				Tab: map[string]string{
-					"objURL":         url,
-					"programName":    program,
-					"directionFront": front,
-					"directionUp":    up,
-					"coord":          coord,
-					"scale":          scale,
+					"objURL":      url,
+					"programName": program,
+					"modelFront":  front,
+					"modelUp":     up,
+					"coord":       coord,
+					"scale":       scale,
+					"mission":     mission,
 				},
 			}
 

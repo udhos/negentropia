@@ -21,7 +21,7 @@ const (
 )
 
 var (
-	sessionKeyExpire int64 = 2 * 86400 // expire keys after 2 days
+	sessionKeyExpire time.Duration = 2 * 86400 * time.Second // expire keys after 2 days
 )
 
 type Session struct {
@@ -30,6 +30,10 @@ type Session struct {
 	ProfileId    string // "102990441336549717697" (Google Profile)
 	ProfileName  string // "Everton Marques"
 	ProfileEmail string
+}
+
+func init() {
+	log.Printf("session.init: sessionKeyExpire = %d seconds", sessionKeyExpire/time.Second)
 }
 
 func newCookie(name, value string, maxAge int) *http.Cookie {

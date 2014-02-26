@@ -5,7 +5,7 @@ import (
 	//"os"
 	"fmt"
 	"log"
-	//"time"
+	"time"
 	//"io/ioutil"
 	"net/http"
 	"net/smtp"
@@ -44,7 +44,7 @@ type SignupPage struct {
 }
 
 var (
-	unconfirmedExpire int64 = 2 * 86400 // expire unconfirmed email after 2 days
+	unconfirmedExpire time.Duration = 2 * 86400 * time.Second // expire unconfirmed email after 2 days
 )
 
 func sendSignup(w http.ResponseWriter, p SignupPage) error {

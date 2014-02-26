@@ -1,9 +1,10 @@
 package handler
 
 import (
-	//"log"
+	"log"
 	"path"
 	"strings"
+	"time"
 
 	"negentropia/webserv/session"
 )
@@ -16,7 +17,14 @@ var (
 	FacebookSecret   *string
 )
 
-func SetTemplateRoot(p string) {
+func Init(templateRoot string) {
+
+	log.Printf("handler.Init: unconfirmedExpire = %d seconds", unconfirmedExpire/time.Second)
+
+	setTemplateRoot(templateRoot)
+}
+
+func setTemplateRoot(p string) {
 	templateRootPath = p
 }
 

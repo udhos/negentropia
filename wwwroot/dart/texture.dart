@@ -1,7 +1,6 @@
 library texture;
 
 import 'dart:html';
-//import 'dart:async';
 import 'dart:web_gl';
 import 'dart:typed_data';
 

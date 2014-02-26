@@ -1,9 +1,5 @@
 part of shader;
 
-//import 'dart:web_gl';
-
-//import 'shader.dart';
-
 class AxisInstance extends Instance {
 
   static final Float32List red = new Float32List.fromList([1.0, 0.0, 0.0, 1.0]);

@@ -108,7 +108,8 @@ func main() {
 		log.Printf("template root path is required")
 		return
 	}
-	handler.SetTemplateRoot(templatePath)
+	//handler.SetTemplateRoot(templatePath)
+	handler.Init(templatePath)
 
 	cfg.RedirectPort = util.GetPort(listenAddr)
 
@@ -129,6 +130,8 @@ func main() {
 	}
 
 	store.Init(redisAddr)
+
+	//session.Init()
 
 	cfg.SetBasePath(basePath)
 

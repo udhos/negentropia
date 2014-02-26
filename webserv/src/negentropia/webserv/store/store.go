@@ -18,8 +18,9 @@ package store
 
 import (
 	"log"
+	"time"
 
-	"github.com/vmihailenco/redis"
+	"github.com/vmihailenco/redis/v2"
 )
 
 type KeyField struct {
@@ -40,14 +41,13 @@ type KeyFieldValue struct {
 
 type KeyExpire struct {
 	key    string
-	expire int64
+	expire time.Duration
 }
 
 var (
 	redisPassword  string = ""
-	redisDb        int64  = -1
 	redisClient    *redis.Client
-	redisExpire    int64              = 2 * 86400 // expire keys after 2 days
+	redisExpire    time.Duration      = 2 * 86400 * time.Second // expire keys after 2 days
 	queryFieldReq  chan KeyField      = make(chan KeyField)
 	queryFieldRep  chan string        = make(chan string)
 	setFieldReq    chan KeyFieldValue = make(chan KeyFieldValue)
@@ -102,7 +102,20 @@ func serve() {
 
 func Init(serverAddr string) {
 	log.Printf("store.Init: redis client for: %s", serverAddr)
-	redisClient = redis.NewTCPClient(serverAddr, redisPassword, redisDb)
+
+	log.Printf("store.Init: redisExpire = %d seconds", redisExpire/time.Second)
+
+	//redisClient = redis.NewTCPClient(serverAddr, redisPassword, redisDb)
+	redisClient := redis.NewTCPClient(&redis.Options{
+		Addr:     serverAddr,
+		Password: redisPassword,
+		DB:       0, // use default DB
+	})
+	defer redisClient.Close()
+
+	pong, err := redisClient.Ping().Result()
+	log.Printf("store.Init: PING redis server: reply=%s err=%s", pong, err)
+
 	go serve()
 }
 
@@ -115,7 +128,7 @@ func SetField(key, field, value string) {
 	setFieldReq <- KeyFieldValue{key, field, value} // send key,field,value
 }
 
-func Expire(key string, expire int64) {
+func Expire(key string, expire time.Duration) {
 	expReq <- KeyExpire{key, expire} // send key,expire
 }
 

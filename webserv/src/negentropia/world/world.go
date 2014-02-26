@@ -156,6 +156,8 @@ func main() {
 
 	store.Init(redisAddr)
 
+	//session.Init()
+
 	http.Handle("/", websocket.Handler(dispatch))
 
 	log.Printf("world boot complete")
