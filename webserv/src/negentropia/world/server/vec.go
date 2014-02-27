@@ -12,6 +12,12 @@ import (
 func parseVector3(result *vectormath.Vector3, text string) error {
 	var x, y, z float64
 	list := strings.Split(text, ",")
+	size := len(list)
+	if size != 3 {
+		e := fmt.Errorf("parseVector3: text=[%s] size=%d != 3", text, size)
+		log.Print(e)
+		return e
+	}
 	var err error
 	if x, err = strconv.ParseFloat(list[0], 32); err != nil {
 		e := fmt.Errorf("parseVector3: text=[%s] parse x=[%s] failure: %s", text, list[0], err)
