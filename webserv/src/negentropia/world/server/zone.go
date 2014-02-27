@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"time"
@@ -13,6 +14,7 @@ import (
 // Non-persitent instance data
 type Unit struct {
 	uid         string
+	coord       vectormath.Vector3
 	front       vectormath.Vector3
 	up          vectormath.Vector3
 	linearSpeed float32 // m/s
@@ -33,8 +35,27 @@ func newZone(zid string) *Zone {
 	return &Zone{zid: zid, unitTable: make(map[string]*Unit)}
 }
 
-func newUnit(uid string) *Unit {
-	return &Unit{uid: uid}
+func newUnit(uid, coord, front, up string) (*Unit, error) {
+
+	unit := &Unit{uid: uid}
+
+	if err := parseVector3(&unit.coord, coord); err != nil {
+		e := fmt.Errorf("newUnit: unit=%s coord=[%s] parse failure: %s", uid, coord, err)
+		log.Print(e)
+		return nil, e
+	}
+	if err := parseVector3(&unit.front, front); err != nil {
+		e := fmt.Errorf("newUnit: unit=%s front=[%s] parse failure: %s", uid, front, err)
+		log.Print(e)
+		return nil, e
+	}
+	if err := parseVector3(&unit.up, up); err != nil {
+		e := fmt.Errorf("newUnit: unit=%s up=[%s] parse failure: %s", uid, up, err)
+		log.Print(e)
+		return nil, e
+	}
+
+	return unit, nil
 }
 
 func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
@@ -88,12 +109,25 @@ func updateAllZones(elapsed time.Duration) {
 		for _, uid := range instances {
 			unit, uok := zone.unitTable[uid]
 			if !uok {
-				unit = newUnit(uid)
+
+				coord := store.QueryField(uid, "coord")
+
+				// Fetch from model
+				model := store.QueryField(uid, "obj")
+				modelFront := store.QueryField(model, "modelFront")
+				modelUp := store.QueryField(model, "modelUp")
+
+				var err error
+				unit, err = newUnit(uid, coord, modelFront, modelUp)
+				if err != nil {
+					log.Printf("new unit=%s failure: %s", uid, err)
+					continue
+				}
 				zone.unitTable[uid] = unit
 			}
 
 			if unit == nil {
-				log.Printf("updateAllZones: failure creating unit=%s", zid)
+				log.Printf("updateAllZones: failure creating unit=%s", uid)
 				continue
 			}
 
