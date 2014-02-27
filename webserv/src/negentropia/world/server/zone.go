@@ -2,6 +2,8 @@ package server
 
 import (
 	"log"
+	"math"
+	"time"
 
 	"github.com/spate/vectormath"
 
@@ -35,7 +37,21 @@ func newUnit(uid string) *Unit {
 	return &Unit{uid: uid}
 }
 
-func updateAllZones() {
+func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
+	log.Printf("updateUnit: zone=%s unit=%s mission=%s", zone.zid, unit.uid, mission)
+
+	switch mission {
+	case "": // no mission
+	case "rotateYaw":
+		unit.linearSpeed = 0.0
+		unit.yawSpeed = 10.0 * math.Pi / 180.0 // 10 degrees/s
+		unit.pitchSpeed = 0.0
+	default:
+		log.Printf("updateUnit: UNKNOWN MISSION zone=%s unit=%s mission=%s", zone.zid, unit.uid, mission)
+	}
+}
+
+func updateAllZones(elapsed time.Duration) {
 	//
 	// Scan zones
 	//
@@ -81,10 +97,9 @@ func updateAllZones() {
 				continue
 			}
 
-			coord := store.QueryField(uid, "coord")
 			mission := store.QueryField(uid, "mission")
 
-			log.Printf("updateAllZones: zone=%s unit=%s coord=%s mission=%s", zid, uid, coord, mission)
+			updateUnit(elapsed, zone, unit, mission)
 		}
 	}
 }

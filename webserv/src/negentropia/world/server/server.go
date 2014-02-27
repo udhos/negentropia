@@ -45,23 +45,29 @@ type PlayerMsg struct {
 }
 
 var (
-	playerTable                 = map[string]*Player{}
-	PlayerAddCh chan *Player    = make(chan *Player)
-	PlayerDelCh chan *Player    = make(chan *Player)
-	InputCh     chan *PlayerMsg = make(chan *PlayerMsg)
+	playerTable                  = map[string]*Player{}
+	PlayerAddCh  chan *Player    = make(chan *Player)
+	PlayerDelCh  chan *Player    = make(chan *Player)
+	InputCh      chan *PlayerMsg = make(chan *PlayerMsg)
+	previousTick time.Time
 )
 
-func tick(t time.Time) {
-	log.Printf("server: tick: %s", t)
-	updateAllZones()
+func tick(currentTick time.Time, tickInterval time.Duration) {
+	elapsed := currentTick.Sub(previousTick)
+	if elapsed < tickInterval/2 || elapsed > 2*tickInterval {
+		log.Printf("server: tick: ugh: elapsed=%d ms far from interval=%d ms", elapsed/time.Millisecond, tickInterval/time.Millisecond)
+	}
+	updateAllZones(elapsed)
+	previousTick = currentTick
 }
 
 func serve() {
 	log.Printf("world server.serve: goroutine started")
 
-	var tickPeriod time.Duration = 5000
-	log.Printf("world server.serve: ticker at %d ms", tickPeriod)
-	ticker := time.NewTicker(time.Millisecond * tickPeriod)
+	var tickPeriod time.Duration = 5000 * time.Millisecond
+	log.Printf("world server.serve: ticker at %d ms", tickPeriod/time.Millisecond)
+	previousTick = time.Now()
+	ticker := time.NewTicker(tickPeriod)
 
 	for {
 		select {
@@ -72,7 +78,7 @@ func serve() {
 		case m := <-InputCh:
 			input(m.Player, m.Msg)
 		case t := <-ticker.C:
-			tick(t)
+			tick(t, tickPeriod)
 		}
 	}
 }
