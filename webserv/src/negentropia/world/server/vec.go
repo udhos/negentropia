@@ -3,11 +3,16 @@ package server
 import (
 	"fmt"
 	"log"
+	"math"
 	"strconv"
 	"strings"
 
 	"github.com/spate/vectormath"
 )
+
+func vector3String(v vectormath.Vector3) string {
+	return fmt.Sprintf("%f,%f,%f", v.X, v.Y, v.Z)
+}
 
 func parseVector3(result *vectormath.Vector3, text string) error {
 	var x, y, z float64
@@ -37,4 +42,20 @@ func parseVector3(result *vectormath.Vector3, text string) error {
 	vectormath.V3MakeFromElems(result, float32(x), float32(y), float32(z))
 	//log.Printf("parseVector3: text=[%s] result: %s", text, result)
 	return nil
+}
+
+const MAX_CLOSE_TO_ZERO = 1e-6
+
+func closeToZero(f float64) bool {
+	return math.Abs(f) < MAX_CLOSE_TO_ZERO
+}
+
+func vector3Orthogonal(v1, v2 vectormath.Vector3) bool {
+	dot := float64(vectormath.V3Dot(&v1, &v2))
+	return closeToZero(dot)
+}
+
+func vector3Unit(v vectormath.Vector3) bool {
+	length := float64(v.Length())
+	return closeToZero(length - 1.0)
 }

@@ -37,6 +37,7 @@
 \redisbin\redis-cli hset m:0 obj o:airship
 \redisbin\redis-cli hset m:0 coord 0.0,0.0,0.0
 \redisbin\redis-cli hset m:0 scale 1.0
+\redisbin\redis-cli hset m:0 mission rotateYaw
 
 @rem create instance m:1
 \redisbin\redis-cli hset m:1 obj o:airship

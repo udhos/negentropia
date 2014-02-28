@@ -22,6 +22,32 @@ type Unit struct {
 	pitchSpeed  float32 // rad/s
 }
 
+func (unit *Unit) rightDirection() vectormath.Vector3 {
+
+	if !vector3Unit(unit.front) {
+		log.Printf("unit.rightDirection: NOT UNITARY: front=%s length=%f", vector3String(unit.front), unit.front.Length())
+	}
+
+	if !vector3Unit(unit.up) {
+		log.Printf("unit.rightDirection: NOT UNITARY: up=%s length=%f", vector3String(unit.up), unit.up.Length())
+	}
+
+	if !vector3Orthogonal(unit.front, unit.up) {
+		log.Printf("unit.rightDirection: NOT ORTHOGONAL: front=%s up=%s: dot=%f",
+			vector3String(unit.front), vector3String(unit.up), vectormath.V3Dot(&unit.front, &unit.up))
+	}
+
+	var right vectormath.Vector3
+	vectormath.V3Cross(&right, &unit.front, &unit.up)
+	vectormath.V3Normalize(&right, &right)
+
+	if !vector3Unit(right) {
+		log.Printf("unit.rightDirection: NOT UNITARY: right=%s length=%f", vector3String(right), right.Length())
+	}
+
+	return right
+}
+
 type Zone struct {
 	zid       string
 	unitTable map[string]*Unit
@@ -55,6 +81,9 @@ func newUnit(uid, coord, front, up string) (*Unit, error) {
 		return nil, e
 	}
 
+	vectormath.V3Normalize(&unit.front, &unit.front)
+	vectormath.V3Normalize(&unit.up, &unit.up)
+
 	return unit, nil
 }
 
@@ -67,6 +96,43 @@ func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
 		unit.linearSpeed = 0.0
 		unit.yawSpeed = 10.0 * math.Pi / 180.0 // 10 degrees/s
 		unit.pitchSpeed = 0.0
+
+		// angle to rotate
+		rad := unit.yawSpeed * float32(elapsed) / float32(time.Second)
+
+		// axis to rotate around
+		//var rightDirection vectormath.Vector3
+		//vectormath.V3Cross(&rightDirection, &unit.front, &unit.up)
+		rightDirection := unit.rightDirection()
+
+		// quaternion representing rotation
+		var quat vectormath.Quat
+		vectormath.QMakeRotationAxis(&quat, rad, &rightDirection)
+
+		// apply quaternion rotation to front direction
+		oldFront := unit.front
+		vectormath.QRotate(&unit.front, &quat, &oldFront)
+		vectormath.V3Normalize(&unit.front, &unit.front)
+
+		if !vector3Unit(unit.front) {
+			log.Printf("updateUnit: NOT UNITARY: front=%s length=%f", vector3String(unit.front), unit.front.Length())
+		}
+
+		if !vector3Orthogonal(unit.front, rightDirection) {
+			log.Printf("updateUnit: NOT ORTHOGONAL: front=%s right=%s: dot=%f",
+				vector3String(unit.front), vector3String(rightDirection), vectormath.V3Dot(&unit.front, &rightDirection))
+		}
+
+		// calculate new up direction
+		vectormath.V3Cross(&unit.up, &rightDirection, &unit.front)
+		vectormath.V3Normalize(&unit.up, &unit.up)
+
+		if !vector3Unit(unit.up) {
+			log.Printf("updateUnit: NOT UNITARY: up=%s length=%f", vector3String(unit.up), unit.up.Length())
+		}
+
+		log.Printf("rotateYaw: front=%s up=%s right=%s",
+			vector3String(unit.front), vector3String(unit.up), vector3String(rightDirection))
 	default:
 		log.Printf("updateUnit: UNKNOWN MISSION zone=%s unit=%s mission=%s", zone.zid, unit.uid, mission)
 	}

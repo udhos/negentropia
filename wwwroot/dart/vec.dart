@@ -91,7 +91,8 @@ Vector3 parseVector3(String s, {void echoFunc(String): _log_error, bool
 
 const double MAX_CLOSE_TO_ZERO = 1e-7;
 
-bool vector3Orthogonal(Vector3 v1, Vector3 v2) => v1.dot(v2).abs() <
-    MAX_CLOSE_TO_ZERO;
+bool closeToZero(double d) => d.abs() < MAX_CLOSE_TO_ZERO;
 
-bool vector3Unit(Vector3 v) => (v.length - 1.0).abs() < MAX_CLOSE_TO_ZERO;
+bool vector3Orthogonal(Vector3 v1, Vector3 v2) => closeToZero(v1.dot(v2));
+
+bool vector3Unit(Vector3 v) => closeToZero(v.length - 1.0);
