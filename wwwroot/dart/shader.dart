@@ -176,9 +176,22 @@ class ShaderProgram {
         return m.modelName == name;
       });
     } on StateError {
-      // not found
+      assert(mod == null); // not found
     }
     return mod;
+  }
+
+  Instance findInstance(String id) {
+    Instance i;
+    try {
+      modelList.firstWhere((m) {
+        i = m.findInstance(id);
+        return i != null;
+      });
+    } on StateError {
+      assert(i == null); // not found
+    }
+    return i;
   }
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
@@ -206,5 +219,4 @@ class ShaderProgram {
     modelList.forEach((m) => m.update(gameLoop));
   }
 }
-
 

@@ -51,7 +51,8 @@ PickerInstance mouseClickHit(Iterable<Instance> list, Uint8List color) {
 
 class PickerInstance extends Instance {
 
-  PickerInstance(Instance i): super(i.model, i.center, i.scale, i.pickColor);
+  PickerInstance(Instance i): super(i.id, i.model, i.center, i.scale,
+      i.pickColor);
 
   // the whole purpose of this class is to redefine the draw() method
   // in order to send the pickColor as a uniform to the fragment shader

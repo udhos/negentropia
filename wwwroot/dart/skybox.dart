@@ -126,8 +126,8 @@ class SkyboxInstance extends Instance {
   double _oldAngle = 0.0;
   double _angle = 0.0;
 
-  SkyboxInstance(Model model, Vector3 center, double scale, this.demoAnimate):
-      super(model, center, scale);
+  SkyboxInstance(String id, Model model, Vector3 center, double
+      scale, this.demoAnimate): super(id, model, center, scale);
 
   void update(GameLoopHtml gameLoop) {
 

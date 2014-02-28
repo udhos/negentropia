@@ -121,7 +121,7 @@ TexShaderProgram findTexShader(String programName) {
       return p.programName == programName;
     });
   } on StateError {
-    // not found
+    assert(prog == null); // not found
   }
   return prog;
 }
@@ -144,6 +144,21 @@ void messageUser(String m) {
     d.text = m;
     messagebox.children.add(d);
   });
+}
+
+Instance findInstance(String id) {
+  Instance i;
+
+  try {
+    programList.firstWhere((p) {
+      i = p.findInstance(id);
+      return i != null;
+    });
+  } on StateError {
+    assert(i == null); // not found
+  }
+
+  return i;
 }
 
 void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
@@ -243,6 +258,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
 
     case CM_CODE_INSTANCE:
 
+      String id = tab['id'];
       String objURL = tab['objURL'];
       String programName = tab['programName'];
       String front = tab['modelFront'];
@@ -251,22 +267,28 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
       String scale = tab['scale'];
       String mission = tab['mission'];
 
-      debug("dispatcher: instance: obj='$objURL'");
+      debug("dispatcher: instance: id=$id obj=$objURL");
+
+      if (id == null || id.isEmpty) {
+        err("instance: id=$id obj=$objURL: bad id");
+        return;
+      }
 
       Vector3 f = parseVector3(front);
       if (f == null) {
-        err("obj=$objURL: parsing failure: front=$front");
+        err("instance: id=$id obj=$objURL: parsing failure: front=$front");
         return;
       }
 
       Vector3 u = parseVector3(up);
       if (u == null) {
-        err("obj=$objURL: parsing failure: up=$up");
+        err("instance: id=$id obj=$objURL: parsing failure: up=$up");
         return;
       }
 
       if (!vector3Orthogonal(f, u)) {
-        err("obj=$objURL: front=$f up=$u vectors are not orthogonal");
+        err(
+            "instance: id=$id obj=$objURL: front=$f up=$u vectors are not orthogonal");
         return;
       }
 
@@ -276,7 +298,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
       */
       Vector3 c = parseVector3(coord);
       if (c == null) {
-        err("obj=$objURL: parsing failure: coord=$coord");
+        err("instance: id=$id obj=$objURL: parsing failure: coord=$coord");
         return;
       }
 
@@ -284,7 +306,8 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
 
       TexShaderProgram prog = findTexShader(programName);
       if (prog == null) {
-        print("dispatcher: instance: could not find programName=$programName");
+        err(
+            "instance: id=$id obj=$objURL: could not find programName=$programName");
         return;
       }
 
@@ -294,7 +317,12 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
         prog.addModel(model);
       }
 
-      TexInstance instance = new TexInstance(model, c, sc, generatePickColor());
+      TexInstance instance = model.findInstance(id);
+      if (instance != null) {
+        err("instance: id=$id obj=$objURL: already exists");
+        return;
+      }
+      instance = new TexInstance(id, model, c, sc, generatePickColor());
       model.addInstance(instance);
 
       fixme(
@@ -306,6 +334,31 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
           "dispatcher: update axis shader incrementally instead of fully rebuilding it for each instance"
           );
       addSolidShader(gl);
+
+      break;
+
+    case CM_CODE_INSTANCE_UPDATE:
+
+      String id = tab['id'];
+      String front = tab['front'];
+      String up = tab['up'];
+      String coord = tab['coord'];
+      String mission = tab['mission'];
+
+      debug(
+          "instance update: id=$id front=$front up=$up coord=$coord mission=$mission");
+
+      Instance i = findInstance(id);
+      if (i == null) {
+        err(
+            "instance update: NOT FOUND: id=$id front=$front up=$up coord=$coord mission=$mission"
+            );
+        return;
+      }
+
+      debug(
+          "instance update: FOUND: id=$id front=$front up=$up coord=$coord mission=$mission: $i"
+          );
 
       break;
 
@@ -416,8 +469,8 @@ void demoInitSquares(RenderingContext gl) {
   Model squareModel = new Model.fromJson(gl, "${asset.mesh}/square.json", false
       );
   squareProgram.addModel(squareModel);
-  Instance squareInstance = new Instance(squareModel, new Vector3(0.0, 0.0, 0.0
-      ), 1.0);
+  Instance squareInstance = new Instance('square', squareModel, new Vector3(0.0,
+      0.0, 0.0), 1.0);
   squareModel.addInstance(squareInstance);
 
   ShaderProgram squareProgram2 = new ShaderProgram(gl, "clip2");
@@ -430,8 +483,8 @@ void demoInitSquares(RenderingContext gl) {
   Model squareModel2 = new Model.fromJson(gl, "${asset.mesh}/square2.json",
       false);
   squareProgram2.addModel(squareModel2);
-  Instance squareInstance2 = new Instance(squareModel2, new Vector3(0.0, 0.0,
-      0.0), 1.0);
+  Instance squareInstance2 = new Instance('square2', squareModel2, new Vector3(
+      0.0, 0.0, 0.0), 1.0);
   squareModel2.addInstance(squareInstance2);
 
   ShaderProgram squareProgram3 = new ShaderProgram(gl, "clip3");
@@ -441,8 +494,8 @@ void demoInitSquares(RenderingContext gl) {
   Model squareModel3 = new Model.fromJson(gl, "${asset.mesh}/square3.json",
       false);
   squareProgram3.addModel(squareModel3);
-  Instance squareInstance3 = new Instance(squareModel3, new Vector3(0.0, 0.0,
-      0.0), 1.0);
+  Instance squareInstance3 = new Instance('square3', squareModel3, new Vector3(
+      0.0, 0.0, 0.0), 1.0);
   squareModel3.addInstance(squareInstance3);
 }
 
@@ -463,8 +516,8 @@ void addSkybox(RenderingContext gl, Map<String, String> s) {
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z,
       s['faceBack']);
   skybox.addModel(skyboxModel);
-  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new Vector3(
-      0.0, 0.0, 0.0), skyboxScale, false);
+  SkyboxInstance skyboxInstance = new SkyboxInstance('skybox', skyboxModel,
+      new Vector3(0.0, 0.0, 0.0), skyboxScale, false);
   skyboxModel.addInstance(skyboxInstance);
 }
 
@@ -487,8 +540,8 @@ void demoInitSkybox(RenderingContext gl) {
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z,
       '${asset.texture}/space_bk.jpg');
   skybox.addModel(skyboxModel);
-  SkyboxInstance skyboxInstance = new SkyboxInstance(skyboxModel, new Vector3(
-      0.0, 0.0, 0.0), 1.0, true);
+  SkyboxInstance skyboxInstance = new SkyboxInstance('skybox', skyboxModel,
+      new Vector3(0.0, 0.0, 0.0), 1.0, true);
   skyboxModel.addInstance(skyboxInstance);
 }
 
@@ -500,8 +553,8 @@ void demoInitAirship(RenderingContext gl) {
   Model airshipModel = new Model.fromOBJ(gl, "${asset.obj}/airship.obj",
       new Vector3.zero(), new Vector3.zero());
   prog.addModel(airshipModel);
-  Instance airshipInstance = new Instance(airshipModel, new Vector3(-8.0, 0.0,
-      0.0), 1.0, generatePickColor());
+  Instance airshipInstance = new Instance('airship', airshipModel, new Vector3(
+      -8.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel.addInstance(airshipInstance);
 }
 
@@ -516,31 +569,31 @@ void demoInitAirshipTex(RenderingContext gl) {
   TexModel airshipModel = new TexModel.fromOBJ(gl, objURL, new Vector3.zero(),
       new Vector3.zero(), textureTable, asset);
   prog.addModel(airshipModel);
-  TexInstance airshipInstance = new TexInstance(airshipModel, new Vector3(0.0,
-      0.0, 0.0), 1.0, generatePickColor());
+  TexInstance airshipInstance = new TexInstance('airship', airshipModel,
+      new Vector3(0.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel.addInstance(airshipInstance);
 
   TexModel airshipModel2 = new TexModel.fromOBJ(gl, objURL, new Vector3.zero(),
       new Vector3.zero(), textureTable, asset);
   prog.addModel(airshipModel2);
-  TexInstance airshipInstance2 = new TexInstance(airshipModel2, new Vector3(8.0,
-      0.0, 0.0), 1.0, generatePickColor());
+  TexInstance airshipInstance2 = new TexInstance('airship2', airshipModel2,
+      new Vector3(8.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel2.addInstance(airshipInstance2);
 
   String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";
   TexModel colonyShipModel = new TexModel.fromOBJ(gl, colonyShipURL,
       new Vector3.zero(), new Vector3.zero(), textureTable, asset);
   prog.addModel(colonyShipModel);
-  TexInstance colonyShipInstance = new TexInstance(colonyShipModel, new Vector3(
-      0.0, -5.0, -50.0), 1.0, generatePickColor());
+  TexInstance colonyShipInstance = new TexInstance('colonyShip',
+      colonyShipModel, new Vector3(0.0, -5.0, -50.0), 1.0, generatePickColor());
   colonyShipModel.addInstance(colonyShipInstance);
 
   String coneURL = "${asset.obj}/cone.obj";
   TexModel coneModel = new TexModel.fromOBJ(gl, coneURL, new Vector3.zero(),
       new Vector3.zero(), textureTable, asset);
   prog.addModel(coneModel);
-  TexInstance coneInstance = new TexInstance(coneModel, new Vector3(0.0, 2.0,
-      -10.0), 1.0, generatePickColor());
+  TexInstance coneInstance = new TexInstance('cone', coneModel, new Vector3(0.0,
+      2.0, -10.0), 1.0, generatePickColor());
   coneModel.addInstance(coneInstance);
 }
 

@@ -34,6 +34,7 @@ go install negentropia\webserv
 go install negentropia\world
 
 call %NEG_DART_SDK%\bin\dartfmt -w %NEG_DART_SRC%
+@echo on
 
 @rem build client
 set OLD_CD=%CD%

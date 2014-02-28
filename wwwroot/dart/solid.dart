@@ -6,7 +6,8 @@ class AxisInstance extends Instance {
   static final Float32List green = new Float32List.fromList([0.0, 1.0, 0.0, 1.0]
       );
 
-  AxisInstance(AxisModel am, Instance i): super(am, i.center, i.scale);
+  AxisInstance(String id, AxisModel am, Instance i): super(id, am, i.center,
+      i.scale);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
 
@@ -111,7 +112,7 @@ class SolidShader extends ShaderProgram {
           if (am == null) {
             am = new AxisModel.fromModel(gl, m);
           }
-          AxisInstance ai = new AxisInstance(am, ii);
+          AxisInstance ai = new AxisInstance(ii.id, am, ii);
           debug("SolidShader: created axis instance from instance=$ii");
           instanceList.add(ai);
         });

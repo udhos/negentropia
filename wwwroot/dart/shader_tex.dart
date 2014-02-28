@@ -189,8 +189,8 @@ class TexModel extends Model {
 
 class TexInstance extends Instance {
 
-  TexInstance(TexModel model, Vector3 center, double scale, [Float32List pick =
-      null]): super(model, center, scale, pick);
+  TexInstance(id, TexModel model, Vector3 center, double scale, [Float32List
+      pick = null]): super(id, model, center, scale, pick);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
 

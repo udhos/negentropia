@@ -18,7 +18,8 @@ const CM_CODE_ZONE = 6; // server->client: reset client zone info
 const CM_CODE_SKYBOX = 7; // server->client: set full skybox
 const CM_CODE_PROGRAM = 8; // server->client: set shader program
 const CM_CODE_INSTANCE = 9; // server->client: set instance
-const CM_CODE_MESSAGE = 10; // server->client: message for user
+const CM_CODE_INSTANCE_UPDATE = 10; // server->client: update instance
+const CM_CODE_MESSAGE = 11; // server->client: message for user
 
 WebSocket _ws;
 ListQueue<String> _wsQueue = new ListQueue<String>();

@@ -2,6 +2,7 @@ part of shader;
 
 class Instance {
 
+  String id;
   Model model;
   Vector3 center;
   double scale;
@@ -9,7 +10,8 @@ class Instance {
 
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
 
-  Instance(this.model, this.center, this.scale, [this.pickColor = null]);
+  Instance(this.id, this.model, this.center, this.scale, [this.pickColor =
+      null]);
 
   void update(GameLoopHtml gameLoop) {
   }
@@ -271,7 +273,17 @@ class Model {
   }
 
   void addInstance(Instance i) {
-    this.instanceList.add(i);
+    instanceList.add(i);
+  }
+
+  Instance findInstance(String id) {
+    Instance i;
+    try {
+      i = instanceList.firstWhere((j) => j.id == id);
+    } on StateError {
+      assert(i == null); // not found
+    }
+    return i;
   }
 
   void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
@@ -279,11 +291,11 @@ class Model {
       return;
     }
 
-    this.instanceList.forEach((i) => i.draw(gameLoop, program, cam));
+    instanceList.forEach((i) => i.draw(gameLoop, program, cam));
   }
 
   void update(GameLoopHtml gameLoop) {
-    this.instanceList.forEach((i) => i.update(gameLoop));
+    instanceList.forEach((i) => i.update(gameLoop));
   }
 
 }
