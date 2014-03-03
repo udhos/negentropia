@@ -4,14 +4,32 @@ class Instance {
 
   String id;
   Model model;
-  Vector3 center;
   double scale;
   Float32List pickColor;
 
+  Vector3 _center;
+  String _mission;
+
+  Vector3 get center => _center.clone();
+
+  set center(Vector3 c) => _center.setFrom(c);
+  set mission(String m) => _mission = m;
+
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
 
-  Instance(this.id, this.model, this.center, this.scale, [this.pickColor =
-      null]);
+  Matrix4 _rotation = new Matrix4.identity();
+
+  void setRotation(Vector3 front, up) {
+    Vector3 right = front.cross(up).normalize();
+
+    _rotation.setValues(front[0], up[0], right[0], 0.0, front[1], up[1],
+        right[1], 0.0, front[2], up[2], right[2], 0.0, 0.0, 0.0, 0.0, 1.0);
+  }
+
+  Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
+      null]) {
+    setRotation(this.model._front, this.model._up);
+  }
 
   void update(GameLoopHtml gameLoop) {
   }
@@ -42,7 +60,10 @@ class Instance {
     cam.copyViewMatrix(MV);
 
     // 5. obj translate
-    MV.translate(center[0], center[1], center[2]);
+    MV.translate(_center[0], _center[1], _center[2]);
+
+    // 2. obj rotate
+    MV.multiply(_rotation);
 
     // 1. obj scale
     MV.scale(rescale, rescale, rescale);
@@ -93,8 +114,8 @@ class Model {
   String _URL;
   String get modelName => _URL;
 
-  Vector3 _front;
-  Vector3 _up;
+  Vector3 _front = new Vector3(1.0, 0.0, 0.0);
+  Vector3 _up = new Vector3(0.0, 1.0, 0.0);
 
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();

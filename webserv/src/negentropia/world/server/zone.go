@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	//"strconv"
 	"time"
 
 	"github.com/spate/vectormath"
@@ -87,14 +88,52 @@ func newUnit(uid, coord, front, up string) (*Unit, error) {
 	return unit, nil
 }
 
+func sendUnitUpdate(unit *Unit, zid, mission string) {
+
+	// scan world's player table
+	for email, p := range playerTable {
+
+		// get player zone
+		loc := store.QueryField(email, "location")
+		if loc == "" {
+			log.Printf("sendUnitUpdate: empty player location: unit=%s zone=%s player=%s",
+				unit.uid, zid, email)
+			continue
+		}
+		// skip players belonging to other zones
+		if loc != zid {
+			continue
+		}
+
+		log.Printf("sendUnitUpdate: unit=%s zone=%s player=%s front=%s up=%s coord=%s mission=%s",
+			unit.uid, zid, email,
+			vector3String(unit.front), vector3String(unit.up), vector3String(unit.coord),
+			mission)
+
+		// send unit update to player
+		p.SendToPlayer <- &ClientMsg{
+			Code: CM_CODE_INSTANCE_UPDATE,
+			Tab: map[string]string{
+				"id":      unit.uid,
+				"front":   vector3String(unit.front),
+				"up":      vector3String(unit.up),
+				"coord":   vector3String(unit.coord),
+				"mission": mission,
+			},
+		}
+
+	}
+
+}
+
 func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
-	log.Printf("updateUnit: zone=%s unit=%s mission=%s", zone.zid, unit.uid, mission)
+	//log.Printf("updateUnit: zone=%s unit=%s mission=%s", zone.zid, unit.uid, mission)
 
 	switch mission {
 	case "": // no mission
 	case "rotateYaw":
 		unit.linearSpeed = 0.0
-		unit.yawSpeed = 10.0 * math.Pi / 180.0 // 10 degrees/s
+		unit.yawSpeed = 20.0 * math.Pi / 180.0 // 20 degrees/s
 		unit.pitchSpeed = 0.0
 
 		// angle to rotate
@@ -131,8 +170,12 @@ func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
 			log.Printf("updateUnit: NOT UNITARY: up=%s length=%f", vector3String(unit.up), unit.up.Length())
 		}
 
-		log.Printf("rotateYaw: front=%s up=%s right=%s",
-			vector3String(unit.front), vector3String(unit.up), vector3String(rightDirection))
+		/*
+			log.Printf("rotateYaw: front=%s up=%s right=%s",
+				vector3String(unit.front), vector3String(unit.up), vector3String(rightDirection))
+		*/
+
+		sendUnitUpdate(unit, zone.zid, mission)
 	default:
 		log.Printf("updateUnit: UNKNOWN MISSION zone=%s unit=%s mission=%s", zone.zid, unit.uid, mission)
 	}

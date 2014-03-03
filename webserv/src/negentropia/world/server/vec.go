@@ -11,7 +11,14 @@ import (
 )
 
 func vector3String(v vectormath.Vector3) string {
-	return fmt.Sprintf("%f,%f,%f", v.X, v.Y, v.Z)
+	//return fmt.Sprintf("%f,%f,%f", v.X, v.Y, v.Z)
+	var f byte = 'f'
+	prec := -1
+	bitSize := 32
+	return fmt.Sprintf("%s,%s,%s",
+		strconv.FormatFloat(float64(v.X), f, prec, bitSize),
+		strconv.FormatFloat(float64(v.Y), f, prec, bitSize),
+		strconv.FormatFloat(float64(v.Z), f, prec, bitSize))
 }
 
 func parseVector3(result *vectormath.Vector3, text string) error {

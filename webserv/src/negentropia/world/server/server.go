@@ -65,7 +65,7 @@ func tick(currentTick time.Time, tickInterval time.Duration) {
 func serve() {
 	log.Printf("world server.serve: goroutine started")
 
-	var tickPeriod time.Duration = 5000 * time.Millisecond
+	var tickPeriod time.Duration = 1000 * time.Millisecond
 	log.Printf("world server.serve: ticker at %d ms", tickPeriod/time.Millisecond)
 	previousTick = time.Now()
 	ticker := time.NewTicker(tickPeriod)
@@ -187,11 +187,12 @@ func sendZoneDynamic(p *Player, loc string) {
 			front := store.QueryField(obj, "modelFront")
 			up := store.QueryField(obj, "modelUp")
 
-			log.Printf("sendZoneDynamic: obj=%s objURL=%s", obj, url)
+			log.Printf("sendZoneDynamic: id=%s obj=%s objURL=%s", inst, obj, url)
 
 			p.SendToPlayer <- &ClientMsg{
 				Code: CM_CODE_INSTANCE,
 				Tab: map[string]string{
+					"id":          inst,
 					"objURL":      url,
 					"programName": program,
 					"modelFront":  front,

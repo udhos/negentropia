@@ -288,7 +288,8 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
 
       if (!vector3Orthogonal(f, u)) {
         err(
-            "instance: id=$id obj=$objURL: front=$f up=$u vectors are not orthogonal");
+            "instance: id=$id obj=$objURL: front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}"
+            );
         return;
       }
 
@@ -345,20 +346,51 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
       String coord = tab['coord'];
       String mission = tab['mission'];
 
+      /*
       debug(
           "instance update: id=$id front=$front up=$up coord=$coord mission=$mission");
+          */
 
       Instance i = findInstance(id);
       if (i == null) {
+        err("instance update: NOT FOUND: id=$id coord=$coord mission=$mission");
+        return;
+      }
+
+      /*
+      debug(
+          "instance update: FOUND: id=$id front=$front up=$up coord=$coord mission=$mission: $i"
+          );
+          */
+
+      Vector3 f = parseVector3(front);
+      if (f == null) {
+        err("instance update: id=$id parsing failure: front=$front");
+        return;
+      }
+
+      Vector3 u = parseVector3(up);
+      if (u == null) {
+        err("instance update: id=$id parsing failure: up=$up");
+        return;
+      }
+
+      if (!vector3Orthogonal(f, u)) {
         err(
-            "instance update: NOT FOUND: id=$id front=$front up=$up coord=$coord mission=$mission"
+            "instance update: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}"
             );
         return;
       }
 
-      debug(
-          "instance update: FOUND: id=$id front=$front up=$up coord=$coord mission=$mission: $i"
-          );
+      Vector3 c = parseVector3(coord);
+      if (c == null) {
+        err("instance update: id=$id parsing failure: coord=$coord");
+        return;
+      }
+
+      i.setRotation(f, u);
+      i.center = c;
+      i.mission = mission;
 
       break;
 
