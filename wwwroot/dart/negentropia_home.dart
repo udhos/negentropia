@@ -68,7 +68,7 @@ RenderingContext initGL(CanvasElement canvas) {
     return gl;
   }
 
-  print("WebGL: initialization failure");
+  err("WebGL: initialization failure");
 
   return null;
 }
@@ -167,7 +167,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
   switch (code) {
     case CM_CODE_INFO:
 
-      print("dispatcher: server sent info: $data");
+      log("dispatcher: server sent info: $data");
 
       if (data.startsWith("welcome")) {
         // test echo loop thru server
@@ -236,7 +236,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
       }
 
       HttpRequest.getString(skyboxURL).then(handleResponse).catchError((e) {
-        print("dispatcher: failure fetching skyboxURL=$skyboxURL: $e");
+        err("dispatcher: failure fetching skyboxURL=$skyboxURL: $e");
       });
 
       break;
@@ -246,8 +246,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
       String programName = tab['programName'];
       TexShaderProgram prog = findTexShader(programName);
       if (prog != null) {
-        print("dispatcher: failure redefining program programName=$programName"
-            );
+        err("dispatcher: failure redefining program programName=$programName");
       } else {
         prog = new TexShaderProgram(gl, programName);
         programList.add(prog);
@@ -399,7 +398,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
       break;
 
     default:
-      print("dispatcher: unknown code=$code");
+      err("dispatcher: unknown code=$code");
   }
 }
 
@@ -428,8 +427,8 @@ DivElement createMessagebox(String id, CanvasElement c) {
     mbox.style.left = "${left}px";
     mbox.style.top = "${top}px";
 
-    print(
-        "repositionBox: event=$e: left=${mbox.style.left} top=${mbox.style.top}");
+    log("repositionBox: event=$e: left=${mbox.style.left} top=${mbox.style.top}"
+        );
   }
 
   repositionBox(null);
@@ -695,7 +694,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   updateCulling(gl);
 
   if (fullRateFrames > 0) {
-    print("firing $fullRateFrames frames at full rate");
+    log("firing $fullRateFrames frames at full rate");
 
     var before = new DateTime.now();
 
@@ -709,7 +708,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
     var duration = after.difference(before);
     var rate = fullRateFrames / duration.inSeconds;
 
-    print("duration = $duration framerate = $rate fps");
+    log("duration = $duration framerate = $rate fps");
   }
 
   updateGameLoop(gameLoop, contextIsLost(), pageHidden());
@@ -988,11 +987,11 @@ void checkAntialias(RenderingContext gl) {
     err("antialias: UNKNOWN");
   } else {
     bool antialias = attr.antialias;
-    err("antialias: $antialias");
+    log("antialias: $antialias");
   }
 
   int size = gl.getParameter(RenderingContext.SAMPLES);
-  err("antialias MSSA size: $size");
+  log("antialias MSSA size: $size");
 }
 
 void main() {
@@ -1002,7 +1001,7 @@ void main() {
 
   RenderingContext gl = boot();
   if (gl == null) {
-    print("WebGL: not available");
+    err("WebGL: not available");
     return;
   }
 
