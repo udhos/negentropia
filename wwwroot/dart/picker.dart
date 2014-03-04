@@ -70,6 +70,17 @@ class PickerShader extends ShaderProgram {
 
   int get numberOfInstances => _instanceList.length;
 
+  // Override method to scan instanceList
+  Instance findInstance(String id) {
+    Instance i;
+    try {
+      i = _instanceList.firstWhere((j) => j.id == id);
+    } on StateError {
+      assert(i == null); // not found
+    }
+    return i;
+  }
+
   PickerInstance findInstanceByColor(int r, g, b) {
     return colorHit(_instanceList, r, g, b);
   }

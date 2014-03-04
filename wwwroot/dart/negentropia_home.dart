@@ -391,6 +391,34 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
       i.center = c;
       i.mission = mission;
 
+      // update debug axis
+      if (solidShader != null) {
+        Instance j = solidShader.findInstance(id);
+        if (j == null) {
+          err(
+              "instance update: NOT FOUND axis instance: id=$id coord=$coord mission=$mission"
+              );
+          return;
+        }
+
+        j.setRotation(f, u);
+        j.center = c;
+      }
+
+      // update picking
+      if (picker != null) {
+        Instance k = picker.findInstance(id);
+        if (k == null) {
+          err(
+              "instance update: NOT FOUND picker instance: id=$id coord=$coord mission=$mission"
+              );
+          return;
+        }
+
+        k.setRotation(f, u);
+        k.center = c;
+      }
+
       break;
 
     case CM_CODE_MESSAGE:

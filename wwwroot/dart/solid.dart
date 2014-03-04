@@ -95,6 +95,17 @@ class SolidShader extends ShaderProgram {
   UniformLocation u_Color;
   List<AxisInstance> instanceList = new List<AxisInstance>();
 
+  // Override method to scan instanceList
+  Instance findInstance(String id) {
+    Instance i;
+    try {
+      i = instanceList.firstWhere((j) => j.id == id);
+    } on StateError {
+      assert(i == null); // not found
+    }
+    return i;
+  }
+
   SolidShader(RenderingContext gl, List<ShaderProgram> programList): super(gl,
       "solidShader") {
 
@@ -113,7 +124,8 @@ class SolidShader extends ShaderProgram {
             am = new AxisModel.fromModel(gl, m);
           }
           AxisInstance ai = new AxisInstance(ii.id, am, ii);
-          debug("SolidShader: created axis instance from instance=$ii");
+          debug(
+              "SolidShader: created axis instance=${ai.id} from instance=${ii.id}");
           instanceList.add(ai);
         });
       });
