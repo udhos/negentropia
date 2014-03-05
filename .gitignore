@@ -24,6 +24,8 @@
 !sample/pixel_framebuffer
 !sample/pixel_framebuffer/web
 !sample/triangle
+!sample/skybox
+!sample/skybox/web
 !template
 !webserv
 !webserv/src

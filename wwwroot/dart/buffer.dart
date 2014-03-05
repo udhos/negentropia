@@ -57,7 +57,7 @@ class Instance {
     // 6. camera orbit rotate
     cam.rotate(MV);
     */
-    cam.copyViewMatrix(MV);
+    cam.viewMatrix(MV); // copy view matrix into MV
 
     // 5. obj translate
     MV.translate(_center[0], _center[1], _center[2]);

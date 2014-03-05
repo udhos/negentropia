@@ -169,9 +169,8 @@ class Camera {
   }
   */
 
-  void copyViewMatrix(Matrix4 vm) {
-    Matrix4 m = makeViewMatrix(_position, _focusPosition, _upDirection);
-    m.copyInto(vm);
+  void viewMatrix(Matrix4 vm) {
+    setViewMatrix(vm, _position, _focusPosition, _upDirection);
   }
 
   /*
