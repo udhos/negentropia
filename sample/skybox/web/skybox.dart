@@ -121,8 +121,7 @@ void addCubemapFace(RenderingContext gl, int face, String URL) {
   }
 
   void handleError(Event e) {
-    print(
-        "addCubemapFace: handleError: failure loading image from URL: $URL: $e");
+    log("addCubemapFace: handleError: failure loading image from URL: $URL: $e");
   }
 
   image
@@ -187,7 +186,7 @@ void main() {
   bool vparameter = gl.getShaderParameter(vertShader, RenderingContext.COMPILE_STATUS);
   if (!vparameter) {
     String infoLog = gl.getShaderInfoLog(vertShader);
-    print("compileShader: FAILURE: infoLog=$infoLog vertShader=$skyboxVertexShaderSource");
+    log("compileShader: FAILURE: infoLog=$infoLog vertShader=$skyboxVertexShaderSource");
     return;
   }
 
@@ -197,7 +196,7 @@ void main() {
   bool fparameter = gl.getShaderParameter(fragShader, RenderingContext.COMPILE_STATUS);
   if (!fparameter) {
     String infoLog = gl.getShaderInfoLog(fragShader);
-    print("compileShader: FAILURE: infoLog=$infoLog fragShader=$skyboxFragmentShaderSource");
+    log("compileShader: FAILURE: infoLog=$infoLog fragShader=$skyboxFragmentShaderSource");
     return;
   }
 
@@ -208,7 +207,7 @@ void main() {
   bool lparameter = gl.getProgramParameter(p, RenderingContext.LINK_STATUS);
   if (!lparameter) {
     String infoLog = gl.getProgramInfoLog(p);
-    print("linkProgram: FAILURE: $infoLog");
+    log("linkProgram: FAILURE: $infoLog");
     return;
   }
   
