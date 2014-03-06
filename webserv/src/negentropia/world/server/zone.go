@@ -21,6 +21,7 @@ type Unit struct {
 	linearSpeed float32 // m/s
 	yawSpeed    float32 // rad/s
 	pitchSpeed  float32 // rad/s
+	delete      bool
 }
 
 func (unit *Unit) rightDirection() vectormath.Vector3 {
@@ -52,6 +53,7 @@ func (unit *Unit) rightDirection() vectormath.Vector3 {
 type Zone struct {
 	zid       string
 	unitTable map[string]*Unit
+	delete    bool
 }
 
 var (
@@ -191,6 +193,11 @@ func updateAllZones(elapsed time.Duration) {
 		return
 	}
 
+	// mark all zones for deletion
+	for _, zone := range zoneTable {
+		zone.delete = true
+	}
+
 	for _, zid := range zones {
 		zone, zok := zoneTable[zid]
 		if !zok {
@@ -203,6 +210,8 @@ func updateAllZones(elapsed time.Duration) {
 			continue
 		}
 
+		zone.delete = false // do not delete this zone
+
 		instanceList := store.QueryField(zid, "instanceList")
 		if instanceList == "" {
 			log.Printf("updateAllZones: zone=%s: no instanceList", zid)
@@ -213,6 +222,11 @@ func updateAllZones(elapsed time.Duration) {
 		if len(instances) < 1 {
 			log.Printf("updateAllZones: zone=%s: empty instanceList", zid)
 			continue
+		}
+
+		// mark units for deletion
+		for _, unit := range zone.unitTable {
+			unit.delete = true
 		}
 
 		for _, uid := range instances {
@@ -240,9 +254,29 @@ func updateAllZones(elapsed time.Duration) {
 				continue
 			}
 
+			unit.delete = false // do not delete this unit
+
 			mission := store.QueryField(uid, "mission")
 
 			updateUnit(elapsed, zone, unit, mission)
 		}
+
+		// delete not found units
+		for uid, unit := range zone.unitTable {
+			if unit.delete {
+				log.Printf("deleting unit: zone=%s unit=%s", zid, uid)
+				delete(zone.unitTable, uid)
+			}
+		}
+
+	} // range zones
+
+	// delete not found zones
+	for zid, zone := range zoneTable {
+		if zone.delete {
+			log.Printf("deleting zone: %s", zid)
+			delete(zoneTable, zid)
+		}
 	}
+
 }
