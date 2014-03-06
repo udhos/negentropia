@@ -57,16 +57,16 @@ class Instance {
     // 6. camera orbit rotate
     cam.rotate(MV);
     */
-    cam.viewMatrix(MV); // copy view matrix into MV
+    cam.viewMatrix(MV); // MV = V
 
     // 5. obj translate
-    MV.translate(_center[0], _center[1], _center[2]);
+    MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
 
     // 2. obj rotate
-    MV.multiply(_rotation);
+    MV.multiply(_rotation); // MV = V*T*R
 
     // 1. obj scale
-    MV.scale(rescale, rescale, rescale);
+    MV.scale(rescale, rescale, rescale); // MV = V*T*R*S
 
     gl.uniformMatrix4fv(u_MV, false, MV.storage);
   }
