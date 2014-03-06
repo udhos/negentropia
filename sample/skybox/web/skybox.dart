@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'dart:math' as math;
 
 import 'package:vector_math/vector_math.dart';
+import 'package:vector_math/vector_math_geometry.dart';
+//import 'package:vector_math/vector_math_lists.dart';
 import 'package:stats/stats.dart';
 
 final String skyboxVertexShaderSource =
@@ -30,16 +32,6 @@ void main() {
   gl_FragColor = textureCube(u_Skybox, v_objCoord.xyz / v_objCoord.w);
 }
 """;
-
-final List<double> cubeVertCoord = [1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0,
-    1.0, -1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0,
-    -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0,
-    -1.0, -1.0, -1.0, -1.0, -1.0, 1.0];
-
-final List<int> cubeInd = [0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6, 8, 9, 10, 8, 10, 11,
-    12, 13, 14, 12, 14, 15, 16, 17, 18, 16, 18, 19, 20, 22, 21, 20, 23, 22];
 
 double canvasAspect = 1.0;
 Matrix4 pMatrix = new Matrix4.zero();
@@ -145,15 +137,42 @@ Buffer bufferVertexPosition;
 Buffer bufferVertexIndex;
 const int bufferVertexPositionItemSize = 3; // coord x,y,z
 //const int bufferVertexIndexItemSize = 2; // size of Uint16Array
+int cubeIndexLength;
 
 void createBuffers(RenderingContext gl) {
+
+  /*
+  final List<double> cubeVertCoord = [1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0,
+      1.0, -1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0,
+      -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0,
+      1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0,
+      -1.0, -1.0, -1.0, -1.0, -1.0, 1.0];
+
+  final List<int> cubeInd = [0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6, 8, 9, 10, 8, 10, 11,
+      12, 13, 14, 12, 14, 15, 16, 17, 18, 16, 18, 19, 20, 22, 21, 20, 23, 22];
+      */
+  
+  CubeGenerator gen = new CubeGenerator();
+  double edge = 1.0;
+  MeshGeometry geo = gen.createCube(edge, edge, edge, flags: new GeometryGeneratorFlags(texCoords:false, normals:false, tangents:false));
+
+  Float32List cubeVertCoord = geo.buffer;
+  Uint16List cubeInd = geo.indices;  
+  
+  cubeIndexLength = cubeInd.length;
+  
+  log("cube indices = ${cubeInd.length} $cubeInd");  
+  log("cube vertices = ${cubeVertCoord.length} $cubeVertCoord");
+  
   bufferVertexPosition = gl.createBuffer();
   gl.bindBuffer(RenderingContext.ARRAY_BUFFER, bufferVertexPosition);
-  gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(cubeVertCoord), RenderingContext.STATIC_DRAW);
+  gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER, cubeVertCoord, RenderingContext.STATIC_DRAW);
 
   bufferVertexIndex = gl.createBuffer();
   gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, bufferVertexIndex);
-  gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(cubeInd.reversed.toList()), RenderingContext.STATIC_DRAW);
+  //gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER, new Uint16List.fromList(cubeInd.reversed.toList()), RenderingContext.STATIC_DRAW);
+  gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER, cubeInd, RenderingContext.STATIC_DRAW);
 }
 
 Stats stats;
@@ -266,7 +285,7 @@ void render(num delta, RenderingContext gl, UniformLocation u_MV, int a_Position
   gl.vertexAttribPointer(a_Position, bufferVertexPositionItemSize, RenderingContext.FLOAT, false, 0, 0);
 
   gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, bufferVertexIndex);
-  gl.drawElements(RenderingContext.TRIANGLES, cubeInd.length, RenderingContext.UNSIGNED_SHORT, 0);
+  gl.drawElements(RenderingContext.TRIANGLES, cubeIndexLength, RenderingContext.UNSIGNED_SHORT, 0);
   
   gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, null);
   gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
