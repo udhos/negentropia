@@ -19,16 +19,30 @@ class Instance {
 
   Matrix4 _rotation = new Matrix4.identity();
 
+  Vector3 get front => new Vector3(_rotation.storage[0], _rotation.storage[1],
+      _rotation.storage[2]);
+  Vector3 get up => new Vector3(_rotation.storage[4], _rotation.storage[5],
+      _rotation.storage[6]);
+  Vector3 get right => new Vector3(_rotation.storage[8], _rotation.storage[9],
+      _rotation.storage[10]);
+
   void setRotation(Vector3 front, up) {
+    /*
     Vector3 right = front.cross(up).normalize();
 
     _rotation.setValues(front[0], up[0], right[0], 0.0, front[1], up[1],
         right[1], 0.0, front[2], up[2], right[2], 0.0, 0.0, 0.0, 0.0, 1.0);
+        */
+    setRotationMatrix(_rotation, front, up);
   }
 
   Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
       null]) {
-    setRotation(this.model._front, this.model._up);
+    setRotation(this.model._front.clone().normalize(), this.model._up.clone(
+        ).normalize());
+    debug(
+        "new instance: $this $id model=${model.modelName} center=$center front=$front up=$up right=$right"
+        );
   }
 
   void update(GameLoopHtml gameLoop) {
@@ -57,6 +71,13 @@ class Instance {
     // 6. camera orbit rotate
     cam.rotate(MV);
     */
+
+    /*
+      V = View (inverse of camera)
+      T = Translation
+      R = Rotation
+      S = Scaling
+     */
     cam.viewMatrix(MV); // MV = V
 
     // 5. obj translate
