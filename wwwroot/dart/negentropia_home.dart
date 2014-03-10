@@ -57,20 +57,14 @@ int mouseDragCurrY = null;
 int fullRateFrames = 0; // periodic rendering
 
 RenderingContext initGL(CanvasElement canvas) {
-  //print("WebGL: initializing");
 
-  RenderingContext gl;
-
-  //print("initGL: FIXME: ERASEME: preserveDrawingBuffer: true");
-  //gl = canvas.getContext3d(preserveDrawingBuffer: true);
-  gl = canvas.getContext3d();
-  if (gl != null) {
-    return gl;
+  RenderingContext gl = canvas.getContext3d(preserveDrawingBuffer: false);
+  if (gl == null) {
+    err("WebGL: initialization failure");
+    return null;
   }
 
-  err("WebGL: initialization failure");
-
-  return null;
+  return gl;
 }
 
 /*
