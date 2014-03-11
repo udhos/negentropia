@@ -34,8 +34,11 @@ var (
 func init() {
 	handler.GoogleId = configFlags.String("gId", "", "google client id")
 	handler.GoogleSecret = configFlags.String("gSecret", "", "google client secret")
+	handler.GoogleTokenCacheFile = configFlags.String("gToken", "", "google token cache file")
 	handler.FacebookId = configFlags.String("fId", "", "facebook client id")
 	handler.FacebookSecret = configFlags.String("fSecret", "", "facebook client secret")
+	handler.FacebookTokenCacheFile = configFlags.String("fToken", "", "facebook token cache file")
+
 	configFlags.Var(&configList, "config", "load config flags from this file")
 	configFlags.StringVar(&listenAddr, "listenOn", ":8080", "http listen address [addr]:port")
 	configFlags.StringVar(&cfg.RedirectHost, "redirectHost", "localhost", "host part of redirect in proto://host:port/path")
@@ -128,6 +131,9 @@ func main() {
 	if cfg.SmtpAuthPass == "" {
 		log.Printf("warning: smtp auth password is UNDEFINED: automatic email validation for local accounts won't be available")
 	}
+
+	log.Printf("google token cache file: %s", *handler.GoogleTokenCacheFile)
+	log.Printf("facebook token cache file: %s", *handler.FacebookTokenCacheFile)
 
 	store.Init(redisAddr)
 

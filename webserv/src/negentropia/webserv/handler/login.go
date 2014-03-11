@@ -43,10 +43,6 @@ type Page struct {
 	ShowNavLogout  bool
 }
 
-var (
-	facebookTokenCacheFile string = "/tmp/devel/negentropia/token_cache_facebook.json"
-)
-
 func sendLogin(w http.ResponseWriter, p Page) error {
 	p.HomePath = cfg.HomePath()
 	p.LoginPath = cfg.LoginPath()
@@ -102,7 +98,7 @@ func googleOauth2Config() *oauth.Config {
 
 	log.Printf("handler.googleOauth2Config: redirect=%s", redirect)
 
-	return &oauth.Config{
+	config := &oauth.Config{
 		ClientId:     *GoogleId,
 		ClientSecret: *GoogleSecret,
 		Scope:        "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
@@ -110,6 +106,12 @@ func googleOauth2Config() *oauth.Config {
 		TokenURL:     "https://accounts.google.com/o/oauth2/token",
 		RedirectURL:  redirect,
 	}
+
+	if *GoogleTokenCacheFile != "" {
+		config.TokenCache = oauth.CacheFile(*GoogleTokenCacheFile)
+	}
+
+	return config
 }
 
 func facebookOauth2Config() *oauth.Config {
@@ -118,15 +120,20 @@ func facebookOauth2Config() *oauth.Config {
 
 	log.Printf("handler.facebookOauth2Config: redirect=%s", redirect)
 
-	return &oauth.Config{
+	config := &oauth.Config{
 		ClientId:     *FacebookId,
 		ClientSecret: *FacebookSecret,
 		Scope:        "email",
 		AuthURL:      "https://www.facebook.com/dialog/oauth",
 		TokenURL:     "https://graph.facebook.com/oauth/access_token",
 		RedirectURL:  redirect,
-		TokenCache:   oauth.CacheFile(facebookTokenCacheFile),
 	}
+
+	if *FacebookTokenCacheFile != "" {
+		config.TokenCache = oauth.CacheFile(*FacebookTokenCacheFile)
+	}
+
+	return config
 }
 
 func googleOauth2(w http.ResponseWriter, r *http.Request) {

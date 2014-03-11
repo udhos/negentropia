@@ -52,25 +52,42 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 
 	// Set up a Transport with our config, define the cache
 	transp := &oauth.Transport{Config: config}
-	//tokenCache = oauth.CacheFile(*cachefile)
 
-	// Step two, exchange the authorization code for an access token.
-
-	tok, err := transp.Exchange(code)
-	if err != nil {
-		msg := fmt.Sprintf("handler.googleCallback url=%s Exchange: %s", path, err)
-		log.Printf(msg)
-
-		if err := sendLogin(w, Page{Account: account, ShowNavAccount: true, ShowNavHome: true, GoogleAuthMsg: msg}); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+	var tok *oauth.Token
+	if *GoogleTokenCacheFile != "" {
+		// Try to pull the token from the cache; if this fails, we need to get one.
+		var err error
+		tok, err = config.TokenCache.Token()
+		if err == nil {
+			log.Printf("handler.googleCallback: found token from cache")
 		}
-
-		return
 	}
 
-	// FIXME: Load cached token, if available.
+	if tok == nil {
+		// Exchange the authorization code for an access token.
+		// ("Here's the code you gave the user, now give me a token!")
+		log.Printf("handler.googleCallback: requesting token")
+		var err error
+		tok, err = transp.Exchange(code)
+		if err != nil {
+			msg := fmt.Sprintf("handler.googleCallback url=%s Exchange: %s", path, err)
+			log.Printf(msg)
 
-	transp.Token = &oauth.Token{AccessToken: tok.AccessToken}
+			if err := sendLogin(w, Page{Account: account, ShowNavAccount: true, ShowNavHome: true, GoogleAuthMsg: msg}); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+
+			return
+		}
+		if *GoogleTokenCacheFile != "" {
+			// (The Exchange method will automatically cache the token.)
+			log.Printf("Google token is cached in %v\n", config.TokenCache)
+		}
+	}
+
+	// Make the actual request using the cached token to authenticate.
+	// ("Here's the token, let me in!")
+	transp.Token = tok
 
 	// FIXME: Tack on the extra parameters, if specified.
 	apiRequest := "https://www.googleapis.com/oauth2/v1/userinfo"
@@ -162,17 +179,22 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 
 	// Set up a Transport with our config, define the cache
 	transp := &oauth.Transport{Config: config}
-	//tokenCache = oauth.CacheFile(*cachefile)
 
-	// Try to pull the token from the cache; if this fails, we need to get one.
-	tok, err := config.TokenCache.Token()
-	if err == nil {
-		log.Printf("handler.facebookCallback: found token from cache")
-	} else {
-		log.Printf("handler.facebookCallback: requesting token")
+	var tok *oauth.Token
+	if *FacebookTokenCacheFile != "" {
+		// Try to pull the token from the cache; if this fails, we need to get one.
+		var err error
+		tok, err = config.TokenCache.Token()
+		if err == nil {
+			log.Printf("handler.facebookCallback: found token from cache")
+		}
+	}
 
+	if tok == nil {
 		// Exchange the authorization code for an access token.
 		// ("Here's the code you gave the user, now give me a token!")
+		log.Printf("handler.facebookCallback: requesting token")
+		var err error
 		tok, err = transp.Exchange(code)
 		if err != nil {
 			msg := fmt.Sprintf("handler.facebookCallback url=%s Exchange: %s", path, err)
@@ -184,8 +206,10 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 
 			return
 		}
-		// (The Exchange method will automatically cache the token.)
-		log.Printf("Facebook token is cached in %v\n", config.TokenCache)
+		if *FacebookTokenCacheFile != "" {
+			// (The Exchange method will automatically cache the token.)
+			log.Printf("Facebook token is cached in %v\n", config.TokenCache)
+		}
 	}
 
 	// Make the actual request using the cached token to authenticate.
