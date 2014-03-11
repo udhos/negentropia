@@ -164,23 +164,33 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 	transp := &oauth.Transport{Config: config}
 	//tokenCache = oauth.CacheFile(*cachefile)
 
-	// Step two, exchange the authorization code for an access token.
+	// Try to pull the token from the cache; if this fails, we need to get one.
+	tok, err := config.TokenCache.Token()
+	if err == nil {
+		log.Printf("handler.facebookCallback: found token from cache")
+	} else {
+		log.Printf("handler.facebookCallback: requesting token")
 
-	tok, err := transp.Exchange(code)
-	if err != nil {
-		msg := fmt.Sprintf("handler.facebookCallback url=%s Exchange: %s", path, err)
-		log.Printf(msg)
+		// Exchange the authorization code for an access token.
+		// ("Here's the code you gave the user, now give me a token!")
+		tok, err = transp.Exchange(code)
+		if err != nil {
+			msg := fmt.Sprintf("handler.facebookCallback url=%s Exchange: %s", path, err)
+			log.Printf(msg)
 
-		if err := sendLogin(w, Page{Account: account, ShowNavAccount: true, ShowNavHome: true, FacebookAuthMsg: msg}); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			if err := sendLogin(w, Page{Account: account, ShowNavAccount: true, ShowNavHome: true, FacebookAuthMsg: msg}); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+
+			return
 		}
-
-		return
+		// (The Exchange method will automatically cache the token.)
+		log.Printf("Facebook token is cached in %v\n", config.TokenCache)
 	}
 
-	// FIXME: Load cached token, if available.
-
-	transp.Token = &oauth.Token{AccessToken: tok.AccessToken}
+	// Make the actual request using the cached token to authenticate.
+	// ("Here's the token, let me in!")
+	transp.Token = tok
 
 	// FIXME: Tack on the extra parameters, if specified.
 	//apiRequest := "https://graph.facebook.com/me?fields=name,email"
@@ -191,7 +201,7 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 		}
 	*/
 
-	// Send sequest
+	// Send request
 	resp, err := transp.Client().Get(apiRequest)
 	if err != nil {
 		msg := fmt.Sprintf("handler.facebookCallback url=%s Request: %s", path, err)

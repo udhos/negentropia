@@ -43,6 +43,10 @@ type Page struct {
 	ShowNavLogout  bool
 }
 
+var (
+	facebookTokenCacheFile string = "/tmp/devel/negentropia/token_cache_facebook.json"
+)
+
 func sendLogin(w http.ResponseWriter, p Page) error {
 	p.HomePath = cfg.HomePath()
 	p.LoginPath = cfg.LoginPath()
@@ -121,6 +125,7 @@ func facebookOauth2Config() *oauth.Config {
 		AuthURL:      "https://www.facebook.com/dialog/oauth",
 		TokenURL:     "https://graph.facebook.com/oauth/access_token",
 		RedirectURL:  redirect,
+		TokenCache:   oauth.CacheFile(facebookTokenCacheFile),
 	}
 }
 
