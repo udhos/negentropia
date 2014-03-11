@@ -7,7 +7,7 @@ import (
 	//"strconv"
 	"time"
 
-	"github.com/spate/vectormath"
+	"github.com/udhos/vectormath"
 
 	"negentropia/webserv/store"
 )

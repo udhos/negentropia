@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/spate/vectormath"
+	"github.com/udhos/vectormath"
 )
 
 func vector3String(v vectormath.Vector3) string {
