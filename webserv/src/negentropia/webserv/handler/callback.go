@@ -96,7 +96,7 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 		}
 	*/
 
-	// Send sequest
+	// Send request
 	resp, err := transp.Client().Get(apiRequest)
 	if err != nil {
 		msg := fmt.Sprintf("handler.googleCallback url=%s Request: %s", path, err)
