@@ -105,10 +105,7 @@ func googleOauth2Config() *oauth.Config {
 		AuthURL:      "https://accounts.google.com/o/oauth2/auth",
 		TokenURL:     "https://accounts.google.com/o/oauth2/token",
 		RedirectURL:  redirect,
-	}
-
-	if *GoogleTokenCacheFile != "" {
-		config.TokenCache = oauth.CacheFile(*GoogleTokenCacheFile)
+		//TokenCache: oauth.CacheFile(*GoogleTokenCacheFile),
 	}
 
 	return config
@@ -127,10 +124,7 @@ func facebookOauth2Config() *oauth.Config {
 		AuthURL:      "https://www.facebook.com/dialog/oauth",
 		TokenURL:     "https://graph.facebook.com/oauth/access_token",
 		RedirectURL:  redirect,
-	}
-
-	if *FacebookTokenCacheFile != "" {
-		config.TokenCache = oauth.CacheFile(*FacebookTokenCacheFile)
+		//TokenCache: oauth.CacheFile(*FacebookTokenCacheFile),
 	}
 
 	return config

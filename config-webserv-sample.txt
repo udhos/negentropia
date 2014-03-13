@@ -19,12 +19,10 @@
 # If you want to enable support for Google login
 #-gId=putGoogleClientIdHere
 #-gSecret=putGoogleClientSecretHere
--gToken=/tmp/devel/negentropia/token_cache_google.json
 
 # If you want to enable support for Facebook login
 #-fId=putFacebookAppIdHere
 #-fSecret=putFacebookAppSecretHere
--fToken=/tmp/devel/negentropia/token_cache_facebook.json
 	
 #
 # end-of-file

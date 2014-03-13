@@ -54,19 +54,22 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 	transp := &oauth.Transport{Config: config}
 
 	var tok *oauth.Token
-	if *GoogleTokenCacheFile != "" {
-		// Try to pull the token from the cache; if this fails, we need to get one.
-		var err error
-		tok, err = config.TokenCache.Token()
-		if err == nil {
-			log.Printf("handler.googleCallback: found token from cache")
+
+	/*
+		if *GoogleTokenCacheFile != "" {
+			// Try to pull the token from the cache; if this fails, we need to get one.
+			var err error
+			tok, err = config.TokenCache.Token()
+			if err == nil {
+				log.Printf("handler.googleCallback: found token from cache")
+			}
 		}
-	}
+	*/
 
 	if tok == nil {
 		// Exchange the authorization code for an access token.
 		// ("Here's the code you gave the user, now give me a token!")
-		log.Printf("handler.googleCallback: requesting token")
+		//log.Printf("handler.googleCallback: requesting token")
 		var err error
 		tok, err = transp.Exchange(code)
 		if err != nil {
@@ -78,10 +81,6 @@ func GoogleCallback(w http.ResponseWriter, r *http.Request, s *session.Session) 
 			}
 
 			return
-		}
-		if *GoogleTokenCacheFile != "" {
-			// (The Exchange method will automatically cache the token.)
-			log.Printf("Google token is cached in %v\n", config.TokenCache)
 		}
 	}
 
@@ -181,19 +180,22 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 	transp := &oauth.Transport{Config: config}
 
 	var tok *oauth.Token
-	if *FacebookTokenCacheFile != "" {
-		// Try to pull the token from the cache; if this fails, we need to get one.
-		var err error
-		tok, err = config.TokenCache.Token()
-		if err == nil {
-			log.Printf("handler.facebookCallback: found token from cache")
+
+	/*
+		if *FacebookTokenCacheFile != "" {
+			// Try to pull the token from the cache; if this fails, we need to get one.
+			var err error
+			tok, err = config.TokenCache.Token()
+			if err == nil {
+				log.Printf("handler.facebookCallback: found token from cache")
+			}
 		}
-	}
+	*/
 
 	if tok == nil {
 		// Exchange the authorization code for an access token.
 		// ("Here's the code you gave the user, now give me a token!")
-		log.Printf("handler.facebookCallback: requesting token")
+		//log.Printf("handler.facebookCallback: requesting token")
 		var err error
 		tok, err = transp.Exchange(code)
 		if err != nil {
@@ -205,10 +207,6 @@ func FacebookCallback(w http.ResponseWriter, r *http.Request, s *session.Session
 			}
 
 			return
-		}
-		if *FacebookTokenCacheFile != "" {
-			// (The Exchange method will automatically cache the token.)
-			log.Printf("Facebook token is cached in %v\n", config.TokenCache)
 		}
 	}
 

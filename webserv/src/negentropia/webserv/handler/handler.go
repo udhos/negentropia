@@ -10,13 +10,11 @@ import (
 )
 
 var (
-	templateRootPath       string
-	GoogleId               *string
-	GoogleSecret           *string
-	GoogleTokenCacheFile   *string
-	FacebookId             *string
-	FacebookSecret         *string
-	FacebookTokenCacheFile *string
+	templateRootPath string
+	GoogleId         *string
+	GoogleSecret     *string
+	FacebookId       *string
+	FacebookSecret   *string
 )
 
 func Init(templateRoot string) {
