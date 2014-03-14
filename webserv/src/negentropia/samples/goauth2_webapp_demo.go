@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"html/template"
 	//"io"
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
-	"encoding/json"
-	"io/ioutil"
-	
+
 	"github.com/HairyMezican/goauth2/oauth"
 )
 
@@ -99,27 +99,27 @@ const callbackTemplate = `
 `
 
 type Page struct {
-	Header    string
+	Header      string
 	HomePath    string
 	ShowNavHome bool
 	CallbackURL string
 	AuthMsg     string
 
-	ClientIdValue string
+	ClientIdValue     string
 	ClientSecretValue string
-	ScopeValue string
-	AuthURLValue string
-	TokenURLValue string
-	RedirectURLValue string
-	ApiRequestValue string	
-	
-	ClientIdMsg string
+	ScopeValue        string
+	AuthURLValue      string
+	TokenURLValue     string
+	RedirectURLValue  string
+	ApiRequestValue   string
+
+	ClientIdMsg     string
 	ClientSecretMsg string
-	ScopeMsg string
-	AuthURLMsg string
-	TokenURLMsg string
-	RedirectURLMsg string
-	ApiRequestMsg string		
+	ScopeMsg        string
+	AuthURLMsg      string
+	TokenURLMsg     string
+	RedirectURLMsg  string
+	ApiRequestMsg   string
 }
 
 func sendHome(w http.ResponseWriter, p Page) error {
@@ -135,7 +135,7 @@ func sendHome(w http.ResponseWriter, p Page) error {
 	p.Header = "Home"
 	p.ShowNavHome = false
 	p.CallbackURL = callbackURL()
-	
+
 	if strings.TrimSpace(p.RedirectURLValue) == "" {
 		p.RedirectURLValue = p.CallbackURL
 	}
@@ -157,15 +157,15 @@ func sendLogin(w http.ResponseWriter, p Page) error {
 		return err
 	}
 
-	p.Header = "Login"	
+	p.Header = "Login"
 	p.HomePath = "/"
 	p.ShowNavHome = true
-	p.CallbackURL = callbackURL()	
+	p.CallbackURL = callbackURL()
 
 	if strings.TrimSpace(p.RedirectURLValue) == "" {
 		p.RedirectURLValue = p.CallbackURL
 	}
-	
+
 	if err = t.Execute(w, p); err != nil {
 		return err
 	}
@@ -183,10 +183,10 @@ func sendCallback(w http.ResponseWriter, p Page) error {
 		return err
 	}
 
-	p.Header = "Callback"	
+	p.Header = "Callback"
 	p.HomePath = "/"
 	p.ShowNavHome = true
-	
+
 	if err = t.Execute(w, p); err != nil {
 		return err
 	}
@@ -210,33 +210,33 @@ func handlerHome(w http.ResponseWriter, r *http.Request) {
 }
 
 type StateMessage struct {
-	Config oauth.Config
+	Config     oauth.Config
 	ApiRequest string
 }
 
 func handlerLogin(w http.ResponseWriter, r *http.Request) {
 	msg := fmt.Sprintf("login: URL=%s", r.URL.Path)
 	log.Printf(msg)
-	
+
 	var (
-		authMsg string
-		clientIdMsg string
+		authMsg         string
+		clientIdMsg     string
 		clientSecretMsg string
-		scopeMsg string
-		authURLMsg string
-		tokenURLMsg string
-		redirectURLMsg string
-		apiRequestMsg string
+		scopeMsg        string
+		authURLMsg      string
+		tokenURLMsg     string
+		redirectURLMsg  string
+		apiRequestMsg   string
 	)
 
 	clientId := strings.TrimSpace(r.FormValue("ClientId"))
 	clientSecret := strings.TrimSpace(r.FormValue("ClientSecret"))
 	scope := strings.TrimSpace(r.FormValue("Scope"))
-	authURL := strings.TrimSpace(r.FormValue("AuthURL")	)
-	tokenURL := strings.TrimSpace(r.FormValue("TokenURL"))	
+	authURL := strings.TrimSpace(r.FormValue("AuthURL"))
+	tokenURL := strings.TrimSpace(r.FormValue("TokenURL"))
 	redirectURL := strings.TrimSpace(r.FormValue("RedirectURL"))
 	apiRequest := strings.TrimSpace(r.FormValue("ApiRequest"))
-	
+
 	if clientId == "" {
 		authMsg = "missing required field"
 		clientIdMsg = "missing ClientId"
@@ -258,8 +258,7 @@ func handlerLogin(w http.ResponseWriter, r *http.Request) {
 		tokenURLMsg = "missing TokenURL"
 	}
 	if redirectURL == "" {
-		authMsg = "missing required field"
-		redirectURLMsg = "missing RedirectURL"
+		redirectURL = callbackURL()
 	}
 	if apiRequest == "" {
 		authMsg = "missing required field"
@@ -267,28 +266,29 @@ func handlerLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if authMsg != "" {
-		if err := sendLogin(w, 
+		if err := sendLogin(w,
 			Page{AuthMsg: authMsg,
-			
-				ClientIdValue: clientId,
+
+				ClientIdValue:     clientId,
 				ClientSecretValue: clientSecret,
-				ScopeValue: scope,
-				AuthURLValue: authURL,
-				TokenURLValue: tokenURL,
-				RedirectURLValue: redirectURL,
-				ApiRequestValue: apiRequest,
-				
-				ClientIdMsg: clientIdMsg,
+				ScopeValue:        scope,
+				AuthURLValue:      authURL,
+				TokenURLValue:     tokenURL,
+				RedirectURLValue:  redirectURL,
+				ApiRequestValue:   apiRequest,
+
+				ClientIdMsg:     clientIdMsg,
 				ClientSecretMsg: clientSecretMsg,
-				ScopeMsg: scopeMsg,
-				AuthURLMsg: authURLMsg,
-				TokenURLMsg: tokenURLMsg,
-				ApiRequestMsg: apiRequestMsg}); err != nil {
+				ScopeMsg:        scopeMsg,
+				AuthURLMsg:      authURLMsg,
+				TokenURLMsg:     tokenURLMsg,
+				RedirectURLMsg:  redirectURLMsg,
+				ApiRequestMsg:   apiRequestMsg}); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 		return
 	}
-	
+
 	stateMessage := StateMessage{
 		Config: oauth.Config{
 			ClientId:     clientId,
@@ -301,7 +301,7 @@ func handlerLogin(w http.ResponseWriter, r *http.Request) {
 		},
 		ApiRequest: apiRequest,
 	}
-	
+
 	// encode config in state (will be sent back to callback handler)
 	state, err := json.Marshal(stateMessage)
 	if err != nil {
@@ -323,20 +323,20 @@ type Profile struct {
 }
 
 func handlerCallback(w http.ResponseWriter, r *http.Request) {
-	
+
 	code := r.FormValue("code")
 	state := r.FormValue("state")
 
 	msg := fmt.Sprintf("callback: URL=%s code=%s state=%s", r.URL.Path, code, state)
 	log.Printf(msg)
-	
+
 	// Load config from "state" parameter
 	var stateMessage StateMessage
 	if err := json.Unmarshal([]byte(state), &stateMessage); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	// Set up a Transport with our config, define the cache
 	transp := &oauth.Transport{Config: &stateMessage.Config}
 
@@ -348,7 +348,7 @@ func handlerCallback(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	// Make the actual request using the cached token to authenticate.
 	// ("Here's the token, let me in!")
 	transp.Token = tok
@@ -356,10 +356,10 @@ func handlerCallback(w http.ResponseWriter, r *http.Request) {
 	// FIXME: Tack on the extra parameters, if specified.
 	//apiRequest := "https://www.googleapis.com/oauth2/v1/userinfo"
 	apiRequest := stateMessage.ApiRequest
-	
+
 	// Send request
 	var resp *http.Response
-	if resp, err = transp.Client().Get(apiRequest);	err != nil {
+	if resp, err = transp.Client().Get(apiRequest); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -370,7 +370,7 @@ func handlerCallback(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	// Parse JSON
 	var profile Profile
 	if err = json.Unmarshal(body, &profile); err != nil {
@@ -381,7 +381,7 @@ func handlerCallback(w http.ResponseWriter, r *http.Request) {
 	msg = fmt.Sprintf("callback: URL=%s code=%s state=%s name=%s id=%s email=%s",
 		r.URL.Path, code, state, profile.Name, profile.Id, profile.Email)
 	log.Printf(msg)
-		
+
 	if err = sendCallback(w, Page{AuthMsg: msg}); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -394,7 +394,7 @@ func homeURL() string {
 	return "http://" + addr
 }
 
-func callbackURL() string{
+func callbackURL() string {
 	return "http://" + addr + callbackPath
 }
 
