@@ -386,7 +386,8 @@ func handlerCallback(w http.ResponseWriter, r *http.Request) {
 	// Load config from "state" parameter
 	var stateMessage StateMessage
 	if err := json.Unmarshal([]byte(state), &stateMessage); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		e := fmt.Sprintf("callback: json.Unmarshal(state): %s", err.Error())
+		http.Error(w, e, http.StatusInternalServerError)
 		return
 	}
 
@@ -398,7 +399,8 @@ func handlerCallback(w http.ResponseWriter, r *http.Request) {
 	var tok *oauth.Token
 	var err error
 	if tok, err = transp.Exchange(code); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		e := fmt.Sprintf("callback: transp.Exchange(code): %s", err.Error())
+		http.Error(w, e, http.StatusInternalServerError)
 		return
 	}
 
@@ -413,21 +415,24 @@ func handlerCallback(w http.ResponseWriter, r *http.Request) {
 	// Send request
 	var resp *http.Response
 	if resp, err = transp.Client().Get(apiRequest); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		e := fmt.Sprintf("callback: transp.Client().Get(apiRequest): %s", err.Error())
+		http.Error(w, e, http.StatusInternalServerError)
 		return
 	}
 
 	// Read response
 	var body []byte
 	if body, err = ioutil.ReadAll(resp.Body); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		e := fmt.Sprintf("callback: ioutil.ReadAll(resp.Body): %s", err.Error())
+		http.Error(w, e, http.StatusInternalServerError)
 		return
 	}
 
 	// Parse JSON
 	var profile Profile
 	if err = json.Unmarshal(body, &profile); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		e := fmt.Sprintf("callback: json.Unmarshal(body): %s", err.Error())
+		http.Error(w, e, http.StatusInternalServerError)
 		return
 	}
 
