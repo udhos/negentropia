@@ -57,7 +57,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/HairyMezican/goauth2/oauth"
+	//"code.google.com/p/goauth2/oauth"       // google=ok facebook=fail
+	"github.com/HairyMezican/goauth2/oauth" // google=ok facebook=ok
 )
 
 const baseTemplate = `
