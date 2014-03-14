@@ -19,7 +19,7 @@ go_get () {
 #
 #go_get github.com/vmihailenco/redis
 go_get github.com/vmihailenco/redis/v2
-go_get github.com/HairyMezican/goauth2/oauth
+#go_get github.com/HairyMezican/goauth2/oauth
 #go_get github.com/spate/vectormath
 go_get github.com/udhos/vectormath
 
@@ -27,4 +27,4 @@ go_get github.com/udhos/vectormath
 # fetch from google code (could be under cmd prompt)
 #
 go_get code.google.com/p/go.net/websocket
-#go_get code.google.com/p/goauth2/oauth ;# facebook broken
+go_get code.google.com/p/goauth2/oauth

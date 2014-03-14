@@ -12,10 +12,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	//"code.google.com/p/goauth2/oauth" // facebook broken
+	"code.google.com/p/goauth2/oauth"
 	//"github.com/robfig/goauth2/oauth" // google broken
 	//"code.google.com/r/jasonmcvetta-goauth2" // go get broken
-	"github.com/HairyMezican/goauth2/oauth"
+	//"github.com/HairyMezican/goauth2/oauth"
 
 	"negentropia/webserv/cfg"
 	"negentropia/webserv/session"

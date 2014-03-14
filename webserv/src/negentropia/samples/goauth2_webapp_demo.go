@@ -40,9 +40,14 @@
 	   For Facebook: https://developers.facebook.com/apps
 	6. Run the demo -- go run goauth2_webapp_demo.go
 	7. Point the browser to: http://localhost:8080
-	8. In the browser, click the "Preload Facebook Data" button
-	9. In the browser, manually enter both ClientId and ClientSecret
-	10. In the browser, click the "Run Oauth2" button
+	    FOR GOOGLE:
+	7.1 In the browser, click the "Preload Google Data" button
+	7.2 In the browser, manually enter both Google ClientId and Google ClientSecret
+	7.3 In the browser, click the "Run Oauth2" button
+	    FOR FACEBOOK:
+	7.1 In the browser, click the "Preload Facebook Data" button
+	7.2 In the browser, manually enter both Facebook ClientId and Facebook ClientSecret
+	7.3 In the browser, click the "Run Oauth2" button
 */
 
 package main
@@ -57,8 +62,8 @@ import (
 	"net/http"
 	"strings"
 
-	//"code.google.com/p/goauth2/oauth"       // google=ok facebook=fail
-	"github.com/HairyMezican/goauth2/oauth" // google=ok facebook=ok
+	//"github.com/HairyMezican/goauth2/oauth"
+	"code.google.com/p/goauth2/oauth"
 )
 
 const baseTemplate = `
