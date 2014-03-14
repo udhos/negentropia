@@ -1,3 +1,50 @@
+/*
+	goauth2_webapp_demo.go
+
+	Copyright (c) 2014 Everton da Silva Marques
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are
+	met:
+
+	   * Redistributions of source code must retain the above copyright
+	notice, this list of conditions and the following disclaimer.
+	   * Redistributions in binary form must reproduce the above
+	copyright notice, this list of conditions and the following disclaimer
+	in the documentation and/or other materials provided with the
+	distribution.
+	   * Neither the name of its authors nor the names of any of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+	THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	HOW TO RUN:
+
+	1. Install GoLang -- http://golang.org/doc/install
+	2. Install Mercurial -- http://mercurial.selenic.com
+	3. Set the GOPATH environment variable -- http://golang.org/doc/code.html#GOPATH
+	4. Install goauth2 -- go get code.google.com/p/goauth2/oauth
+	5. Register the callback URL http://localhost:8080/callback in the oauth2 provider's authorized list
+	   For Google: https://console.developers.google.com
+	   For Facebook: https://developers.facebook.com/apps
+	6. Run the demo -- go run goauth2_webapp_demo.go
+	7. Point the browser to: http://localhost:8080
+	8. In the browser, click the "Preload Facebook Data" button
+	9. In the browser, manually enter both ClientId and ClientSecret
+	10. In the browser, click the "Run Oauth2" button
+*/
+
 package main
 
 import (
