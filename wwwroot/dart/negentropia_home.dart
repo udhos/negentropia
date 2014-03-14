@@ -707,9 +707,17 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   // define viewport size
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
   // viewport for default on-screen canvas
-  gl.viewport(0, 0, canvas.width, canvas.height);
+  //gl.viewport(0, 0, canvas.width, canvas.height);
+  debug(
+      "viewport: canvas=${canvas.width}x${canvas.height} drawingBuffer=${gl.drawingBufferWidth}x${gl.drawingBufferHeight}"
+      );
+  gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
-  canvasAspect = canvas.width.toDouble() / canvas.height.toDouble();
+  //canvasAspect = canvas.width.toDouble() / canvas.height.toDouble();
+  debug(
+      "aspect: canvas size=${canvas.width}x${canvas.height} clientSize=${canvas.clientWidth}x${canvas.clientHeight}"
+      );
+  canvasAspect = canvas.clientWidth.toDouble() / canvas.clientHeight.toDouble();
   // save aspect for render loop mat4.perspective
   debug("canvas aspect ratio: $canvasAspect");
 
