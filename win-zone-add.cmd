@@ -19,7 +19,7 @@
 @rem add instance list to zone
 \redisbin\redis-cli hset z:0 instanceList l:0
 \redisbin\redis-cli del l:0
-\redisbin\redis-cli sadd l:0 m:0 m:1 m:2
+\redisbin\redis-cli sadd l:0 m:0 m:1 m:2 m:3 m:4
 
 @rem add object/model o:airship
 \redisbin\redis-cli hset o:airship objURL /obj/airship.obj
@@ -33,21 +33,40 @@
 \redisbin\redis-cli hset o:old_house modelFront 40.0,0.0,0.0
 \redisbin\redis-cli hset o:old_house modelUp 0.0,40.0,0.0
 
-@rem create instance m:0
+@rem create instance
 \redisbin\redis-cli hset m:0 obj o:airship
 \redisbin\redis-cli hset m:0 coord 0.0,0.0,0.0
 \redisbin\redis-cli hset m:0 scale 1.0
 \redisbin\redis-cli hset m:0 mission rotateYaw
+\redisbin\redis-cli hset m:0 team alpha0
+\redisbin\redis-cli hset m:0 owner udhos0@gmail.com
 
-@rem create instance m:1
+@rem create instance
 \redisbin\redis-cli hset m:1 obj o:airship
-\redisbin\redis-cli hset m:1 coord 0.0,7.0,0.0
+\redisbin\redis-cli hset m:1 coord 0.0,7.0,5.0
 \redisbin\redis-cli hset m:1 scale .5
+\redisbin\redis-cli hset m:1 team alpha1
+\redisbin\redis-cli hset m:1 mission hunt
+\redisbin\redis-cli hset m:1 owner everton.marques@gmail.com
 
-@rem create instance m:2
-\redisbin\redis-cli hset m:2 obj o:old_house
-\redisbin\redis-cli hset m:2 coord -50.0,0.0,0.0
-\redisbin\redis-cli hset m:2 scale 1.0
+@rem create instance
+\redisbin\redis-cli hset m:2 obj o:airship
+\redisbin\redis-cli hset m:2 coord 0.0,7.0,0.0
+\redisbin\redis-cli hset m:2 scale .5
+\redisbin\redis-cli hset m:2 team alpha1
+\redisbin\redis-cli hset m:2 mission hunt
+\redisbin\redis-cli hset m:2 owner everton.marques@gmail.com
+
+@rem create instance
+\redisbin\redis-cli hset m:3 obj o:airship
+\redisbin\redis-cli hset m:3 coord 0.0,7.0,-5.0
+\redisbin\redis-cli hset m:3 scale .5
+\redisbin\redis-cli hset m:3 team alpha1
+
+@rem create instance
+\redisbin\redis-cli hset m:4 obj o:old_house
+\redisbin\redis-cli hset m:4 coord -50.0,0.0,0.0
+\redisbin\redis-cli hset m:4 scale 1.0
 
 @rem add zone ------------------------------------------------------------
 
@@ -61,6 +80,6 @@
 @rem add instance list to zone
 \redisbin\redis-cli hset z:1 instanceList l:1
 \redisbin\redis-cli del l:1
-\redisbin\redis-cli sadd l:1 m:2
+\redisbin\redis-cli sadd l:1 m:4
 
 @rem eof
