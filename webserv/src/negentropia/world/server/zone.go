@@ -187,7 +187,7 @@ func updateAllZones(elapsed time.Duration) {
 	//
 	// Scan zones
 	//
-	zones := store.QueryKeys("z:*")
+	zones := store.QueryKeys("z:*") // FIXME: replace redis KEYS with redis SCAN
 	if len(zones) < 1 {
 		log.Printf("updateAllZones: no zone found")
 		return
