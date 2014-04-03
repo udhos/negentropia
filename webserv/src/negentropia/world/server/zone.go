@@ -21,6 +21,7 @@ type Unit struct {
 	linearSpeed float32 // m/s
 	yawSpeed    float32 // rad/s
 	pitchSpeed  float32 // rad/s
+	rollSpeed   float32 // rad/s
 	delete      bool
 }
 
@@ -132,6 +133,7 @@ func rotateYaw(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
 	unit.linearSpeed = 0.0
 	unit.yawSpeed = 20.0 * math.Pi / 180.0 // 20 degrees/s
 	unit.pitchSpeed = 0.0
+	unit.rollSpeed = 0.0
 
 	// angle to rotate
 	rad := unit.yawSpeed * float32(elapsed) / float32(time.Second)
@@ -177,6 +179,11 @@ func rotateYaw(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
 
 func hunt(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
 	// FIXME WRITEME
+	//
+	// future bounding sphere intersection => future collision likely
+	// if future collision is likely, maneuver to avoid it, then finish
+	// fire if there is enemy's bounding sphere available in attack cone
+	// maneuver to put attack cone around nearest enemy
 }
 
 func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
