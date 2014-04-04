@@ -12,7 +12,6 @@ import (
 	"negentropia/webserv/store"
 )
 
-// Non-persitent instance data
 type Unit struct {
 	uid         string
 	coord       vectormath.Vector3
@@ -22,6 +21,7 @@ type Unit struct {
 	yawSpeed    float32 // rad/s
 	pitchSpeed  float32 // rad/s
 	rollSpeed   float32 // rad/s
+	mission     string
 	delete      bool
 }
 
@@ -65,9 +65,9 @@ func newZone(zid string) *Zone {
 	return &Zone{zid: zid, unitTable: make(map[string]*Unit)}
 }
 
-func newUnit(uid, coord, front, up string) (*Unit, error) {
+func newUnit(uid, coord, front, up, mission string) (*Unit, error) {
 
-	unit := &Unit{uid: uid}
+	unit := &Unit{uid: uid, mission: mission}
 
 	if err := parseVector3(&unit.coord, coord); err != nil {
 		e := fmt.Errorf("newUnit: unit=%s coord=[%s] parse failure: %s", uid, coord, err)
@@ -91,7 +91,7 @@ func newUnit(uid, coord, front, up string) (*Unit, error) {
 	return unit, nil
 }
 
-func sendUnitUpdate(unit *Unit, zid, mission string) {
+func sendUnitUpdate(unit *Unit, zid string) {
 
 	// scan world's player table
 	for email, p := range playerTable {
@@ -111,7 +111,7 @@ func sendUnitUpdate(unit *Unit, zid, mission string) {
 		log.Printf("sendUnitUpdate: unit=%s zone=%s player=%s front=%s up=%s coord=%s mission=%s",
 			unit.uid, zid, email,
 			vector3String(unit.front), vector3String(unit.up), vector3String(unit.coord),
-			mission)
+			unit.mission)
 
 		// send unit update to player
 		p.SendToPlayer <- &ClientMsg{
@@ -121,7 +121,7 @@ func sendUnitUpdate(unit *Unit, zid, mission string) {
 				"front":   vector3String(unit.front),
 				"up":      vector3String(unit.up),
 				"coord":   vector3String(unit.coord),
-				"mission": mission,
+				"mission": unit.mission,
 			},
 		}
 
@@ -129,7 +129,7 @@ func sendUnitUpdate(unit *Unit, zid, mission string) {
 
 }
 
-func rotateYaw(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
+func rotateYaw(elapsed time.Duration, zone *Zone, unit *Unit) {
 	unit.linearSpeed = 0.0
 	unit.yawSpeed = 20.0 * math.Pi / 180.0 // 20 degrees/s
 	unit.pitchSpeed = 0.0
@@ -174,29 +174,33 @@ func rotateYaw(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
 			vector3String(unit.front), vector3String(unit.up), vector3String(rightDirection))
 	*/
 
-	sendUnitUpdate(unit, zone.zid, mission)
+	sendUnitUpdate(unit, zone.zid)
 }
 
-func hunt(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
+func hunt(elapsed time.Duration, zone *Zone, unit *Unit) {
 	// FIXME WRITEME
 	//
 	// future bounding sphere intersection => future collision likely
 	// if future collision is likely, maneuver to avoid it, then finish
 	// fire if there is enemy's bounding sphere available in attack cone
 	// maneuver to put attack cone around nearest enemy
+	//
+	// nearest enemy: bruteforce x kdtree ?
+	// kdtree: http://godoc.org/code.google.com/p/biogo.store/kdtree
+	// kdtree: http://godoc.org/code.google.com/p/eaburns/kdtree
 }
 
-func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit, mission string) {
+func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit) {
 	//log.Printf("updateUnit: zone=%s unit=%s mission=%s", zone.zid, unit.uid, mission)
 
-	switch mission {
+	switch unit.mission {
 	case "": // no mission
 	case "rotateYaw":
-		rotateYaw(elapsed, zone, unit, mission)
+		rotateYaw(elapsed, zone, unit)
 	case "hunt":
-		hunt(elapsed, zone, unit, mission)
+		hunt(elapsed, zone, unit)
 	default:
-		log.Printf("updateUnit: UNKNOWN MISSION zone=%s unit=%s mission=%s", zone.zid, unit.uid, mission)
+		log.Printf("updateUnit: UNKNOWN MISSION zone=%s unit=%s mission=%s", zone.zid, unit.uid, unit.mission)
 	}
 }
 
@@ -251,6 +255,7 @@ func updateAllZones(elapsed time.Duration) {
 			if !uok {
 
 				coord := store.QueryField(uid, "coord")
+				mission := store.QueryField(uid, "mission")
 
 				// Fetch from model
 				model := store.QueryField(uid, "obj")
@@ -258,7 +263,7 @@ func updateAllZones(elapsed time.Duration) {
 				modelUp := store.QueryField(model, "modelUp")
 
 				var err error
-				unit, err = newUnit(uid, coord, modelFront, modelUp)
+				unit, err = newUnit(uid, coord, modelFront, modelUp, mission)
 				if err != nil {
 					log.Printf("new unit=%s failure: %s", uid, err)
 					continue
@@ -272,10 +277,6 @@ func updateAllZones(elapsed time.Duration) {
 			}
 
 			unit.delete = false // do not delete this unit
-
-			mission := store.QueryField(uid, "mission")
-
-			updateUnit(elapsed, zone, unit, mission)
 		}
 
 		// delete not found units
@@ -284,6 +285,13 @@ func updateAllZones(elapsed time.Duration) {
 				log.Printf("deleting unit: zone=%s unit=%s", zid, uid)
 				delete(zone.unitTable, uid)
 			}
+		}
+
+		// from here all units from zone are available in unitTable
+
+		// update all zone units
+		for _, unit := range zone.unitTable {
+			updateUnit(elapsed, zone, unit)
 		}
 
 	} // range zones
