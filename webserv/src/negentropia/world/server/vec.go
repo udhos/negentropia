@@ -31,18 +31,22 @@ func parseVector3(result *vectormath.Vector3, text string) error {
 		return e
 	}
 	var err error
-	if x, err = strconv.ParseFloat(list[0], 32); err != nil {
-		e := fmt.Errorf("parseVector3: text=[%s] parse x=[%s] failure: %s", text, list[0], err)
+	var i string
+	i = strings.TrimSpace(list[0])
+	if x, err = strconv.ParseFloat(i, 32); err != nil {
+		e := fmt.Errorf("parseVector3: text=[%s] parse x=[%s] failure: %s", text, i, err)
 		log.Print(e)
 		return e
 	}
-	if y, err = strconv.ParseFloat(list[1], 32); err != nil {
-		e := fmt.Errorf("parseVector3: text=[%s] parse y=[%s] failure: %s", text, list[1], err)
+	i = strings.TrimSpace(list[1])
+	if y, err = strconv.ParseFloat(i, 32); err != nil {
+		e := fmt.Errorf("parseVector3: text=[%s] parse y=[%s] failure: %s", text, i, err)
 		log.Print(e)
 		return e
 	}
-	if z, err = strconv.ParseFloat(list[2], 32); err != nil {
-		e := fmt.Errorf("parseVector3: text=[%s] parse z=[%s] failure: %s", text, list[2], err)
+	i = strings.TrimSpace(list[2])
+	if z, err = strconv.ParseFloat(i, 32); err != nil {
+		e := fmt.Errorf("parseVector3: text=[%s] parse z=[%s] failure: %s", text, i, err)
 		log.Print(e)
 		return e
 	}
