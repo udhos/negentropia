@@ -3,10 +3,10 @@
 set DEVEL=c:\tmp\devel
 set DART_SDK=c:\dart\dart-sdk
 
+@rem run tests
+call %DEVEL%\negentropia\win-gotest.cmd
+
 @rem build server
-set GOPATH=%DEVEL%\negentropia\webserv
-go install negentropia\webserv
-go install negentropia\world
 call %DEVEL%\negentropia\win-goinstall.cmd
 
 @rem build client
