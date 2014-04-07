@@ -14,7 +14,7 @@ func expectHit(t *testing.T, centerX, centerY, centerZ, radius, vertexX, vertexY
 		t.Errorf("expectHit: error: %v", err)
 	}
 
-	if hit := sphereIntersectsCone(s, k); !hit {
+	if hit := sphereIntersectsCone(&s, &k); !hit {
 		t.Errorf("expectHit: miss")
 	}
 }
@@ -28,7 +28,7 @@ func expectMiss(t *testing.T, centerX, centerY, centerZ, radius, vertexX, vertex
 		t.Errorf("expectMiss: error: %v", err)
 	}
 
-	if hit := sphereIntersectsCone(s, k); hit {
+	if hit := sphereIntersectsCone(&s, &k); hit {
 		t.Errorf("expectMiss: hit")
 	}
 }

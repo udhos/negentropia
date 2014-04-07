@@ -66,7 +66,7 @@ S.radiusSqr     = precomputed sphere radius squared
 http://www.geometrictools.com/Documentation/IntersectionSphereCone.pdf
 */
 
-func sphereIntersectsCone(s Sphere, k Cone) bool {
+func sphereIntersectsCone(s *Sphere, k *Cone) bool {
 	var U, D vectormath.Vector3
 
 	vectormath.V3ScalarMul(&U, &k.axis, float32(s.radius*k.sinReciprocal))
