@@ -2,7 +2,7 @@ package server
 
 import (
 	"fmt"
-	"log"
+	//"log"
 	"math"
 	"strconv"
 	"strings"
@@ -27,7 +27,7 @@ func parseVector3(result *vectormath.Vector3, text string) error {
 	size := len(list)
 	if size != 3 {
 		e := fmt.Errorf("parseVector3: text=[%s] size=%d != 3", text, size)
-		log.Print(e)
+		//log.Print(e)
 		return e
 	}
 	var err error
@@ -35,19 +35,19 @@ func parseVector3(result *vectormath.Vector3, text string) error {
 	i = strings.TrimSpace(list[0])
 	if x, err = strconv.ParseFloat(i, 32); err != nil {
 		e := fmt.Errorf("parseVector3: text=[%s] parse x=[%s] failure: %s", text, i, err)
-		log.Print(e)
+		//log.Print(e)
 		return e
 	}
 	i = strings.TrimSpace(list[1])
 	if y, err = strconv.ParseFloat(i, 32); err != nil {
 		e := fmt.Errorf("parseVector3: text=[%s] parse y=[%s] failure: %s", text, i, err)
-		log.Print(e)
+		//log.Print(e)
 		return e
 	}
 	i = strings.TrimSpace(list[2])
 	if z, err = strconv.ParseFloat(i, 32); err != nil {
 		e := fmt.Errorf("parseVector3: text=[%s] parse z=[%s] failure: %s", text, i, err)
-		log.Print(e)
+		//log.Print(e)
 		return e
 	}
 	vectormath.V3MakeFromElems(result, float32(x), float32(y), float32(z))
@@ -57,16 +57,16 @@ func parseVector3(result *vectormath.Vector3, text string) error {
 
 const MAX_CLOSE_TO_ZERO = 1e-6
 
-func closeToZero(f float64) bool {
+func CloseToZero(f float64) bool {
 	return math.Abs(f) < MAX_CLOSE_TO_ZERO
 }
 
 func vector3Orthogonal(v1, v2 vectormath.Vector3) bool {
 	dot := float64(vectormath.V3Dot(&v1, &v2))
-	return closeToZero(dot)
+	return CloseToZero(dot)
 }
 
 func vector3Unit(v vectormath.Vector3) bool {
 	length := float64(v.Length())
-	return closeToZero(length - 1.0)
+	return CloseToZero(length - 1.0)
 }

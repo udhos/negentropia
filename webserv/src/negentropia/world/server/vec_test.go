@@ -33,7 +33,7 @@ func TestParseVector3(t *testing.T) {
 	expectWant(t, "1.0,2.0,3.0", "1,2,3")
 	expectWant(t, " 1.0 , 2.0 , 3.0 ", "1,2,3")
 	expectErr(t, "1.0x,2.0,3.0")
-	expectErr(t, "1.0x,2.0x,3.0")
+	expectErr(t, "1.0,2.0x,3.0")
 	expectErr(t, "1.0,2.0,3.0x")
 	expectErr(t, "x1.0,2.0,3.0")
 	expectErr(t, "1.0,x2.0,3.0")
