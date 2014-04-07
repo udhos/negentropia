@@ -36,7 +36,7 @@ func setCone(k *Cone, vertexX, vertexY, vertexZ, axisX, axisY, axisZ, angleRadia
 	}
 	k.sinSqr = sin * sin
 	k.cosSqr = 1 - k.sinSqr
-	k.sinReciprocal = 1 / k.sinSqr
+	k.sinReciprocal = 1 / sin
 	return nil
 }
 
