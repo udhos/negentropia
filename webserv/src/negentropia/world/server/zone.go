@@ -108,10 +108,12 @@ func sendUnitUpdate(unit *Unit, zid string) {
 			continue
 		}
 
-		log.Printf("sendUnitUpdate: unit=%s zone=%s player=%s front=%s up=%s coord=%s mission=%s",
-			unit.uid, zid, email,
-			vector3String(unit.front), vector3String(unit.up), vector3String(unit.coord),
-			unit.mission)
+		/*
+			log.Printf("sendUnitUpdate: unit=%s zone=%s player=%s front=%s up=%s coord=%s mission=%s",
+				unit.uid, zid, email,
+				vector3String(unit.front), vector3String(unit.up), vector3String(unit.coord),
+				unit.mission)
+		*/
 
 		// send unit update to player
 		p.SendToPlayer <- &ClientMsg{
@@ -191,7 +193,7 @@ func hunt(elapsed time.Duration, zone *Zone, unit *Unit) {
 }
 
 func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit) {
-	//log.Printf("updateUnit: zone=%s unit=%s mission=%s", zone.zid, unit.uid, mission)
+	//log.Printf("updateUnit: zone=%s unit=%s mission=%s", zone.zid, unit.uid, unit.mission)
 
 	switch unit.mission {
 	case "": // no mission

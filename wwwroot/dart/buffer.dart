@@ -10,6 +10,17 @@ class Instance {
   Vector3 _center;
   String _mission;
 
+  double get boundingRadius {
+    double radius;
+
+    if (model.boundingRadius == null) {
+      err("$this $id model=$model: undefined model bounding radius");
+      radius = 1.0;
+    }
+
+    return scale * radius;
+  }
+
   Vector3 get center => _center.clone();
 
   set center(Vector3 c) => _center.setFrom(c);
@@ -41,7 +52,7 @@ class Instance {
     setRotation(this.model._front.clone().normalize(), this.model._up.clone(
         ).normalize());
     debug(
-        "new instance: $this $id model=${model.modelName} center=$center front=$front up=$up right=$right"
+        "new instance: $this $id model=${model.modelName} center=$center front=$front up=$up right=$right radius=$boundingRadius"
         );
   }
 
@@ -140,6 +151,8 @@ class Model {
 
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
+
+  double boundingRadius;
 
   void _createBuffers(RenderingContext gl, List<int> indices, List<double>
       vertCoord, List<double> textCoord, List<double> normCoord) {
@@ -262,6 +275,12 @@ class Model {
     print(
         "model=$_URL indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z]"
         );
+
+    double dx = max_x - min_x;
+    double dy = max_y - min_y;
+    double dz = max_z - min_z;
+
+    boundingRadius = math.sqrt(dx * dx + dy * dy + dz * dz) / 2.0;
   }
 
   void loadObj(RenderingContext gl, Obj o) {
