@@ -18,7 +18,7 @@ func myip() {
 
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
-		os.Stderr.WriteString("Oops: " + err.Error() + "\n")
+		os.Stderr.WriteString("error: " + err.Error() + "\n")
 		return
 	}
 
@@ -39,13 +39,13 @@ func myip2() {
 
 	tt, err := net.Interfaces()
 	if err != nil {
-		os.Stdout.WriteString(err.Error())
+		os.Stderr.WriteString("error: " + err.Error() + "\n")
 		return
 	}
 	for _, t := range tt {
 		aa, err := t.Addrs()
 		if err != nil {
-			os.Stdout.WriteString(err.Error())
+			os.Stderr.WriteString("error: " + err.Error() + "\n")
 			continue
 		}
 		for _, a := range aa {
@@ -67,5 +67,5 @@ func main() {
 	os.Stdout.WriteString("myip -- begin\n")
 	myip()
 	myip2()
-	os.Stdout.WriteString("myip -- end\n")	
+	os.Stdout.WriteString("myip -- end\n")
 }
