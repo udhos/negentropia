@@ -8,7 +8,7 @@ import (
 
 func expectWant(t *testing.T, in, want string) {
 	var vec3 vectormath.Vector3
-	
+
 	t.Logf("expectWant: in=[%v] want=[%v]", in, want)
 
 	if err := parseVector3(&vec3, in); err != nil {
@@ -25,7 +25,7 @@ func expectErr(t *testing.T, in string) {
 	var vec3 vectormath.Vector3
 
 	t.Logf("expectErr: in=[%v]", in)
-	
+
 	if err := parseVector3(&vec3, in); err == nil {
 		t.Errorf("parseVector3(%v): accepted, but wanted error", in)
 	}

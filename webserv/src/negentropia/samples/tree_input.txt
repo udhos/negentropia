@@ -1,0 +1,5 @@
+A001    Dept           0
+A002    subDept1        A001
+A003    sub_subDept    A002
+A006    gran_subDept   A003
+A004    subDept2        A001 
