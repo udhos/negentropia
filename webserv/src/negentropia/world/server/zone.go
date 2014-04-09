@@ -10,6 +10,7 @@ import (
 	"github.com/udhos/vectormath"
 
 	"negentropia/webserv/store"
+	"negentropia/world/obj"
 )
 
 type Unit struct {
@@ -207,6 +208,17 @@ func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit) {
 	}
 }
 
+func loadModelRadius(model, objURL string) float64 {
+	var o *obj.Obj
+	var err error
+	if o, err = obj.NewObjFromString("FIXME load string from objURL"); err != nil {
+		log.Printf("error loading radius for model=%v objURL=%v: %v", model, objURL, err)
+		return 1.0
+	}
+	log.Printf("x=%v", o.VertCoord[0]) // use o to keep compiler happy
+	return 1.0
+}
+
 func updateAllZones(elapsed time.Duration) {
 	//
 	// Scan zones
@@ -273,8 +285,7 @@ func updateAllZones(elapsed time.Duration) {
 				modelUp := store.QueryField(model, "modelUp")
 				objURL := store.QueryField(model, "objURL")
 
-				log.Printf("FIXME WRITEME load model bounding radius from objURL=%v", objURL)
-				modelRadius := 1.0
+				modelRadius := loadModelRadius(model, objURL)
 				radius := scale * modelRadius
 
 				if unit, err = newUnit(uid, coord, modelFront, modelUp, mission, radius); err != nil {

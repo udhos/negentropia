@@ -40,6 +40,7 @@
 !webserv/src/negentropia/webserv/util
 !webserv/src/negentropia/world
 !webserv/src/negentropia/world/server
+!webserv/src/negentropia/world/obj
 !wwwroot
 !wwwroot/dart
 !wwwroot/dart/cookies
