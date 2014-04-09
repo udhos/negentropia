@@ -43,6 +43,27 @@ var (
 	root      *Node
 )
 
+func add(id, name, parentId string) {
+	fmt.Printf("add: id=%v name=%v parentId=%v\n", id, name, parentId)
+
+	node := &Node{name: name, children: []*Node{}}
+
+	if parentId == "0" {
+		root = node
+	} else {
+
+		parent, ok := nodeTable[parentId]
+		if !ok {
+			fmt.Printf("add: parentId=%v: not found\n", parentId)
+			return
+		}
+
+		parent.children = append(parent.children, node)
+	}
+
+	nodeTable[id] = node
+}
+
 func scan() {
 	input := os.Stdin
 	reader := bufio.NewReader(input)
@@ -62,36 +83,15 @@ func scan() {
 			fmt.Printf("bad input line %v: tokens=%d [%v]\n", lineCount, t, line)
 			continue
 		}
-		id := tokens[0]
-		name := tokens[1]
-		parentId := tokens[2]
-
-		fmt.Printf("id=%v name=%v parentId=%v\n", id, name, parentId)
-
-		node := &Node{name: name, children: []*Node{}}
-
-		if parentId == "0" {
-			root = node
-		} else {
-
-			parent, ok := nodeTable[parentId]
-			if !ok {
-				fmt.Printf("parentId=%v: not found\n", parentId)
-				continue
-			}
-
-			parent.children = append(parent.children, node)
-		}
-
-		nodeTable[id] = node
+		add(tokens[0], tokens[1], tokens[2])
 	}
 }
 
 func showNode(node *Node, prefix string) {
 	if prefix == "" {
-		fmt.Printf("%v\n", node.name)
+		fmt.Printf("%v\n\n", node.name)
 	} else {
-		fmt.Printf("%v %v\n", prefix, node.name)
+		fmt.Printf("%v %v\n\n", prefix, node.name)
 	}
 	for _, n := range node.children {
 		showNode(n, prefix+"--")
@@ -103,12 +103,14 @@ func show() {
 		fmt.Printf("show: root node not found\n")
 		return
 	}
+	fmt.Printf("RESULT:\n")
 	showNode(root, "")
 }
 
 func main() {
 	fmt.Printf("main: reading input from stdin\n")
 	scan()
-	show()
 	fmt.Printf("main: reading input from stdin -- done\n")
+	show()
+	fmt.Printf("main: end\n")
 }
