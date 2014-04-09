@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
-	//"strconv"
+	"strconv"
 	"time"
 
 	"github.com/udhos/vectormath"
@@ -13,16 +13,17 @@ import (
 )
 
 type Unit struct {
-	uid         string
-	coord       vectormath.Vector3
-	front       vectormath.Vector3
-	up          vectormath.Vector3
-	linearSpeed float32 // m/s
-	yawSpeed    float32 // rad/s
-	pitchSpeed  float32 // rad/s
-	rollSpeed   float32 // rad/s
-	mission     string
-	delete      bool
+	uid            string
+	coord          vectormath.Vector3
+	front          vectormath.Vector3
+	up             vectormath.Vector3
+	linearSpeed    float64 // m/s
+	yawSpeed       float64 // rad/s
+	pitchSpeed     float64 // rad/s
+	rollSpeed      float64 // rad/s
+	boundingRadius float64 // bounding sphere radius (m)
+	mission        string
+	delete         bool
 }
 
 func (unit *Unit) rightDirection() vectormath.Vector3 {
@@ -65,9 +66,9 @@ func newZone(zid string) *Zone {
 	return &Zone{zid: zid, unitTable: make(map[string]*Unit)}
 }
 
-func newUnit(uid, coord, front, up, mission string) (*Unit, error) {
+func newUnit(uid, coord, front, up, mission string, radius float64) (*Unit, error) {
 
-	unit := &Unit{uid: uid, mission: mission}
+	unit := &Unit{uid: uid, mission: mission, boundingRadius: radius}
 
 	if err := parseVector3(&unit.coord, coord); err != nil {
 		e := fmt.Errorf("newUnit: unit=%s coord=[%s] parse failure: %s", uid, coord, err)
@@ -138,7 +139,7 @@ func rotateYaw(elapsed time.Duration, zone *Zone, unit *Unit) {
 	unit.rollSpeed = 0.0
 
 	// angle to rotate
-	rad := unit.yawSpeed * float32(elapsed) / float32(time.Second)
+	rad := unit.yawSpeed * float64(elapsed) / float64(time.Second)
 
 	// axis to rotate around
 	//var rightDirection vectormath.Vector3
@@ -147,7 +148,7 @@ func rotateYaw(elapsed time.Duration, zone *Zone, unit *Unit) {
 
 	// quaternion representing rotation
 	var quat vectormath.Quat
-	vectormath.QMakeRotationAxis(&quat, rad, &rightDirection)
+	vectormath.QMakeRotationAxis(&quat, float32(rad), &rightDirection)
 
 	// apply quaternion rotation to front direction
 	oldFront := unit.front
@@ -258,15 +259,25 @@ func updateAllZones(elapsed time.Duration) {
 
 				coord := store.QueryField(uid, "coord")
 				mission := store.QueryField(uid, "mission")
+				scaleStr := store.QueryField(uid, "scale")
+
+				var err error
+				var scale float64
+				if scale, err = strconv.ParseFloat(scaleStr, 64); err != nil {
+					log.Print(fmt.Errorf("failure parsing unit scale: [%v]: %v", scaleStr, err))
+				}
 
 				// Fetch from model
 				model := store.QueryField(uid, "obj")
 				modelFront := store.QueryField(model, "modelFront")
 				modelUp := store.QueryField(model, "modelUp")
+				objURL := store.QueryField(model, "objURL")
 
-				var err error
-				unit, err = newUnit(uid, coord, modelFront, modelUp, mission)
-				if err != nil {
+				log.Printf("FIXME WRITEME load model bounding radius from objURL=%v", objURL)
+				modelRadius := 1.0
+				radius := scale * modelRadius
+
+				if unit, err = newUnit(uid, coord, modelFront, modelUp, mission, radius); err != nil {
 					log.Printf("new unit=%s failure: %s", uid, err)
 					continue
 				}
