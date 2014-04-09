@@ -209,9 +209,10 @@ func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit) {
 }
 
 func loadModelRadius(model, objURL string) float64 {
+	buf := []byte("v 2.133923 2.037626 -0.070400\nv 2.062405 2.303306 -0.070400\nv 2.062404 2.303306 0.060598")
 	var o *obj.Obj
 	var err error
-	if o, err = obj.NewObjFromString("FIXME load string from objURL"); err != nil {
+	if o, err = obj.NewObjFromBuf(buf); err != nil {
 		log.Printf("error loading radius for model=%v objURL=%v: %v", model, objURL, err)
 		return 1.0
 	}
