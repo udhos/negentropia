@@ -276,6 +276,8 @@ func loadModelRadius(model, objURL string) float64 {
 	return radius
 }
 
+var modelRadiusCache = map[string]float64{}
+
 func updateAllZones(elapsed time.Duration) {
 	//
 	// Scan zones
@@ -342,8 +344,13 @@ func updateAllZones(elapsed time.Duration) {
 				modelUp := store.QueryField(model, "modelUp")
 				objURL := store.QueryField(model, "objURL")
 
-				modelRadius := loadModelRadius(model, objURL)
-				log.Printf("FIXME cache radius: model=%v url=%v radius=%v", model, objURL, modelRadius)
+				modelRadius, rok := modelRadiusCache[objURL]
+				if !rok {
+					modelRadius = loadModelRadius(model, objURL)
+					modelRadiusCache[objURL] = modelRadius
+					log.Printf("modelRadiusCache miss: model=%v url=%v radius=%v", model, objURL, modelRadius)
+				}
+
 				radius := scale * modelRadius
 
 				if unit, err = newUnit(uid, coord, modelFront, modelUp, mission, radius); err != nil {
