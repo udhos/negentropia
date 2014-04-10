@@ -2,8 +2,10 @@ package server
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -208,16 +210,70 @@ func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit) {
 	}
 }
 
+var ObjBaseURL string
+
+func httpFetch(url string) ([]byte, error) {
+	fullURL := ObjBaseURL + url
+	resp, err := http.Get(fullURL)
+	if err != nil {
+		return nil, fmt.Errorf("httpFetch: get url=%v: %v", fullURL, err)
+	}
+	defer resp.Body.Close()
+
+	var info []byte
+	info, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("httpFetch: read all: url=%v: %v", fullURL, err)
+	}
+
+	return info, nil
+}
+
 func loadModelRadius(model, objURL string) float64 {
-	buf := []byte("###test\n\nv 2.133923 2.037626 -0.070400\neraseme\nv 2.062405 2.303306 -0.070400\nv 2.062404 2.303306 0.060598")
-	var o *obj.Obj
-	var err error
-	if o, err = obj.NewObjFromBuf(buf); err != nil {
-		log.Printf("error loading radius for model=%v objURL=%v: %v", model, objURL, err)
+	//buf := []byte("###test\n\nv 2.133923 2.037626 -0.070400\neraseme\nv 2.062405 2.303306 -0.070400\nv 2.062404 2.303306 0.060598")
+	buf, err := httpFetch(objURL)
+	if err != nil {
+		log.Printf("loadModelRadius: fetch model=%v objURL=%v error: %v", model, objURL, err)
 		return 1.0
 	}
-	log.Printf("coord=%v", o.Coord) // use o to keep compiler happy
-	return 1.0
+	var o *obj.Obj
+	if o, err = obj.NewObjFromBuf(buf); err != nil {
+		log.Printf("loadModelRadius: parse model=%v objURL=%v error: %v", model, objURL, err)
+		return 1.0
+	}
+	size := len(o.Coord)
+	if size < 3 {
+		log.Printf("loadModelRadius: model=%v objURL=%v short vertex buffer size=%v", model, objURL, size)
+		return 1.0
+	}
+	minX, minY, minZ := o.Coord[0], o.Coord[1], o.Coord[2]
+	maxX, maxY, maxZ := o.Coord[0], o.Coord[1], o.Coord[2]
+	for i := 3; i < size; i += 3 {
+		x, y, z := o.Coord[i], o.Coord[i+1], o.Coord[i+2]
+		if x < minX {
+			minX = x
+		}
+		if y < minY {
+			minY = y
+		}
+		if z < minZ {
+			minZ = z
+		}
+		if x > maxX {
+			maxX = x
+		}
+		if y > maxY {
+			maxY = y
+		}
+		if z > maxZ {
+			maxZ = z
+		}
+	}
+	dx := maxX - minX
+	dy := maxY - minY
+	dz := maxZ - minZ
+	radius := math.Sqrt(dx*dx+dy*dy+dz*dz) / 2.0
+	return radius
 }
 
 func updateAllZones(elapsed time.Duration) {
@@ -287,6 +343,7 @@ func updateAllZones(elapsed time.Duration) {
 				objURL := store.QueryField(model, "objURL")
 
 				modelRadius := loadModelRadius(model, objURL)
+				log.Printf("FIXME cache radius: model=%v url=%v radius=%v", model, objURL, modelRadius)
 				radius := scale * modelRadius
 
 				if unit, err = newUnit(uid, coord, modelFront, modelUp, mission, radius); err != nil {

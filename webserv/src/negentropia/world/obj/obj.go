@@ -1,6 +1,7 @@
 package obj
 
 import (
+	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
@@ -22,7 +23,14 @@ func (o *Obj) parseLine(rawLine string, lineNumber int) {
 	//log.Printf("parseLine %v: [%v]\n", lineNumber, line)
 	switch {
 	case line == "" || line[0] == '#':
-		return
+	case strings.HasPrefix(line, "s "):
+	case strings.HasPrefix(line, "o "):
+	case strings.HasPrefix(line, "g "):
+	case strings.HasPrefix(line, "usemtl "):
+	case strings.HasPrefix(line, "mtllib "):
+	case strings.HasPrefix(line, "vt "):
+	case strings.HasPrefix(line, "vn "):
+	case strings.HasPrefix(line, "f "):
 	case strings.HasPrefix(line, "v "):
 		result, err := parser.ParseFloatSliceSpace(line[2:])
 		if err != nil {
@@ -66,7 +74,32 @@ func NewObjFromBuf(buf []byte) (*Obj, error) {
 
 		o.parseLine(line, lineCount)
 	}
-	log.Printf("NewObjFromBuf: %v lines", lineCount)
+
+	return &o, nil
+}
+
+func NewObjFromReader(rd *bufio.Reader) (*Obj, error) {
+	var o Obj
+
+	lineCount := 0
+	for {
+		lineCount++
+		var line string
+		var err error
+		line, err = rd.ReadString('\n')
+		if err == io.EOF {
+			if line != "" {
+				o.parseLine(line, lineCount)
+			}
+			break
+		}
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("NewObjFromReader: error: %v", err))
+		}
+
+		o.parseLine(line, lineCount)
+	}
+	log.Printf("NewObjFromReader: %v lines", lineCount)
 
 	return &o, nil
 }

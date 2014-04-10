@@ -52,7 +52,7 @@ class Instance {
     setRotation(this.model._front.clone().normalize(), this.model._up.clone(
         ).normalize());
     debug(
-        "new instance: $this $id model=${model.modelName} center=$center front=$front up=$up right=$right radius=$boundingRadius"
+        "new instance: $this $id model=${model.modelName} center=$center front=$front up=$up right=$right"
         );
   }
 
@@ -272,15 +272,15 @@ class Model {
     double size_y = (max_y - min_y).abs();
     double size_z = (max_z - min_z).abs();
 
-    print(
-        "model=$_URL indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z]"
-        );
-
     double dx = max_x - min_x;
     double dy = max_y - min_y;
     double dz = max_z - min_z;
 
     boundingRadius = math.sqrt(dx * dx + dy * dy + dz * dz) / 2.0;
+
+    debug(
+        "model=$_URL indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z] radius=$boundingRadius"
+        );
   }
 
   void loadObj(RenderingContext gl, Obj o) {

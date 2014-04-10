@@ -32,6 +32,7 @@ func init() {
 	configFlags.StringVar(&listenAddr, "listenOn", "127.0.0.2:8000", "websocket listen address [addr]:port")
 	configFlags.StringVar(&redisAddr, "redisAddr", "localhost:6379", "redis server address")
 	configFlags.StringVar(&websocketHost, "websocketHost", "127.0.0.2", "host part of websocket uri: ws://host:port/path")
+	configFlags.StringVar(&server.ObjBaseURL, "objBaseURL", "http://localhost:8080", "base URL to get model .OBJ files")
 }
 
 func auth(ws *websocket.Conn) *server.Player {
