@@ -23,6 +23,12 @@
 # If you want to enable support for Facebook login
 #-fId=putFacebookAppIdHere
 #-fSecret=putFacebookAppSecretHere
+
+# If you want to run on non-default host:port
+# Default host:port is :8080
+# For example, you may want to run multiple instances
+# at distinct host:port pairs on the same host
+#-listenOn=:8000
 	
 #
 # end-of-file
