@@ -5,9 +5,12 @@ import (
 	//"log"
 	"math"
 	"strconv"
-	"strings"
+	//"strings"
+	"unicode"
 
 	"github.com/udhos/vectormath"
+
+	"negentropia/world/parser"
 )
 
 func vector3String(v vectormath.Vector3) string {
@@ -21,38 +24,25 @@ func vector3String(v vectormath.Vector3) string {
 		strconv.FormatFloat(float64(v.Z), f, prec, bitSize))
 }
 
-func parseVector3(result *vectormath.Vector3, text string) error {
-	var x, y, z float64
-	list := strings.Split(text, ",")
-	size := len(list)
-	if size != 3 {
-		e := fmt.Errorf("parseVector3: text=[%s] size=%d != 3", text, size)
-		//log.Print(e)
-		return e
+func parseVector3Func(result *vectormath.Vector3, text string, f func(rune) bool) error {
+	floatSlice, err := parser.ParseFloatVectorFunc(text, 3, f)
+	if err != nil {
+		return fmt.Errorf("parseVector3Func: error: %v", err)
 	}
-	var err error
-	var i string
-	i = strings.TrimSpace(list[0])
-	if x, err = strconv.ParseFloat(i, 32); err != nil {
-		e := fmt.Errorf("parseVector3: text=[%s] parse x=[%s] failure: %s", text, i, err)
-		//log.Print(e)
-		return e
-	}
-	i = strings.TrimSpace(list[1])
-	if y, err = strconv.ParseFloat(i, 32); err != nil {
-		e := fmt.Errorf("parseVector3: text=[%s] parse y=[%s] failure: %s", text, i, err)
-		//log.Print(e)
-		return e
-	}
-	i = strings.TrimSpace(list[2])
-	if z, err = strconv.ParseFloat(i, 32); err != nil {
-		e := fmt.Errorf("parseVector3: text=[%s] parse z=[%s] failure: %s", text, i, err)
-		//log.Print(e)
-		return e
-	}
-	vectormath.V3MakeFromElems(result, float32(x), float32(y), float32(z))
-	//log.Printf("parseVector3: text=[%s] result: %s", text, result)
+	vectormath.V3MakeFromElems(result, float32(floatSlice[0]), float32(floatSlice[1]), float32(floatSlice[2]))
 	return nil
+}
+
+func parseVector3Space(result *vectormath.Vector3, text string) error {
+	return parseVector3Func(result, text, unicode.IsSpace)
+}
+
+func isComma(r rune) bool {
+	return r == ','
+}
+
+func parseVector3(result *vectormath.Vector3, text string) error {
+	return parseVector3Func(result, text, isComma)
 }
 
 const MAX_CLOSE_TO_ZERO = 1e-6

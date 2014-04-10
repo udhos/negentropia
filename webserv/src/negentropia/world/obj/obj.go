@@ -6,17 +6,47 @@ import (
 	"fmt"
 	"io"
 	"log"
+	//"strconv"
+	"strings"
+	//"unicode"
+
+	"negentropia/world/parser"
 )
 
 type Obj struct {
-	VertCoord []float64
+	Coord []float64 // vertex coordinates
 }
 
-func parseLine(line string, lineCount int) {
-	log.Printf("line %v: [%v]\n", lineCount, line)
+func (o *Obj) parseLine(rawLine string, lineNumber int) {
+	line := strings.TrimSpace(rawLine)
+	//log.Printf("parseLine %v: [%v]\n", lineNumber, line)
+	switch {
+	case line == "" || line[0] == '#':
+		return
+	case strings.HasPrefix(line, "v "):
+		result, err := parser.ParseFloatSliceSpace(line[2:])
+		if err != nil {
+			log.Printf("parseLine %v: [%v]: error: %v", lineNumber, line, err)
+			return
+		}
+		coordLen := len(result)
+		switch coordLen {
+		case 3:
+			o.Coord = append(o.Coord, result[0], result[1], result[2])
+		case 4:
+			w := result[3]
+			o.Coord = append(o.Coord, result[0]/w, result[1]/w, result[2]/w)
+		default:
+			log.Printf("parseLine %v: [%v]: bad number of coords: %v", lineNumber, line, coordLen)
+		}
+	default:
+		log.Printf("parseLine %v: [%v]: unexpected", lineNumber, line)
+	}
 }
 
 func NewObjFromBuf(buf []byte) (*Obj, error) {
+	var o Obj
+
 	b := bytes.NewBuffer(buf)
 	lineCount := 0
 	for {
@@ -26,7 +56,7 @@ func NewObjFromBuf(buf []byte) (*Obj, error) {
 		line, err = b.ReadString('\n')
 		if err == io.EOF {
 			if line != "" {
-				parseLine(line, lineCount)
+				o.parseLine(line, lineCount)
 			}
 			break
 		}
@@ -34,9 +64,9 @@ func NewObjFromBuf(buf []byte) (*Obj, error) {
 			return nil, errors.New(fmt.Sprintf("NewObjFromBuf: error: %v", err))
 		}
 
-		parseLine(line, lineCount)
+		o.parseLine(line, lineCount)
 	}
 	log.Printf("NewObjFromBuf: %v lines", lineCount)
 
-	return nil, errors.New("NewObjFromString: FIXME WRITEME")
+	return &o, nil
 }
