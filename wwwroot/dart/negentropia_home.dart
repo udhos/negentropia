@@ -851,7 +851,7 @@ void deleteBandSelectionBox(RenderingContext gl, CanvasElement c, bool shift) {
   dragBox = null;
 }
 
-void createBandSelectionBox(RenderingContext gl, CanvasElement c, bool shift) {
+void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
 
   assert(canvasbox != null);
 
@@ -926,50 +926,58 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //
 
   Mouse m = gameLoop.mouse;
-  Keyboard k = gameLoop.keyboard;
-
   bool mouseLeftPressed = m.pressed(Mouse.LEFT);
+  bool mouseLeftReleased = m.released(Mouse.LEFT);
+  bool mouseLeftDown = m.isDown(Mouse.LEFT);
+
+  Keyboard k = gameLoop.keyboard;
   bool shiftDown = k.isDown(Keyboard.SHIFT);
   bool ctrlPressed = k.pressed(Keyboard.CTRL);
   bool ctrlReleased = k.released(Keyboard.CTRL);
+  bool ctrlDown = k.isDown(Keyboard.CTRL);
 
   if (ctrlReleased) {
     deleteBandSelectionBox(gl, canvas, shiftDown);
+  }
+
+  if (ctrlReleased || mouseLeftReleased) {
     mouseDragBeginX = null;
     mouseDragBeginY = null;
     mouseDragCurrX = null;
     mouseDragCurrY = null;
   }
 
-  if (mouseLeftPressed) {
-    PickerInstance pi = mouseLeftClick(gl, m);
-    mouseSelection(pi, shiftDown);
-  }
-  if (ctrlPressed) {
+  if (ctrlPressed || mouseLeftPressed) {
     mouseDragBeginX = m.x;
     mouseDragBeginY = m.y;
     mouseDragCurrX = null;
     mouseDragCurrY = null;
   }
-  if (mouseDragBeginX != null) {
+
+  if (ctrlDown || mouseLeftDown) {
     if ((mouseDragCurrX != m.x) || (mouseDragCurrY != m.y)) {
       // mouse moved
       mouseDragCurrX = m.x;
       mouseDragCurrY = m.y;
-      createBandSelectionBox(gl, canvas, shiftDown);
+      if (ctrlDown) {
+        createBandSelectionBox(gl, canvas);
+      }
+      if (mouseLeftDown) {
+        int dx = mouseDragCurrX - mouseDragBeginX;
+        int dy = mouseDragCurrY - mouseDragBeginY;
+        camControl.orbitFocus(dx, dy);
+      }
     }
+  }
+
+  if (mouseLeftReleased) {
+    PickerInstance pi = mouseLeftClick(gl, m);
+    mouseSelection(pi, shiftDown);
   }
 
   trackKey(k.isDown(Keyboard.T));
 
   pauseKey(k.isDown(Keyboard.P));
-
-  /*
-  if (k.isDown(Keyboard.D)) {
-    Vector3 pos = getSelectionPosition();
-    log("dump: tracking=$cameraTracking cam:{$cam} new_focus=$pos");
-  }
-  */
 
   if (cameraTracking) {
     Vector3 pos = getSelectionPosition();

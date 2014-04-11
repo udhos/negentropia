@@ -95,6 +95,25 @@ class Camera {
     assert(vector3Unit(rightDirection));
   }
 
+  void rotateAroundFocusVertical(double radAngle) {
+    _position.sub(_focusPosition); // ----: translate focus to origin
+
+    Quaternion q = new Quaternion.axisAngle(_upDirection, radAngle);
+    q.rotate(_position);
+
+    _position.add(_focusPosition); // undo: translate focus to origin
+  }
+
+  void rotateAroundFocusHorizontal(double radAngle) {
+    _position.sub(_focusPosition); // ----: translate focus to origin
+
+    Quaternion q = new Quaternion.axisAngle(rightDirection, radAngle);
+    q.rotate(_position);
+
+    _position.add(_focusPosition); // undo: translate focus to origin
+  }
+
+
   void moveTo(Vector3 coord) {
     assert(coord != null);
     _position.setFrom(coord);
