@@ -966,6 +966,8 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
         int dx = mouseDragCurrX - mouseDragBeginX;
         int dy = mouseDragCurrY - mouseDragBeginY;
         camControl.orbitFocus(dx, dy);
+        mouseDragBeginX = m.x;
+        mouseDragBeginY = m.y;
       }
     }
   }

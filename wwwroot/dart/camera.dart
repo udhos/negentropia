@@ -35,8 +35,8 @@ class Camera {
   Vector3 _focusPosition = new Vector3(0.0, 0.0, 0.0);
   Vector3 _upDirection = new Vector3(0.0, 1.0, 0.0);
 
-  Vector3 get frontDirection => (_focusPosition - _position).normalize();
-  Vector3 get rightDirection => frontDirection.cross(_upDirection);
+  Vector3 get frontDirection => (_focusPosition - _position).normalized();
+  Vector3 get rightDirection => frontDirection.cross(_upDirection).normalized();
 
   String toString() {
     return 'pos=$_position focus=$_focusPosition up=$_upDirection';
@@ -111,6 +111,41 @@ class Camera {
     q.rotate(_position);
 
     _position.add(_focusPosition); // undo: translate focus to origin
+
+    _upDirection = rightDirection.cross(frontDirection).normalized();
+
+    if (!vector3Orthogonal(_upDirection, frontDirection)) {
+      String fail =
+          "camera rotateAroundFocusHorizontal: NOT ORTHOGONAL: up=$_upDirection x front=$frontDirection: dot=${_upDirection.dot(frontDirection)}";
+      err(fail);
+      throw fail;
+    }
+
+    if (!vector3Unit(_upDirection)) {
+      String fail =
+          "camera rotateAroundFocusHorizontal: NOT UNIT: up=$_upDirection length=${_upDirection.length}";
+      err(fail);
+      throw fail;
+    }
+
+    if (!vector3Unit(frontDirection)) {
+      String fail =
+          "camera rotateAroundFocusHorizontal: NOT UNIT: front=$frontDirection length=${frontDirection.length}";
+      err(fail);
+      throw fail;
+    }
+
+    if (!vector3Unit(rightDirection)) {
+      String fail =
+          "camera rotateAroundFocusHorizontal: NOT UNIT: right=$rightDirection length=${rightDirection.length}";
+      err(fail);
+      throw fail;
+    }
+
+    assert(vector3Orthogonal(_upDirection, frontDirection));
+    assert(vector3Unit(_upDirection));
+    assert(vector3Unit(frontDirection));
+    assert(vector3Unit(rightDirection));
   }
 
 
@@ -131,16 +166,9 @@ class Camera {
 
     debug("camera focusAt: from=$_focusPosition to=$coord");
 
-    /*
-      Vector3 oldRightDirection = rightDirection; // saves old right direction
-      _focusPosition.setFrom(coord); // changes front direction
-      _upDirection = oldRightDirection.cross(frontDirection).normalize();
-      // new up direction
-       */
-
     _focusPosition.setFrom(coord); // changes front direction
-    Vector3 newRightDirection = frontDirection.cross(Y).normalize();
-    _upDirection = newRightDirection.cross(frontDirection);
+    Vector3 newRightDirection = frontDirection.cross(Y).normalized();
+    _upDirection = newRightDirection.cross(frontDirection).normalized();
 
     if (!vector3Orthogonal(_upDirection, frontDirection)) {
       String fail =
