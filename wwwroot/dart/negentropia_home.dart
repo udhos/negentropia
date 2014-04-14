@@ -977,13 +977,9 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     mouseSelection(pi, shiftDown);
   }
 
-  if (m.wheelDx != 0) {
-    log("mouse wheel: dx=${m.wheelDx}");
-    //camControl.moveForward(m.wheelDy);
-  }
   if (m.wheelDy != 0) {
-    log("mouse wheel: dy=${m.wheelDy}");
-    //camControl.moveForward(m.wheelDy);
+    //log("mouse wheel: dy=${m.wheelDy}");
+    camControl.moveForward(m.wheelDy);
   }
 
   trackKey(k.isDown(Keyboard.T));

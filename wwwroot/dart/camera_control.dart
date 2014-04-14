@@ -19,25 +19,27 @@ class CameraControl {
     // Consume pending rotation
     //
     if (orbitFocusDx != 0) {
-      // 1 pixel = 1 degree
+      // 1 pixel => 1 degree
       cam.rotateAroundFocusVertical(orbitFocusDx * math.PI / 180.0);
       orbitFocusDx = 0;
     }
     if (orbitFocusDy != 0) {
+      // 1 pixel => 1 degree
       cam.rotateAroundFocusHorizontal(orbitFocusDy * math.PI / 180.0);
       orbitFocusDy = 0;
     }
 
     if (forwardDy != 0) {
       debug("camera forward: $forwardDy");
-      cam.moveForward(forwardDy.toDouble());
+      // 100.0 points => 10 meters
+      cam.moveForward(forwardDy.toDouble() / 10.0);
       forwardDy = 0;
     }
 
   }
 
   void orbitFocus(int dx, dy) {
-    debug("orbitFocus: dx=$dx dy=$dy");
+    //debug("orbitFocus: dx=$dx dy=$dy");
     orbitFocusDx += dx;
     orbitFocusDy += dy;
   }
