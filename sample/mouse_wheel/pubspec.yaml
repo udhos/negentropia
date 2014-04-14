@@ -2,6 +2,10 @@ name: mouse_wheel
 description: A sample web application
 dependencies:
   browser: any
+  #game_loop:
+    #git: https://github.com/johnmccutchan/game_loop.git
   game_loop:
-    git: https://github.com/johnmccutchan/game_loop.git
+    git:
+      url: https://github.com/TuTu/game_loop.git
+      ref: fix-wheel-event
     
