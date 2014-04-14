@@ -95,6 +95,10 @@ class Camera {
     assert(vector3Unit(rightDirection));
   }
 
+  void moveForward(double len) {
+    moveTo(_position.addScaled(frontDirection, len));
+  }
+
   void rotateAroundFocusVertical(double radAngle) {
     _position.sub(_focusPosition); // ----: translate focus to origin
 

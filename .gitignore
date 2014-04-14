@@ -26,6 +26,8 @@
 !sample/triangle
 !sample/skybox
 !sample/skybox/web
+!sample/mouse_wheel
+!sample/mouse_wheel/web
 !template
 !webserv
 !webserv/src
