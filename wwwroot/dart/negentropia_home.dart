@@ -935,6 +935,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   bool ctrlPressed = k.pressed(Keyboard.CTRL);
   bool ctrlReleased = k.released(Keyboard.CTRL);
   bool ctrlDown = k.isDown(Keyboard.CTRL);
+  bool f1Pressed = k.pressed(Keyboard.F12);
 
   if (ctrlReleased) {
     deleteBandSelectionBox(gl, canvas, shiftDown);
