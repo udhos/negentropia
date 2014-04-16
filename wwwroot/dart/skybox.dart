@@ -61,6 +61,8 @@ class SkyboxModel extends Model {
   Texture cubemapTexture;
   bool cubemapReady = false;
 
+  double get halfEdge => 1.0;
+
   SkyboxModel.fromJson(RenderingContext gl, String URL, bool reverse, num
       rescale) : super.fromJson(gl, URL, reverse) {
     cubemapTexture = gl.createTexture();
@@ -125,6 +127,8 @@ class SkyboxInstance extends Instance {
   bool demoAnimate;
   double _oldAngle = 0.0;
   double _angle = 0.0;
+
+  double get halfEdge => scale * (model as SkyboxModel).halfEdge;
 
   SkyboxInstance(String id, Model model, Vector3 center, double
       scale, this.demoAnimate) : super(id, model, center, scale);

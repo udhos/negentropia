@@ -53,21 +53,39 @@ class CameraControl {
     orbitFocusDy += dy;
   }
 
+  double getBoundingRadius() {
+    double boundingRadius = getSelectionBoundingRadius();
+    if (boundingRadius == null) {
+      // ugh: no selected object
+      boundingRadius = 1.0;
+    }
+    return boundingRadius;
+  }
+
   void moveForward(Camera cam, int dy) {
     if (dy > 0) {
-      // getting closer
-      double boundingRadius = getSelectionBoundingRadius();
-      if (boundingRadius == null) {
-        boundingRadius = 1.0;
-      }
+      // getting close - closest distance is bounding radius
 
+      double boundingRadius = getBoundingRadius();
       double currDistance = cam.frontVector.length;
       if (currDistance - wheelToDistance(dy) < boundingRadius) {
-        messageUser("camera: minimum distance reached");
+        messageUser("camera: minimum distance reached: $boundingRadius");
         return;
       }
+    } else {
+      // getting away - farthest distance is skybox half edge (minus bounding diameter)
 
+      double halfEdge = cam.skyboxHalfEdge;
+      if (halfEdge != null) {
+        double maxDistance = halfEdge - 2.0 * getBoundingRadius();
+        double currDistance = cam.frontVector.length;
+        if (currDistance + wheelToDistance(dy) > maxDistance) {
+          messageUser("camera: maximum distance reached: $maxDistance");
+          return;
+        }
+      }
     }
+
     forwardDy += dy;
   }
 

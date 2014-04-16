@@ -44,6 +44,14 @@ class Camera {
 
   SkyboxInstance _skybox;
 
+  double get skyboxHalfEdge {
+    if (_skybox == null) {
+      return null;
+    }
+
+    return _skybox.halfEdge;
+  }
+
   void set skybox(SkyboxInstance box) {
     _skybox = box;
   }
