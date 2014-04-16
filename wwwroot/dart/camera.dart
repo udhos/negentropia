@@ -125,6 +125,10 @@ class Camera {
     }
   }
 
+  void fixUp() {
+    _upDirection = rightDirection.cross(frontDirection).normalized();
+  }
+
   void rotateAroundFocusVertical(double radAngle) {
     _position.sub(_focusPosition); // ----: translate focus to origin
 
@@ -133,8 +137,7 @@ class Camera {
 
     _position.add(_focusPosition); // undo: translate focus to origin
 
-    _upDirection = rightDirection.cross(frontDirection).normalized();
-    // FIXME why is this needed?
+    fixUp(); // FIXME why is this needed?
 
     _sanity("rotateAroundFocusVertical");
 
@@ -149,7 +152,7 @@ class Camera {
 
     _position.add(_focusPosition); // undo: translate focus to origin
 
-    _upDirection = rightDirection.cross(frontDirection).normalized();
+    fixUp();
 
     _sanity("rotateAroundFocusHorizontal");
 
@@ -158,8 +161,12 @@ class Camera {
 
 
   void moveTo(Vector3 coord) {
-    assert(coord != null);
     _position.setFrom(coord);
+
+    fixUp(); // FIXME why is this needed?
+
+    _sanity("moveTo");
+
     _skyboxFollowPosition();
   }
 
