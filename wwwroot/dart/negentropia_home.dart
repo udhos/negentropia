@@ -870,7 +870,7 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
 
   int y = canvas.height - m.y;
 
-  debug("mouseLeftClick: mouse=${m.x},${m.y} webgl=${m.x},${y}");
+  //debug("mouseLeftClick: mouse=${m.x},${m.y} webgl=${m.x},${y}");
 
   Uint8List color = new Uint8List(4);
   //readColor("canvas-framebuffer", gl, m.x, y, null, color);

@@ -10,6 +10,10 @@ class Instance {
   Vector3 _center;
   String _mission;
 
+  String toString() {
+    return "${super.toString()} id=$id";
+  }
+
   double get boundingRadius {
     double radius;
 

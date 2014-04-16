@@ -204,7 +204,7 @@ class TexInstance extends Instance {
       TextureInfo ti = tp.texInfo;
 
       // set texture sampler
-      int unit = 0;
+      int unit = 1;
       gl.activeTexture(RenderingContext.TEXTURE0 + unit);
       gl.bindTexture(RenderingContext.TEXTURE_2D, ti.texture);
       gl.uniform1i((prog as TexShaderProgram).u_Sampler, unit);
