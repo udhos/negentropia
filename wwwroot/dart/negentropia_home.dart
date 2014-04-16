@@ -411,6 +411,11 @@ RenderingContext boot() {
   canvas.id = "main_canvas";
   canvas.width = 780;
   canvas.height = 500;
+  canvas.onContextMenu.listen((Event e) {
+    // disable right-click context menu, since right button is used for rotation
+    e.preventDefault();
+  });
+
   canvasbox = querySelector("#canvasbox");
   assert(canvasbox != null);
   canvasbox.append(canvas);
@@ -428,6 +433,13 @@ RenderingContext boot() {
     canvasbox.style.backgroundColor = 'lightblue';
     return null;
   }
+
+  document.onKeyPress.listen((KeyboardEvent e) {
+    if (e.keyCode == 32) {
+      // disable default space-bar behavior, since it is used to restore camera default orientation
+      e.preventDefault();
+    }
+  });
 
   newMessagebox(canvasbox, 'messagebox', canvas);
 
@@ -879,8 +891,10 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 
   Mouse m = gameLoop.mouse;
   bool mouseLeftPressed = m.pressed(Mouse.LEFT);
-  bool mouseLeftReleased = m.released(Mouse.LEFT);
-  bool mouseLeftDown = m.isDown(Mouse.LEFT);
+  bool mouseRightPressed = m.pressed(Mouse.RIGHT);
+  bool mouseRightReleased = m.released(Mouse.RIGHT);
+  //bool mouseLeftDown = m.isDown(Mouse.LEFT);
+  bool mouseRightDown = m.isDown(Mouse.RIGHT);
 
   Keyboard k = gameLoop.keyboard;
   bool shiftDown = k.isDown(Keyboard.SHIFT);
@@ -889,36 +903,29 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   bool ctrlDown = k.isDown(Keyboard.CTRL);
   bool f1Pressed = k.pressed(Keyboard.F12);
 
-  if (k.pressed(Keyboard.NUM_PLUS)) {
-    planeFar += 200.0;
-    debug("plane far: $planeFar");
-    setPerspective();
-  }
-  if (k.pressed(Keyboard.NUM_MINUS)) {
-    planeFar -= 200.0;
-    debug("plane far: $planeFar");
-    setPerspective();
+  if (k.pressed(Keyboard.SPACE)) {
+    camControl.alignHorizontal(cam);
   }
 
   if (ctrlReleased) {
     deleteBandSelectionBox(gl, canvas, shiftDown);
   }
 
-  if (ctrlReleased || mouseLeftReleased) {
+  if (ctrlReleased || mouseRightReleased) {
     mouseDragBeginX = null;
     mouseDragBeginY = null;
     mouseDragCurrX = null;
     mouseDragCurrY = null;
   }
 
-  if (ctrlPressed || mouseLeftPressed) {
+  if (ctrlPressed || mouseRightPressed) {
     mouseDragBeginX = m.x;
     mouseDragBeginY = m.y;
     mouseDragCurrX = null;
     mouseDragCurrY = null;
   }
 
-  if (ctrlDown || mouseLeftDown) {
+  if (ctrlDown || mouseRightDown) {
     if ((mouseDragCurrX != m.x) || (mouseDragCurrY != m.y)) {
       // mouse moved
       mouseDragCurrX = m.x;
@@ -926,7 +933,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
       if (ctrlDown) {
         createBandSelectionBox(gl, canvas);
       }
-      if (mouseLeftDown) {
+      if (mouseRightDown) {
         int dx = mouseDragCurrX - mouseDragBeginX;
         int dy = mouseDragCurrY - mouseDragBeginY;
         camControl.orbitFocus(dx, dy);
@@ -936,7 +943,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     }
   }
 
-  if (mouseLeftReleased) {
+  if (mouseLeftPressed) {
     PickerInstance pi = mouseLeftClick(gl, m);
     mouseSelection(pi, shiftDown);
   }

@@ -29,6 +29,9 @@
 <div>mouse left click: select single item</div>
 <div>hold shift + mouse left click: add/remove item to/from group selection</div>
 <div>hold ctrl + drag mouse: band select multiple items</div>
-<div>p: toggle animation (not rendering) on/off</div>
+<div>t: toggle camera tracking on/off</div>
+<div>hold mouse right button + drag mouse: camera rotate</div>
+<div>mouse wheel: camera zoom in/out</div>
+<div>space: restore camera default orientation</div>
 
 {{ end }}

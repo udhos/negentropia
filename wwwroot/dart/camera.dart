@@ -177,6 +177,15 @@ class Camera {
     _sanity("focusAt");
   }
 
+  void alignHorizontal() {
+    _position.y = _focusPosition.y;
+    _upDirection.setFrom(Y);
+
+    _sanity("alignHorizontal");
+
+    _skyboxFollowPosition();
+  }
+
   /*
   void rotate(Matrix4 MV) {
     //MV.setRotation(_orientation.asRotationMatrix());

@@ -89,4 +89,8 @@ class CameraControl {
     forwardDy += dy;
   }
 
+  void alignHorizontal(Camera cam) {
+    cam.alignHorizontal();
+  }
+
 }
