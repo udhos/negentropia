@@ -639,15 +639,7 @@ void clearColor(RenderingContext gl, double r, g, b, a) {
   gl.clearColor(r, g, b, a);
 }
 
-void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
-
-  requestZone();
-
-  clearColor(gl, 0.5, 0.5, 0.5, 1.0);
-  gl.enable(RenderingContext.DEPTH_TEST); // enable depth testing
-  gl.depthFunc(RenderingContext.LESS); // gl.LESS is default depth test
-  gl.depthRange(0.0, 1.0); // default
-
+void setViewport(RenderingContext gl) {
   // define viewport size
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
   // viewport for default on-screen canvas
@@ -664,6 +656,18 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   canvasAspect = canvas.clientWidth.toDouble() / canvas.clientHeight.toDouble();
   // save aspect for render loop mat4.perspective
   debug("canvas aspect ratio: $canvasAspect");
+}
+
+void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
+
+  requestZone();
+
+  clearColor(gl, 0.5, 0.5, 0.5, 1.0);
+  gl.enable(RenderingContext.DEPTH_TEST); // enable depth testing
+  gl.depthFunc(RenderingContext.LESS); // gl.LESS is default depth test
+  gl.depthRange(0.0, 1.0); // default
+
+  setViewport(gl);
 
   updateCulling(gl);
 
@@ -701,8 +705,7 @@ void regularDraw(RenderingContext gl, GameLoopHtml gameLoop) {
   }
 }
 
-void draw(RenderingContext gl, GameLoopHtml gameLoop) {
-
+void setPerspective() {
   // set perspective matrix
   // field of view y: 45 degrees
   // width to height ratio
@@ -716,6 +719,11 @@ void draw(RenderingContext gl, GameLoopHtml gameLoop) {
   // aspect = canvas.width / canvas.height
   setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, planeNear,
       planeFar);
+}
+
+void draw(RenderingContext gl, GameLoopHtml gameLoop) {
+
+  //setPerspective();
 
   //cam.render(gameLoop.renderInterpolationFactor);
 
@@ -881,6 +889,17 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   bool ctrlDown = k.isDown(Keyboard.CTRL);
   bool f1Pressed = k.pressed(Keyboard.F12);
 
+  if (k.pressed(Keyboard.NUM_PLUS)) {
+    planeFar += 200.0;
+    debug("plane far: $planeFar");
+    setPerspective();
+  }
+  if (k.pressed(Keyboard.NUM_MINUS)) {
+    planeFar -= 200.0;
+    debug("plane far: $planeFar");
+    setPerspective();
+  }
+
   if (ctrlReleased) {
     deleteBandSelectionBox(gl, canvas, shiftDown);
   }
@@ -1019,7 +1038,9 @@ void main() {
     render(gl, gLoop);
   });
 
-  initContext(gl, gameLoop);
+  initContext(gl, gameLoop); // set aspectRatio
+
+  setPerspective(); // requires aspectRatio
 
   log("main: negentropia dart client ready");
 }

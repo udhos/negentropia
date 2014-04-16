@@ -48,6 +48,13 @@ class Camera {
     _skybox = box;
   }
 
+  void _skyboxFollowPosition() {
+    if (_skybox != null) {
+      _skybox.center = _position; // skybox always centered at camera
+      //debug("skybox centered at camera: ${_skybox.center}");
+    }
+  }
+
   String toString() {
     return 'pos=$_position focus=$_focusPosition up=$_upDirection';
   }
@@ -122,6 +129,8 @@ class Camera {
     // FIXME why is this needed?
 
     _sanity("rotateAroundFocusVertical");
+
+    _skyboxFollowPosition();
   }
 
   void rotateAroundFocusHorizontal(double radAngle) {
@@ -135,15 +144,15 @@ class Camera {
     _upDirection = rightDirection.cross(frontDirection).normalized();
 
     _sanity("rotateAroundFocusHorizontal");
+
+    _skyboxFollowPosition();
   }
 
 
   void moveTo(Vector3 coord) {
     assert(coord != null);
     _position.setFrom(coord);
-    if (_skybox != null) {
-      _skybox.center = _position; // skybox always centered at camera
-    }
+    _skyboxFollowPosition();
   }
 
   void focusAt(Vector3 coord) {
