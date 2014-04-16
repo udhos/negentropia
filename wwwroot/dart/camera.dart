@@ -109,7 +109,7 @@ class Camera {
     _position.add(_focusPosition); // undo: translate focus to origin
 
     _upDirection = rightDirection.cross(frontDirection).normalized();
-        // FIXME why is this needed?
+    // FIXME why is this needed?
 
     _sanity("rotateAroundFocusVertical");
   }
