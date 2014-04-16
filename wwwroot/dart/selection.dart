@@ -11,6 +11,12 @@ import 'logg.dart';
 
 Set<PickerInstance> _selection = new HashSet<PickerInstance>();
 
+double getSelectionBoundingRadius() {
+  if (_selection.isEmpty) return null;
+
+  return _selection.first.boundingRadius;
+}
+
 Vector3 getSelectionPosition() {
   if (_selection.isEmpty) return null;
 

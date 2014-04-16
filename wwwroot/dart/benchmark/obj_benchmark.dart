@@ -11,7 +11,7 @@ String mtlURL;
 String mtlString;
 
 class ObjBenchmark extends BenchmarkBase {
-  const ObjBenchmark(): super("Benchmark: Obj.fromString");
+  const ObjBenchmark() : super("Benchmark: Obj.fromString");
 
   static void main() {
     new ObjBenchmark().report();
@@ -23,7 +23,7 @@ class ObjBenchmark extends BenchmarkBase {
 }
 
 class MtlBenchmark extends BenchmarkBase {
-  const MtlBenchmark(): super("Benchmark: mtllib_parse");
+  const MtlBenchmark() : super("Benchmark: mtllib_parse");
 
   static void main() {
     new MtlBenchmark().report();

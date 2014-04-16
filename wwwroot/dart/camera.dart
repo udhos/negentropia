@@ -4,6 +4,7 @@ import 'package:vector_math/vector_math.dart';
 
 import 'logg.dart';
 import 'vec.dart';
+import 'skybox.dart';
 
 bool _cameraTracking = false;
 bool get cameraTracking => _cameraTracking;
@@ -35,8 +36,17 @@ class Camera {
   Vector3 _focusPosition = new Vector3(0.0, 0.0, 0.0);
   Vector3 _upDirection = new Vector3(0.0, 1.0, 0.0);
 
-  Vector3 get frontDirection => (_focusPosition - _position).normalized();
+  Vector3 get focus => _focusPosition.clone();
+
+  Vector3 get frontVector => _focusPosition - _position;
+  Vector3 get frontDirection => frontVector.normalized();
   Vector3 get rightDirection => frontDirection.cross(_upDirection).normalized();
+
+  SkyboxInstance _skybox;
+
+  void set skybox(SkyboxInstance box) {
+    _skybox = box;
+  }
 
   String toString() {
     return 'pos=$_position focus=$_focusPosition up=$_upDirection';
@@ -131,6 +141,9 @@ class Camera {
   void moveTo(Vector3 coord) {
     assert(coord != null);
     _position.setFrom(coord);
+    if (_skybox != null) {
+      _skybox.center = _position; // skybox always centered at camera
+    }
   }
 
   void focusAt(Vector3 coord) {

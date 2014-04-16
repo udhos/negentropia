@@ -4,7 +4,6 @@ import 'dart:web_gl';
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:convert';
-import 'dart:collection';
 
 import 'package:stats/stats.dart';
 import 'package:vector_math/vector_math.dart';
@@ -24,9 +23,9 @@ import 'logg.dart';
 import 'interpolate.dart';
 import 'vec.dart';
 import 'selection.dart';
+import 'message.dart';
 
 CanvasElement canvas;
-DivElement messagebox;
 double canvasAspect;
 ShaderProgram shaderProgram;
 bool debugLostContext = true;
@@ -118,26 +117,6 @@ TexShaderProgram findTexShader(String programName) {
     assert(prog == null); // not found
   }
   return prog;
-}
-
-int maxList = 10;
-ListQueue<String> msgList = new ListQueue<String>(maxList);
-
-void messageUser(String m) {
-
-  msgList.add(m);
-
-  while (msgList.length > maxList) {
-    msgList.removeFirst();
-  }
-
-  messagebox.children.clear();
-
-  msgList.forEach((m) {
-    DivElement d = new DivElement();
-    d.text = m;
-    messagebox.children.add(d);
-  });
 }
 
 Instance findInstance(String id) {
@@ -416,48 +395,12 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
       break;
 
     case CM_CODE_MESSAGE:
-      messageUser(data);
+      messageUser("recv: $data");
       break;
 
     default:
       err("dispatcher: unknown code=$code");
   }
-}
-
-DivElement createMessagebox(String id, CanvasElement c) {
-
-  DivElement mbox = new DivElement();
-  mbox.id = id;
-
-  int left = 10 + c.offsetLeft;
-  int top = 28 + c.offsetTop;
-
-  mbox.style.border = '2px solid #FFF';
-  mbox.style.zIndex = "1";
-  mbox.style.position = "absolute";
-  mbox.style.width = "300px";
-  mbox.style.color = "lightgreen";
-  mbox.style.background = "rgba(50,50,50,0.7)";
-  mbox.style.textAlign = "left";
-  mbox.style.padding = "2px";
-  mbox.style.fontSize = 'x-small';
-
-  void repositionBox(Event e) {
-    int left = 10 + c.offsetLeft;
-    int top = 28 + c.offsetTop;
-
-    mbox.style.left = "${left}px";
-    mbox.style.top = "${top}px";
-
-    log("repositionBox: event=$e: left=${mbox.style.left} top=${mbox.style.top}"
-        );
-  }
-
-  repositionBox(null);
-
-  c.onChange.listen(repositionBox);
-
-  return mbox;
 }
 
 DivElement canvasbox;
@@ -486,8 +429,7 @@ RenderingContext boot() {
     return null;
   }
 
-  messagebox = createMessagebox('messagebox', canvas);
-  canvasbox.append(messagebox);
+  newMessagebox(canvasbox, 'messagebox', canvas);
 
   initShowPicking();
 
@@ -572,6 +514,8 @@ void addSkybox(RenderingContext gl, Map<String, String> s) {
   SkyboxInstance skyboxInstance = new SkyboxInstance('skybox', skyboxModel,
       new Vector3(0.0, 0.0, 0.0), skyboxScale, false);
   skyboxModel.addInstance(skyboxInstance);
+
+  cam.skybox = skyboxInstance;
 }
 
 void demoInitSkybox(RenderingContext gl) {
@@ -979,8 +923,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   }
 
   if (m.wheelDy != 0) {
-    //log("mouse wheel: dy=${m.wheelDy}");
-    camControl.moveForward(m.wheelDy);
+    camControl.moveForward(cam, m.wheelDy);
   }
 
   trackKey(k.isDown(Keyboard.T));

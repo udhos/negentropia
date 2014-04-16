@@ -15,7 +15,7 @@ class SkyboxProgram extends ShaderProgram {
 
   UniformLocation u_Skybox;
 
-  SkyboxProgram(RenderingContext gl): super(gl, "skyboxShader");
+  SkyboxProgram(RenderingContext gl) : super(gl, "skyboxShader");
 
   void getLocations() {
     super.getLocations();
@@ -62,7 +62,7 @@ class SkyboxModel extends Model {
   bool cubemapReady = false;
 
   SkyboxModel.fromJson(RenderingContext gl, String URL, bool reverse, num
-      rescale): super.fromJson(gl, URL, reverse) {
+      rescale) : super.fromJson(gl, URL, reverse) {
     cubemapTexture = gl.createTexture();
   }
 
@@ -127,7 +127,7 @@ class SkyboxInstance extends Instance {
   double _angle = 0.0;
 
   SkyboxInstance(String id, Model model, Vector3 center, double
-      scale, this.demoAnimate): super(id, model, center, scale);
+      scale, this.demoAnimate) : super(id, model, center, scale);
 
   void update(GameLoopHtml gameLoop) {
 

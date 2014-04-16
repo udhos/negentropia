@@ -5,7 +5,7 @@ class TexShaderProgram extends ShaderProgram {
   int a_TextureCoord;
   UniformLocation u_Sampler;
 
-  TexShaderProgram(RenderingContext gl, String programName): super(gl,
+  TexShaderProgram(RenderingContext gl, String programName) : super(gl,
       programName);
 
   /*
@@ -50,7 +50,7 @@ class TexPiece extends Piece {
 
   TextureInfo texInfo;
 
-  TexPiece(int indexOffset, int indexLength): super(indexOffset, indexLength);
+  TexPiece(int indexOffset, int indexLength) : super(indexOffset, indexLength);
 }
 
 class TexModel extends Model {
@@ -150,7 +150,7 @@ class TexModel extends Model {
   }
 
   TexModel.fromOBJ(RenderingContext gl, String URL, Vector3 front, Vector3
-      up, this.textureTable, this.asset): super.fromOBJ(gl, URL, front, up);
+      up, this.textureTable, this.asset) : super.fromOBJ(gl, URL, front, up);
 
   Piece addPiece(int offset, int length) {
     Piece pi = new TexPiece(offset, length);
@@ -190,7 +190,7 @@ class TexModel extends Model {
 class TexInstance extends Instance {
 
   TexInstance(id, TexModel model, Vector3 center, double scale, [Float32List
-      pick = null]): super(id, model, center, scale, pick);
+      pick = null]) : super(id, model, center, scale, pick);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
 

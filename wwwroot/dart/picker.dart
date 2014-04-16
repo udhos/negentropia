@@ -51,7 +51,7 @@ PickerInstance mouseClickHit(Iterable<Instance> list, Uint8List color) {
 
 class PickerInstance extends Instance {
 
-  PickerInstance(Instance i): super(i.id, i.model, i.center, i.scale,
+  PickerInstance(Instance i) : super(i.id, i.model, i.center, i.scale,
       i.pickColor);
 
   // the whole purpose of this class is to redefine the draw() method
@@ -139,7 +139,7 @@ class PickerShader extends ShaderProgram {
   }
 
   PickerShader(RenderingContext gl, List<ShaderProgram> programList, int
-      width, int height): super(gl, "pickerShader") {
+      width, int height) : super(gl, "pickerShader") {
 
     // copy clickable instances
     programList.forEach((p) {

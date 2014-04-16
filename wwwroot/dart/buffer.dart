@@ -16,6 +16,8 @@ class Instance {
     if (model.boundingRadius == null) {
       err("$this $id model=$model: undefined model bounding radius");
       radius = 1.0;
+    } else {
+      radius = model.boundingRadius;
     }
 
     return scale * radius;
@@ -23,8 +25,12 @@ class Instance {
 
   Vector3 get center => _center.clone();
 
-  set center(Vector3 c) => _center.setFrom(c);
-  set mission(String m) => _mission = m;
+  void set center(Vector3 c) {
+    _center.setFrom(c);
+  }
+  void set mission(String m) {
+    _mission = m;
+  }
 
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
 

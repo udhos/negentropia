@@ -6,7 +6,7 @@ class AxisInstance extends Instance {
   static final Float32List green = new Float32List.fromList([0.0, 1.0, 0.0, 1.0]
       );
 
-  AxisInstance(String id, AxisModel am, Instance i): super(id, am, i.center,
+  AxisInstance(String id, AxisModel am, Instance i) : super(id, am, i.center,
       i.scale);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
@@ -49,7 +49,7 @@ class AxisModel extends Model {
 
   bool _axisReady = false;
 
-  AxisModel.fromModel(RenderingContext gl, Model m): super.init() {
+  AxisModel.fromModel(RenderingContext gl, Model m) : super.init() {
 
     debug("AxisModel: creating from model=${m._URL}");
 
@@ -106,7 +106,7 @@ class SolidShader extends ShaderProgram {
     return i;
   }
 
-  SolidShader(RenderingContext gl, List<ShaderProgram> programList): super(gl,
+  SolidShader(RenderingContext gl, List<ShaderProgram> programList) : super(gl,
       "solidShader") {
 
     // copy clickable instances

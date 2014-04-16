@@ -208,7 +208,7 @@ func sendZoneDynamic(p *Player, loc string) {
 
 	max := 15
 	for i := 1; i <= max; i++ {
-		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: fmt.Sprintf("line %d of %d", i, max)}
+		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: fmt.Sprintf("world server: line %d of %d", i, max)}
 	}
 }
 
