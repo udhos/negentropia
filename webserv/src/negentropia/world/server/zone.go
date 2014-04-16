@@ -24,7 +24,7 @@ type Unit struct {
 	yawSpeed       float64 // rad/s
 	pitchSpeed     float64 // rad/s
 	rollSpeed      float64 // rad/s
-	boundingRadius float64 // bounding sphere radius (m)
+	boundingRadius float64 // bounding sphere radius (meter)
 	mission        string
 	delete         bool
 }
@@ -159,6 +159,10 @@ func missionHunt(elapsed time.Duration, zone *Zone, unit *Unit) {
 	// nearest enemy: bruteforce x kdtree ?
 	// kdtree: http://godoc.org/code.google.com/p/biogo.store/kdtree
 	// kdtree: http://godoc.org/code.google.com/p/eaburns/kdtree
+
+	unitMove(unit, elapsed)
+
+	sendUnitUpdate(unit, zone.zid)
 }
 
 func updateUnit(elapsed time.Duration, zone *Zone, unit *Unit) {

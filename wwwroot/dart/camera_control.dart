@@ -4,7 +4,7 @@ import 'dart:math' as math;
 
 //import 'package:vector_math/vector_math.dart';
 
-//import 'logg.dart';
+import 'logg.dart';
 import 'camera.dart';
 import 'selection.dart';
 import 'message.dart';
@@ -63,6 +63,8 @@ class CameraControl {
   }
 
   void moveForward(Camera cam, int dy) {
+    //debug("moveForward: dy=$dy");
+
     if (dy > 0) {
       // getting close - closest distance is bounding radius
 

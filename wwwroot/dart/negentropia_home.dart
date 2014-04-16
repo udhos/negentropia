@@ -24,6 +24,7 @@ import 'interpolate.dart';
 import 'vec.dart';
 import 'selection.dart';
 import 'message.dart';
+import 'wheel.dart';
 
 CanvasElement canvas;
 double canvasAspect;
@@ -949,7 +950,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   }
 
   if (m.wheelDy != 0) {
-    camControl.moveForward(cam, m.wheelDy);
+    camControl.moveForward(cam, normalizeWheel(m.wheelDy));
   }
 
   trackKey(k.isDown(Keyboard.T));

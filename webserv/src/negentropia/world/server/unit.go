@@ -43,3 +43,12 @@ func unitRotateYaw(elapsed time.Duration, unit *Unit) {
 		log.Printf("rotateYaw: NOT UNITARY: up=%s length=%f", vector3String(unit.up), unit.up.Length())
 	}
 }
+
+/*
+	linearSpeed    float64 // m/s
+	yawSpeed       float64 // rad/s
+	pitchSpeed     float64 // rad/s
+	rollSpeed      float64 // rad/s
+*/
+func unitMove(unit *Unit, elapsed time.Duration) {
+}

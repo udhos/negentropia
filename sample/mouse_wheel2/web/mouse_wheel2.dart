@@ -23,6 +23,6 @@ void main() {
   
   window.onMouseWheel.listen((WheelEvent e) {
     e.preventDefault();
-    log("wheel: dx=${e.deltaX} dy=${e.deltaY}");
+    log("wheel: type=${e.type} dx=${e.deltaX} dy=${e.deltaY}");
   });
 }
