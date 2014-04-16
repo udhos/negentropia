@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+<title>Mouse Wheel</title>
+
+<script type="text/javascript">
+
+	var logbox;
+	var lineCount = 0;
+
+	function init_log() {
+		logbox = document.createElement('div');
+		document.body.appendChild(logbox);
+	}
+	
+	function log(msg) {
+		++lineCount;
+		
+		msg = lineCount + " " + msg;
+		
+		console.info(msg);
+		
+		var div = document.createElement('div');
+		div.textContent = msg;
+		logbox.appendChild(div);
+		
+		if (logbox.children.length > 10) {
+			logbox.removeChild(logbox.children[0]);
+		}
+	}
+	
+	function onMouseWheel(event) {
+		var dx = event.deltaX;
+		var dy = event.deltaY;
+		log("onMouseWheel: dx=" + dx + " dy=" + dy);
+	}
+
+	function main() {
+		
+		init_log();
+	
+		log("main(): begin");
+		window.addEventListener('wheel', onMouseWheel, false);
+		log("main(): end");
+	}
+	
+</script>
+
+</head>
+
+<body onload="main()">
+<h1>Scroll the mouse wheel</h2>
+</body>
+
+</html>
+
