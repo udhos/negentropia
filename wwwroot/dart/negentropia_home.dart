@@ -840,14 +840,6 @@ void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
     canvasbox.append(dragBox);
   }
 
-  /*
-// show drag box coordinates
-dragBox.children.clear();
-DivElement d = new DivElement();
-d.text = "($mouseDragBeginX,$mouseDragBeginY) - ($mouseDragCurrX,$mouseDragCurrY)";
-dragBox.children.add(d);
-*/
-
   int minX = math.min(mouseDragBeginX, mouseDragCurrX);
   int minY = c.height - math.max(mouseDragBeginY, mouseDragCurrY);
 
@@ -871,13 +863,9 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
 
   int y = canvas.height - m.y;
 
-  //debug("mouseLeftClick: mouse=${m.x},${m.y} webgl=${m.x},${y}");
-
   Uint8List color = new Uint8List(4);
-  //readColor("canvas-framebuffer", gl, m.x, y, null, color);
   readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
 
-  //PickerInstance pi = mouseClickHit(picker.instanceList, color);
   PickerInstance pi = picker.findInstanceByColor(color[0], color[1], color[2]);
 
   return pi;
@@ -894,12 +882,10 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   bool mouseLeftPressed = m.pressed(Mouse.LEFT);
   bool mouseRightPressed = m.pressed(Mouse.RIGHT);
   bool mouseRightReleased = m.released(Mouse.RIGHT);
-  //bool mouseLeftDown = m.isDown(Mouse.LEFT);
   bool mouseRightDown = m.isDown(Mouse.RIGHT);
 
   Keyboard k = gameLoop.keyboard;
   bool shiftDown = k.isDown(Keyboard.SHIFT);
-  bool ctrlPressed = k.pressed(Keyboard.CTRL);
   bool ctrlReleased = k.released(Keyboard.CTRL);
   bool ctrlDown = k.isDown(Keyboard.CTRL);
   bool f1Pressed = k.pressed(Keyboard.F12);
@@ -910,37 +896,35 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 
   if (ctrlReleased) {
     deleteBandSelectionBox(gl, canvas, shiftDown);
-  }
-
-  if (ctrlReleased || mouseRightReleased) {
     mouseDragBeginX = null;
     mouseDragBeginY = null;
     mouseDragCurrX = null;
     mouseDragCurrY = null;
   }
 
-  if (ctrlPressed || mouseRightPressed) {
-    mouseDragBeginX = m.x;
-    mouseDragBeginY = m.y;
-    mouseDragCurrX = null;
-    mouseDragCurrY = null;
+  if (ctrlDown) {
+    int mx = m.x;
+    int my = m.y;
+    if (mouseDragBeginX == null) {
+      mouseDragBeginX = mx;
+    }
+    if (mouseDragBeginY == null) {
+      mouseDragBeginY = my;
+    }
+    if ((mouseDragCurrX != mx) || (mouseDragCurrY != my)) {
+      // mouse moved
+      mouseDragCurrX = mx;
+      mouseDragCurrY = my;
+      createBandSelectionBox(gl, canvas);
+    }
   }
 
-  if (ctrlDown || mouseRightDown) {
-    if ((mouseDragCurrX != m.x) || (mouseDragCurrY != m.y)) {
+  if (mouseRightDown) {
+    int dx = m.dx;
+    int dy = m.dy;
+    if (dx != 0 || dy != 0) {
       // mouse moved
-      mouseDragCurrX = m.x;
-      mouseDragCurrY = m.y;
-      if (ctrlDown) {
-        createBandSelectionBox(gl, canvas);
-      }
-      if (mouseRightDown) {
-        int dx = mouseDragCurrX - mouseDragBeginX;
-        int dy = mouseDragCurrY - mouseDragBeginY;
-        camControl.orbitFocus(dx, dy);
-        mouseDragBeginX = m.x;
-        mouseDragBeginY = m.y;
-      }
+      camControl.orbitFocus(dx, dy);
     }
   }
 
@@ -964,7 +948,6 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     }
   }
 
-  //cam.update(gameLoop.gameTime);
   camControl.update(gameLoop.dt, cam);
 
   if (paused()) {

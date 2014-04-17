@@ -4,7 +4,7 @@ import 'dart:math' as math;
 
 //import 'package:vector_math/vector_math.dart';
 
-import 'logg.dart';
+//import 'logg.dart';
 import 'camera.dart';
 import 'selection.dart';
 import 'message.dart';
@@ -41,6 +41,9 @@ class CameraControl {
       orbitFocusDy = 0;
     }
 
+    //
+    // Consume pending zoom
+    //
     if (forwardDy != 0) {
       cam.moveForward(wheelToDistance(forwardDy));
       forwardDy = 0;
