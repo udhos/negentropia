@@ -1,0 +1,5 @@
+https://github.com/spate/vectormath      - This is an adaptation of the scalar C functions from Sony's Vector Math library
+https://bitbucket.org/tshannon/vmath/src - The main difference being James used structs, and I've implemented with pointers to arrays.
+https://github.com/vova616/chipmunk      - Pure Go Physics engine based on chipmunk-physics
+https://github.com/ungerik/go3d          - A performance oriented 2D/3D math package for Go
+https://bitbucket.org/zombiezen/math3    - math3 is a collection of Go packages for working with 3D graphics
