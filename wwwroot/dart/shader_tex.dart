@@ -36,11 +36,6 @@ class TexShaderProgram extends ShaderProgram {
 
     modelList.forEach((m) => m.drawInstances(gameLoop, this, cam));
 
-    // clean up
-    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
-    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
-    gl.bindTexture(RenderingContext.TEXTURE_2D, null);
-
     //gl.disableVertexAttribArray(a_Position); // needed ??
   }
 
@@ -59,6 +54,7 @@ class TexModel extends Model {
   final int textureCoordBufferItemSize = 2; // coord s,t
   Asset asset;
   Map<String, Texture> textureTable;
+  final int textureUnit = 1;
 
   /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
@@ -127,7 +123,7 @@ class TexModel extends Model {
         }
 
         TextureInfo texInfo = new TextureInfo(gl, textureTable, textureURL,
-            temporaryColor);
+            temporaryColor, textureUnit);
 
         addTexture(pa.indexFirst, pa.indexListSize, texInfo);
 
@@ -204,7 +200,7 @@ class TexInstance extends Instance {
       TextureInfo ti = tp.texInfo;
 
       // set texture sampler
-      int unit = 1;
+      int unit = (model as TexModel).textureUnit;
       gl.activeTexture(RenderingContext.TEXTURE0 + unit);
       gl.bindTexture(RenderingContext.TEXTURE_2D, ti.texture);
       gl.uniform1i((prog as TexShaderProgram).u_Sampler, unit);

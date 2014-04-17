@@ -11,8 +11,10 @@ class TextureInfo {
   String textureName;
   Texture texture;
   List<int> temporaryColor;
+  int textureUnit;
 
   void loadSolidColor(RenderingContext gl) {
+    gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
     gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
     gl.texImage2DTyped(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, 1,
         1, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE,
@@ -43,6 +45,7 @@ class TextureInfo {
 
     void onDone(Event e) {
 
+      gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
       gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
       //gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, true);
       gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
@@ -105,7 +108,8 @@ class TextureInfo {
   }
 
   TextureInfo(RenderingContext gl, Map<String, Texture>
-      textureTable, this.textureName, List<int> this.temporaryColor) {
+      textureTable, this.textureName, List<int> this.temporaryColor, this.textureUnit)
+      {
     loadTexture(gl, textureTable);
   }
 }

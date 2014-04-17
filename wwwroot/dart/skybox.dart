@@ -38,9 +38,11 @@ class SkyboxProgram extends ShaderProgram {
     gl.useProgram(program);
     gl.enableVertexAttribArray(a_Position);
 
+    /*
     int unit = 0;
-    gl.activeTexture(RenderingContext.TEXTURE0 + unit);
+    gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
     gl.uniform1i(this.u_Skybox, unit);
+    */
 
     // send perspective projection matrix uniform
     gl.uniformMatrix4fv(this.u_P, false, pMatrix.storage);
@@ -60,6 +62,7 @@ class SkyboxModel extends Model {
 
   Texture cubemapTexture;
   bool cubemapReady = false;
+  final int textureUnit = 2;
 
   double get halfEdge => 1.0;
 
@@ -73,6 +76,7 @@ class SkyboxModel extends Model {
     ImageElement image = new ImageElement();
 
     void handleDone(Event e) {
+      gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
           RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
@@ -112,7 +116,9 @@ class SkyboxModel extends Model {
 
     RenderingContext gl = program.gl;
 
+    gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
     gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
+    gl.uniform1i((program as SkyboxProgram).u_Skybox, textureUnit);
 
     instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
 
