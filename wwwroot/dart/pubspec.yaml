@@ -12,16 +12,16 @@ transformers:
     terse: true
 dependencies:
   browser: any
+  game_loop:
+    git: https://github.com/johnmccutchan/game_loop.git
   #game_loop:
-    #git: https://github.com/johnmccutchan/game_loop.git
+    #git: https://github.com/udhos/game_loop.git
   #game_loop:
     #git:
       #url: https://github.com/TuTu/game_loop.git
       #ref: fix-wheel-event    
   #game_loop:
     #path: c:/tmp/devel/game_loop
-  game_loop:
-    git: https://github.com/udhos/game_loop.git
   stats: any
   vector_math:
     git: https://github.com/johnmccutchan/vector_math.git
