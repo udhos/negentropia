@@ -20,11 +20,20 @@ const CM_CODE_PROGRAM = 8; // server->client: set shader program
 const CM_CODE_INSTANCE = 9; // server->client: set instance
 const CM_CODE_INSTANCE_UPDATE = 10; // server->client: update instance
 const CM_CODE_MESSAGE = 11; // server->client: message for user
+const CM_CODE_MISSION_NEXT = 12; // client->server: switch mission
 
 WebSocket _ws;
 ListQueue<String> _wsQueue = new ListQueue<String>();
 typedef void dispatcherFunc(int code, String data, Map<String, String> tab);
 dispatcherFunc _dispatcher;
+
+void missionNext(Map m) {
+  wsSendMap({
+    'Code': CM_CODE_MISSION_NEXT,
+    'Data': "",
+    'Tab': m
+  });
+}
 
 void requestZone() {
   /*
@@ -37,18 +46,20 @@ void requestZone() {
     'Data': ""
   };
 
-  String json = JSON.encode(msg);
-
-  wsSend(json);
+  wsSendMap(msg);
 }
 
 void _write(String msg) {
   _ws.send(msg);
 }
 
-void wsSend(String msg) {
+void wsSendString(String msg) {
   _wsQueue.add(msg);
   wsFlush();
+}
+
+void wsSendMap(Map msg) {
+  wsSendString(JSON.encode(msg));
 }
 
 void wsFlush() {

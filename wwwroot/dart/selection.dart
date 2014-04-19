@@ -11,6 +11,14 @@ import 'logg.dart';
 
 Set<PickerInstance> _selection = new HashSet<PickerInstance>();
 
+Map<String, String> getSelectionIdList() {
+  Map<String, String> idList = new Map<String, String>();
+  _selection.forEach((e) {
+    idList[e.id] = "";
+  });
+  return idList;
+}
+
 double getSelectionBoundingRadius() {
   if (_selection.isEmpty) return null;
 

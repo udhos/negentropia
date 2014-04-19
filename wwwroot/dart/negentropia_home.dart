@@ -154,7 +154,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
           "Code": CM_CODE_ECHO,
           "Data": "hi there"
         };
-        wsSend(JSON.encode(m));
+        wsSendMap(m);
       }
       break;
 
@@ -888,7 +888,12 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   bool shiftDown = k.isDown(Keyboard.SHIFT);
   bool ctrlReleased = k.released(Keyboard.CTRL);
   bool ctrlDown = k.isDown(Keyboard.CTRL);
-  bool f1Pressed = k.pressed(Keyboard.F12);
+  bool f2Pressed = k.pressed(Keyboard.F2);
+
+  if (f2Pressed) {
+    debug("F2 hit");
+    missionNext(getSelectionIdList());
+  }
 
   if (k.pressed(Keyboard.SPACE)) {
     camControl.alignHorizontal(cam);

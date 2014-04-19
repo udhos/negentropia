@@ -24,6 +24,7 @@ const (
 	CM_CODE_INSTANCE        = 9  // server->client: set instance
 	CM_CODE_INSTANCE_UPDATE = 10 // server->client: update instance
 	CM_CODE_MESSAGE         = 11 // server->client: message for user
+	CM_CODE_MISSION_NEXT    = 12 // client->server: switch mission
 )
 
 type ClientMsg struct {
@@ -208,8 +209,12 @@ func sendZoneDynamic(p *Player, loc string) {
 
 	max := 15
 	for i := 1; i <= max; i++ {
-		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: fmt.Sprintf("world server: line %d of %d", i, max)}
+		msgPlayer(p, fmt.Sprintf("world server: line %d of %d", i, max))
 	}
+}
+
+func msgPlayer(p *Player, msg string) {
+	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: msg}
 }
 
 func sendZone(p *Player, loc string) {
@@ -232,6 +237,10 @@ func input(p *Player, m *ClientMsg) {
 			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE, Data: "demo"}
 		} else {
 			sendZone(p, loc)
+		}
+	case CM_CODE_MISSION_NEXT:
+		for id := range m.Tab {
+			missionNext(p, id)
 		}
 	default:
 		log.Printf("server.input: unknown code=%d", m.Code)

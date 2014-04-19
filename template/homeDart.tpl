@@ -33,5 +33,6 @@
 <div>hold mouse right button + drag mouse: camera rotate</div>
 <div>mouse wheel: camera zoom in/out</div>
 <div>space: restore camera default orientation</div>
+<div>F2: switch selected units' mission</div>
 
 {{ end }}

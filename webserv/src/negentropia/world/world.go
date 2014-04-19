@@ -96,7 +96,7 @@ LOOP:
 func receiver(p *server.Player) {
 
 	for {
-		msg := new(server.ClientMsg)
+		msg := &server.ClientMsg{} // new(server.ClientMsg)
 		if err := websocket.JSON.Receive(p.Websocket, msg); err != nil {
 			log.Printf("receiver: %s %s: failure: %s", p.Sid, p.Email, err)
 			break
