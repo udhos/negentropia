@@ -12,11 +12,9 @@ int _anisotropy = 16;
 void anisotropic_filtering_detect(RenderingContext gl) {
 
   void enable(ExtTextureFilterAnisotropic ext, String name) {
-    //print("anisotropic extension: name=$name class=$ext");
 
     int max_anisotropy = gl.getParameter(
         ExtTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-    //print("max anisotropy: $max_anisotropy");
 
     if (_anisotropy > max_anisotropy) {
       _anisotropy = max_anisotropy;
@@ -52,8 +50,6 @@ void anisotropic_filtering_enable(RenderingContext gl) {
     // not supported
     return;
   }
-
-  //print("enabling anisotropy=$_anisotropy on texture");
 
   gl.texParameterf(RenderingContext.TEXTURE_2D,
       ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, _anisotropy.toDouble());

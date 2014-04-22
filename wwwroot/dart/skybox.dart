@@ -10,6 +10,7 @@ import 'package:game_loop/game_loop_html.dart';
 import 'shader.dart';
 import 'camera.dart';
 import 'interpolate.dart';
+import 'logg.dart';
 
 class SkyboxProgram extends ShaderProgram {
 
@@ -99,7 +100,7 @@ class SkyboxModel extends Model {
     }
 
     void handleError(Event e) {
-      print(
+      err(
           "addCubemapFace: handleError: failure loading image from URL: $URL: $e");
     }
 

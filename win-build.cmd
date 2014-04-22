@@ -5,6 +5,7 @@ set DART_SDK=c:\dart\dart-sdk
 
 @rem run tests
 call %DEVEL%\negentropia\win-gotest.cmd
+call %DEVEL%\negentropia\win-benchmark-dart.cmd
 
 @rem build server
 call %DEVEL%\negentropia\win-goinstall.cmd

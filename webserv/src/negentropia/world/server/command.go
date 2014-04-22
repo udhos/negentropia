@@ -16,6 +16,6 @@ func missionNext(p *Player, unitId string) {
 	}
 
 	msgPlayer(p, fmt.Sprintf("unit %v: mission command: accepted", unitId))
-	
-	log.Printf("FIXME missionNext: player=%v unit=%v owner=%v", p.Email, unitId, owner)	
+
+	log.Printf("FIXME missionNext: player=%v unit=%v owner=%v", p.Email, unitId, owner)
 }

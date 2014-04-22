@@ -48,7 +48,6 @@ class ShaderProgram {
 
   void fetch(Map<String, Shader> shaderCache, String vertexShaderURL, String
       fragmentShaderURL) {
-    //print("Program.fetch: vsUrl=$vertexShaderURL fsURL=$fragmentShaderURL");
 
     Shader compileShader(String shaderURL, String shaderSource, int shaderType)
         {
@@ -59,9 +58,9 @@ class ShaderProgram {
           RenderingContext.COMPILE_STATUS);
       if (!parameter) {
         String infoLog = gl.getShaderInfoLog(shader);
-        print("compileShader: compilation FAILURE: $shaderURL: info=$infoLog");
+        err("compileShader: compilation FAILURE: $shaderURL: info=$infoLog");
         if (gl.isContextLost()) {
-          print(
+          err(
               "compileShader: compilation FAILURE: $shaderURL: info=$infoLog: context is lost"
               );
         }
@@ -69,8 +68,8 @@ class ShaderProgram {
       }
 
       if (shaderCache[shaderURL] != null) {
-        print("compileShader: " + shaderURL +
-            ": FIXME: overwriting shader cache");
+        err("compileShader: " + shaderURL + ": FIXME: overwriting shader cache"
+            );
       }
       shaderCache[shaderURL] = shader;
 
@@ -92,10 +91,10 @@ class ShaderProgram {
       bool parameter = gl.getProgramParameter(p, RenderingContext.LINK_STATUS);
       if (!parameter) {
         String infoLog = gl.getProgramInfoLog(p);
-        print("tryLink: shader program link FAILURE: $infoLog");
+        err("tryLink: shader program link FAILURE: $infoLog");
         if (gl.isContextLost()) {
-          print(
-              "tryLink: shader program link FAILURE: $infoLog: context is lost");
+          err("tryLink: shader program link FAILURE: $infoLog: context is lost"
+              );
         }
         return;
       }
@@ -116,7 +115,7 @@ class ShaderProgram {
       requestVert.onLoad.listen((ProgressEvent e) {
         String response = requestVert.responseText;
         if (requestVert.status != 200) {
-          print("vertexShader: url=$url: error: [$response]");
+          err("vertexShader: url=$url: error: [$response]");
           return;
         }
         vertexShader = compileShader(url, response,
@@ -124,7 +123,7 @@ class ShaderProgram {
         tryLink();
       });
       requestVert.onError.listen((e) {
-        print("vertexShader: url=$url: error: [$e]");
+        err("vertexShader: url=$url: error: [$e]");
       });
       requestVert.send();
     }
@@ -138,7 +137,7 @@ class ShaderProgram {
       requestFrag.onLoad.listen((ProgressEvent e) {
         String response = requestFrag.responseText;
         if (requestFrag.status != 200) {
-          print("fragmentShader: url=$url: error: [$response]");
+          err("fragmentShader: url=$url: error: [$response]");
           return;
         }
         fragmentShader = compileShader(url, response,
@@ -146,7 +145,7 @@ class ShaderProgram {
         tryLink();
       });
       requestFrag.onError.listen((e) {
-        print("fragmentShader: url=$url: error: [$e]");
+        err("fragmentShader: url=$url: error: [$e]");
       });
       requestFrag.send();
     }

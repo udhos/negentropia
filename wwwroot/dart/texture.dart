@@ -5,6 +5,7 @@ import 'dart:web_gl';
 import 'dart:typed_data';
 
 import 'anisotropic.dart';
+import 'logg.dart';
 
 class TextureInfo {
 
@@ -68,7 +69,7 @@ class TextureInfo {
     }
 
     void onError(Event e) {
-      print(
+      err(
           "TextureInfo: handleError: failure loading image from URL: $textureName: $e");
     }
 
@@ -83,7 +84,7 @@ class TextureInfo {
 
     texture = gl.createTexture();
     if (texture == null) {
-      print("TextureInfo: could not create texture for: $textureName");
+      err("TextureInfo: could not create texture for: $textureName");
       return;
     }
 

@@ -210,17 +210,17 @@ class Model {
     req.onLoad.listen((ProgressEvent e) {
       String response = req.responseText;
       if (req.status != 200) {
-        print("Model.fromURL: error: [$response]");
+        err("Model.fromURL: error: [$response]");
         return;
       }
-      print("Model.fromURL: loaded: json=[$response]");
+      err("Model.fromURL: loaded: json=[$response]");
       Map m = parse(response);
       List<num> vertCoord = m["vertCoord"];
       List<int> vertInd = m["vertInd"];
       _createBuffers(gl, vertCoord, vertInd);
     });
     req.onError.listen((e) {
-      print("Model.fromURL: error: [$e]");
+      err("Model.fromURL: error: [$e]");
     });
     req.send();
     */
@@ -231,7 +231,7 @@ class Model {
       try {
         m = JSON.decode(response);
       } catch (e) {
-        print("Model.fromJson: failure parsing JSON: $e");
+        err("Model.fromJson: failure parsing JSON: $e");
         return;
       }
 
@@ -248,13 +248,13 @@ class Model {
     }
 
     void handleError(Object err) {
-      print("Model.fromJson: failure fetching JSON from URL: $URL: $err");
+      err("Model.fromJson: failure fetching JSON from URL: $URL: $err");
     }
 
     HttpRequest.getString(URL).then(handleResponse).catchError(handleError);
   }
 
-  void printObjStats(Obj o) {
+  void showObjStats(Obj o) {
 
     double min_x = double.INFINITY;
     double min_y = double.INFINITY;
@@ -298,7 +298,7 @@ class Model {
 
     o.partList.forEach((Part pa) {
       Piece pi = addPiece(pa.indexFirst, pa.indexListSize);
-      //print("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
+      //log("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
     });
 
     piecesReady = true;
@@ -315,7 +315,7 @@ class Model {
   Model.fromOBJ(RenderingContext gl, this._URL, Vector3 front, Vector3 up) {
 
     void handleResponse(String response) {
-      //print("Model.fromOBJ: fetched OBJ from URL: $URL");
+      //log("Model.fromOBJ: fetched OBJ from URL: $URL");
 
       _front = front.clone();
       _up = up.clone();
@@ -328,7 +328,7 @@ class Model {
 
       Obj obj = new Obj.fromString(_URL, response);
 
-      printObjStats(obj);
+      showObjStats(obj);
 
       loadObj(gl, obj);
 
@@ -337,7 +337,7 @@ class Model {
     }
 
     void handleError(Object err) {
-      print("Model.fromOBJ: failure fetching OBJ from URL=$_URL: $err");
+      err("Model.fromOBJ: failure fetching OBJ from URL=$_URL: $err");
     }
 
     HttpRequest.getString(_URL).then(handleResponse).catchError(handleError);

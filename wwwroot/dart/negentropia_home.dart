@@ -165,7 +165,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String, String>
         String culling = tab['backfaceCulling'];
         if (culling != null) {
           backfaceCulling = culling.toLowerCase().startsWith("t");
-          //print("dispatcher: backfaceCulling=$backfaceCulling");
           updateCulling(gl);
         }
 
@@ -789,7 +788,6 @@ void readColor(String label, RenderingContext gl, int x, int y, Framebuffer
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, framebuffer);
   gl.readPixels(x, y, 1, 1, RenderingContext.RGBA,
       RenderingContext.UNSIGNED_BYTE, color);
-  //print("$label: readPixels: x=$x y=$y color=$color");
 }
 
 DivElement dragBox;
@@ -872,8 +870,6 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
 }
 
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
-  //print('${gameLoop.frame}: ${gameLoop.frameTime} [dt = ${gameLoop.dt}].');
-
   //
   // handle input
   //
@@ -891,7 +887,6 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   bool f2Pressed = k.pressed(Keyboard.F2);
 
   if (f2Pressed) {
-    debug("F2 hit");
     missionNext(getSelectionIdList());
   }
 
@@ -1016,10 +1011,6 @@ void main() {
   GameLoopHtml gameLoop = new GameLoopHtml(canvas);
 
   gameLoop.pointerLock.lockOnClick = false; // disable pointer lock
-
-  //print("gameLoop lockOnClick = ${gameLoop.pointerLock.lockOnClick}");
-
-  //print("gameLoop updateStep = ${gameLoop.updateTimeStep} seconds");
 
   if (debugLostContext) {
     initHandleLostContext(gl, canvas, gameLoop, initContext);
