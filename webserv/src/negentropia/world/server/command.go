@@ -3,19 +3,44 @@ package server
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"negentropia/webserv/store"
 )
 
 func missionNext(p *Player, unitId string) {
-	owner := store.QueryField(unitId, "owner")
 
-	if owner != p.Email {
-		msgPlayer(p, fmt.Sprintf("unit %v: mission command: refused", unitId))
+	zoneId := store.QueryField(p.Email, "location")
+	if !strings.HasPrefix(zoneId, "z:") {
+		log.Printf("missionNext: BAD ZONE ID zone=%v player=%v unit=%v", zoneId, p.Email, unitId)
 		return
 	}
 
-	msgPlayer(p, fmt.Sprintf("unit %v: mission command: accepted", unitId))
+	zone, zok := zoneTable[zoneId]
+	if !zok {
+		log.Printf("missionNext: ZONE NOT FOUND zone=%v player=%v unit=%v", zoneId, p.Email, unitId)
+		return
+	}
 
-	log.Printf("FIXME missionNext: player=%v unit=%v owner=%v", p.Email, unitId, owner)
+	owner := store.QueryField(unitId, "owner")
+
+	if owner != p.Email {
+		// mission silently refused
+		return
+	}
+
+	unit := zone.unitTable[unitId]
+
+	switch unit.mission {
+	case "": // no mission
+		unit.mission = "rotateYaw"
+	case "rotateYaw":
+		unit.mission = "hunt"
+	case "hunt":
+		unit.mission = ""
+	default:
+		log.Printf("missionNext: UNKNOWN MISSION zone=%s unit=%s mission=%s", zone.zid, unit.uid, unit.mission)
+	}
+
+	msgPlayer(p, fmt.Sprintf("unit %v: new mission: [%v]", unitId, unit.mission))
 }
