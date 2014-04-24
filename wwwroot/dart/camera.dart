@@ -68,7 +68,6 @@ class Camera {
   }
 
   Camera(Vector3 coord) {
-    //update(0.0);
     moveTo(coord);
     _focusPosition = new Vector3(0.0, 0.0, -1.0);
     _upDirection = new Vector3(0.0, 1.0, 0.0);
@@ -79,9 +78,19 @@ class Camera {
   }
 
   void moveForward(double len) {
-    moveTo(_position.addScaled(frontDirection, len));
+    Vector3 newPosition = _position.clone();
+    newPosition.addScaled(frontDirection, len);
+    moveTo(newPosition);
 
     _sanity("moveForward");
+  }
+
+  void setForwardDistance(double len) {
+    Vector3 newPosition = _focusPosition.clone();
+    newPosition.addScaled(frontDirection, -len);
+    moveTo(newPosition);
+
+    _sanity("setFordwardDistance");
   }
 
   void _sanity(String label) {
@@ -164,7 +173,7 @@ class Camera {
     if (coord[0] == _focusPosition[0] && coord[1] == _focusPosition[1] &&
         coord[2] == _focusPosition[2]) return;
 
-    //debug("camera focusAt: from=$_focusPosition to=$coord");
+    log("camera focusAt: from=$_focusPosition to=$coord");
 
     _focusPosition.setFrom(coord); // changes front direction
     Vector3 newRightDirection = frontDirection.cross(Y).normalized();

@@ -96,6 +96,7 @@ class CameraControl {
 
   void alignHorizontal(Camera cam) {
     cam.alignHorizontal();
+    cam.setForwardDistance(2.0 * getBoundingRadius()); // move to close distance
   }
 
 }
