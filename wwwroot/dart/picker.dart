@@ -51,7 +51,7 @@ PickerInstance mouseClickHit(Iterable<Instance> list, Uint8List color) {
 
 class PickerInstance extends Instance {
 
-  PickerInstance(Instance i) : super(i.id, i.model, i.center, i.scale,
+  PickerInstance(Instance i) : super(i.id, i.model, i._center, i.scale,
       i.pickColor);
 
   // the whole purpose of this class is to redefine the draw() method

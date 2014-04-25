@@ -27,11 +27,14 @@ class Instance {
     return scale * radius;
   }
 
-  Vector3 get center => _center.clone();
+  void copyLocationInto(Vector3 result) {
+    result.setFrom(_center);
+  }
 
   void set center(Vector3 c) {
     _center.setFrom(c);
   }
+
   void set mission(String m) {
     _mission = m;
   }
@@ -62,7 +65,7 @@ class Instance {
     setRotation(this.model._front.clone().normalize(), this.model._up.clone(
         ).normalize());
     debug(
-        "new instance: $this $id model=${model.modelName} center=$center front=$front up=$up right=$right"
+        "new instance: $this $id model=${model.modelName} center=$_center front=$front up=$up right=$right"
         );
   }
 

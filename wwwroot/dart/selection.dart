@@ -25,10 +25,12 @@ double getSelectionBoundingRadius() {
   return _selection.first.boundingRadius;
 }
 
-Vector3 getSelectionPosition() {
-  if (_selection.isEmpty) return null;
+bool getSelectionPosition(Vector3 result) {
+  if (_selection.isEmpty) return false;
 
-  return _selection.first.center;
+  _selection.first.copyLocationInto(result);
+
+  return true;
 }
 
 PickerInstance colorHit(Iterable<Instance> list, int r, g, b) {

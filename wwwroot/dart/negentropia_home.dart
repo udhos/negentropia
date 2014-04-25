@@ -973,9 +973,8 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   pauseKey(k.isDown(Keyboard.P));
 
   if (cameraTracking) {
-    Vector3 pos = getSelectionPosition();
-    if (pos != null) {
-      cam.focusAt(pos);
+    if (getSelectionPosition(cameraFocusTemp)) {
+      cam.focusAt(cameraFocusTemp);
     }
   }
 

@@ -8,7 +8,7 @@ import 'skybox.dart';
 
 bool _cameraTracking = false;
 bool get cameraTracking => _cameraTracking;
-
+Vector3 cameraFocusTemp = new Vector3.zero();
 bool _trackWasDown = false;
 
 void trackKey(bool isDown) {

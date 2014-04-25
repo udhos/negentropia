@@ -6,7 +6,7 @@ class AxisInstance extends Instance {
   static final Float32List green = new Float32List.fromList([0.0, 1.0, 0.0, 1.0]
       );
 
-  AxisInstance(String id, AxisModel am, Instance i) : super(id, am, i.center,
+  AxisInstance(String id, AxisModel am, Instance i) : super(id, am, i._center,
       i.scale);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
