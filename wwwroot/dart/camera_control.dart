@@ -60,7 +60,7 @@ class CameraControl {
     double boundingRadius = getSelectionBoundingRadius();
     if (boundingRadius == null) {
       // ugh: no selected object
-      boundingRadius = 1.0;
+      boundingRadius = 3.3;
     }
     return boundingRadius;
   }
@@ -96,6 +96,11 @@ class CameraControl {
 
   void alignHorizontal(Camera cam) {
     cam.alignHorizontal();
+
+    if (getSelectionBoundingRadius() == null) {
+      return;
+    }
+
     cam.setForwardDistance(2.0 * getBoundingRadius()); // move to close distance
   }
 

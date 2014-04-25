@@ -651,7 +651,18 @@ void clearColor(RenderingContext gl, double r, g, b, a) {
   gl.clearColor(r, g, b, a);
 }
 
-void setViewport(RenderingContext gl) {
+void setViewport(RenderingContext gl, int w, int h) {
+
+  /*
+    canvas.width, canvas.height = size you requested the canvas's drawingBuffer to be
+    gl.drawingBufferWidth, gl.drawingBufferHeight = size you actually got.
+    canvas.clientWidth, canvas.clientHeight = size the browser is displaying your canvas.
+   */
+  canvas.width = w;
+  canvas.height = h;
+  canvas.style.width = "${w}px";
+  canvas.style.height = "${h}px";
+
   // define viewport size
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
   // viewport for default on-screen canvas
@@ -668,6 +679,8 @@ void setViewport(RenderingContext gl) {
   canvasAspect = canvas.clientWidth.toDouble() / canvas.clientHeight.toDouble();
   // save aspect for render loop mat4.perspective
   debug("canvas aspect ratio: $canvasAspect");
+
+  repositionMessagebox(canvas);
 }
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
@@ -679,7 +692,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   gl.depthFunc(RenderingContext.LESS); // gl.LESS is default depth test
   gl.depthRange(0.0, 1.0); // default
 
-  setViewport(gl);
+  setViewport(gl, canvas.width, canvas.height);
 
   updateCulling(gl);
 
@@ -852,6 +865,17 @@ void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
   dragBox.style.height = "${h}px";
 }
 
+void viewportShrink(RenderingContext gl) {
+  if ((canvas.width < 79) || (canvas.height < 51)) {
+    return;
+  }
+  setViewport(gl, canvas.width - 78, canvas.height - 50);
+}
+
+void viewportGrow(RenderingContext gl) {
+  setViewport(gl, canvas.width + 78, canvas.height + 50);
+}
+
 PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
 
   if (picker == null) {
@@ -892,6 +916,13 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 
   if (k.pressed(Keyboard.SPACE)) {
     camControl.alignHorizontal(cam);
+  }
+
+  if (k.pressed(Keyboard.COMMA)) {
+    viewportShrink(gl);
+  }
+  if (k.pressed(Keyboard.PERIOD)) {
+    viewportGrow(gl);
   }
 
   if (ctrlReleased) {

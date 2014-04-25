@@ -13,7 +13,24 @@ ListQueue<String> _msgList = new ListQueue<String>(_maxList);
 void newMessagebox(Element e, String id, CanvasElement c) {
   assert(_messagebox == null);
   _messagebox = _createMessagebox(id, c);
+  repositionMessagebox(c);
   e.append(_messagebox);
+}
+
+void repositionMessagebox(CanvasElement c) {
+  if (_messagebox == null) {
+    return;
+  }
+
+  int left = 10 + c.offsetLeft;
+  int top = 28 + c.offsetTop;
+
+  _messagebox.style.left = "${left}px";
+  _messagebox.style.top = "${top}px";
+
+  log(
+      "repositionMessagebox: left=${_messagebox.style.left} top=${_messagebox.style.top}"
+      );
 }
 
 DivElement _createMessagebox(String id, CanvasElement c) {
@@ -33,21 +50,6 @@ DivElement _createMessagebox(String id, CanvasElement c) {
   mbox.style.textAlign = "left";
   mbox.style.padding = "2px";
   mbox.style.fontSize = 'x-small';
-
-  void repositionBox(Event e) {
-    int left = 10 + c.offsetLeft;
-    int top = 28 + c.offsetTop;
-
-    mbox.style.left = "${left}px";
-    mbox.style.top = "${top}px";
-
-    log("repositionBox: event=$e: left=${mbox.style.left} top=${mbox.style.top}"
-        );
-  }
-
-  repositionBox(null);
-
-  c.onChange.listen(repositionBox);
 
   return mbox;
 }
