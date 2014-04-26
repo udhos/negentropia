@@ -3,14 +3,13 @@
 set DEVEL=c:\tmp\devel
 set DART_SDK=c:\dart\dart-sdk
 
-@rem run tests
+@rem run go tests
 call %DEVEL%\negentropia\win-gotest.cmd
-call %DEVEL%\negentropia\win-benchmark-dart.cmd
 
-@rem build server
+@rem build go servers
 call %DEVEL%\negentropia\win-goinstall.cmd
 
-@rem build client
+@rem build dart client
 set NEG_DART_SDK=%DART_SDK%
 set NEG_DART_SRC=%DEVEL%\negentropia\wwwroot\dart
 set OLD_CD=%CD%
@@ -21,5 +20,8 @@ call %NEG_DART_SDK%\bin\pub upgrade
 @echo on
 call %DEVEL%\negentropia\win-dart2js.cmd
 cd %OLD_CD%
+
+@rem run dart tests
+call %DEVEL%\negentropia\win-benchmark-dart.cmd
 
 @rem eof
