@@ -7,7 +7,7 @@ import (
 	"github.com/udhos/vectormath"
 )
 
-func unitRotateYaw(elapsed time.Duration, unit *Unit) {
+func unitRotateYaw(unit *Unit, elapsed time.Duration) {
 
 	// angle to rotate
 	rad := unit.yawSpeed * float64(elapsed) / float64(time.Second)
@@ -28,11 +28,13 @@ func unitRotateYaw(elapsed time.Duration, unit *Unit) {
 
 	if !vector3Unit(unit.front) {
 		log.Printf("rotateYaw: NOT UNITARY: front=%s length=%f", vector3String(unit.front), unit.front.Length())
+		return
 	}
 
 	if !vector3Orthogonal(unit.front, rightDirection) {
 		log.Printf("rotateYaw: NOT ORTHOGONAL: front=%s right=%s: dot=%f",
 			vector3String(unit.front), vector3String(rightDirection), vectormath.V3Dot(&unit.front, &rightDirection))
+		return
 	}
 
 	// calculate new up direction
@@ -44,6 +46,18 @@ func unitRotateYaw(elapsed time.Duration, unit *Unit) {
 	}
 }
 
+func unitForward(unit *Unit, elapsed time.Duration) {
+	if !vector3Unit(unit.front) {
+		log.Printf("unitMove: NOT UNITARY: front=%v length=%v", vector3String(unit.front), unit.front.Length())
+		return
+	}
+
+	var speed vectormath.Vector3
+	vectormath.V3ScalarMul(&speed, &unit.front, float32(unit.linearSpeed*float64(elapsed)/float64(time.Second)))
+
+	vectormath.V3Add(&unit.coord, &unit.coord, &speed)
+}
+
 /*
 	linearSpeed    float64 // m/s
 	yawSpeed       float64 // rad/s
@@ -51,4 +65,11 @@ func unitRotateYaw(elapsed time.Duration, unit *Unit) {
 	rollSpeed      float64 // rad/s
 */
 func unitMove(unit *Unit, elapsed time.Duration) {
+	if !CloseToZero(unit.linearSpeed) {
+		unitForward(unit, elapsed)
+	}
+
+	if !CloseToZero(unit.yawSpeed) {
+		unitRotateYaw(unit, elapsed)
+	}
 }

@@ -141,9 +141,7 @@ func missionRotateYaw(elapsed time.Duration, zone *Zone, unit *Unit) {
 	unit.pitchSpeed = 0.0
 	unit.rollSpeed = 0.0
 
-	if !CloseToZero(unit.yawSpeed) {
-		unitRotateYaw(elapsed, unit)
-	}
+	unitMove(unit, elapsed)
 
 	sendUnitUpdate(unit, zone.zid)
 }
@@ -159,6 +157,11 @@ func missionHunt(elapsed time.Duration, zone *Zone, unit *Unit) {
 	// nearest enemy: bruteforce x kdtree ?
 	// kdtree: http://godoc.org/code.google.com/p/biogo.store/kdtree
 	// kdtree: http://godoc.org/code.google.com/p/eaburns/kdtree
+
+	unit.linearSpeed = 0.1
+	unit.yawSpeed = 0.0
+	unit.pitchSpeed = 0.0
+	unit.rollSpeed = 0.0
 
 	unitMove(unit, elapsed)
 
