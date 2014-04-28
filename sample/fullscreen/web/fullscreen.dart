@@ -1,7 +1,6 @@
 import 'dart:html';
 
 DivElement logbox = new DivElement();
-bool canvasFullscreen = false;
 
 void log(String msg) {
   msg = "${new DateTime.now()} $msg";
@@ -26,12 +25,13 @@ void main() {
   document.body.append(logbox);
   
   canvas.onClick.listen((e) {
-    if (canvasFullscreen) {
+    if (document.fullscreenElement != null) {
+      log("exiting fullscreen");
       document.exitFullscreen();
     }
     else {
-      canvas.requestFullscreen();
+      log("requesting fullscreen");      
+      canvas.requestFullscreen();      
     }
-    canvasFullscreen = !canvasFullscreen;
   });
 }

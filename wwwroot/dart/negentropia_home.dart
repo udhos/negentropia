@@ -25,6 +25,7 @@ import 'vec.dart';
 import 'selection.dart';
 import 'message.dart';
 import 'wheel.dart';
+import 'fullscreen.dart';
 
 CanvasElement canvas;
 double canvasAspect;
@@ -923,6 +924,10 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   }
   if (k.pressed(Keyboard.PERIOD)) {
     viewportGrow(gl);
+  }
+
+  if (k.pressed(Keyboard.F)) {
+    toggleFullscreen(canvas);
   }
 
   if (ctrlReleased) {
