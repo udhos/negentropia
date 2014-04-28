@@ -1053,6 +1053,8 @@ void main() {
 
   initPageVisibility(gameLoop);
 
+  trapFullscreenError();
+
   gameLoop.onUpdate = ((gLoop) {
     update(gl, gLoop);
   });
