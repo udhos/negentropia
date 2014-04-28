@@ -33,7 +33,7 @@ bool getSelectionPosition(Vector3 result) {
   return true;
 }
 
-PickerInstance colorHit(Iterable<Instance> list, int r, g, b) {
+PickerInstance colorHit(Iterable<Instance> list, int r, int g, int b) {
 
   bool match(Instance i) {
     Float32List f = i.pickColor;
@@ -89,7 +89,7 @@ double _bgColorR;
 double _bgColorG;
 double _bgColorB;
 
-void pickerClearColor(double r, g, b) {
+void pickerClearColor(double r, double g, double b) {
   _bgColorR = r;
   _bgColorG = g;
   _bgColorB = b;
@@ -97,7 +97,7 @@ void pickerClearColor(double r, g, b) {
 
 const double MIN_COLOR_DELTA = 1.0 / 255.0;
 
-bool backgroundColorDouble(double r, g, b) {
+bool backgroundColorDouble(double r, double g, double b) {
   return (r - _bgColorR).abs() < MIN_COLOR_DELTA && (g - _bgColorG).abs() <
       MIN_COLOR_DELTA && (b - _bgColorB).abs() < MIN_COLOR_DELTA;
 }
@@ -109,7 +109,7 @@ bool backgroundColor(int r, g, b) {
 
 Uint8List _color = new Uint8List(4);
 
-void bandSelection(int x, y, width, height, PickerShader
+void bandSelection(int x, int y, int width, int height, PickerShader
     picker, RenderingContext gl, bool shift) {
   //debug("bandSelection: x=$x y=$y width=$width height=$height");
 

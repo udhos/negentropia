@@ -509,7 +509,7 @@ void demoInitSquares(RenderingContext gl) {
 void addSkybox(RenderingContext gl, Map<String, String> s) {
   skybox = new SkyboxProgram(gl);
   skybox.fetch(shaderCache, s['vertexShader'], s['fragmentShader']);
-  SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, s['cube'], true, 0);
+  SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, s['cube'], true);
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X,
       s['faceRight']);
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X,
@@ -535,7 +535,7 @@ void demoInitSkybox(RenderingContext gl) {
   skybox.fetch(shaderCache, "${asset.shader}/skybox_vs.txt",
       "${asset.shader}/skybox_fs.txt");
   SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl,
-      "${asset.mesh}/cube.json", true, 0);
+      "${asset.mesh}/cube.json", true);
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X,
       '${asset.texture}/space_rt.jpg');
   skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X,

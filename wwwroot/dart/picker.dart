@@ -81,7 +81,7 @@ class PickerShader extends ShaderProgram {
     return i;
   }
 
-  PickerInstance findInstanceByColor(int r, g, b) {
+  PickerInstance findInstanceByColor(int r, int g, int b) {
     return colorHit(_instanceList, r, g, b);
   }
 

@@ -51,7 +51,7 @@ class CameraControl {
 
   }
 
-  void orbitFocus(int dx, dy) {
+  void orbitFocus(int dx, int dy) {
     orbitFocusDx += dx;
     orbitFocusDy += dy;
   }

@@ -67,8 +67,8 @@ class SkyboxModel extends Model {
 
   double get halfEdge => 1.0;
 
-  SkyboxModel.fromJson(RenderingContext gl, String URL, bool reverse, num
-      rescale) : super.fromJson(gl, URL, reverse) {
+  SkyboxModel.fromJson(RenderingContext gl, String URL, bool reverse) :
+      super.fromJson(gl, URL, reverse) {
     cubemapTexture = gl.createTexture();
   }
 

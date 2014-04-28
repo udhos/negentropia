@@ -56,7 +56,7 @@ class AxisModel extends Model {
     List<int> indices = new List<int>();
     List<double> vertCoord = new List<double>();
 
-    void push(List<double> d, List<int> i, double x, y, z) {
+    void push(List<double> d, List<int> i, double x, double y, double z) {
       d.add(x);
       d.add(y);
       d.add(z);

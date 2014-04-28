@@ -50,7 +50,7 @@ class Instance {
   Vector3 get right => new Vector3(_rotation.storage[8], _rotation.storage[9],
       _rotation.storage[10]);
 
-  void setRotation(Vector3 front, up) {
+  void setRotation(Vector3 front, Vector3 up) {
     /*
     Vector3 right = front.cross(up).normalize();
 
