@@ -6,20 +6,20 @@ import 'logg.dart';
 
 void trapFullscreenError() {
   document.onFullscreenError.listen((e) {
-    log("fullscreenerror: $e");
+    err("fullscreenerror: $e");
   });
 }
 
 void toggleFullscreen(CanvasElement c) {
-  log(
+  debug(
       "fullscreenSupport=${document.fullscreenEnabled} fullscreenElement=${document.fullscreenElement}"
       );
 
   if (document.fullscreenElement != null) {
-    log("exiting fullscreen");
+    debug("exiting fullscreen");
     document.exitFullscreen();
   } else {
-    log("requesting fullscreen");
+    debug("requesting fullscreen");
     c.requestFullscreen();
   }
 }

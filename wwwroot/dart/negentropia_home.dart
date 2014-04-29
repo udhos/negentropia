@@ -435,13 +435,6 @@ RenderingContext boot() {
     return null;
   }
 
-  document.onKeyPress.listen((KeyboardEvent e) {
-    if (e.keyCode == 32) {
-      // disable default space-bar behavior, since it is used to restore camera default orientation
-      e.preventDefault();
-    }
-  });
-
   newMessagebox(canvasbox, 'messagebox', canvas);
 
   initShowPicking();
@@ -926,9 +919,10 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
     viewportGrow(gl);
   }
 
+  /*
   if (k.pressed(Keyboard.F)) {
     toggleFullscreen(canvas);
-  }
+  */
 
   if (ctrlReleased) {
     deleteBandSelectionBox(gl, canvas, shiftDown);
@@ -1046,6 +1040,22 @@ void main() {
   GameLoopHtml gameLoop = new GameLoopHtml(canvas);
 
   gameLoop.pointerLock.lockOnClick = false; // disable pointer lock
+
+  void keyPress(KeyboardEvent e) {
+    //log("keyCode=${e.keyCode}");
+    switch (e.keyCode) {
+      case 32:
+        // disable default space-bar behavior, since it is used to restore camera default orientation
+        e.preventDefault();
+        break;
+      case 102:
+        // fullscreen can only be requested within input event handler
+        //toggleFullscreen(canvas);
+        gameLoop.enableFullscreen(!gameLoop.isFullscreen);
+        break;
+    }
+  }
+  document.onKeyPress.listen(keyPress);
 
   if (debugLostContext) {
     initHandleLostContext(gl, canvas, gameLoop, initContext);
