@@ -48,12 +48,16 @@ func unitRotateYaw(unit *Unit, elapsed time.Duration) {
 
 func unitForward(unit *Unit, elapsed time.Duration) {
 	if !vector3Unit(unit.front) {
-		log.Printf("unitMove: NOT UNITARY: front=%v length=%v", vector3String(unit.front), unit.front.Length())
+		log.Printf("unitForward: NOT UNITARY: front=%v length=%v", vector3String(unit.front), unit.front.Length())
 		return
 	}
 
 	var speed vectormath.Vector3
 	vectormath.V3ScalarMul(&speed, &unit.front, float32(unit.linearSpeed*float64(elapsed)/float64(time.Second)))
+
+	if diff := unit.linearSpeed - float64(speed.Length()); !CloseToZero(diff) {
+		log.Printf("unitForward: MISMATCH: unit=%v forward=%v speed=%v linearSpeed=%v speed=%v diff=%v", unit.uid, vector3String(unit.front), vector3String(speed), unit.linearSpeed, speed.Length(), diff)
+	}
 
 	vectormath.V3Add(&unit.coord, &unit.coord, &speed)
 }
