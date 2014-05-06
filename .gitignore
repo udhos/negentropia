@@ -49,6 +49,7 @@
 !webserv/src/negentropia/world/server
 !webserv/src/negentropia/world/obj
 !webserv/src/negentropia/world/parser
+!webserv/src/negentropia/world/util
 !wwwroot
 !wwwroot/dart
 !wwwroot/dart/cookies
