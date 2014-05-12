@@ -51,9 +51,9 @@ void trapFullscreen(CanvasElement c, RenderingContext gl, GameLoopHtml gameLoop)
   });
 
   document.onFullscreenChange.listen((e) {
-    int w = window.screen.available.width;
-    int h = window.screen.available.height;
     if (gameLoop.isFullscreen) {
+      int w = window.screen.available.width;
+      int h = window.screen.available.height;
       log("fullscreen canvas: $w x $h");
       setViewport(c, gl, w, h);
       return;
