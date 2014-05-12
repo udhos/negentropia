@@ -1,0 +1,20 @@
+http://stackoverflow.com/questions/11066946/partly-json-unmarshal-into-a-map-in-go
+
+{
+    "sendMsg":{"user":"ANisus","msg":"Trying to send a message"},
+    "say":"Hello"
+}
+
+data := []byte(`{"sendMsg":{"user":"ANisus","msg":"Trying to send a message"},"say":"Hello"}`)
+
+This can be accomplished by Unmarshalling into a map[string]json.RawMessage.
+var objmap map[string]*json.RawMessage
+err := json.Unmarshal(data, &objmap)
+
+To further parse sendMsg, you could then do something like:
+var s sendMsg
+err = json.Unmarshal(*objmap["sendMsg"], &s)
+
+For say, you can do the same thing and unmarshal into a string:
+var str string
+err = json.Unmarshal(*objmap["say"], &str)
