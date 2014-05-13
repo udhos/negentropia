@@ -23,7 +23,7 @@ void repositionMessagebox(CanvasElement c) {
   }
 
   int left = 10 + c.offsetLeft;
-  int top = 28 + c.offsetTop;
+  int top = 10 + c.offsetTop;
 
   _messagebox.style.left = "${left}px";
   _messagebox.style.top = "${top}px";
@@ -37,9 +37,6 @@ DivElement _createMessagebox(String id, CanvasElement c) {
 
   DivElement mbox = new DivElement();
   mbox.id = id;
-
-  int left = 10 + c.offsetLeft;
-  int top = 28 + c.offsetTop;
 
   mbox.style.border = '2px solid #FFF';
   mbox.style.zIndex = "1";

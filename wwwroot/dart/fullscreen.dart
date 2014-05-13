@@ -24,21 +24,18 @@ void setViewport(CanvasElement c, RenderingContext gl, int w, int h) {
   c.style.width = "${w}px";
   c.style.height = "${h}px";
 
-  // define viewport size
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
   // viewport for default on-screen canvas
-  //gl.viewport(0, 0, canvas.width, canvas.height);
   debug(
       "viewport: canvas=${c.width}x${c.height} drawingBuffer=${gl.drawingBufferWidth}x${gl.drawingBufferHeight}"
       );
   gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
-  //canvasAspect = canvas.width.toDouble() / canvas.height.toDouble();
   debug(
-      "aspect: canvas size=${c.width}x${c.height} clientSize=${c.clientWidth}x${c.clientHeight}"
+      "canvas size=${c.width}x${c.height} clientSize=${c.clientWidth}x${c.clientHeight}"
       );
   canvasAspect = c.clientWidth.toDouble() / c.clientHeight.toDouble();
-  // save aspect for render loop mat4.perspective
+  // save aspect for render loop setPerspectiveMatrix()
   debug("canvas aspect ratio: $canvasAspect");
 
   repositionMessagebox(c);
@@ -52,9 +49,9 @@ void trapFullscreen(CanvasElement c, RenderingContext gl, GameLoopHtml gameLoop)
 
   document.onFullscreenChange.listen((e) {
     if (gameLoop.isFullscreen) {
-      int w = window.screen.available.width;
-      int h = window.screen.available.height;
-      log("fullscreen canvas: $w x $h");
+      int w = window.screen.width;
+      int h = window.screen.height;
+      debug("fullscreen canvas: $w x $h");
       setViewport(c, gl, w, h);
       return;
     }
