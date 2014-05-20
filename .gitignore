@@ -21,6 +21,8 @@
 !negentropia/lib
 !negentropia/texture
 !sample
+!sample/aspect_ratio
+!sample/aspect_ratio/web
 !sample/pixel_framebuffer
 !sample/pixel_framebuffer/web
 !sample/triangle
