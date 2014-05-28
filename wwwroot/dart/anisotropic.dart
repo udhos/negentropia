@@ -54,14 +54,14 @@ void anisotropic_filtering_enable(RenderingContext gl) {
   gl.texParameterf(RenderingContext.TEXTURE_2D,
       ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, _anisotropy.toDouble());
 
-  int result = gl.getTexParameter(RenderingContext.TEXTURE_2D,
+  double result = gl.getTexParameter(RenderingContext.TEXTURE_2D,
       ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT);
 
   debug("texture anisotropy=$result");
 
-  if (result != _anisotropy) {
+  if (result != _anisotropy.toDouble()) {
     warn(
-        "anisotropic_filtering_enable: anisotropy set to texParameterf=$_anisotropy but got getTexParameter=$result"
+        "anisotropic_filtering_enable: anisotropy set to texParameterf=${_anisotropy.toDouble()} but got getTexParameter=$result"
         );
   }
 }
