@@ -1,6 +1,7 @@
 package server
 
 import (
+	"math"
 	"testing"
 
 	"github.com/udhos/vectormath"
@@ -51,4 +52,16 @@ func TestParseVector3(t *testing.T) {
 	expectErr(t, "x1.0,2.0,3.0")
 	expectErr(t, "1.0,x2.0,3.0")
 	expectErr(t, "1.0,2.0,x3.0")
+}
+
+func TestQuat(t *testing.T) {
+	radAngle := math.Pi
+    var axis vectormath.Vector3
+	var quat vectormath.Quat
+	
+	vectormath.V3MakeFromElems(&axis, 1.0, 1.0, 1.0)
+	vectormath.V3Normalize(&axis, &axis)
+	vectormath.QMakeRotationAxis(&quat, float32(radAngle), &axis)
+	
+	t.Errorf("TestQuat: 90deg around (1,1,1): quat = %q", quat.String())
 }

@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:unittest/unittest.dart';
 import 'package:vector_math/vector_math.dart';
 
@@ -5,6 +7,7 @@ import '../vec.dart';
 
 void main() {
   vec_test();
+  quat_test();
 }
 
 typedef void echo_func(String);
@@ -54,4 +57,10 @@ void vec_test() {
   bad_patterns2.forEach((p) => testParseVector3bad(p));
 }
 
-
+void quat_test () {
+  double radAngle = math.PI;
+  Vector3 axis = new Vector3.all(1.0);
+  axis.normalize();
+  Quaternion quat = new Quaternion.axisAngle(axis, radAngle);
+  test("quat_test: 90deg around (1,1,1)", () { expect(quat.toString(), equals("")); } );
+}
