@@ -15,8 +15,8 @@ void _log_error(String msg) {
   err(msg);
 }
 
-void _fail(void echo(String), bool exception, String label, String
-    argument, String msg) {
+void _fail(void echo(String), bool exception, String label, String argument,
+    String msg) {
   if (echo != null) {
     echo("$label($argument): $msg");
   }
@@ -25,8 +25,8 @@ void _fail(void echo(String), bool exception, String label, String
   }
 }
 
-Vector3 parseVector3(String s, {void echoFunc(String): _log_error, bool
-    throwException: false}) {
+Vector3 parseVector3(String s, {void echoFunc(String): _log_error,
+    bool throwException: false}) {
   const LABEL = "parseVector3";
   String save = s;
 
@@ -55,7 +55,11 @@ Vector3 parseVector3(String s, {void echoFunc(String): _log_error, bool
 
   List<String> list = s.split(',');
   if (list.length != 3) {
-    _fail(echoFunc, throwException, LABEL, save,
+    _fail(
+        echoFunc,
+        throwException,
+        LABEL,
+        save,
         "bad length=${list.length}: string='$save'");
     return null;
   }
@@ -67,21 +71,33 @@ Vector3 parseVector3(String s, {void echoFunc(String): _log_error, bool
   try {
     x = double.parse(list[0]);
   } catch (e) {
-    _fail(echoFunc, throwException, LABEL, save,
+    _fail(
+        echoFunc,
+        throwException,
+        LABEL,
+        save,
         "failure parsing x=${list[0]}: exception: $e");
     return null;
   }
   try {
     y = double.parse(list[1]);
   } catch (e) {
-    _fail(echoFunc, throwException, LABEL, save,
+    _fail(
+        echoFunc,
+        throwException,
+        LABEL,
+        save,
         "failure parsing y=${list[1]}: exception: $e");
     return null;
   }
   try {
     z = double.parse(list[2]);
   } catch (e) {
-    _fail(echoFunc, throwException, LABEL, save,
+    _fail(
+        echoFunc,
+        throwException,
+        LABEL,
+        save,
         "failure parsing z=${list[2]}: exception: $e");
     return null;
   }

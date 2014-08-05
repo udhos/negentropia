@@ -74,8 +74,8 @@ void wsFlush() {
   }
 }
 
-void initWebSocket(String wsUri, String sid, int retrySeconds, Element
-    status, dispatcherFunc dispatch) {
+void initWebSocket(String wsUri, String sid, int retrySeconds, Element status,
+    dispatcherFunc dispatch) {
 
   _dispatcher = dispatch;
 
@@ -104,8 +104,9 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element
     }
 
     debug("websocket: retrying in $retrySeconds seconds");
-    new Timer(new Duration(seconds: retrySeconds), () => initWebSocket(wsUri,
-        sid, 2 * retrySeconds, status, dispatch));
+    new Timer(
+        new Duration(seconds: retrySeconds),
+        () => initWebSocket(wsUri, sid, 2 * retrySeconds, status, dispatch));
 
     reconnectScheduled = true;
   }

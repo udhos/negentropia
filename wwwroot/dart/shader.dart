@@ -46,30 +46,29 @@ class ShaderProgram {
     u_P = gl.getUniformLocation(program, "u_P");
   }
 
-  void fetch(Map<String, Shader> shaderCache, String vertexShaderURL, String
-      fragmentShaderURL) {
+  void fetch(Map<String, Shader> shaderCache, String vertexShaderURL,
+      String fragmentShaderURL) {
 
     Shader compileShader(String shaderURL, String shaderSource, int shaderType)
         {
       Shader shader = gl.createShader(shaderType);
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
-      bool parameter = gl.getShaderParameter(shader,
-          RenderingContext.COMPILE_STATUS);
+      bool parameter =
+          gl.getShaderParameter(shader, RenderingContext.COMPILE_STATUS);
       if (!parameter) {
         String infoLog = gl.getShaderInfoLog(shader);
         err("compileShader: compilation FAILURE: $shaderURL: info=$infoLog");
         if (gl.isContextLost()) {
           err(
-              "compileShader: compilation FAILURE: $shaderURL: info=$infoLog: context is lost"
-              );
+              "compileShader: compilation FAILURE: $shaderURL: info=$infoLog: context is lost");
         }
         return null;
       }
 
       if (shaderCache[shaderURL] != null) {
-        err("compileShader: " + shaderURL + ": FIXME: overwriting shader cache"
-            );
+        err(
+            "compileShader: " + shaderURL + ": FIXME: overwriting shader cache");
       }
       shaderCache[shaderURL] = shader;
 
@@ -93,8 +92,8 @@ class ShaderProgram {
         String infoLog = gl.getProgramInfoLog(p);
         err("tryLink: shader program link FAILURE: $infoLog");
         if (gl.isContextLost()) {
-          err("tryLink: shader program link FAILURE: $infoLog: context is lost"
-              );
+          err(
+              "tryLink: shader program link FAILURE: $infoLog: context is lost");
         }
         return;
       }
@@ -118,7 +117,9 @@ class ShaderProgram {
           err("vertexShader: url=$url: error: [$response]");
           return;
         }
-        vertexShader = compileShader(url, response,
+        vertexShader = compileShader(
+            url,
+            response,
             RenderingContext.VERTEX_SHADER);
         tryLink();
       });
@@ -140,7 +141,9 @@ class ShaderProgram {
           err("fragmentShader: url=$url: error: [$response]");
           return;
         }
-        fragmentShader = compileShader(url, response,
+        fragmentShader = compileShader(
+            url,
+            response,
             RenderingContext.FRAGMENT_SHADER);
         tryLink();
       });

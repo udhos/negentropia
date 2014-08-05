@@ -3,10 +3,13 @@ part of shader;
 class AxisInstance extends Instance {
 
   static final Float32List red = new Float32List.fromList([1.0, 0.0, 0.0, 1.0]);
-  static final Float32List green = new Float32List.fromList([0.0, 1.0, 0.0, 1.0]
-      );
+  static final Float32List green =
+      new Float32List.fromList([0.0, 1.0, 0.0, 1.0]);
 
-  AxisInstance(String id, AxisModel am, Instance i) : super(id, am, i._center,
+  AxisInstance(String id, AxisModel am, Instance i) : super(
+      id,
+      am,
+      i._center,
       i.scale);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
@@ -20,11 +23,17 @@ class AxisInstance extends Instance {
     modelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
-    gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize,
-        RenderingContext.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(
+        prog.a_Position,
+        model.vertexPositionBufferItemSize,
+        RenderingContext.FLOAT,
+        false,
+        0,
+        0);
 
-    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer
-        );
+    gl.bindBuffer(
+        RenderingContext.ELEMENT_ARRAY_BUFFER,
+        model.vertexIndexBuffer);
 
     Piece p;
 
@@ -32,15 +41,19 @@ class AxisInstance extends Instance {
 
     gl.uniform4fv((prog as SolidShader).u_Color, red);
     p = model.pieceList[0];
-    gl.drawElements(RenderingContext.LINES, p.vertexIndexLength,
-        RenderingContext.UNSIGNED_SHORT, p.vertexIndexOffset *
-        model.vertexIndexBufferItemSize);
+    gl.drawElements(
+        RenderingContext.LINES,
+        p.vertexIndexLength,
+        RenderingContext.UNSIGNED_SHORT,
+        p.vertexIndexOffset * model.vertexIndexBufferItemSize);
 
     gl.uniform4fv((prog as SolidShader).u_Color, green);
     p = model.pieceList[1];
-    gl.drawElements(RenderingContext.LINES, p.vertexIndexLength,
-        RenderingContext.UNSIGNED_SHORT, p.vertexIndexOffset *
-        model.vertexIndexBufferItemSize);
+    gl.drawElements(
+        RenderingContext.LINES,
+        p.vertexIndexLength,
+        RenderingContext.UNSIGNED_SHORT,
+        p.vertexIndexOffset * model.vertexIndexBufferItemSize);
   }
 
 }
@@ -106,7 +119,8 @@ class SolidShader extends ShaderProgram {
     return i;
   }
 
-  SolidShader(RenderingContext gl, List<ShaderProgram> programList) : super(gl,
+  SolidShader(RenderingContext gl, List<ShaderProgram> programList) : super(
+      gl,
       "solidShader") {
 
     // copy clickable instances
@@ -131,8 +145,8 @@ class SolidShader extends ShaderProgram {
       });
     });
 
-    debug("SolidShader: ${instanceList.length} axis instances have been created"
-        );
+    debug(
+        "SolidShader: ${instanceList.length} axis instances have been created");
 
   }
 

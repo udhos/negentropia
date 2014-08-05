@@ -170,7 +170,8 @@ class Camera {
 
   void focusAt(Vector3 coord) {
 
-    if (coord[0] == _focusPosition[0] && coord[1] == _focusPosition[1] &&
+    if (coord[0] == _focusPosition[0] &&
+        coord[1] == _focusPosition[1] &&
         coord[2] == _focusPosition[2]) return;
 
     log("camera focusAt: from=$_focusPosition to=$coord");

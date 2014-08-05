@@ -43,12 +43,12 @@ class Instance {
 
   Matrix4 _rotation = new Matrix4.identity();
 
-  Vector3 get front => new Vector3(_rotation.storage[0], _rotation.storage[1],
-      _rotation.storage[2]);
-  Vector3 get up => new Vector3(_rotation.storage[4], _rotation.storage[5],
-      _rotation.storage[6]);
-  Vector3 get right => new Vector3(_rotation.storage[8], _rotation.storage[9],
-      _rotation.storage[10]);
+  Vector3 get front =>
+      new Vector3(_rotation.storage[0], _rotation.storage[1], _rotation.storage[2]);
+  Vector3 get up =>
+      new Vector3(_rotation.storage[4], _rotation.storage[5], _rotation.storage[6]);
+  Vector3 get right =>
+      new Vector3(_rotation.storage[8], _rotation.storage[9], _rotation.storage[10]);
 
   void setRotation(Vector3 front, Vector3 up) {
     /*
@@ -62,18 +62,18 @@ class Instance {
 
   Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
       null]) {
-    setRotation(this.model._front.clone().normalize(), this.model._up.clone(
-        ).normalize());
+    setRotation(
+        this.model._front.clone().normalize(),
+        this.model._up.clone().normalize());
     debug(
-        "new instance: $this $id model=${model.modelName} center=$_center front=$front up=$up right=$right"
-        );
+        "new instance: $this $id model=${model.modelName} center=$_center front=$front up=$up right=$right");
   }
 
   void update(GameLoopHtml gameLoop) {
   }
 
-  void modelView(RenderingContext gl, UniformLocation u_MV, Camera cam, double
-      rescale) {
+  void modelView(RenderingContext gl, UniformLocation u_MV, Camera cam,
+      double rescale) {
 
     // grand world coordinate system:
     // 1. obj scale
@@ -123,16 +123,24 @@ class Instance {
     modelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
-    gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize,
-        RenderingContext.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(
+        prog.a_Position,
+        model.vertexPositionBufferItemSize,
+        RenderingContext.FLOAT,
+        false,
+        0,
+        0);
 
-    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer
-        );
+    gl.bindBuffer(
+        RenderingContext.ELEMENT_ARRAY_BUFFER,
+        model.vertexIndexBuffer);
 
     model.pieceList.forEach((piece) {
-      gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
-          RenderingContext.UNSIGNED_SHORT, piece.vertexIndexOffset *
-          model.vertexIndexBufferItemSize);
+      gl.drawElements(
+          RenderingContext.TRIANGLES,
+          piece.vertexIndexLength,
+          RenderingContext.UNSIGNED_SHORT,
+          piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });
   }
 }
@@ -167,18 +175,22 @@ class Model {
 
   double boundingRadius;
 
-  void _createBuffers(RenderingContext gl, List<int> indices, List<double>
-      vertCoord, List<double> textCoord, List<double> normCoord) {
+  void _createBuffers(RenderingContext gl, List<int> indices,
+      List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
 
     vertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
-    gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER, new Float32List.fromList(
-        vertCoord), RenderingContext.STATIC_DRAW);
+    gl.bufferDataTyped(
+        RenderingContext.ARRAY_BUFFER,
+        new Float32List.fromList(vertCoord),
+        RenderingContext.STATIC_DRAW);
 
     vertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
-    gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER,
-        new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
+    gl.bufferDataTyped(
+        RenderingContext.ELEMENT_ARRAY_BUFFER,
+        new Uint16List.fromList(indices),
+        RenderingContext.STATIC_DRAW);
 
     // clean-up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -292,8 +304,7 @@ class Model {
     boundingRadius = math.sqrt(dx * dx + dy * dy + dz * dz) / 2.0;
 
     debug(
-        "model=$_URL indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z] radius=$boundingRadius"
-        );
+        "model=$_URL indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z] radius=$boundingRadius");
   }
 
   void loadObj(RenderingContext gl, Obj o) {
@@ -301,7 +312,9 @@ class Model {
 
     o.partList.forEach((Part pa) {
       Piece pi = addPiece(pa.indexFirst, pa.indexListSize);
-      //log("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
+
+
+          //log("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
     });
 
     piecesReady = true;
@@ -335,7 +348,11 @@ class Model {
 
       loadObj(gl, obj);
 
-      _createBuffers(gl, obj.indices, obj.vertCoord, obj.textCoord,
+      _createBuffers(
+          gl,
+          obj.indices,
+          obj.vertCoord,
+          obj.textCoord,
           obj.normCoord);
     }
 

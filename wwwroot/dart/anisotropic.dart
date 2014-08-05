@@ -4,8 +4,10 @@ import 'dart:web_gl';
 
 import 'logg.dart';
 
-final List<String> _names = ["EXT_texture_filter_anisotropic",
-    "MOZ_EXT_texture_filter_anisotropic", "WEBKIT_EXT_texture_filter_anisotropic"];
+final List<String> _names = [
+    "EXT_texture_filter_anisotropic",
+    "MOZ_EXT_texture_filter_anisotropic",
+    "WEBKIT_EXT_texture_filter_anisotropic"];
 ExtTextureFilterAnisotropic _extAnisotropic = null;
 int _anisotropy = 16;
 
@@ -13,8 +15,8 @@ void anisotropic_filtering_detect(RenderingContext gl) {
 
   void enable(ExtTextureFilterAnisotropic ext, String name) {
 
-    int max_anisotropy = gl.getParameter(
-        ExtTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+    int max_anisotropy =
+        gl.getParameter(ExtTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
 
     if (_anisotropy > max_anisotropy) {
       _anisotropy = max_anisotropy;
@@ -51,17 +53,20 @@ void anisotropic_filtering_enable(RenderingContext gl) {
     return;
   }
 
-  gl.texParameterf(RenderingContext.TEXTURE_2D,
-      ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, _anisotropy.toDouble());
+  gl.texParameterf(
+      RenderingContext.TEXTURE_2D,
+      ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT,
+      _anisotropy.toDouble());
 
-  double result = gl.getTexParameter(RenderingContext.TEXTURE_2D,
-      ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT);
+  double result =
+      gl.getTexParameter(
+          RenderingContext.TEXTURE_2D,
+          ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT);
 
   debug("texture anisotropy=$result");
 
   if (result != _anisotropy.toDouble()) {
     warn(
-        "anisotropic_filtering_enable: anisotropy set to texParameterf=${_anisotropy.toDouble()} but got getTexParameter=$result"
-        );
+        "anisotropic_filtering_enable: anisotropy set to texParameterf=${_anisotropy.toDouble()} but got getTexParameter=$result");
   }
 }

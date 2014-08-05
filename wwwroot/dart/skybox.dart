@@ -68,7 +68,10 @@ class SkyboxModel extends Model {
   double get halfEdge => 1.0;
 
   SkyboxModel.fromJson(RenderingContext gl, String URL, bool reverse) :
-      super.fromJson(gl, URL, reverse) {
+      super.fromJson(
+      gl,
+      URL,
+      reverse) {
     cubemapTexture = gl.createTexture();
   }
 
@@ -79,18 +82,31 @@ class SkyboxModel extends Model {
     void handleDone(Event e) {
       gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
-      gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
-          RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
-      gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
-          RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.NEAREST);
+      gl.texParameteri(
+          RenderingContext.TEXTURE_CUBE_MAP,
+          RenderingContext.TEXTURE_MAG_FILTER,
+          RenderingContext.NEAREST);
+      gl.texParameteri(
+          RenderingContext.TEXTURE_CUBE_MAP,
+          RenderingContext.TEXTURE_MIN_FILTER,
+          RenderingContext.NEAREST);
 
-      gl.texImage2DImage(face, 0, RenderingContext.RGBA, RenderingContext.RGBA,
-          RenderingContext.UNSIGNED_BYTE, image);
+      gl.texImage2DImage(
+          face,
+          0,
+          RenderingContext.RGBA,
+          RenderingContext.RGBA,
+          RenderingContext.UNSIGNED_BYTE,
+          image);
 
-      gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
-          RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
-      gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
-          RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
+      gl.texParameteri(
+          RenderingContext.TEXTURE_CUBE_MAP,
+          RenderingContext.TEXTURE_WRAP_S,
+          RenderingContext.CLAMP_TO_EDGE);
+      gl.texParameteri(
+          RenderingContext.TEXTURE_CUBE_MAP,
+          RenderingContext.TEXTURE_WRAP_T,
+          RenderingContext.CLAMP_TO_EDGE);
 
       //anisotropic_filtering_enable(gl);
 
@@ -137,8 +153,12 @@ class SkyboxInstance extends Instance {
 
   double get halfEdge => scale * (model as SkyboxModel).halfEdge;
 
-  SkyboxInstance(String id, Model model, Vector3 center, double
-      scale, this.demoAnimate) : super(id, model, center, scale);
+  SkyboxInstance(String id, Model model, Vector3 center, double scale,
+      this.demoAnimate) : super(
+      id,
+      model,
+      center,
+      scale);
 
   void update(GameLoopHtml gameLoop) {
 
@@ -153,8 +173,8 @@ class SkyboxInstance extends Instance {
     double rescale;
 
     if (demoAnimate) {
-      double deg = interpolateDegree(_angle, _oldAngle,
-          gameLoop.renderInterpolationFactor);
+      double deg =
+          interpolateDegree(_angle, _oldAngle, gameLoop.renderInterpolationFactor);
       double rad = deg * math.PI / 180.0;
       double size = 15 * math.sin(rad).abs() + 1;
       rescale = scale * size;
@@ -167,16 +187,24 @@ class SkyboxInstance extends Instance {
     modelView(gl, prog.u_MV, cam, rescale); // set up MV matrix
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
-    gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize,
-        RenderingContext.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(
+        prog.a_Position,
+        model.vertexPositionBufferItemSize,
+        RenderingContext.FLOAT,
+        false,
+        0,
+        0);
 
-    gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer
-        );
+    gl.bindBuffer(
+        RenderingContext.ELEMENT_ARRAY_BUFFER,
+        model.vertexIndexBuffer);
 
     model.pieceList.forEach((piece) {
-      gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
-          RenderingContext.UNSIGNED_SHORT, piece.vertexIndexOffset *
-          model.vertexIndexBufferItemSize);
+      gl.drawElements(
+          RenderingContext.TRIANGLES,
+          piece.vertexIndexLength,
+          RenderingContext.UNSIGNED_SHORT,
+          piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });
 
   }

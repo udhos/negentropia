@@ -29,8 +29,7 @@ void repositionMessagebox(CanvasElement c) {
   _messagebox.style.top = "${top}px";
 
   log(
-      "repositionMessagebox: left=${_messagebox.style.left} top=${_messagebox.style.top}"
-      );
+      "repositionMessagebox: left=${_messagebox.style.left} top=${_messagebox.style.top}");
 }
 
 DivElement _createMessagebox(String id, CanvasElement c) {

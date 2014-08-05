@@ -56,12 +56,12 @@ func TestParseVector3(t *testing.T) {
 
 func TestQuat(t *testing.T) {
 	radAngle := math.Pi
-    var axis vectormath.Vector3
+	var axis vectormath.Vector3
 	var quat vectormath.Quat
-	
+
 	vectormath.V3MakeFromElems(&axis, 1.0, 1.0, 1.0)
 	vectormath.V3Normalize(&axis, &axis)
 	vectormath.QMakeRotationAxis(&quat, float32(radAngle), &axis)
-	
-	t.Errorf("TestQuat: 90deg around (1,1,1): quat = %q", quat.String())
+
+	t.Errorf("TestQuat: 90deg around (1,1,1): quat = %q", quatString(quat))
 }

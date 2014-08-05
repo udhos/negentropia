@@ -27,13 +27,11 @@ void setViewport(CanvasElement c, RenderingContext gl, int w, int h) {
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
   // viewport for default on-screen canvas
   debug(
-      "viewport: canvas=${c.width}x${c.height} drawingBuffer=${gl.drawingBufferWidth}x${gl.drawingBufferHeight}"
-      );
+      "viewport: canvas=${c.width}x${c.height} drawingBuffer=${gl.drawingBufferWidth}x${gl.drawingBufferHeight}");
   gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
   debug(
-      "canvas size=${c.width}x${c.height} clientSize=${c.clientWidth}x${c.clientHeight}"
-      );
+      "canvas size=${c.width}x${c.height} clientSize=${c.clientWidth}x${c.clientHeight}");
   canvasAspect = c.clientWidth.toDouble() / c.clientHeight.toDouble();
   // save aspect for render loop setPerspectiveMatrix()
   debug("canvas aspect ratio: $canvasAspect");

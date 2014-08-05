@@ -14,6 +14,17 @@ import (
 	"negentropia/world/util"
 )
 
+func quatString(q vectormath.Quat) string {
+	var f byte = 'f'
+	prec := -1
+	bitSize := 64
+	return fmt.Sprintf("%s,%s,%s,%s",
+		strconv.FormatFloat(float64(q.X), f, prec, bitSize),
+		strconv.FormatFloat(float64(q.Y), f, prec, bitSize),
+		strconv.FormatFloat(float64(q.Z), f, prec, bitSize),
+		strconv.FormatFloat(float64(q.W), f, prec, bitSize))
+}
+
 func vector3String(v vectormath.Vector3) string {
 	//return fmt.Sprintf("%f,%f,%f", v.X, v.Y, v.Z)
 	var f byte = 'f'

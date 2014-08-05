@@ -37,8 +37,9 @@ PickerInstance colorHit(Iterable<Instance> list, int r, int g, int b) {
 
   bool match(Instance i) {
     Float32List f = i.pickColor;
-    return (255.0 * f[0] - r.toDouble()).abs() < 1.0 && (255.0 * f[1] -
-        g.toDouble()).abs() < 1.0 && (255.0 * f[2] - b.toDouble()).abs() < 1.0;
+    return (255.0 * f[0] - r.toDouble()).abs() < 1.0 &&
+        (255.0 * f[1] - g.toDouble()).abs() < 1.0 &&
+        (255.0 * f[2] - b.toDouble()).abs() < 1.0;
   }
 
   Instance pi;
@@ -98,19 +99,21 @@ void pickerClearColor(double r, double g, double b) {
 const double MIN_COLOR_DELTA = 1.0 / 255.0;
 
 bool backgroundColorDouble(double r, double g, double b) {
-  return (r - _bgColorR).abs() < MIN_COLOR_DELTA && (g - _bgColorG).abs() <
-      MIN_COLOR_DELTA && (b - _bgColorB).abs() < MIN_COLOR_DELTA;
+  return (r - _bgColorR).abs() < MIN_COLOR_DELTA &&
+      (g - _bgColorG).abs() < MIN_COLOR_DELTA &&
+      (b - _bgColorB).abs() < MIN_COLOR_DELTA;
 }
 
 bool backgroundColor(int r, g, b) {
-  return (r.toDouble() - 255.0 * _bgColorR).abs() < 1.0 && (g.toDouble() - 255.0
-      * _bgColorG).abs() < 1.0 && (b.toDouble() - 255.0 * _bgColorB).abs() < 1.0;
+  return (r.toDouble() - 255.0 * _bgColorR).abs() < 1.0 &&
+      (g.toDouble() - 255.0 * _bgColorG).abs() < 1.0 &&
+      (b.toDouble() - 255.0 * _bgColorB).abs() < 1.0;
 }
 
 Uint8List _color = new Uint8List(4);
 
-void bandSelection(int x, int y, int width, int height, PickerShader
-    picker, RenderingContext gl, bool shift) {
+void bandSelection(int x, int y, int width, int height, PickerShader picker,
+    RenderingContext gl, bool shift) {
   //debug("bandSelection: x=$x y=$y width=$width height=$height");
 
   if (picker == null) {
@@ -126,8 +129,14 @@ void bandSelection(int x, int y, int width, int height, PickerShader
   }
 
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, picker.framebuffer);
-  gl.readPixels(x, y, width, height, RenderingContext.RGBA,
-      RenderingContext.UNSIGNED_BYTE, _color);
+  gl.readPixels(
+      x,
+      y,
+      width,
+      height,
+      RenderingContext.RGBA,
+      RenderingContext.UNSIGNED_BYTE,
+      _color);
 
   if (!shift) {
     // shift is released
@@ -181,6 +190,5 @@ void bandSelection(int x, int y, int width, int height, PickerShader
   Duration elapsed = end.difference(begin);
 
   log(
-      "bandSelection: $_selection took ${elapsed.inMilliseconds} msecs (pixels total=$size scanned=$pixels, background hits=$bgHits, cache size=${cache.length} hits=$cacheHits, searches=$searches)"
-      );
+      "bandSelection: $_selection took ${elapsed.inMilliseconds} msecs (pixels total=$size scanned=$pixels, background hits=$bgHits, cache size=${cache.length} hits=$cacheHits, searches=$searches)");
 }
