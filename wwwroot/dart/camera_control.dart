@@ -83,6 +83,7 @@ class CameraControl {
 
 
 
+
           // getting away - farthest distance is skybox half edge (minus bounding diameter)
 
       double halfEdge = cam.skyboxHalfEdge;

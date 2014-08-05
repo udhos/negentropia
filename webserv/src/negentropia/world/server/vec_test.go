@@ -64,4 +64,10 @@ func TestQuat(t *testing.T) {
 	vectormath.QMakeRotationAxis(&quat, float32(radAngle), &axis)
 
 	t.Errorf("TestQuat: 90deg around (1,1,1): quat = %q", quatString(quat))
+
+	var vec vectormath.Vector3
+	vectormath.V3MakeFromElems(&vec, 1.0, 0.0, 0.0)
+	vectormath.QRotate(&vec, &quat, &vec)
+
+	t.Errorf("TestQuat: quat applied to vec=(1,0,0) results: vec = %q", vector3String(vec))
 }
