@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/udhos/vectormath"
+
+	"negentropia/world/util"
 )
 
 func unitRotateYaw(unit *Unit, elapsed time.Duration) {
@@ -55,7 +57,7 @@ func unitForward(unit *Unit, elapsed time.Duration) {
 	var speed vectormath.Vector3
 	vectormath.V3ScalarMul(&speed, &unit.front, float32(unit.linearSpeed*float64(elapsed)/float64(time.Second)))
 
-	if diff := unit.linearSpeed - float64(speed.Length()); !CloseToZero(diff) {
+	if diff := unit.linearSpeed - float64(speed.Length()); !util.CloseToZero(diff) {
 		log.Printf("unitForward: MISMATCH: unit=%v forward=%v speed=%v linearSpeed=%v speed=%v diff=%v", unit.uid, vector3String(unit.front), vector3String(speed), unit.linearSpeed, speed.Length(), diff)
 	}
 
@@ -69,11 +71,11 @@ func unitForward(unit *Unit, elapsed time.Duration) {
 	rollSpeed      float64 // rad/s
 */
 func unitMove(unit *Unit, elapsed time.Duration) {
-	if !CloseToZero(unit.linearSpeed) {
+	if !util.CloseToZero(unit.linearSpeed) {
 		unitForward(unit, elapsed)
 	}
 
-	if !CloseToZero(unit.yawSpeed) {
+	if !util.CloseToZero(unit.yawSpeed) {
 		unitRotateYaw(unit, elapsed)
 	}
 }

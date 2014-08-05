@@ -314,6 +314,9 @@ class Model {
       Piece pi = addPiece(pa.indexFirst, pa.indexListSize);
 
 
+
+
+
           //log("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
     });
 

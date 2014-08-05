@@ -5,6 +5,8 @@ import (
 	"math"
 
 	"github.com/udhos/vectormath"
+
+	"negentropia/world/util"
 )
 
 type Sphere struct {
@@ -31,7 +33,7 @@ func setCone(k *Cone, vertexX, vertexY, vertexZ, axisX, axisY, axisZ, angleRadia
 	vectormath.V3MakeFromElems(&k.vertex, float32(vertexX), float32(vertexY), float32(vertexZ))
 	vectormath.V3MakeFromElems(&k.axis, float32(axisX), float32(axisY), float32(axisZ))
 	sin := math.Sin(angleRadians)
-	if CloseToZero(sin) {
+	if util.CloseToZero(sin) {
 		return errors.New("setCone: invalid zero sin")
 	}
 	k.sinSqr = sin * sin

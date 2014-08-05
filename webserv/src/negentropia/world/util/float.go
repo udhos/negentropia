@@ -47,3 +47,7 @@ func nearlyEqualEpsilon(a, b, epsilon float64) bool {
 func NearlyEqual(a, b float64) bool {
 	return nearlyEqualEpsilon(a, b, 0.000001)
 }
+
+func CloseToZero(f float64) bool {
+	return NearlyEqual(f, 0.0)
+}

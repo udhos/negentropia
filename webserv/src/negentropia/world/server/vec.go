@@ -57,24 +57,12 @@ func parseVector3(result *vectormath.Vector3, text string) error {
 	return parseVector3Func(result, text, isComma)
 }
 
-/*
-const MAX_CLOSE_TO_ZERO = 1e-6
-
-func CloseToZero(f float64) bool {
-	return math.Abs(f) < MAX_CLOSE_TO_ZERO
-}
-*/
-
-func CloseToZero(f float64) bool {
-	return util.NearlyEqual(f, 0.0)
-}
-
 func vector3Orthogonal(v1, v2 vectormath.Vector3) bool {
 	dot := float64(vectormath.V3Dot(&v1, &v2))
-	return CloseToZero(dot)
+	return util.CloseToZero(dot)
 }
 
 func vector3Unit(v vectormath.Vector3) bool {
 	length := float64(v.Length())
-	return CloseToZero(length - 1.0)
+	return util.CloseToZero(length - 1.0)
 }
