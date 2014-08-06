@@ -103,7 +103,7 @@ void quat_test() {
   test("quat_test: 90deg around (1,1,1)", () {
     expect(quat.toString(), equals(""));
   });
-  
+
   Vector3 vec = new Vector3(1.0, 0.0, 0.0);
   quat.rotate(vec);
   test("quat_test: quat applied to vec=(1,0,0) results", () {

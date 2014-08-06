@@ -50,14 +50,19 @@ class Instance {
   Vector3 get right =>
       new Vector3(_rotation.storage[8], _rotation.storage[9], _rotation.storage[10]);
 
-  void setRotation(Vector3 front, Vector3 up) {
+  void setRotation(Vector3 newFront, Vector3 newUp) {
     /*
     Vector3 right = front.cross(up).normalize();
 
     _rotation.setValues(front[0], up[0], right[0], 0.0, front[1], up[1],
         right[1], 0.0, front[2], up[2], right[2], 0.0, 0.0, 0.0, 0.0, 1.0);
         */
-    setRotationMatrix(_rotation, front, up);
+    setRotationMatrix(_rotation, newFront, newUp);
+  }
+
+  void debugLocation() {
+    log(
+        "$this - model: orient[${this.model.debugOrientation()}] - obj: pos[$_center] orient[f=$front u=$up r=$right]");
   }
 
   Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
@@ -169,6 +174,10 @@ class Model {
 
   Vector3 _front = new Vector3(1.0, 0.0, 0.0);
   Vector3 _up = new Vector3(0.0, 1.0, 0.0);
+
+  String debugOrientation() {
+    return "f=$_front u=$_up";
+  }
 
   List<Piece> pieceList = new List<Piece>();
   List<Instance> instanceList = new List<Instance>();
@@ -312,6 +321,7 @@ class Model {
 
     o.partList.forEach((Part pa) {
       Piece pi = addPiece(pa.indexFirst, pa.indexListSize);
+
 
 
 

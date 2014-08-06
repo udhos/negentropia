@@ -921,6 +921,7 @@ void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
 
 
 
+
         // http://stackoverflow.com/questions/1009753/pass-mouse-events-through-absolutely-positioned-element
     // https://developer.mozilla.org/en/css/pointer-events
     dragBox.style.pointerEvents = "none";
@@ -1122,6 +1123,7 @@ void main() {
     //log("keyCode=${e.keyCode}");
     switch (e.keyCode) {
       case 32:
+
 
 
 
