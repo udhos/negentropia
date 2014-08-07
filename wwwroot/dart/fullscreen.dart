@@ -12,13 +12,14 @@ double canvasAspect;
 const int CANVAS_WIDTH = 780;
 const int CANVAS_HEIGHT = 500;
 
-void setViewport(CanvasElement c, RenderingContext gl, int w, int h) {
+void setViewport(RenderingContext gl, int w, int h) {
 
   /*
     canvas.width, canvas.height = size you requested the canvas's drawingBuffer to be
     gl.drawingBufferWidth, gl.drawingBufferHeight = size you actually got.
     canvas.clientWidth, canvas.clientHeight = size the browser is displaying your canvas.
    */
+  CanvasElement c = gl.canvas;
   c.width = w;
   c.height = h;
   c.style.width = "${w}px";
@@ -39,8 +40,7 @@ void setViewport(CanvasElement c, RenderingContext gl, int w, int h) {
   repositionMessagebox(c);
 }
 
-void trapFullscreen(CanvasElement c, RenderingContext gl, GameLoopHtml gameLoop)
-    {
+void trapFullscreen(RenderingContext gl, GameLoopHtml gameLoop) {
   document.onFullscreenError.listen((e) {
     err("fullscreenerror: $e");
   });
@@ -50,10 +50,10 @@ void trapFullscreen(CanvasElement c, RenderingContext gl, GameLoopHtml gameLoop)
       int w = window.screen.width;
       int h = window.screen.height;
       debug("fullscreen canvas: $w x $h");
-      setViewport(c, gl, w, h);
+      setViewport(gl, w, h);
       return;
     }
 
-    setViewport(c, gl, CANVAS_WIDTH, CANVAS_HEIGHT);
+    setViewport(gl, CANVAS_WIDTH, CANVAS_HEIGHT);
   });
 }

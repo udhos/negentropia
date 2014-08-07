@@ -15,8 +15,8 @@ bool contextIsLost() {
   return _lost;
 }
 
-void initHandleLostContext(RenderingContext gl, CanvasElement canvas,
-    GameLoopHtml gameLoop, void initContextCall(RenderingContext, GameLoopHtml)) {
+void initHandleLostContext(RenderingContext gl, GameLoopHtml gameLoop, void
+    initContextCall(RenderingContext, GameLoopHtml)) {
 
   _lost = gl.isContextLost();
   assert(_lost != null);
@@ -35,8 +35,8 @@ void initHandleLostContext(RenderingContext gl, CanvasElement canvas,
     // recreate resources and // gameLoop.start();
   }
 
-  canvas.onWebGlContextLost.listen(onContextLost);
-  canvas.onWebGlContextRestored.listen(onContextRestored);
+  gl.canvas.onWebGlContextLost.listen(onContextLost);
+  gl.canvas.onWebGlContextRestored.listen(onContextRestored);
 
   LoseContext ext = gl.getExtension('WEBGL_lose_context');
   if (ext == null) {

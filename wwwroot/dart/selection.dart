@@ -67,8 +67,8 @@ void handleSelection(PickerInstance pi, bool shift) {
   }
 
   assert(pi != null);
-  
-  pi.debugLocation();  
+
+  pi.debugLocation();
 
   if (shift) {
     if (_selection.contains(pi)) {

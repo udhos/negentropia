@@ -27,7 +27,7 @@ import 'message.dart';
 import 'wheel.dart';
 import 'fullscreen.dart';
 
-CanvasElement canvas;
+//CanvasElement canvas;
 ShaderProgram shaderProgram;
 bool debugLostContext = true;
 List<ShaderProgram> programList;
@@ -400,7 +400,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
 DivElement canvasbox;
 
 RenderingContext boot() {
-  canvas = new CanvasElement();
+  CanvasElement canvas = new CanvasElement();
   assert(canvas != null);
   canvas.id = "main_canvas";
   canvas.width = CANVAS_WIDTH;
@@ -428,7 +428,7 @@ RenderingContext boot() {
     return null;
   }
 
-  newMessagebox(canvasbox, 'messagebox', canvas);
+  newMessagebox(canvasbox, 'messagebox', gl.canvas);
 
   initShowPicking();
 
@@ -698,7 +698,7 @@ void demoInitShips(RenderingContext gl) {
 }
 
 void addPicker(RenderingContext gl) {
-  picker = new PickerShader(gl, programList, canvas.width, canvas.height);
+  picker = new PickerShader(gl, programList, gl.canvas.width, gl.canvas.height);
   picker.fetch(
       shaderCache,
       "${asset.shader}/picker_vs.txt",
@@ -706,7 +706,7 @@ void addPicker(RenderingContext gl) {
 }
 
 void demoInitPicker(RenderingContext gl) {
-  picker = new PickerShader(gl, programList, canvas.width, canvas.height);
+  picker = new PickerShader(gl, programList, gl.canvas.width, gl.canvas.height);
   picker.fetch(
       shaderCache,
       "${asset.shader}/picker_vs.txt",
@@ -752,7 +752,7 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   gl.depthFunc(RenderingContext.LESS); // gl.LESS is default depth test
   gl.depthRange(0.0, 1.0); // default
 
-  setViewport(canvas, gl, canvas.width, canvas.height);
+  setViewport(gl, gl.canvas.width, gl.canvas.height);
 
   updateCulling(gl);
 
@@ -876,21 +876,21 @@ void readColor(String label, RenderingContext gl, int x, int y,
 
 DivElement dragBox;
 
-void deleteBandSelectionBox(RenderingContext gl, CanvasElement c, bool shift) {
+void deleteBandSelectionBox(RenderingContext gl, bool shift) {
   if (dragBox == null) {
     return;
   }
 
   int minX = math.min(mouseDragBeginX, mouseDragCurrX);
-  int minY = c.height - math.max(mouseDragBeginY, mouseDragCurrY);
+  int minY = gl.canvas.height - math.max(mouseDragBeginY, mouseDragCurrY);
   int w = 1 + (mouseDragCurrX - mouseDragBeginX).abs();
   int h = 1 + (mouseDragCurrY - mouseDragBeginY).abs();
 
   // Clamp to canvas
   minX = math.max(minX, 0);
   minY = math.max(minY, 0);
-  w = math.min(w, c.width - minX);
-  h = math.min(h, c.height - minY);
+  w = math.min(w, gl.canvas.width - minX);
+  h = math.min(h, gl.canvas.height - minY);
 
   bandSelection(minX, minY, w, h, picker, gl, shift);
 
@@ -898,7 +898,7 @@ void deleteBandSelectionBox(RenderingContext gl, CanvasElement c, bool shift) {
   dragBox = null;
 }
 
-void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
+void createBandSelectionBox(RenderingContext gl) {
 
   assert(canvasbox != null);
 
@@ -922,6 +922,9 @@ void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
 
 
 
+
+
+
         // http://stackoverflow.com/questions/1009753/pass-mouse-events-through-absolutely-positioned-element
     // https://developer.mozilla.org/en/css/pointer-events
     dragBox.style.pointerEvents = "none";
@@ -930,10 +933,10 @@ void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
   }
 
   int minX = math.min(mouseDragBeginX, mouseDragCurrX);
-  int minY = c.height - math.max(mouseDragBeginY, mouseDragCurrY);
+  int minY = gl.canvas.height - math.max(mouseDragBeginY, mouseDragCurrY);
 
-  int left = minX + c.offsetLeft;
-  int top = math.min(mouseDragBeginY, mouseDragCurrY) + c.offsetTop;
+  int left = minX + gl.canvas.offsetLeft;
+  int top = math.min(mouseDragBeginY, mouseDragCurrY) + gl.canvas.offsetTop;
   int w = 1 + (mouseDragCurrX - mouseDragBeginX).abs();
   int h = 1 + (mouseDragCurrY - mouseDragBeginY).abs();
 
@@ -944,14 +947,14 @@ void createBandSelectionBox(RenderingContext gl, CanvasElement c) {
 }
 
 void viewportShrink(RenderingContext gl) {
-  if ((canvas.width < 79) || (canvas.height < 51)) {
+  if ((gl.canvas.width < 79) || (gl.canvas.height < 51)) {
     return;
   }
-  setViewport(canvas, gl, canvas.width - 78, canvas.height - 50);
+  setViewport(gl, gl.canvas.width - 78, gl.canvas.height - 50);
 }
 
 void viewportGrow(RenderingContext gl) {
-  setViewport(canvas, gl, canvas.width + 78, canvas.height + 50);
+  setViewport(gl, gl.canvas.width + 78, gl.canvas.height + 50);
 }
 
 PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
@@ -961,7 +964,7 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
     return null;
   }
 
-  int y = canvas.height - m.y;
+  int y = gl.canvas.height - m.y;
 
   Uint8List color = new Uint8List(4);
   readColor("offscreen-framebuffer", gl, m.x, y, picker.framebuffer, color);
@@ -1004,7 +1007,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   }
 
   if (ctrlReleased) {
-    deleteBandSelectionBox(gl, canvas, shiftDown);
+    deleteBandSelectionBox(gl, shiftDown);
     mouseDragBeginX = null;
     mouseDragBeginY = null;
     mouseDragCurrX = null;
@@ -1024,7 +1027,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
       // mouse moved
       mouseDragCurrX = mx;
       mouseDragCurrY = my;
-      createBandSelectionBox(gl, canvas);
+      createBandSelectionBox(gl);
     }
   }
 
@@ -1115,7 +1118,7 @@ void main() {
 
   anisotropic_filtering_detect(gl);
 
-  GameLoopHtml gameLoop = new GameLoopHtml(canvas);
+  GameLoopHtml gameLoop = new GameLoopHtml(gl.canvas);
 
   gameLoop.pointerLock.lockOnClick = false; // disable pointer lock
 
@@ -1123,6 +1126,9 @@ void main() {
     //log("keyCode=${e.keyCode}");
     switch (e.keyCode) {
       case 32:
+
+
+
 
 
 
@@ -1142,12 +1148,12 @@ void main() {
   document.onKeyPress.listen(keyPress);
 
   if (debugLostContext) {
-    initHandleLostContext(gl, canvas, gameLoop, initContext);
+    initHandleLostContext(gl, gameLoop, initContext);
   }
 
   initPageVisibility(gameLoop);
 
-  trapFullscreen(canvas, gl, gameLoop);
+  trapFullscreen(gl, gameLoop);
 
   gameLoop.onUpdate = ((gLoop) {
     update(gl, gLoop);

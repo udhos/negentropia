@@ -328,6 +328,9 @@ class Model {
 
 
 
+
+
+
           //log("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
     });
 
