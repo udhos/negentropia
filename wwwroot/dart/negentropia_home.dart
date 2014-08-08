@@ -1119,18 +1119,6 @@ void main() {
     switch (e.keyCode) {
       case 32:
 
-
-
-
-
-
-
-
-
-
-
-
-
             // disable default space-bar behavior, since it is used to restore camera default orientation
         e.preventDefault();
         break;
