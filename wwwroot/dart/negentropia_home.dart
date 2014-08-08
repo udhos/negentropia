@@ -914,11 +914,11 @@ void createBandSelectionBox(RenderingContext gl) {
     //dragBox.style.padding = "2px";
     //dragBox.style.fontSize = 'x-small';
 
-    // Pass through pointer events
-
-
-        // http://stackoverflow.com/questions/1009753/pass-mouse-events-through-absolutely-positioned-element
-    // https://developer.mozilla.org/en/css/pointer-events
+    /*
+      Pass through pointer events
+      http://stackoverflow.com/questions/1009753/pass-mouse-events-through-absolutely-positioned-element
+      https://developer.mozilla.org/en/css/pointer-events
+     */
     dragBox.style.pointerEvents = "none";
 
     canvasbox.append(dragBox);
@@ -1118,8 +1118,8 @@ void main() {
     //log("keyCode=${e.keyCode}");
     switch (e.keyCode) {
       case 32:
-
-            // disable default space-bar behavior, since it is used to restore camera default orientation
+        // disable default space-bar behavior, since it is used to
+        // restore camera default orientation
         e.preventDefault();
         break;
       case 102:

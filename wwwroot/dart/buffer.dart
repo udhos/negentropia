@@ -52,11 +52,36 @@ class Instance {
 
   void setRotation(Vector3 newFront, Vector3 newUp) {
     /*
-    Vector3 right = front.cross(up).normalize();
+     4x4:
+    
+     front.x front.y front.z 0
+     up.x    up.y    up.z    0
+     right.x right.y right.z 0
+     0       0       0       1
+     */
 
-    _rotation.setValues(front[0], up[0], right[0], 0.0, front[1], up[1],
-        right[1], 0.0, front[2], up[2], right[2], 0.0, 0.0, 0.0, 0.0, 1.0);
-        */
+    /*
+    Vector3 newRight = newFront.cross(newUp).normalize();
+
+    _rotation.setValues(
+        newFront[0],
+        newUp[0],
+        newRight[0],
+        0.0,
+        newFront[1],
+        newUp[1],
+        newRight[1],
+        0.0,
+        newFront[2],
+        newUp[2],
+        newRight[2],
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0);
+         */
+
     setRotationMatrix(_rotation, newFront, newUp);
   }
 
