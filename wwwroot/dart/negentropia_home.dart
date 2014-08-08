@@ -344,16 +344,18 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         return;
       }
 
-      if (!vector3Orthogonal(f, u)) {
-        err(
-            "instance update: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
-        return;
-      }
-
       Vector3 c = parseVector3(coord);
       if (c == null) {
         err("instance update: id=$id parsing failure: coord=$coord");
         return;
+      }
+
+      log("instance update: id=$id mission=$mission center=$c front=$f up=$u");
+
+      if (!vector3Orthogonal(f, u)) {
+        err(
+            "instance update: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
+        //return;
       }
 
       i.setRotation(f, u);
@@ -366,11 +368,10 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         if (j == null) {
           err(
               "instance update: NOT FOUND axis instance: id=$id coord=$coord mission=$mission");
-          return;
+        } else {
+          j.setRotation(f, u);
+          j.center = c;
         }
-
-        j.setRotation(f, u);
-        j.center = c;
       }
 
       // update picking
@@ -379,11 +380,10 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         if (k == null) {
           err(
               "instance update: NOT FOUND picker instance: id=$id coord=$coord mission=$mission");
-          return;
+        } else {
+          k.setRotation(f, u);
+          k.center = c;
         }
-
-        k.setRotation(f, u);
-        k.center = c;
       }
 
       break;
@@ -908,21 +908,13 @@ void createBandSelectionBox(RenderingContext gl) {
     dragBox.style.border = '1px solid #FFF';
     dragBox.style.zIndex = "2";
     dragBox.style.position = "absolute";
-    //dragBo.style.color = "lightgreen";
-    //dragBo.style.background = "rgba(50,50,50,0.7)";
-    //dragBo.style.textAlign = "left";
-    //dragBo.style.padding = "2px";
+    //dragBox.style.color = "lightgreen";
+    //dragBox.style.background = "rgba(50,50,50,0.7)";
+    //dragBox.style.textAlign = "left";
+    //dragBox.style.padding = "2px";
     //dragBox.style.fontSize = 'x-small';
 
     // Pass through pointer events
-
-
-
-
-
-
-
-
 
 
         // http://stackoverflow.com/questions/1009753/pass-mouse-events-through-absolutely-positioned-element
@@ -1126,6 +1118,9 @@ void main() {
     //log("keyCode=${e.keyCode}");
     switch (e.keyCode) {
       case 32:
+
+
+
 
 
 

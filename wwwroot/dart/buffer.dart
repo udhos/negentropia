@@ -44,11 +44,11 @@ class Instance {
   Matrix4 _rotation = new Matrix4.identity();
 
   Vector3 get front =>
-      new Vector3(_rotation.storage[0], _rotation.storage[1], _rotation.storage[2]);
+      new Vector3(_rotation.storage[0], _rotation.storage[4], _rotation.storage[8]);
   Vector3 get up =>
-      new Vector3(_rotation.storage[4], _rotation.storage[5], _rotation.storage[6]);
+      new Vector3(_rotation.storage[1], _rotation.storage[5], _rotation.storage[9]);
   Vector3 get right =>
-      new Vector3(_rotation.storage[8], _rotation.storage[9], _rotation.storage[10]);
+      new Vector3(_rotation.storage[2], _rotation.storage[6], _rotation.storage[10]);
 
   void setRotation(Vector3 newFront, Vector3 newUp) {
     /*
@@ -174,9 +174,10 @@ class Model {
 
   Vector3 _front = new Vector3(1.0, 0.0, 0.0);
   Vector3 _up = new Vector3(0.0, 1.0, 0.0);
+  Vector3 get right => _front.cross(_up).normalized().scaled(_front.length);
 
   String debugOrientation() {
-    return "f=$_front u=$_up";
+    return "f=$_front u=$_up r=$right";
   }
 
   List<Piece> pieceList = new List<Piece>();
@@ -321,17 +322,6 @@ class Model {
 
     o.partList.forEach((Part pa) {
       Piece pi = addPiece(pa.indexFirst, pa.indexListSize);
-
-
-
-
-
-
-
-
-
-
-          //log("Model.fromOBJ: added part ${pa.name} into piece: offset=${pi.vertexIndexOffset} length=${pi.vertexIndexLength}");
     });
 
     piecesReady = true;

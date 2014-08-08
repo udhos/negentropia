@@ -5,6 +5,8 @@ class AxisInstance extends Instance {
   static final Float32List red = new Float32List.fromList([1.0, 0.0, 0.0, 1.0]);
   static final Float32List green =
       new Float32List.fromList([0.0, 1.0, 0.0, 1.0]);
+  static final Float32List blue =
+      new Float32List.fromList([0.0, 0.0, 1.0, 1.0]);
 
   AxisInstance(String id, AxisModel am, Instance i) : super(
       id,
@@ -37,8 +39,9 @@ class AxisInstance extends Instance {
 
     Piece p;
 
-    assert(model.pieceList.length == 2);
+    assert(model.pieceList.length == 3); // red, green, blue
 
+    // draw front/red arrow
     gl.uniform4fv((prog as SolidShader).u_Color, red);
     p = model.pieceList[0];
     gl.drawElements(
@@ -47,8 +50,18 @@ class AxisInstance extends Instance {
         RenderingContext.UNSIGNED_SHORT,
         p.vertexIndexOffset * model.vertexIndexBufferItemSize);
 
+    // draw up/green arrow
     gl.uniform4fv((prog as SolidShader).u_Color, green);
     p = model.pieceList[1];
+    gl.drawElements(
+        RenderingContext.LINES,
+        p.vertexIndexLength,
+        RenderingContext.UNSIGNED_SHORT,
+        p.vertexIndexOffset * model.vertexIndexBufferItemSize);
+
+    // draw right/blue arrow
+    gl.uniform4fv((prog as SolidShader).u_Color, blue);
+    p = model.pieceList[2];
     gl.drawElements(
         RenderingContext.LINES,
         p.vertexIndexLength,
@@ -69,28 +82,38 @@ class AxisModel extends Model {
     List<int> indices = new List<int>();
     List<double> vertCoord = new List<double>();
 
-    void push(List<double> d, List<int> i, double x, double y, double z) {
-      d.add(x);
-      d.add(y);
-      d.add(z);
-
-      i.add(i.length);
-    }
-
     void _frontUpReadyCall() {
+
+      void push(List<double> d, List<int> i, double x, double y, double z) {
+        d.add(x);
+        d.add(y);
+        d.add(z);
+
+        i.add(i.length);
+      }
+
+      // add two vertices for front/red arrow
       int offset = indices.length;
       push(vertCoord, indices, 0.0, 0.0, 0.0);
       push(vertCoord, indices, m._front.x, m._front.y, m._front.z);
       addPiece(offset, indices.length - offset); // red
 
+      // add two vertices for up/green arrow
       offset = indices.length;
       push(vertCoord, indices, 0.0, 0.0, 0.0);
       push(vertCoord, indices, m._up.x, m._up.y, m._up.z);
       addPiece(offset, indices.length - offset); // green
 
-      assert(vertCoord.length == 12);
-      assert(indices.length == 4);
-      assert(pieceList.length == 2);
+      // add two vertices for right/blue arrow
+      Vector3 right = m.right;
+      offset = indices.length;
+      push(vertCoord, indices, 0.0, 0.0, 0.0);
+      push(vertCoord, indices, right.x, right.y, right.z);
+      addPiece(offset, indices.length - offset); // blue
+
+      assert(vertCoord.length == 18);
+      assert(indices.length == 6);
+      assert(pieceList.length == 3);
 
       _createBuffers(gl, indices, vertCoord, null, null);
 
