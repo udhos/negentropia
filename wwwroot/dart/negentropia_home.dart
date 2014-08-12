@@ -137,7 +137,7 @@ Instance findInstance(String id) {
 
 void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
     Vector3 up, Vector3 center, String mission) {
-  
+
   switch (i.inputLock) {
     case Keyboard.ONE:
       front = new Vector3(0.0, 0.0, 1.0);
@@ -150,12 +150,13 @@ void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
       center = i.center;
       break;
   }
-  
+
   log("lock=${i.inputLock} one=${Keyboard.ONE} two=${Keyboard.TWO}");
 
   String id = i.id;
-  log("updateInstance: id=$id mission=$mission center=$center front=$front up=$up");
-  
+  log(
+      "updateInstance: id=$id mission=$mission center=$center front=$front up=$up");
+
   i.setRotation(front, up);
   i.center = center;
   i.mission = mission;
@@ -388,7 +389,9 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         return;
       }
 
-      //log("instance update: id=$id mission=$mission center=$c front=$f up=$u");
+
+
+          //log("instance update: id=$id mission=$mission center=$c front=$f up=$u");
 
       if (!vector3Orthogonal(f, u)) {
         err(
@@ -1019,7 +1022,7 @@ void checkInputLock(Keyboard k, int num) {
       if (i != null) {
         i.inputLock = num;
       }
-    }  
+    }
   }
 }
 

@@ -36,7 +36,7 @@ class Instance {
   void set center(Vector3 c) {
     _center.setFrom(c);
   }
-  
+
   Vector3 get center {
     return _center.clone();
   }
