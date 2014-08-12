@@ -101,12 +101,17 @@ void quat_test() {
   axis.normalize();
   Quaternion quat = new Quaternion.axisAngle(axis, radAngle);
   test("quat_test: 90deg around (1,1,1)", () {
-    expect(quat.toString(), equals(""));
+    expect(
+        quat.toString(),
+        equals(
+            "0.5773502588272095, 0.5773502588272095, 0.5773502588272095 @ 6.123234262925839e-17"));
   });
 
   Vector3 vec = new Vector3(1.0, 0.0, 0.0);
   quat.rotate(vec);
-  test("quat_test: quat applied to vec=(1,0,0) results", () {
-    expect(vec.toString(), equals(""));
+  test("quat_test: quat applied to vec=(1,0,0)", () {
+    expect(
+        vec.toString(),
+        equals("[-0.3333333134651184,0.6666666269302368,0.6666666269302368]"));
   });
 }

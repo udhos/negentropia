@@ -22,6 +22,7 @@ call %DEVEL%\negentropia\win-dart2js.cmd
 cd %OLD_CD%
 
 @rem run dart tests
-call %DEVEL%\negentropia\win-benchmark-dart.cmd
+call %DEVEL%\negentropia\win-dart-test.cmd
+call %DEVEL%\negentropia\win-dart-benchmark.cmd
 
 @rem eof

@@ -1,4 +1,4 @@
-@rem win-benchmark-dart
+@rem win-dart-benchmark
 
 set DEVEL=c:\tmp\devel
 set DART_SDK=c:\dart\dart-sdk

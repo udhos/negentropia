@@ -149,13 +149,16 @@ void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
       up = new Vector3(0.0, 1.0, 0.0);
       center = i.center;
       break;
+    case Keyboard.THREE:
+      front = (new Vector3(1.0, 1.0, 0.0)).normalized();
+      Vector3 right = front.cross(new Vector3(0.0, 1.0, 0.0));
+      up = right.cross(front).normalized();
+      center = i.center;
+      break;
   }
 
-  log("lock=${i.inputLock} one=${Keyboard.ONE} two=${Keyboard.TWO}");
-
-  String id = i.id;
   log(
-      "updateInstance: id=$id mission=$mission center=$center front=$front up=$up");
+      "updateInstance: id=${i.id} mission=$mission center=$center front=$front up=$up");
 
   i.setRotation(front, up);
   i.center = center;
@@ -354,22 +357,11 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       String coord = tab['coord'];
       String mission = tab['mission'];
 
-      /*
-      debug(
-          "instance update: id=$id front=$front up=$up coord=$coord mission=$mission");
-          */
-
       Instance i = findInstance(id);
       if (i == null) {
         err("instance update: NOT FOUND: id=$id coord=$coord mission=$mission");
         return;
       }
-
-      /*
-      debug(
-          "instance update: FOUND: id=$id front=$front up=$up coord=$coord mission=$mission: $i"
-          );
-          */
 
       Vector3 f = parseVector3(front);
       if (f == null) {
@@ -389,21 +381,10 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         return;
       }
 
-
-
-          //log("instance update: id=$id mission=$mission center=$c front=$f up=$u");
-
       if (!vector3Orthogonal(f, u)) {
         err(
             "instance update: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
-        //return;
       }
-
-      /*
-      i.setRotation(f, u);
-      i.center = c;
-      i.mission = mission;
-       */
 
       // update debug axis
       Instance j;
@@ -412,9 +393,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         if (j == null) {
           err(
               "instance update: NOT FOUND axis instance: id=$id coord=$coord mission=$mission");
-        } else {
-          //j.setRotation(f, u);
-          //j.center = c;
         }
       }
 
@@ -425,9 +403,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         if (k == null) {
           err(
               "instance update: NOT FOUND picker instance: id=$id coord=$coord mission=$mission");
-        } else {
-          //k.setRotation(f, u);
-          //k.center = c;
         }
       }
 
@@ -1046,6 +1021,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   checkInputLock(k, Keyboard.ZERO);
   checkInputLock(k, Keyboard.ONE);
   checkInputLock(k, Keyboard.TWO);
+  checkInputLock(k, Keyboard.THREE);
 
   if (f2Pressed) {
     missionNext(getSelectionIdList());
