@@ -7,6 +7,8 @@ class Instance {
   double scale;
   Float32List pickColor;
 
+  int inputLock = Keyboard.ZERO;
+
   Vector3 _center;
   String _mission;
 
@@ -33,6 +35,10 @@ class Instance {
 
   void set center(Vector3 c) {
     _center.setFrom(c);
+  }
+  
+  Vector3 get center {
+    return _center.clone();
   }
 
   void set mission(String m) {

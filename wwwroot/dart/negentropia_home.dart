@@ -135,6 +135,44 @@ Instance findInstance(String id) {
   return i;
 }
 
+void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
+    Vector3 up, Vector3 center, String mission) {
+  
+  switch (i.inputLock) {
+    case Keyboard.ONE:
+      front = new Vector3(0.0, 0.0, 1.0);
+      up = new Vector3(0.0, 1.0, 0.0);
+      center = i.center;
+      break;
+    case Keyboard.TWO:
+      front = new Vector3(0.0, 0.0, -1.0);
+      up = new Vector3(0.0, 1.0, 0.0);
+      center = i.center;
+      break;
+  }
+  
+  log("lock=${i.inputLock} one=${Keyboard.ONE} two=${Keyboard.TWO}");
+
+  String id = i.id;
+  log("updateInstance: id=$id mission=$mission center=$center front=$front up=$up");
+  
+  i.setRotation(front, up);
+  i.center = center;
+  i.mission = mission;
+
+  if (j != null) {
+    j.setRotation(front, up);
+    j.center = center;
+    j.mission = mission;
+  }
+
+  if (k != null) {
+    k.setRotation(front, up);
+    k.center = center;
+    k.mission = mission;
+  }
+}
+
 void dispatcher(RenderingContext gl, int code, String data, Map<String,
     String> tab) {
 
@@ -350,7 +388,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         return;
       }
 
-      log("instance update: id=$id mission=$mission center=$c front=$f up=$u");
+      //log("instance update: id=$id mission=$mission center=$c front=$f up=$u");
 
       if (!vector3Orthogonal(f, u)) {
         err(
@@ -358,33 +396,39 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         //return;
       }
 
+      /*
       i.setRotation(f, u);
       i.center = c;
       i.mission = mission;
+       */
 
       // update debug axis
+      Instance j;
       if (solidShader != null) {
-        Instance j = solidShader.findInstance(id);
+        j = solidShader.findInstance(id);
         if (j == null) {
           err(
               "instance update: NOT FOUND axis instance: id=$id coord=$coord mission=$mission");
         } else {
-          j.setRotation(f, u);
-          j.center = c;
+          //j.setRotation(f, u);
+          //j.center = c;
         }
       }
 
       // update picking
+      Instance k;
       if (picker != null) {
-        Instance k = picker.findInstance(id);
+        k = picker.findInstance(id);
         if (k == null) {
           err(
               "instance update: NOT FOUND picker instance: id=$id coord=$coord mission=$mission");
         } else {
-          k.setRotation(f, u);
-          k.center = c;
+          //k.setRotation(f, u);
+          //k.center = c;
         }
       }
+
+      updateInstance(i, j, k, f, u, c, mission);
 
       break;
 
@@ -966,6 +1010,19 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
   return pi;
 }
 
+void checkInputLock(Keyboard k, int num) {
+  if (k.isDown(num)) {
+    Map m = getSelectionIdList();
+    if (!m.isEmpty) {
+      String id = m.keys.first;
+      Instance i = findInstance(id);
+      if (i != null) {
+        i.inputLock = num;
+      }
+    }  
+  }
+}
+
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //
   // handle input
@@ -982,6 +1039,10 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   bool ctrlReleased = k.released(Keyboard.CTRL);
   bool ctrlDown = k.isDown(Keyboard.CTRL);
   bool f2Pressed = k.pressed(Keyboard.F2);
+
+  checkInputLock(k, Keyboard.ZERO);
+  checkInputLock(k, Keyboard.ONE);
+  checkInputLock(k, Keyboard.TWO);
 
   if (f2Pressed) {
     missionNext(getSelectionIdList());

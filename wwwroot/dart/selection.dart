@@ -19,6 +19,12 @@ Map<String, String> getSelectionIdList() {
   return idList;
 }
 
+/*
+void setSelectionInputLock(int inputLock) {
+  _selection.forEach((e) => e.inputLock = inputLock);
+}
+ */
+
 double getSelectionBoundingRadius() {
   if (_selection.isEmpty) return null;
 
