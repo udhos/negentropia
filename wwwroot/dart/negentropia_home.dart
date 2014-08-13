@@ -177,6 +177,36 @@ void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
   }
 }
 
+void updateInstanceById(String id, Vector3 front, Vector3 up, Vector3 center,
+    String mission) {
+  Instance i = findInstance(id);
+  if (i == null) {
+    err("updateInstanceById: NOT FOUND: id=$id");
+    return;
+  }
+
+  // update debug axis
+  Instance j;
+  if (solidShader != null) {
+    j = solidShader.findInstance(id);
+    if (j == null) {
+      err("updateInstanceById: NOT FOUND axis instance: id=$id");
+    }
+  }
+
+  // update picking
+  Instance k;
+  if (picker != null) {
+    k = picker.findInstance(id);
+    if (k == null) {
+      err("updateInstanceById: NOT FOUND picker instance: id=$id");
+    }
+  }
+
+  updateInstance(i, j, k, front, up, center, mission);
+}
+
+
 void dispatcher(RenderingContext gl, int code, String data, Map<String,
     String> tab) {
 
@@ -357,11 +387,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       String coord = tab['coord'];
       String mission = tab['mission'];
 
-      Instance i = findInstance(id);
-      if (i == null) {
-        err("instance update: NOT FOUND: id=$id coord=$coord mission=$mission");
-        return;
-      }
 
       Vector3 f = parseVector3(front);
       if (f == null) {
@@ -386,27 +411,8 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
             "instance update: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
       }
 
-      // update debug axis
-      Instance j;
-      if (solidShader != null) {
-        j = solidShader.findInstance(id);
-        if (j == null) {
-          err(
-              "instance update: NOT FOUND axis instance: id=$id coord=$coord mission=$mission");
-        }
-      }
-
-      // update picking
-      Instance k;
-      if (picker != null) {
-        k = picker.findInstance(id);
-        if (k == null) {
-          err(
-              "instance update: NOT FOUND picker instance: id=$id coord=$coord mission=$mission");
-        }
-      }
-
-      updateInstance(i, j, k, f, u, c, mission);
+      //updateInstance(i, j, k, f, u, c, mission);
+      updateInstanceById(id, f, u, c, mission);
 
       break;
 
