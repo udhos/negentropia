@@ -3,8 +3,8 @@
 {{ define "script" }}
 
 {{if .Account}}
-    <script type="application/dart" src="/dart/negentropia_home.dart"></script>
-    <script src="/dart/packages/browser/dart.js"></script>
+    <script async type="application/dart" src="/dart/negentropia_home.dart"></script>
+    <script async src="/dart/packages/browser/dart.js"></script>
 {{end}}
 	
 {{ end }}

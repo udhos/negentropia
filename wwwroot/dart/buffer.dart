@@ -68,35 +68,38 @@ class Instance {
      0       0       0       1
      */
 
-    /*
     Vector3 newRight = newFront.cross(newUp).normalize();
 
+    /*
+    Vector3 r1 = newFront;
+    Vector3 r2 = newUp;
+    Vector3 r3 = newRight;
+    
     _rotation.setValues(
-        newFront[0],
-        newUp[0],
-        newRight[0],
+        r1[0],
+        r2[0],
+        r3[0],
         0.0,
-        newFront[1],
-        newUp[1],
-        newRight[1],
+        r1[1],
+        r2[1],
+        r3[1],
         0.0,
-        newFront[2],
-        newUp[2],
-        newRight[2],
+        r1[2],
+        r2[2],
+        r3[2],
         0.0,
         0.0,
         0.0,
         0.0,
         1.0);
          */
-
+    
     setRotationMatrix(_rotation, newFront, newUp);
-    //_rotation.transpose();
   }
 
-  void debugLocation() {
+  void debugLocation([String label = ""]) {
     log(
-        "$this - model: orient[${this.model.debugOrientation()}] - obj: pos[$_center] orient[f=$front u=$up r=$right]");
+        "$label$this - model: orient[${this.model.debugOrientation()}] - obj: pos[$_center] orient[f=$front u=$up r=$right]");
   }
 
   Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
@@ -136,18 +139,22 @@ class Instance {
     */
 
     /*
-      V = View (inverse of camera)
+      V = View (inverse of camera orientation)
       T = Translation
-      R = Rotation
+      R = Rotation (inverse of model orientation - why?)
       S = Scaling
      */
     cam.viewMatrix(MV); // MV = V
 
     // 5. obj translate
     MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
+    
+    // why the need to invert the model rotation??
+    Matrix4 rotationInverse = _rotation.clone();
+    rotationInverse.invertRotation();
 
     // 2. obj rotate
-    MV.multiply(_rotation); // MV = V*T*R
+    MV.multiply(rotationInverse); // MV = V*T*R
 
     // 1. obj scale
     MV.scale(rescale, rescale, rescale); // MV = V*T*R*S

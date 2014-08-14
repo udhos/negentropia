@@ -157,8 +157,7 @@ void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
       break;
   }
 
-  log(
-      "updateInstance: id=${i.id} mission=$mission center=$center front=$front up=$up");
+  //log("updateInstance: id=${i.id} mission=$mission center=$center front=$front up=$up");
 
   i.setRotation(front, up);
   i.center = center;
@@ -1006,16 +1005,22 @@ void checkInputLock(Keyboard k, int num) {
   }
 }
 
-void debugMoveInstance(double delta) {
+void debugMoveInstance(double deltaX, double deltaY, double deltaZ) {
   Map m = getSelectionIdList();
   if (!m.isEmpty) {
     String id = m.keys.first;
     Instance i = findInstance(id);
     if (i != null) {
+      i.debugLocation("before: ");
+      
       Vector3 newCenter = i.center;
-      newCenter.addScaled(i.front.normalized(), delta);
+      newCenter.addScaled(i.front.normalized(), deltaX);
+      newCenter.addScaled(i.up.normalized(), deltaY);
+      newCenter.addScaled(i.right.normalized(), deltaZ);
       i.center = newCenter;
+      
       updateInstanceById(id, i.front, i.up, i.center, i.mission);
+      i.debugLocation("after : ");
     }
   }
 }
@@ -1043,14 +1048,23 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   checkInputLock(k, Keyboard.THREE);
 
   if (k.pressed(Keyboard.Q)) {
-    debugMoveInstance(-1.0);
-    log("Q");
+    debugMoveInstance(-1.0,0.0,0.0);
   }
   if (k.pressed(Keyboard.W)) {
-    debugMoveInstance(1.0);
-    log("W");
+    debugMoveInstance(1.0,0.0,0.0);
   }
-
+  if (k.pressed(Keyboard.A)) {
+    debugMoveInstance(0.0,-1.0,0.0);
+  }
+  if (k.pressed(Keyboard.S)) {
+    debugMoveInstance(0.0,1.0,0.0);
+  }
+  if (k.pressed(Keyboard.Z)) {
+    debugMoveInstance(0.0,-1.0,0.0);
+  }
+  if (k.pressed(Keyboard.X)) {
+    debugMoveInstance(0.0,1.0,0.0);
+  }
 
   if (f2Pressed) {
     missionNext(getSelectionIdList());
