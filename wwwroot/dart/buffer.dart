@@ -45,6 +45,8 @@ class Instance {
     _mission = m;
   }
 
+  String get mission => _mission;
+
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
 
   Matrix4 _rotation = new Matrix4.identity();
@@ -89,6 +91,7 @@ class Instance {
          */
 
     setRotationMatrix(_rotation, newFront, newUp);
+    //_rotation.transpose();
   }
 
   void debugLocation() {

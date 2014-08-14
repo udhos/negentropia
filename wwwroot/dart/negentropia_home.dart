@@ -206,7 +206,6 @@ void updateInstanceById(String id, Vector3 front, Vector3 up, Vector3 center,
   updateInstance(i, j, k, front, up, center, mission);
 }
 
-
 void dispatcher(RenderingContext gl, int code, String data, Map<String,
     String> tab) {
 
@@ -1007,6 +1006,20 @@ void checkInputLock(Keyboard k, int num) {
   }
 }
 
+void debugMoveInstance(double delta) {
+  Map m = getSelectionIdList();
+  if (!m.isEmpty) {
+    String id = m.keys.first;
+    Instance i = findInstance(id);
+    if (i != null) {
+      Vector3 newCenter = i.center;
+      newCenter.addScaled(i.front.normalized(), delta);
+      i.center = newCenter;
+      updateInstanceById(id, i.front, i.up, i.center, i.mission);
+    }
+  }
+}
+
 void update(RenderingContext gl, GameLoopHtml gameLoop) {
   //
   // handle input
@@ -1028,6 +1041,16 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   checkInputLock(k, Keyboard.ONE);
   checkInputLock(k, Keyboard.TWO);
   checkInputLock(k, Keyboard.THREE);
+
+  if (k.pressed(Keyboard.Q)) {
+    debugMoveInstance(-1.0);
+    log("Q");
+  }
+  if (k.pressed(Keyboard.W)) {
+    debugMoveInstance(1.0);
+    log("W");
+  }
+
 
   if (f2Pressed) {
     missionNext(getSelectionIdList());
