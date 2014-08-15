@@ -51,12 +51,26 @@ class Instance {
 
   Matrix4 _rotation = new Matrix4.identity();
 
-  Vector3 get front =>
-      new Vector3(_rotation.storage[0], _rotation.storage[4], _rotation.storage[8]);
-  Vector3 get up =>
-      new Vector3(_rotation.storage[1], _rotation.storage[5], _rotation.storage[9]);
-  Vector3 get right =>
-      new Vector3(_rotation.storage[2], _rotation.storage[6], _rotation.storage[10]);
+  Vector3 _front = new Vector3(1.0, 0.0, 0.0);
+  Vector3 _up = new Vector3(0.0, 1.0, 0.0);
+  Vector3 _right = new Vector3(0.0, 0.0, 1.0);
+
+  /*
+   // It's dangerous to expose this storage.
+  Vector3 get front => _front;
+  Vector3 get up => _up;
+  Vector3 get right => _right;
+  */
+
+  void copyFront(Vector3 front) {
+    _front.copyInto(front);
+  }
+  void copyUp(Vector3 up) {
+    _up.copyInto(up);
+  }
+  void copyRight(Vector3 right) {
+    _right.copyInto(right);
+  }
 
   void setRotation(Vector3 newFront, Vector3 newUp) {
     /*
@@ -68,7 +82,13 @@ class Instance {
      0       0       0       1
      */
 
-    Vector3 newRight = newFront.cross(newUp).normalize();
+    // save copy of vectors
+    // because we will invert the rotation matrix
+    // hence we won't be able to fetch them back from rotation matrix
+    newFront.copyInto(_front);
+    newUp.copyInto(_up);
+    _front.crossInto(_up, _right);
+    _right.normalize();
 
     /*
     Vector3 r1 = newFront;
@@ -93,22 +113,37 @@ class Instance {
         0.0,
         1.0);
          */
-    
-    setRotationMatrix(_rotation, newFront, newUp);
+
+    setRotationMatrix(_rotation, _front, _up);
+
+    // _rotation is othorgonal
+    assert(vector3Unit(_front));
+    assert(vector3Unit(_up));
+    assert(vector3Unit(_right));
+    assert(vector3Orthogonal(_front, _up));
+    assert(vector3Orthogonal(_front, _right));
+    assert(vector3Orthogonal(_up, _right));
+
+    // because _rotation is orthogonal
+    // inverse can be calculation simply by transposing
+    //_rotation.invertRotation();
+    _rotation.transpose();
+  }
+
+  String getOrientation() {
+    return "f=$_front u=$_up r=$_right";
   }
 
   void debugLocation([String label = ""]) {
     log(
-        "$label$this - model: orient[${this.model.debugOrientation()}] - obj: pos[$_center] orient[f=$front u=$up r=$right]");
+        "$label$this - model: orient[${this.model.debugOrientation()}] - obj: pos[$_center] orient: ${this.getOrientation()}");
   }
 
   Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
       null]) {
-    setRotation(
-        this.model._front.clone().normalize(),
-        this.model._up.clone().normalize());
+    setRotation(this.model._front.normalized(), this.model._up.normalized());
     debug(
-        "new instance: $this $id model=${model.modelName} center=$_center front=$front up=$up right=$right");
+        "new instance: $this $id model=${model.modelName} center=$_center ${this.getOrientation()}");
   }
 
   void update(GameLoopHtml gameLoop) {
@@ -139,22 +174,18 @@ class Instance {
     */
 
     /*
-      V = View (inverse of camera orientation)
+      V = View (inverse of camera matrix -- translation and rotation)
       T = Translation
-      R = Rotation (inverse of model orientation - why?)
+      R = Rotation (inverse of model rotation matrix - why?)
       S = Scaling
      */
     cam.viewMatrix(MV); // MV = V
 
     // 5. obj translate
     MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
-    
-    // why the need to invert the model rotation??
-    Matrix4 rotationInverse = _rotation.clone();
-    rotationInverse.invertRotation();
 
     // 2. obj rotate
-    MV.multiply(rotationInverse); // MV = V*T*R
+    MV.multiply(_rotation); // MV = V*T*R
 
     // 1. obj scale
     MV.scale(rescale, rescale, rescale); // MV = V*T*R*S
