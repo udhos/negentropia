@@ -23,12 +23,12 @@ dependencies:
   #game_loop:
     #path: c:/tmp/devel/game_loop
   stats: any
-  vector_math:
-    git: https://github.com/johnmccutchan/vector_math.git
+  #vector_math:
+    #git: https://github.com/johnmccutchan/vector_math.git
   #vector_math:
     #path: c:/tmp/devel/vector_math
-  #vector_math:
-    #git: https://github.com/udhos/vector_math.git
+  vector_math:
+    git: https://github.com/udhos/vector_math.git
   #obj: any
   obj:
     git: https://github.com/udhos/obj

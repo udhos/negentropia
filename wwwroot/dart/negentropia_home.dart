@@ -157,12 +157,6 @@ void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
       break;
   }
 
-
-
-
-
-      //log("updateInstance: id=${i.id} mission=$mission center=$center front=$front up=$up");
-
   i.setRotation(front, up);
   i.center = center;
   i.mission = mission;

@@ -87,7 +87,7 @@ class Instance {
     // hence we won't be able to fetch them back from rotation matrix
     newFront.copyInto(_front);
     newUp.copyInto(_up);
-    _front.crossInto(_up, _right);
+    _front.crossInto(_up, _right); // right = front x up
     _right.normalize();
 
     /*
@@ -116,6 +116,9 @@ class Instance {
 
     setRotationMatrix(_rotation, _front, _up);
 
+    /*
+     // rotation should not happen for correct object matrix
+
     // _rotation is othorgonal
     assert(vector3Unit(_front));
     assert(vector3Unit(_up));
@@ -128,6 +131,7 @@ class Instance {
     // inverse can be calculation simply by transposing
     //_rotation.invertRotation();
     _rotation.transpose();
+     */
   }
 
   String getOrientation() {
