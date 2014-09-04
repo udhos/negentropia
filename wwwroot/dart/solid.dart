@@ -8,11 +8,8 @@ class AxisInstance extends Instance {
   static final Float32List blue =
       new Float32List.fromList([0.0, 0.0, 1.0, 1.0]);
 
-  AxisInstance(String id, AxisModel am, Instance i) : super(
-      id,
-      am,
-      i._center,
-      i.scale);
+  AxisInstance(String id, AxisModel am, Instance i)
+      : super(id, am, i._center, i.scale);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
 
@@ -142,9 +139,8 @@ class SolidShader extends ShaderProgram {
     return i;
   }
 
-  SolidShader(RenderingContext gl, List<ShaderProgram> programList) : super(
-      gl,
-      "solidShader") {
+  SolidShader(RenderingContext gl, List<ShaderProgram> programList)
+      : super(gl, "solidShader") {
 
     // copy clickable instances
     programList.forEach((p) {

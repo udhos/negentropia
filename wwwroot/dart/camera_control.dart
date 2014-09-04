@@ -78,7 +78,13 @@ class CameraControl {
         return;
       }
     } else {
-      // getting away - farthest distance is skybox half edge (minus bounding diameter)
+
+
+
+
+
+
+          // getting away - farthest distance is skybox half edge (minus bounding diameter)
 
       double halfEdge = cam.skyboxHalfEdge;
       if (halfEdge != null) {

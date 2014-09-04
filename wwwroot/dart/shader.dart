@@ -117,10 +117,8 @@ class ShaderProgram {
           err("vertexShader: url=$url: error: [$response]");
           return;
         }
-        vertexShader = compileShader(
-            url,
-            response,
-            RenderingContext.VERTEX_SHADER);
+        vertexShader =
+            compileShader(url, response, RenderingContext.VERTEX_SHADER);
         tryLink();
       });
       requestVert.onError.listen((e) {
@@ -141,10 +139,8 @@ class ShaderProgram {
           err("fragmentShader: url=$url: error: [$response]");
           return;
         }
-        fragmentShader = compileShader(
-            url,
-            response,
-            RenderingContext.FRAGMENT_SHADER);
+        fragmentShader =
+            compileShader(url, response, RenderingContext.FRAGMENT_SHADER);
         tryLink();
       });
       requestFrag.onError.listen((e) {

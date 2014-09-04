@@ -58,10 +58,9 @@ void anisotropic_filtering_enable(RenderingContext gl) {
       ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT,
       _anisotropy.toDouble());
 
-  double result =
-      gl.getTexParameter(
-          RenderingContext.TEXTURE_2D,
-          ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT);
+  double result = gl.getTexParameter(
+      RenderingContext.TEXTURE_2D,
+      ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT);
 
   debug("texture anisotropy=$result");
 

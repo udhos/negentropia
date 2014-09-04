@@ -6,5 +6,6 @@ set GOPATH=%DEVEL%\negentropia\webserv
 @rem test
 @rem go test -test.v negentropia\world\server
 go test negentropia\world\server
+go test negentropia\world\util
 
 @rem eof

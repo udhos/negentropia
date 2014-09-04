@@ -12,8 +12,8 @@ class Cookie {
     c.split(';').forEach((t) {
       int k = t.indexOf('=');
       if (k > 0) {
-        cookie[Uri.decodeComponent(
-            t.substring(0, k))] = Uri.decodeComponent(t.substring(k + 1));
+        cookie[Uri.decodeComponent(t.substring(0, k))] =
+            Uri.decodeComponent(t.substring(k + 1));
       }
     });
     return cookie;
@@ -38,9 +38,8 @@ class Cookie {
     t[name] = value;
 
     DateTime now = new DateTime.now();
-    DateTime date =
-        new DateTime.fromMillisecondsSinceEpoch(
-            now.millisecondsSinceEpoch + days * ONEDAY_MILLISEC);
+    DateTime date = new DateTime.fromMillisecondsSinceEpoch(
+        now.millisecondsSinceEpoch + days * ONEDAY_MILLISEC);
     t['expires'] = date.toString();
 
     _writeCookie(t);

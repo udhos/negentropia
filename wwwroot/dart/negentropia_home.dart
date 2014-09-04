@@ -552,13 +552,12 @@ void addSkybox(RenderingContext gl, Map<String, String> s) {
       RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z,
       s['faceBack']);
   skybox.addModel(skyboxModel);
-  SkyboxInstance skyboxInstance =
-      new SkyboxInstance(
-          'skybox',
-          skyboxModel,
-          new Vector3(0.0, 0.0, 0.0),
-          skyboxScale,
-          false);
+  SkyboxInstance skyboxInstance = new SkyboxInstance(
+      'skybox',
+      skyboxModel,
+      new Vector3(0.0, 0.0, 0.0),
+      skyboxScale,
+      false);
   skyboxModel.addInstance(skyboxInstance);
 
   cam.skybox = skyboxInstance;
@@ -597,13 +596,12 @@ void demoInitSkybox(RenderingContext gl) {
       RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z,
       '${asset.texture}/space_bk.jpg');
   skybox.addModel(skyboxModel);
-  SkyboxInstance skyboxInstance =
-      new SkyboxInstance(
-          'skybox',
-          skyboxModel,
-          new Vector3(0.0, 0.0, 0.0),
-          1.0,
-          true);
+  SkyboxInstance skyboxInstance = new SkyboxInstance(
+      'skybox',
+      skyboxModel,
+      new Vector3(0.0, 0.0, 0.0),
+      1.0,
+      true);
   skyboxModel.addInstance(skyboxInstance);
 }
 
@@ -614,20 +612,18 @@ void demoInitAirship(RenderingContext gl) {
       shaderCache,
       "${asset.shader}/simple_vs.txt",
       "${asset.shader}/simple_fs.txt");
-  Model airshipModel =
-      new Model.fromOBJ(
-          gl,
-          "${asset.obj}/airship.obj",
-          new Vector3.zero(),
-          new Vector3.zero());
+  Model airshipModel = new Model.fromOBJ(
+      gl,
+      "${asset.obj}/airship.obj",
+      new Vector3.zero(),
+      new Vector3.zero());
   prog.addModel(airshipModel);
-  Instance airshipInstance =
-      new Instance(
-          'airship',
-          airshipModel,
-          new Vector3(-8.0, 0.0, 0.0),
-          1.0,
-          generatePickColor());
+  Instance airshipInstance = new Instance(
+      'airship',
+      airshipModel,
+      new Vector3(-8.0, 0.0, 0.0),
+      1.0,
+      generatePickColor());
   airshipModel.addInstance(airshipInstance);
 }
 
@@ -641,78 +637,70 @@ void demoInitAirshipTex(RenderingContext gl) {
 
   String objURL = "${asset.obj}/airship.obj";
 
-  TexModel airshipModel =
-      new TexModel.fromOBJ(
-          gl,
-          objURL,
-          new Vector3.zero(),
-          new Vector3.zero(),
-          textureTable,
-          asset);
+  TexModel airshipModel = new TexModel.fromOBJ(
+      gl,
+      objURL,
+      new Vector3.zero(),
+      new Vector3.zero(),
+      textureTable,
+      asset);
   prog.addModel(airshipModel);
-  TexInstance airshipInstance =
-      new TexInstance(
-          'airship',
-          airshipModel,
-          new Vector3(0.0, 0.0, 0.0),
-          1.0,
-          generatePickColor());
+  TexInstance airshipInstance = new TexInstance(
+      'airship',
+      airshipModel,
+      new Vector3(0.0, 0.0, 0.0),
+      1.0,
+      generatePickColor());
   airshipModel.addInstance(airshipInstance);
 
-  TexModel airshipModel2 =
-      new TexModel.fromOBJ(
-          gl,
-          objURL,
-          new Vector3.zero(),
-          new Vector3.zero(),
-          textureTable,
-          asset);
+  TexModel airshipModel2 = new TexModel.fromOBJ(
+      gl,
+      objURL,
+      new Vector3.zero(),
+      new Vector3.zero(),
+      textureTable,
+      asset);
   prog.addModel(airshipModel2);
-  TexInstance airshipInstance2 =
-      new TexInstance(
-          'airship2',
-          airshipModel2,
-          new Vector3(8.0, 0.0, 0.0),
-          1.0,
-          generatePickColor());
+  TexInstance airshipInstance2 = new TexInstance(
+      'airship2',
+      airshipModel2,
+      new Vector3(8.0, 0.0, 0.0),
+      1.0,
+      generatePickColor());
   airshipModel2.addInstance(airshipInstance2);
 
   String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";
-  TexModel colonyShipModel =
-      new TexModel.fromOBJ(
-          gl,
-          colonyShipURL,
-          new Vector3.zero(),
-          new Vector3.zero(),
-          textureTable,
-          asset);
+  TexModel colonyShipModel = new TexModel.fromOBJ(
+      gl,
+      colonyShipURL,
+      new Vector3.zero(),
+      new Vector3.zero(),
+      textureTable,
+      asset);
   prog.addModel(colonyShipModel);
-  TexInstance colonyShipInstance =
-      new TexInstance(
-          'colonyShip',
-          colonyShipModel,
-          new Vector3(0.0, -5.0, -50.0),
-          1.0,
-          generatePickColor());
+  TexInstance colonyShipInstance = new TexInstance(
+      'colonyShip',
+      colonyShipModel,
+      new Vector3(0.0, -5.0, -50.0),
+      1.0,
+      generatePickColor());
   colonyShipModel.addInstance(colonyShipInstance);
 
   String coneURL = "${asset.obj}/cone.obj";
-  TexModel coneModel =
-      new TexModel.fromOBJ(
-          gl,
-          coneURL,
-          new Vector3.zero(),
-          new Vector3.zero(),
-          textureTable,
-          asset);
+  TexModel coneModel = new TexModel.fromOBJ(
+      gl,
+      coneURL,
+      new Vector3.zero(),
+      new Vector3.zero(),
+      textureTable,
+      asset);
   prog.addModel(coneModel);
-  TexInstance coneInstance =
-      new TexInstance(
-          'cone',
-          coneModel,
-          new Vector3(0.0, 2.0, -10.0),
-          1.0,
-          generatePickColor());
+  TexInstance coneInstance = new TexInstance(
+      'cone',
+      coneModel,
+      new Vector3(0.0, 2.0, -10.0),
+      1.0,
+      generatePickColor());
   coneModel.addInstance(coneInstance);
 }
 
