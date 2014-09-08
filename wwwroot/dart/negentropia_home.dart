@@ -978,6 +978,30 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
   return pi;
 }
 
+void setRotationLock(String id, int num) {
+  
+  log("setRotationLock: locking identity rotation: $id");
+  
+  // update debug axis
+  Instance j;
+  if (solidShader != null) {
+    j = solidShader.findInstance(id);
+    if (j != null) {
+      j.inputLock = num;
+    }
+  }
+
+  // update picking
+  Instance k;
+  if (picker != null) {
+    k = picker.findInstance(id);
+    if (k != null) {
+      k.inputLock = num;
+    }
+  }
+
+}
+
 void checkInputLock(Keyboard k, int num) {
   if (k.isDown(num)) {
     Map m = getSelectionIdList();
@@ -986,6 +1010,9 @@ void checkInputLock(Keyboard k, int num) {
       Instance i = findInstance(id);
       if (i != null) {
         i.inputLock = num;
+        if (num == Keyboard.R) {
+          setRotationLock(id, num);
+        }
       }
     }
   }
@@ -1044,6 +1071,7 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
   checkInputLock(k, Keyboard.ONE);
   checkInputLock(k, Keyboard.TWO);
   checkInputLock(k, Keyboard.THREE);
+  checkInputLock(k, Keyboard.R);
 
   if (k.pressed(Keyboard.Q)) {
     debugMoveInstance(-1.0, 0.0, 0.0);

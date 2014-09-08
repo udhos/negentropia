@@ -73,6 +73,12 @@ class Instance {
   }
 
   void setRotation(Vector3 newFront, Vector3 newUp) {
+
+    if (inputLock == Keyboard.R) {
+      _rotation.setIdentity();
+      return;
+    }
+
     /*
      4x4:
     
