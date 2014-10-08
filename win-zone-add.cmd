@@ -1,85 +1,86 @@
+@set REDIS_BIN=\redis\redis-cli
 
 @rem assign zone
-\redisbin\redis-cli hset everton.marques@gmail.com location z:0
-\redisbin\redis-cli hset udhos0@gmail.com          location z:1
+%REDIS_BIN% hset everton.marques@gmail.com location z:0
+%REDIS_BIN% hset udhos0@gmail.com          location z:1
 
 @rem add shader program
-\redisbin\redis-cli hset p:simpleTexturizer vertexShader /shader/simpleTex_vs.txt
-\redisbin\redis-cli hset p:simpleTexturizer fragmentShader /shader/simpleTex_fs.txt
+%REDIS_BIN% hset p:simpleTexturizer vertexShader /shader/simpleTex_vs.txt
+%REDIS_BIN% hset p:simpleTexturizer fragmentShader /shader/simpleTex_fs.txt
 
 @rem add zone ------------------------------------------------------------
 
-\redisbin\redis-cli hset z:0 backfaceCulling true
-@rem \redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_galaxy.json
-@rem \redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_alien.json
-\redisbin\redis-cli hset z:0 skyboxURL /skybox/skybox_sky30.json
-\redisbin\redis-cli hset z:0 programName p:simpleTexturizer
-\redisbin\redis-cli hset z:0 cameraCoord 0.0,0.0,90.0
+%REDIS_BIN% hset z:0 backfaceCulling true
+@rem %REDIS_BIN% hset z:0 skyboxURL /skybox/skybox_galaxy.json
+@rem %REDIS_BIN% hset z:0 skyboxURL /skybox/skybox_alien.json
+%REDIS_BIN% hset z:0 skyboxURL /skybox/skybox_sky30.json
+%REDIS_BIN% hset z:0 programName p:simpleTexturizer
+%REDIS_BIN% hset z:0 cameraCoord 0.0,0.0,90.0
 
 @rem add instance list to zone
-\redisbin\redis-cli hset z:0 instanceList l:0
-\redisbin\redis-cli del l:0
-\redisbin\redis-cli sadd l:0 m:0 m:1 m:2 m:3 m:4
+%REDIS_BIN% hset z:0 instanceList l:0
+%REDIS_BIN% del l:0
+%REDIS_BIN% sadd l:0 m:0 m:1 m:2 m:3 m:4
 
 @rem add object/model o:airship
-\redisbin\redis-cli hset o:airship objURL /obj/airship.obj
-\redisbin\redis-cli hset o:airship programName p:simpleTexturizer
-\redisbin\redis-cli hset o:airship modelFront 5.0,0.0,0.0
-\redisbin\redis-cli hset o:airship modelUp 0.0,5.0,0.0
+%REDIS_BIN% hset o:airship objURL /obj/airship.obj
+%REDIS_BIN% hset o:airship programName p:simpleTexturizer
+%REDIS_BIN% hset o:airship modelFront 5.0,0.0,0.0
+%REDIS_BIN% hset o:airship modelUp 0.0,5.0,0.0
 
 @rem add object/model o:old_house
-\redisbin\redis-cli hset o:old_house objURL /obj/old_house.obj
-\redisbin\redis-cli hset o:old_house programName p:simpleTexturizer
-\redisbin\redis-cli hset o:old_house modelFront 40.0,0.0,0.0
-\redisbin\redis-cli hset o:old_house modelUp 0.0,40.0,0.0
+%REDIS_BIN% hset o:old_house objURL /obj/old_house.obj
+%REDIS_BIN% hset o:old_house programName p:simpleTexturizer
+%REDIS_BIN% hset o:old_house modelFront 40.0,0.0,0.0
+%REDIS_BIN% hset o:old_house modelUp 0.0,40.0,0.0
 
 @rem create instance
-\redisbin\redis-cli hset m:0 obj o:airship
-\redisbin\redis-cli hset m:0 coord 0.0,0.0,0.0
-\redisbin\redis-cli hset m:0 scale 1.0
-\redisbin\redis-cli hset m:0 mission rotateYaw
-\redisbin\redis-cli hset m:0 team alpha0
-\redisbin\redis-cli hset m:0 owner udhos0@gmail.com
+%REDIS_BIN% hset m:0 obj o:airship
+%REDIS_BIN% hset m:0 coord 0.0,0.0,0.0
+%REDIS_BIN% hset m:0 scale 1.0
+%REDIS_BIN% hset m:0 mission rotateYaw
+%REDIS_BIN% hset m:0 team alpha0
+%REDIS_BIN% hset m:0 owner udhos0@gmail.com
 
 @rem create instance
-\redisbin\redis-cli hset m:1 obj o:airship
-\redisbin\redis-cli hset m:1 coord 0.0,7.0,5.0
-\redisbin\redis-cli hset m:1 scale .5
-\redisbin\redis-cli hset m:1 team alpha1
-\redisbin\redis-cli hset m:1 mission hunt
-\redisbin\redis-cli hset m:1 owner everton.marques@gmail.com
+%REDIS_BIN% hset m:1 obj o:airship
+%REDIS_BIN% hset m:1 coord 0.0,7.0,5.0
+%REDIS_BIN% hset m:1 scale .5
+%REDIS_BIN% hset m:1 team alpha1
+%REDIS_BIN% hset m:1 mission hunt
+%REDIS_BIN% hset m:1 owner everton.marques@gmail.com
 
 @rem create instance
-\redisbin\redis-cli hset m:2 obj o:airship
-\redisbin\redis-cli hset m:2 coord 0.0,7.0,0.0
-\redisbin\redis-cli hset m:2 scale .5
-\redisbin\redis-cli hset m:2 team alpha1
-\redisbin\redis-cli hset m:2 mission hunt
-\redisbin\redis-cli hset m:2 owner everton.marques@gmail.com
+%REDIS_BIN% hset m:2 obj o:airship
+%REDIS_BIN% hset m:2 coord 0.0,7.0,0.0
+%REDIS_BIN% hset m:2 scale .5
+%REDIS_BIN% hset m:2 team alpha1
+%REDIS_BIN% hset m:2 mission hunt
+%REDIS_BIN% hset m:2 owner everton.marques@gmail.com
 
 @rem create instance
-\redisbin\redis-cli hset m:3 obj o:airship
-\redisbin\redis-cli hset m:3 coord 0.0,7.0,-5.0
-\redisbin\redis-cli hset m:3 scale .5
-\redisbin\redis-cli hset m:3 team alpha1
+%REDIS_BIN% hset m:3 obj o:airship
+%REDIS_BIN% hset m:3 coord 0.0,7.0,-5.0
+%REDIS_BIN% hset m:3 scale .5
+%REDIS_BIN% hset m:3 team alpha1
 
 @rem create instance
-\redisbin\redis-cli hset m:4 obj o:old_house
-\redisbin\redis-cli hset m:4 coord -50.0,0.0,0.0
-\redisbin\redis-cli hset m:4 scale 1.0
+%REDIS_BIN% hset m:4 obj o:old_house
+%REDIS_BIN% hset m:4 coord -50.0,0.0,0.0
+%REDIS_BIN% hset m:4 scale 1.0
 
 @rem add zone ------------------------------------------------------------
 
-\redisbin\redis-cli hset z:1 backfaceCulling true
-@rem \redisbin\redis-cli hset z:1 skyboxURL /skybox/skybox_galaxy.json
-\redisbin\redis-cli hset z:1 skyboxURL /skybox/skybox_alien.json
-@rem \redisbin\redis-cli hset z:1 skyboxURL /skybox/skybox_sky30.json
-\redisbin\redis-cli hset z:1 programName p:simpleTexturizer
-\redisbin\redis-cli hset z:1 cameraCoord 0.0,0.0,90.0
+%REDIS_BIN% hset z:1 backfaceCulling true
+@rem %REDIS_BIN% hset z:1 skyboxURL /skybox/skybox_galaxy.json
+%REDIS_BIN% hset z:1 skyboxURL /skybox/skybox_alien.json
+@rem %REDIS_BIN% hset z:1 skyboxURL /skybox/skybox_sky30.json
+%REDIS_BIN% hset z:1 programName p:simpleTexturizer
+%REDIS_BIN% hset z:1 cameraCoord 0.0,0.0,90.0
 
 @rem add instance list to zone
-\redisbin\redis-cli hset z:1 instanceList l:1
-\redisbin\redis-cli del l:1
-\redisbin\redis-cli sadd l:1 m:4
+%REDIS_BIN% hset z:1 instanceList l:1
+%REDIS_BIN% del l:1
+%REDIS_BIN% sadd l:1 m:4
 
 @rem eof

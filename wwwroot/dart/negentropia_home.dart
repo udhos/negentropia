@@ -979,9 +979,9 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
 }
 
 void setRotationLock(String id, int num) {
-  
+
   log("setRotationLock: locking identity rotation: $id");
-  
+
   // update debug axis
   Instance j;
   if (solidShader != null) {
