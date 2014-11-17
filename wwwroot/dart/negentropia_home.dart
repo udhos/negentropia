@@ -305,7 +305,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       String up = tab['modelUp'];
       String coord = tab['coord'];
       String scale = tab['scale'];
-      String mission = tab['mission'];
+      //String mission = tab['mission'];
 
       debug("dispatcher: instance: id=$id obj=$objURL");
 
@@ -937,7 +937,7 @@ void createBandSelectionBox(RenderingContext gl) {
   }
 
   int minX = math.min(mouseDragBeginX, mouseDragCurrX);
-  int minY = gl.canvas.height - math.max(mouseDragBeginY, mouseDragCurrY);
+  //int minY = gl.canvas.height - math.max(mouseDragBeginY, mouseDragCurrY);
 
   int left = minX + gl.canvas.offsetLeft;
   int top = math.min(mouseDragBeginY, mouseDragCurrY) + gl.canvas.offsetTop;
@@ -1057,8 +1057,8 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 
   Mouse m = gameLoop.mouse;
   bool mouseLeftPressed = m.pressed(Mouse.LEFT);
-  bool mouseRightPressed = m.pressed(Mouse.RIGHT);
-  bool mouseRightReleased = m.released(Mouse.RIGHT);
+  //bool mouseRightPressed = m.pressed(Mouse.RIGHT);
+  //bool mouseRightReleased = m.released(Mouse.RIGHT);
   bool mouseRightDown = m.isDown(Mouse.RIGHT);
 
   Keyboard k = gameLoop.keyboard;

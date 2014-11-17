@@ -403,7 +403,7 @@ class Model {
     assert(!piecesReady);
 
     o.partList.forEach((Part pa) {
-      Piece pi = addPiece(pa.indexFirst, pa.indexListSize);
+      addPiece(pa.indexFirst, pa.indexListSize);
     });
 
     piecesReady = true;

@@ -14,7 +14,7 @@ func doSomething(s string) {
 }
 
 func startPolling() {
-	for _ = range time.Tick(2 * time.Second) {
+	for range time.Tick(2 * time.Second) {
 		doSomething("awesome")
 	}
 }
