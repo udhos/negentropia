@@ -9,6 +9,13 @@ class ParseError {
   final String _arg;
   final String _msg;
   ParseError(this._label, this._arg, this._msg);
+  String toString() {
+    return super.toString() + formatParseError(_label, _arg, _msg);
+  }
+}
+
+String formatParseError(String label, String arg, String msg) {
+  return "ParseError: $label($arg): $msg";
 }
 
 void _log_error(String msg) {
@@ -18,7 +25,7 @@ void _log_error(String msg) {
 void _fail(void echo(String), bool exception, String label, String argument,
     String msg) {
   if (echo != null) {
-    echo("$label($argument): $msg");
+    echo(formatParseError(label, argument, msg));
   }
   if (exception) {
     throw new ParseError(label, argument, msg);
