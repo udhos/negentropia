@@ -62,7 +62,7 @@ func main() {
 	// ("Please ask the user if I can access this resource.")
 	if *code == "" && !*cache {
 		url := config.AuthCodeURL("")
-		fmt.Println("Visit this URL to get a code, then run again with -code=YOUR_CODE\n")
+		fmt.Println("Visit this URL to get a code, then run again with -code=YOUR_CODE")
 		fmt.Println(url)
 		return
 	}

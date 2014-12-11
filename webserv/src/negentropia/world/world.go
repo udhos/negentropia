@@ -59,7 +59,11 @@ func auth(ws *websocket.Conn) *server.Player {
 		return nil
 	}
 
-	return &server.Player{sid, session.ProfileEmail, ws, make(chan *server.ClientMsg), make(chan int)}
+	return &server.Player{Sid: sid,
+		Email:        session.ProfileEmail,
+		Websocket:    ws,
+		SendToPlayer: make(chan *server.ClientMsg),
+		Quit:         make(chan int)}
 }
 
 // read from player channels and write to player socket
@@ -102,7 +106,7 @@ func receiver(p *server.Player) {
 			break
 		}
 		//log.Printf("receiver: %s %s: %q", p.Sid, p.Email, msg)
-		server.InputCh <- &server.PlayerMsg{p, msg}
+		server.InputCh <- &server.PlayerMsg{Player: p, Msg: msg}
 	}
 
 	p.Websocket.Close()
