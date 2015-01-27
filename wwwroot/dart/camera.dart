@@ -192,7 +192,10 @@ class Camera {
     _skyboxFollowPosition();
   }
 
-  void viewMatrix(Matrix4 vm) {
-    setViewMatrix(vm, _position, _focusPosition, _upDirection);
+  /**
+   * Constructs an OpenGL view matrix for this camera into [viewMatrix].
+   */  
+  void loadViewMatrix(Matrix4 viewMatrix) {
+    setViewMatrix(viewMatrix, _position, _focusPosition, _upDirection);
   }
 }

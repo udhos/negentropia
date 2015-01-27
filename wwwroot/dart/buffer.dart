@@ -189,7 +189,7 @@ class Instance {
       R = Rotation (inverse of model rotation matrix - why?)
       S = Scaling
      */
-    cam.viewMatrix(MV); // MV = V
+    cam.loadViewMatrix(MV); // MV = V
 
     // 5. obj translate
     MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
