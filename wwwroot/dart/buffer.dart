@@ -159,7 +159,10 @@ class Instance {
   void update(GameLoopHtml gameLoop) {
   }
 
-  void modelView(RenderingContext gl, UniformLocation u_MV, Camera cam,
+  /**
+   * Send this object's full OpenGL view matrix into GPU.
+   */ 
+  void uploadModelView(RenderingContext gl, UniformLocation u_MV, Camera cam,
       double rescale) {
 
     // grand world coordinate system:
@@ -207,7 +210,7 @@ class Instance {
 
     RenderingContext gl = prog.gl;
 
-    modelView(gl, prog.u_MV, cam, scale); // set up MV matrix
+    uploadModelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
     gl.vertexAttribPointer(

@@ -178,7 +178,7 @@ class SkyboxInstance extends Instance {
 
     RenderingContext gl = prog.gl;
 
-    modelView(gl, prog.u_MV, cam, rescale); // set up MV matrix
+    uploadModelView(gl, prog.u_MV, cam, rescale); // set up MV matrix
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
     gl.vertexAttribPointer(

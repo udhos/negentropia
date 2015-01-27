@@ -200,7 +200,7 @@ class TexInstance extends Instance {
 
     RenderingContext gl = prog.gl;
 
-    modelView(gl, prog.u_MV, cam, scale); // set up MV matrix
+    uploadModelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
     (model as TexModel).pieceList.forEach((pi) {
 

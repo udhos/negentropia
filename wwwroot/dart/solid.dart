@@ -19,7 +19,7 @@ class AxisInstance extends Instance {
 
     RenderingContext gl = prog.gl;
 
-    modelView(gl, prog.u_MV, cam, scale); // set up MV matrix
+    uploadModelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
     gl.vertexAttribPointer(

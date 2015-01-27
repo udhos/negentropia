@@ -194,7 +194,7 @@ class Camera {
 
   /**
    * Constructs an OpenGL view matrix for this camera into [viewMatrix].
-   */  
+   */
   void loadViewMatrix(Matrix4 viewMatrix) {
     setViewMatrix(viewMatrix, _position, _focusPosition, _upDirection);
   }
