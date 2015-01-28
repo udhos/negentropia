@@ -157,18 +157,18 @@ void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
       break;
   }
 
-  i.setRotation(front, up);
+  i.setRotationFrom(front, up);
   i.center = center;
   i.mission = mission;
 
   if (j != null) {
-    j.setRotation(front, up);
+    j.setRotationFrom(front, up);
     j.center = center;
     j.mission = mission;
   }
 
   if (k != null) {
-    k.setRotation(front, up);
+    k.setRotationFrom(front, up);
     k.center = center;
     k.mission = mission;
   }

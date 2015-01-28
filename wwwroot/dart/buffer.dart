@@ -72,7 +72,7 @@ class Instance {
     _right.copyInto(right);
   }
 
-  void setRotation(Vector3 newFront, Vector3 newUp) {
+  void setRotationFrom(Vector3 newFront, Vector3 newUp) {
 
     if (inputLock == Keyboard.R) {
       _rotation.setIdentity();
@@ -151,7 +151,7 @@ class Instance {
 
   Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
       null]) {
-    setRotation(this.model._front.normalized(), this.model._up.normalized());
+    setRotationFrom(this.model._front.normalized(), this.model._up.normalized());
     debug(
         "new instance: $this $id model=${model.modelName} center=$_center ${this.getOrientation()}");
   }
@@ -192,7 +192,7 @@ class Instance {
       R = Rotation (inverse of model rotation matrix - why?)
       S = Scaling
      */
-    cam.loadViewMatrix(MV); // MV = V
+    cam.loadViewMatrixInto(MV); // MV = V
 
     // 5. obj translate
     MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
