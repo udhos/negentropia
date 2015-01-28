@@ -1,14 +1,16 @@
 part of shader;
 
 class AxisInstance extends Instance {
-
+  
   static final Float32List red = new Float32List.fromList([1.0, 0.0, 0.0, 1.0]);
   static final Float32List green =
       new Float32List.fromList([0.0, 1.0, 0.0, 1.0]);
   static final Float32List blue =
       new Float32List.fromList([0.0, 0.0, 1.0, 1.0]);
+  
+  AxisInstance(String id, AxisModel am, Vector3 center, double scale) : super(id, am, center, scale);
 
-  AxisInstance(String id, AxisModel am, Instance i)
+  AxisInstance.fromInstance(String id, AxisModel am, Instance i)
       : super(id, am, i._center, i.scale);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
@@ -69,8 +71,48 @@ class AxisInstance extends Instance {
 }
 
 class AxisModel extends Model {
-
+  
   bool _axisReady = false;
+  
+  void _push(List<double> d, List<int> i, double x, double y, double z) {
+    d.add(x);
+    d.add(y);
+    d.add(z);
+
+    i.add(i.length);
+  } 
+  
+  AxisModel(RenderingContext gl, Vector3 front, Vector3 up, Vector3 right) : super.init() {
+
+    List<int> indices = new List<int>();
+    List<double> vertCoord = new List<double>();
+
+      // add two vertices for front/red arrow
+      int offset = indices.length;
+      _push(vertCoord, indices, 0.0, 0.0, 0.0);
+      _push(vertCoord, indices, front.x, front.y, front.z);
+      addPiece(offset, indices.length - offset); // red
+
+      // add two vertices for up/green arrow
+      offset = indices.length;
+      _push(vertCoord, indices, 0.0, 0.0, 0.0);
+      _push(vertCoord, indices, up.x, up.y, up.z);
+      addPiece(offset, indices.length - offset); // green
+
+      // add two vertices for right/blue arrow
+      offset = indices.length;
+      _push(vertCoord, indices, 0.0, 0.0, 0.0);
+      _push(vertCoord, indices, right.x, right.y, right.z);
+      addPiece(offset, indices.length - offset); // blue
+
+      assert(vertCoord.length == 18);
+      assert(indices.length == 6);
+      assert(pieceList.length == 3);
+
+      _createBuffers(gl, indices, vertCoord, null, null);
+
+      _axisReady = true;    
+  }
 
   AxisModel.fromModel(RenderingContext gl, Model m) : super.init() {
 
@@ -81,31 +123,23 @@ class AxisModel extends Model {
 
     void _frontUpReadyCall() {
 
-      void push(List<double> d, List<int> i, double x, double y, double z) {
-        d.add(x);
-        d.add(y);
-        d.add(z);
-
-        i.add(i.length);
-      }
-
       // add two vertices for front/red arrow
       int offset = indices.length;
-      push(vertCoord, indices, 0.0, 0.0, 0.0);
-      push(vertCoord, indices, m._front.x, m._front.y, m._front.z);
+      _push(vertCoord, indices, 0.0, 0.0, 0.0);
+      _push(vertCoord, indices, m._front.x, m._front.y, m._front.z);
       addPiece(offset, indices.length - offset); // red
 
       // add two vertices for up/green arrow
       offset = indices.length;
-      push(vertCoord, indices, 0.0, 0.0, 0.0);
-      push(vertCoord, indices, m._up.x, m._up.y, m._up.z);
+      _push(vertCoord, indices, 0.0, 0.0, 0.0);
+      _push(vertCoord, indices, m._up.x, m._up.y, m._up.z);
       addPiece(offset, indices.length - offset); // green
 
       // add two vertices for right/blue arrow
       Vector3 right = m.right;
       offset = indices.length;
-      push(vertCoord, indices, 0.0, 0.0, 0.0);
-      push(vertCoord, indices, right.x, right.y, right.z);
+      _push(vertCoord, indices, 0.0, 0.0, 0.0);
+      _push(vertCoord, indices, right.x, right.y, right.z);
       addPiece(offset, indices.length - offset); // blue
 
       assert(vertCoord.length == 18);
@@ -125,6 +159,10 @@ class AxisModel extends Model {
 
 class SolidShader extends ShaderProgram {
 
+  static final Vector3 FRONT = new Vector3(1.0, 0.0, 0.0);
+  static final Vector3 UP = new Vector3(0.0, 1.0, 0.0);
+  static final Vector3 RIGHT = new Vector3(0.0, 0.0, 1.0);
+  
   UniformLocation u_Color;
   List<AxisInstance> instanceList = new List<AxisInstance>();
 
@@ -138,9 +176,20 @@ class SolidShader extends ShaderProgram {
     }
     return i;
   }
+  
+  void _loadDebugOrigin(RenderingContext gl) {
+    double scale = 200.0;
+    Vector3 origin = new Vector3.zero();
+    log("SolidShader._loadDebugOrigin: creating {$scale}-meter xyz debug marker at origin $origin");
+    AxisModel m = new AxisModel(gl, FRONT, UP, RIGHT);
+    AxisInstance i = new AxisInstance("origin", m, origin, scale);
+    instanceList.add(i);
+  }
 
   SolidShader(RenderingContext gl, List<ShaderProgram> programList)
       : super(gl, "solidShader") {
+    
+    _loadDebugOrigin(gl);
 
     // copy clickable instances
     programList.forEach((p) {
@@ -156,7 +205,7 @@ class SolidShader extends ShaderProgram {
           if (am == null) {
             am = new AxisModel.fromModel(gl, m);
           }
-          AxisInstance ai = new AxisInstance(ii.id, am, ii);
+          AxisInstance ai = new AxisInstance.fromInstance(ii.id, am, ii);
           debug(
               "SolidShader: created axis instance=${ai.id} from instance=${ii.id}");
           instanceList.add(ai);
@@ -196,3 +245,4 @@ class SolidShader extends ShaderProgram {
   }
 
 }
+

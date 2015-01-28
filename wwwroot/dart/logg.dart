@@ -25,5 +25,5 @@ void debug(String msg) {
 }
 
 void fixme(String msg) {
-  debug("FIXME: $msg");
+  log("FIXME: $msg");
 }
