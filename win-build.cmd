@@ -3,6 +3,9 @@
 set DEVEL=c:\tmp\devel
 set DART_SDK=c:\dart\dart-sdk
 
+@rem run go fix
+call %DEVEL%\negentropia\win-gofix.cmd
+
 @rem run go vet
 call %DEVEL%\negentropia\win-govet.cmd
 

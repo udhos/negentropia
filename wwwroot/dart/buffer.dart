@@ -161,7 +161,7 @@ class Instance {
 
   /**
    * Send this object's full OpenGL view matrix into GPU.
-   */ 
+   */
   void uploadModelView(RenderingContext gl, UniformLocation u_MV, Camera cam,
       double rescale) {
 
