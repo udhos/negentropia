@@ -71,11 +71,15 @@ class Instance {
   void copyRight(Vector3 right) {
     _right.copyInto(right);
   }
+  
+  void setRotationFromIdentity() {
+    _rotation.setIdentity();
+  }
 
   void setRotationFrom(Vector3 newFront, Vector3 newUp) {
 
     if (inputLock == Keyboard.R) {
-      _rotation.setIdentity();
+      setRotationFromIdentity();
       return;
     }
 
@@ -151,7 +155,9 @@ class Instance {
 
   Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
       null]) {
-    setRotationFrom(this.model._front.normalized(), this.model._up.normalized());
+    setRotationFrom(
+        this.model._front.normalized(),
+        this.model._up.normalized());
     debug(
         "new instance: $this $id model=${model.modelName} center=$_center ${this.getOrientation()}");
   }
