@@ -82,13 +82,13 @@ class Instance {
   // preload on _undoModelRotation a matrix to
   // undo the model intrinsic local rotation
   void _undoModelRotationFrom(Vector3 modelFront, Vector3 modelUp) {
-    
+
     Vector3 zeroPosition = new Vector3.zero();
 
     // rotation matrix = model matrix = inverse of view matrix
     setViewMatrix(_undoModelRotation, zeroPosition, modelFront, modelUp);
   }
-  
+
   void setRotationFrom(Vector3 newFront, Vector3 newUp) {
 
     if (inputLock == Keyboard.R) {
@@ -105,7 +105,7 @@ class Instance {
     _right.normalize();
 
     // rotation matrix = model matrix = inverse of view matrix
-    
+
     // compound rotation R*U:
     // U = first undo model intrinsic local rotation
     // R = then apply the specific rotation we want for the object

@@ -149,16 +149,22 @@ func missionRotateYaw(elapsed time.Duration, zone *Zone, unit *Unit) {
 func missionHunt(elapsed time.Duration, zone *Zone, unit *Unit) {
 	// FIXME WRITEME
 	//
-	// future bounding sphere intersection => future collision likely
-	// if future collision is likely, maneuver to avoid it, then finish
-	// fire if there is enemy's bounding sphere available in attack cone
-	// maneuver to put attack cone around nearest enemy
+	// 1. if future collision is likely, maneuver to avoid it
+	// use capsule collision detection
+	//
+	// 2. fire if there is enemy's bounding sphere available in attack cone
+	// search enemy in attack cone
+	// collision: attack cone vs enemy bouding sphere
+	//
+	// 3. maneuver to put attack cone around nearest enemy
+	// find nearest enemy
+	// maneuver towards nearest enemy
 	//
 	// nearest enemy: bruteforce x kdtree ?
 	// kdtree: http://godoc.org/code.google.com/p/biogo.store/kdtree
 	// kdtree: http://godoc.org/code.google.com/p/eaburns/kdtree
 
-	unit.linearSpeed = 0.1
+	unit.linearSpeed = 0.1 // 0.1  m/s
 	unit.yawSpeed = 0.0
 	unit.pitchSpeed = 0.0
 	unit.rollSpeed = 0.0

@@ -89,3 +89,46 @@ func sphereIntersectsCone(s *Sphere, k *Cone) bool {
 
 	return false
 }
+
+/*
+http://mathematica.stackexchange.com/questions/45265/distance-between-two-line-segments-in-3-space
+
+Another way of doing this (http://mathforum.org/library/drmath/view/51980.html) is to find the mutual perpendicular between the two lines using the cross product, converting this to a unit vector, and then using the dot product between that cross product, and any vector going between the two lines. Like this:
+
+newMinDist[{p1_, p2_}, {q1_, q2_}] :=
+ Module[
+  {u, v, n, w},
+  u = p2 - p1;
+  v = q2 - q1;
+  n = Normalize[Cross[u,v]];
+  w = q1 - p1;
+  Dot[w,n]
+  ]
+Again, u and v are vectors headed along the lines. The vector n is a unit vector in the direction of the cross product of u and v (the unit vector normal to both u and v). The w is any vector between the ps and the qs. You could swap any value of 1 or 2 here (for instance q2-p1). Then w.n gives the shortest distance between the lines.
+
+Gives the same result, and Timing shows this method is better than an order of magnitude faster than the previous one.
+*/
+
+// segment 1: point p1 to point p2
+// segment 2: point q1 to point q2
+func distanceBetweenSegments(p1x, p1y, p1z,
+	p2x, p2y, p2z,
+	q1x, q1y, q1z,
+	q2x, q2y, q2z float64) float64 {
+	var p1, p2, q1, q2, u, v, n, w vectormath.Vector3
+	
+	vectormath.V3MakeFromElems(&p1, float32(p1x), float32(p1y), float32(p1z))
+	vectormath.V3MakeFromElems(&p2, float32(p2x), float32(p2y), float32(p2z))
+	vectormath.V3MakeFromElems(&q1, float32(q1x), float32(q1y), float32(q1z))
+	vectormath.V3MakeFromElems(&q2, float32(q2x), float32(q2y), float32(q2z))
+
+	vectormath.V3Sub(&u, &p2, &p1)
+	vectormath.V3Sub(&v, &q2, &q1)
+
+	vectormath.V3Cross(&n, &v, &u)
+	vectormath.V3Normalize(&n, &n)
+
+	vectormath.V3Sub(&w, &q1, &p1)
+
+	return float64(vectormath.V3Dot(&w, &n))
+}
