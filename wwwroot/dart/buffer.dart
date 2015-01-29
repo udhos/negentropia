@@ -49,6 +49,7 @@ class Instance {
 
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
 
+  Matrix4 _undoModelRotation = new Matrix4.identity();
   Matrix4 _rotation = new Matrix4.identity();
 
   Vector3 _front = new Vector3(1.0, 0.0, 0.0);
@@ -71,26 +72,29 @@ class Instance {
   void copyRight(Vector3 right) {
     _right.copyInto(right);
   }
-  
+
+  // setRotationFromIdentity: do not perform any rotation
+  // useful for debug
   void setRotationFromIdentity() {
     _rotation.setIdentity();
   }
 
+  // preload on _undoModelRotation a matrix to
+  // undo the model intrinsic local rotation
+  void _undoModelRotationFrom(Vector3 modelFront, Vector3 modelUp) {
+    
+    Vector3 zeroPosition = new Vector3.zero();
+
+    // rotation matrix = model matrix = inverse of view matrix
+    setViewMatrix(_undoModelRotation, zeroPosition, modelFront, modelUp);
+  }
+  
   void setRotationFrom(Vector3 newFront, Vector3 newUp) {
 
     if (inputLock == Keyboard.R) {
       setRotationFromIdentity();
       return;
     }
-
-    /*
-     4x4:
-    
-     front.x front.y front.z 0
-     up.x    up.y    up.z    0
-     right.x right.y right.z 0
-     0       0       0       1
-     */
 
     // save copy of vectors
     // because we will invert the rotation matrix
@@ -100,48 +104,13 @@ class Instance {
     _front.crossInto(_up, _right); // right = front x up
     _right.normalize();
 
-    /*
-    Vector3 r1 = newFront;
-    Vector3 r2 = newUp;
-    Vector3 r3 = newRight;
+    // rotation matrix = model matrix = inverse of view matrix
     
-    _rotation.setValues(
-        r1[0],
-        r2[0],
-        r3[0],
-        0.0,
-        r1[1],
-        r2[1],
-        r3[1],
-        0.0,
-        r1[2],
-        r2[2],
-        r3[2],
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        1.0);
-         */
-
-    setRotationMatrix(_rotation, _front, _up);
-
-    /*
-     // rotation should not happen for correct object matrix
-
-    // _rotation is othorgonal
-    assert(vector3Unit(_front));
-    assert(vector3Unit(_up));
-    assert(vector3Unit(_right));
-    assert(vector3Orthogonal(_front, _up));
-    assert(vector3Orthogonal(_front, _right));
-    assert(vector3Orthogonal(_up, _right));
-
-    // because _rotation is orthogonal
-    // inverse can be calculation simply by transposing
-    //_rotation.invertRotation();
-    _rotation.transpose();
-     */
+    // compound rotation R*U:
+    // U = first undo model intrinsic local rotation
+    // R = then apply the specific rotation we want for the object
+    setRotationMatrix(_rotation, _front, _up); // _rotation = R
+    _rotation.multiply(_undoModelRotation); // _rotation = R*U
   }
 
   String getOrientation() {
@@ -155,9 +124,10 @@ class Instance {
 
   Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
       null]) {
-    setRotationFrom(
-        this.model._front.normalized(),
-        this.model._up.normalized());
+    Vector3 modelFront = this.model._front.normalized();
+    Vector3 modelUp = this.model._up.normalized();
+    _undoModelRotationFrom(modelFront, modelUp);
+    setRotationFrom(modelFront, modelUp);
     debug(
         "new instance: $this $id model=${model.modelName} center=$_center ${this.getOrientation()}");
   }
@@ -195,7 +165,8 @@ class Instance {
     /*
       V = View (inverse of camera matrix -- translation and rotation)
       T = Translation
-      R = Rotation (inverse of model rotation matrix - why?)
+      R = Rotation
+      U = Undo Model Local Rotation
       S = Scaling
      */
     cam.loadViewMatrixInto(MV); // MV = V
@@ -204,10 +175,10 @@ class Instance {
     MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
 
     // 2. obj rotate
-    MV.multiply(_rotation); // MV = V*T*R
+    MV.multiply(_rotation); // MV = V*T*R*U
 
     // 1. obj scale
-    MV.scale(rescale, rescale, rescale); // MV = V*T*R*S
+    MV.scale(rescale, rescale, rescale); // MV = V*T*R*U*S
 
     gl.uniformMatrix4fv(u_MV, false, MV.storage);
   }
