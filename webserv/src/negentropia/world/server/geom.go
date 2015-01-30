@@ -23,6 +23,12 @@ type Cone struct {
 	sinSqr        float64
 }
 
+type Capsule struct {
+	radius     float64
+	x1, y1, z1 float64
+	x2, y2, z2 float64
+}
+
 func setSphere(s *Sphere, centerX, centerY, centerZ, radius float64) {
 	vectormath.V3MakeFromElems(&s.center, float32(centerX), float32(centerY), float32(centerZ))
 	s.radius = radius
@@ -111,7 +117,7 @@ Gives the same result, and Timing shows this method is better than an order of m
 
 // segment 1: point p1 to point p2
 // segment 2: point q1 to point q2
-func distanceBetweenSegments(p1x, p1y, p1z,
+func distanceBetweenLineSegments(p1x, p1y, p1z,
 	p2x, p2y, p2z,
 	q1x, q1y, q1z,
 	q2x, q2y, q2z float64) float64 {
@@ -131,4 +137,11 @@ func distanceBetweenSegments(p1x, p1y, p1z,
 	vectormath.V3Sub(&w, &q1, &p1)
 
 	return float64(vectormath.V3Dot(&w, &n))
+}
+
+func capsuleCapsuleIntersection(c1, c2 Capsule) bool {
+	radiusSum := c1.radius + c2.radius
+	distance := distanceBetweenLineSegments(c1.x1, c1.y1, c1.z1, c1.x2, c1.y2, c1.z2,
+		c2.x1, c2.y1, c2.z1, c2.x2, c2.y2, c2.z2)
+	return distance < radiusSum
 }

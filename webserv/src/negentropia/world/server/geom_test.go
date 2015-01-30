@@ -38,13 +38,31 @@ func TestSphereIntersectsCone(t *testing.T) {
 	expectMiss(t, 100.0, 0.0, 0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 15.0*math.Pi/180.0)
 }
 
-func TestDistanceBetweenSegments(t *testing.T) {
+func TestDistanceBetweenLineSegments(t *testing.T) {
 	expected := 2.0
-	dist := distanceBetweenSegments(-1.0, 0.0, 0.0,
+	dist := distanceBetweenLineSegments(-1.0, 0.0, 0.0,
 		1.0, 0.0, 0.0,
 		0.0, 2.0, -1.0,
 		0.0, 2.0, 1.0)
 	if dist != expected {
 		t.Errorf("TestDistanceBetweenSegments: distance=%v expected=%v", dist, expected)
 	}
+}
+
+func TestCapsuleCapsuleIntersection(t *testing.T) {
+
+	cap1 := Capsule{0.9, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0}
+	cap2 := Capsule{0.9, 0.0, 2.0, -1.0, 0.0, 2.0, 1.0}
+
+	if capsuleCapsuleIntersection(cap1, cap2) {
+		t.Errorf("TestCapsuleCapsuleIntersection: unexpected intersection")
+	}
+
+	cap1 = Capsule{1.1, -1.0, 0.0, 0.0, 1.0, 0.0, 0.0}
+	cap2 = Capsule{1.1, 0.0, 2.0, -1.0, 0.0, 2.0, 1.0}
+
+	if !capsuleCapsuleIntersection(cap1, cap2) {
+		t.Errorf("TestCapsuleCapsuleIntersection: unexpected separation")
+	}
+
 }
