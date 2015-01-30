@@ -41,9 +41,9 @@ func TestSphereIntersectsCone(t *testing.T) {
 func TestDistanceBetweenSegments(t *testing.T) {
 	expected := 2.0
 	dist := distanceBetweenSegments(-1.0, 0.0, 0.0,
-	                                1.0, 0.0, 0.0,
-									0.0, 2.0, -1.0,
-									0.0, 2.0, 1.0)
+		1.0, 0.0, 0.0,
+		0.0, 2.0, -1.0,
+		0.0, 2.0, 1.0)
 	if dist != expected {
 		t.Errorf("TestDistanceBetweenSegments: distance=%v expected=%v", dist, expected)
 	}

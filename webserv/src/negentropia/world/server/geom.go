@@ -116,7 +116,7 @@ func distanceBetweenSegments(p1x, p1y, p1z,
 	q1x, q1y, q1z,
 	q2x, q2y, q2z float64) float64 {
 	var p1, p2, q1, q2, u, v, n, w vectormath.Vector3
-	
+
 	vectormath.V3MakeFromElems(&p1, float32(p1x), float32(p1y), float32(p1z))
 	vectormath.V3MakeFromElems(&p2, float32(p2x), float32(p2y), float32(p2z))
 	vectormath.V3MakeFromElems(&q1, float32(q1x), float32(q1y), float32(q1z))

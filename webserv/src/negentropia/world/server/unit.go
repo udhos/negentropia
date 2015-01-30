@@ -54,14 +54,39 @@ func unitForward(unit *Unit, elapsed time.Duration) {
 		return
 	}
 
-	var speed vectormath.Vector3
-	vectormath.V3ScalarMul(&speed, &unit.front, float32(unit.linearSpeed*float64(elapsed)/float64(time.Second)))
+	/*
+		var speed vectormath.Vector3
+		vectormath.V3ScalarMul(&speed, &unit.front, float32(unit.linearSpeed*float64(elapsed)/float64(time.Second)))
+	*/
 
-	if diff := unit.linearSpeed - float64(speed.Length()); !util.CloseToZero(diff) {
-		log.Printf("unitForward: MISMATCH: unit=%v forward=%v speed=%v linearSpeed=%v speed=%v diff=%v", unit.uid, vector3String(unit.front), vector3String(speed), unit.linearSpeed, speed.Length(), diff)
+	var speed [3]float64
+	speed[0] = float64(unit.front.X)
+	speed[1] = float64(unit.front.Y)
+	speed[2] = float64(unit.front.Z)
+	scale := unit.linearSpeed * float64(elapsed) / float64(time.Second)
+	//log.Printf("before mul: %v scale=%v", speed, scale)
+	v3scalarMul(speed[:], scale)
+	//log.Printf("after mul: %v scale=%v", speed, scale)
+
+	/*
+		if diff := unit.linearSpeed - float64(speed.Length()); !util.CloseToZero(diff) {
+			log.Printf("unitForward: MISMATCH: unit=%v forward=%v speed=%v linearSpeed=%v speed=%v diff=%v", unit.uid, vector3String(unit.front), vector3String(speed), unit.linearSpeed, speed.Length(), diff)
+		}
+	*/
+	speedLen := v3len(speed[0], speed[1], speed[2])
+	if diff := unit.linearSpeed - speedLen; !util.CloseToZeroEpsilon(diff, 0.001) {
+		log.Printf("unitForward: MISMATCH: unit=%v forward=%v speed=%v linearSpeed=%v speedLen=%v diff=%v", unit.uid, vector3String(unit.front), speed, unit.linearSpeed, speedLen, diff)
 	}
 
-	vectormath.V3Add(&unit.coord, &unit.coord, &speed)
+	//vectormath.V3Add(&unit.coord, &unit.coord, &speed)
+	var coord [3]float64
+	coord[0] = float64(unit.coord.X)
+	coord[1] = float64(unit.coord.Y)
+	coord[2] = float64(unit.coord.Z)
+	v3add(coord[:], coord[0], coord[1], coord[2], speed[0], speed[1], speed[2])
+	unit.coord.X = float32(coord[0])
+	unit.coord.Y = float32(coord[1])
+	unit.coord.Z = float32(coord[2])
 }
 
 /*

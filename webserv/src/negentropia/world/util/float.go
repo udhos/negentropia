@@ -24,6 +24,7 @@ import (
 	}
 */
 
+/*
 func NearlyEqualEpsilon(a, b, epsilon float64) bool {
 	absA := math.Abs(a)
 	absB := math.Abs(b)
@@ -43,6 +44,11 @@ func NearlyEqualEpsilon(a, b, epsilon float64) bool {
 	// use relative error
 	return diff/(absA+absB) < epsilon
 }
+*/
+
+func NearlyEqualEpsilon(a, b, epsilon float64) bool {
+	return math.Abs(a-b) < epsilon
+}
 
 func NearlyEqual(a, b float64) bool {
 	return NearlyEqualEpsilon(a, b, 0.000001)
@@ -50,4 +56,8 @@ func NearlyEqual(a, b float64) bool {
 
 func CloseToZero(f float64) bool {
 	return NearlyEqual(f, 0.0)
+}
+
+func CloseToZeroEpsilon(f, epsilon float64) bool {
+	return NearlyEqualEpsilon(f, 0.0, epsilon)
 }
