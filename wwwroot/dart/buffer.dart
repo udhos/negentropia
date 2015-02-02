@@ -50,7 +50,7 @@ class Instance {
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
 
   Matrix4 _undoModelRotation = new Matrix4.identity();
-  Matrix4 _rotation = new Matrix4.identity();
+  Matrix4 _model_TRU = new Matrix4.identity();
 
   Vector3 _front = new Vector3(1.0, 0.0, 0.0);
   Vector3 _up = new Vector3(0.0, 1.0, 0.0);
@@ -76,7 +76,7 @@ class Instance {
   // setRotationFromIdentity: do not perform any rotation
   // useful for debug
   void setRotationFromIdentity() {
-    _rotation.setIdentity();
+    _model_TRU.setIdentity();
   }
 
   // preload on _undoModelRotation a matrix to
@@ -106,11 +106,12 @@ class Instance {
 
     // rotation matrix = model matrix = inverse of view matrix
 
-    // compound rotation R*U:
+    // compound rotation T*R*U:
     // U = first undo model intrinsic local rotation
     // R = then apply the specific rotation we want for the object
-    setRotationMatrix(_rotation, _front, _up); // _rotation = R
-    _rotation.multiply(_undoModelRotation); // _rotation = R*U
+    // T = finally translate the object
+    setModelMatrix(_model_TRU, _front, _up, _center[0], _center[1], _center[2]); // _model_TRU = T*R
+    _model_TRU.multiply(_undoModelRotation); // _model_TRU = T*R*U
   }
 
   String getOrientation() {
@@ -141,27 +142,6 @@ class Instance {
   void uploadModelView(RenderingContext gl, UniformLocation u_MV, Camera cam,
       double rescale) {
 
-    // grand world coordinate system:
-    // 1. obj scale
-    // 2. obj rotate
-    // 3. obj orbit translate
-    // 4. obj orbit rotate
-    // 5. obj translate
-    // 6. camera orbit rotate
-    // 7. camera translate
-    // 8. camera rotate
-
-    //setViewMatrix(MV, cam.eye, cam.center, cam.up);
-    /*
-    MV.setIdentity();
-
-    // 7. camera translate
-    cam.translate(MV);
-
-    // 6. camera orbit rotate
-    cam.rotate(MV);
-    */
-
     /*
       V = View (inverse of camera matrix -- translation and rotation)
       T = Translation
@@ -171,13 +151,10 @@ class Instance {
      */
     cam.loadViewMatrixInto(MV); // MV = V
 
-    // 5. obj translate
-    MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
+    //MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
 
-    // 2. obj rotate
-    MV.multiply(_rotation); // MV = V*T*R*U
+    MV.multiply(_model_TRU); // MV = V*T*R*U
 
-    // 1. obj scale
     MV.scale(rescale, rescale, rescale); // MV = V*T*R*U*S
 
     gl.uniformMatrix4fv(u_MV, false, MV.storage);
