@@ -118,7 +118,7 @@ class AxisModel extends Model {
 
   AxisModel.fromModel(RenderingContext gl, Model m) : super.init() {
 
-    debug("AxisModel: creating from model=${m._URL}");
+    debug("AxisModel: creating from model=${m._objURL}");
 
     List<int> indices = new List<int>();
     List<double> vertCoord = new List<double>();
@@ -150,7 +150,8 @@ class AxisModel extends Model {
 
       _createBuffers(gl, indices, vertCoord, null, null);
 
-      debug("AxisModel.frontUpReady: created axis model from model=${m._URL}");
+      debug(
+          "AxisModel.frontUpReady: created axis model from model=${m._objURL}");
 
       _axisReady = true;
     }

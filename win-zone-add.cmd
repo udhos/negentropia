@@ -1,6 +1,6 @@
 @set REDIS_BIN=\redis\redis-cli
 
-@rem assign zone
+@rem assign zone to user
 %REDIS_BIN% hset everton.marques@gmail.com location z:0
 %REDIS_BIN% hset udhos0@gmail.com          location z:1
 
@@ -20,7 +20,7 @@
 @rem add instance list to zone
 %REDIS_BIN% hset z:0 instanceList l:0
 %REDIS_BIN% del l:0
-%REDIS_BIN% sadd l:0 m:0 m:1 m:2 m:3 m:4 m:5
+%REDIS_BIN% sadd l:0 m:0 m:1 m:2 m:3 m:4 m:5 m:6
 
 @rem add object/model o:airship
 %REDIS_BIN% hset o:airship objURL /obj/airship.obj
@@ -39,6 +39,13 @@
 %REDIS_BIN% hset o:mars programName p:simpleTexturizer
 %REDIS_BIN% hset o:mars modelFront 20.0,0.0,0.0
 %REDIS_BIN% hset o:mars modelUp 0.0,20.0,0.0
+
+@rem add object/model o:bigearth
+%REDIS_BIN% hset o:bigearth globeRadius 200.0
+%REDIS_BIN% hset o:bigearth globeTextureURL /texture/earthmap1k.jpg
+%REDIS_BIN% hset o:bigearth programName p:simpleTexturizer
+%REDIS_BIN% hset o:bigearth modelFront 200.0,0.0,0.0
+%REDIS_BIN% hset o:bigearth modelUp 0.0,200.0,0.0
 
 @rem create instance
 %REDIS_BIN% hset m:0 obj o:airship
@@ -80,6 +87,10 @@
 %REDIS_BIN% hset m:5 coord 20.0,20.0,-20.0
 %REDIS_BIN% hset m:5 scale 1.0
 
+@rem create instance
+%REDIS_BIN% hset m:6 obj o:bigearth
+%REDIS_BIN% hset m:6 coord 500.0,500.0,-500.0
+%REDIS_BIN% hset m:6 scale 1.0
 
 @rem add zone ------------------------------------------------------------
 

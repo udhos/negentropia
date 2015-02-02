@@ -7,6 +7,8 @@ import 'dart:typed_data';
 import 'dart:math' as math;
 
 import 'package:vector_math/vector_math.dart';
+import 'package:vector_math/vector_math_geometry.dart';
+import 'package:vector_math/vector_math_lists.dart';
 import 'package:game_loop/game_loop_html.dart';
 import 'package:obj/obj.dart';
 
@@ -163,11 +165,16 @@ class ShaderProgram {
     // needed when both vertexShader and fragmentShader are found in cache
   }
 
-  void addModel(Model m) {
-    this.modelList.add(m);
+  void addModel(Model newModel) {
+    Model m = findModelByName(newModel.modelName);
+    if (m != null) {
+      err("Model.addModel: existing model modelName=${m.modelName}");
+      return;
+    }
+    this.modelList.add(newModel);
   }
 
-  Model findModel(String name) {
+  Model findModelByName(String name) {
     Model mod;
     try {
       mod = modelList.firstWhere((m) {

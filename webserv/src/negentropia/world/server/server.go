@@ -184,24 +184,34 @@ func sendZoneDynamic(p *Player, loc string) {
 			mission := store.QueryField(inst, "mission")
 
 			url := store.QueryField(obj, "objURL")
+			globeRadius := store.QueryField(obj, "globeRadius")
+			globeTextureURL := store.QueryField(obj, "globeTextureURL")
 			program := store.QueryField(obj, "programName")
 			front := store.QueryField(obj, "modelFront")
 			up := store.QueryField(obj, "modelUp")
 
 			log.Printf("sendZoneDynamic: id=%s obj=%s objURL=%s", inst, obj, url)
 
+			m := map[string]string{
+				"id":          inst,
+				"programName": program,
+				"modelFront":  front,
+				"modelUp":     up,
+				"coord":       coord,
+				"scale":       scale,
+				"mission":     mission,
+			}
+
+			if url != "" {
+				m["objURL"] = url
+			} else {
+				m["globeRadius"] = globeRadius
+				m["globeTextureURL"] = globeTextureURL
+			}
+
 			p.SendToPlayer <- &ClientMsg{
 				Code: CM_CODE_INSTANCE,
-				Tab: map[string]string{
-					"id":          inst,
-					"objURL":      url,
-					"programName": program,
-					"modelFront":  front,
-					"modelUp":     up,
-					"coord":       coord,
-					"scale":       scale,
-					"mission":     mission,
-				},
+				Tab:  m,
 			}
 
 		}

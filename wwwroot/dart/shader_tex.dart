@@ -55,6 +55,7 @@ class TexModel extends Model {
   Asset asset;
   Map<String, Texture> textureTable;
   final int textureUnit = 1;
+  int globeIndexSize;
 
   /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
@@ -70,6 +71,8 @@ class TexModel extends Model {
       List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
 
     assert(!modelReady);
+    
+    log("TexModel._createBuffers model=$modelName");
 
     textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
@@ -141,9 +144,48 @@ class TexModel extends Model {
     });
   }
 
-  TexModel.fromOBJ(RenderingContext gl, String URL, Vector3 front, Vector3 up,
-      this.textureTable, this.asset)
-      : super.fromOBJ(gl, URL, front, up);
+  void saveIndexSize(int indexSize) {
+    globeIndexSize = indexSize; // saves the index size
+  }
+
+  TexModel.fromOBJ(RenderingContext gl, String name, String URL, Vector3 front,
+      Vector3 up, this.textureTable, this.asset)
+      : super.fromOBJ(gl, name, URL, front, up);
+
+  TexModel.fromGlobe(RenderingContext gl, String name, double radius,
+      String textureURL, Vector3 front, Vector3 up, this.textureTable, this.asset)
+      : super.fromGlobe(gl, name, radius, front, up) {
+
+    log(
+        "TexModel.fromGlobe: model=$modelName tex=$textureURL front=$_front up=$_up");   
+
+    assert(!piecesReady);
+    assert(pieceList.length == 0);
+    
+    List<int> temporaryColor = [127, 127, 127, 255];
+
+    TextureInfo texInfo =
+        new TextureInfo(gl, textureTable, textureURL, temporaryColor, textureUnit);
+
+    assert(globeIndexSize != null);
+    assert(globeIndexSize > 0);
+    addTexture(0, globeIndexSize, texInfo);
+    
+    assert(pieceList.length == 1);
+    assert(pieceList.first is TexPiece);
+    assert((pieceList.first as TexPiece).texInfo != null);
+    assert((pieceList.first as TexPiece).texInfo == texInfo);
+    
+    piecesReady = true;
+
+    //DEBUG:
+    TexPiece tp = pieceList.first as TexPiece;
+    log("TexModel.fromGlobe vertexPositionBufferItemSize=$vertexPositionBufferItemSize");
+    log("TexModel.fromGlobe textureCoordBufferItemSize=$textureCoordBufferItemSize");
+    log("TexModel.fromGlobe vertexIndexBufferItemSize=$vertexIndexBufferItemSize");
+    log("TexModel.fromGlobe piece vertexIndexOffset=${tp.vertexIndexOffset}");
+    log("TexModel.fromGlobe piece vertexIndexLength=${tp.vertexIndexLength}");
+  }
 
   Piece addPiece(int offset, int length) {
     Piece pi = new TexPiece(offset, length);

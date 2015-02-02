@@ -110,7 +110,13 @@ class Instance {
     // U = first undo model intrinsic local rotation
     // R = then apply the specific rotation we want for the object
     // T = finally translate the object
-    setModelMatrix(_model_TRU, _front, _up, _center[0], _center[1], _center[2]); // _model_TRU = T*R
+    setModelMatrix(
+        _model_TRU,
+        _front,
+        _up,
+        _center[0],
+        _center[1],
+        _center[2]); // _model_TRU = T*R
     _model_TRU.multiply(_undoModelRotation); // _model_TRU = T*R*U
   }
 
@@ -208,8 +214,9 @@ class Model {
   bool modelReady = false; // buffers
   bool piecesReady = false; // multiple OBJ pieces
 
-  String _URL;
-  String get modelName => _URL;
+  String _objURL;
+  String _modelName;
+  String get modelName => _modelName;
 
   Vector3 _front = new Vector3(1.0, 0.0, 0.0);
   Vector3 _up = new Vector3(0.0, 1.0, 0.0);
@@ -265,7 +272,8 @@ class Model {
   }
   */
 
-  Model.fromJson(RenderingContext gl, String URL, bool reverse) {
+  Model.fromJson(RenderingContext gl, this._modelName, String this._objURL,
+      bool reverse) {
 
     /*
     // load JSON from URL
@@ -312,10 +320,10 @@ class Model {
     }
 
     void handleError(Object err) {
-      err("Model.fromJson: failure fetching JSON from URL: $URL: $err");
+      err("Model.fromJson: failure fetching JSON from URL: $_objURL: $err");
     }
 
-    HttpRequest.getString(URL).then(handleResponse).catchError(handleError);
+    HttpRequest.getString(_objURL).then(handleResponse).catchError(handleError);
   }
 
   void showObjStats(Obj o) {
@@ -353,7 +361,7 @@ class Model {
     boundingRadius = math.sqrt(dx * dx + dy * dy + dz * dz) / 2.0;
 
     debug(
-        "model=$_URL indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z] radius=$boundingRadius");
+        "model=$modelName indices=${o.indices.length} parts=${o.partList.length} ($min_x,$min_y,$min_z)..($max_x,$max_y,$max_z)=[$size_x,$size_y,$size_z] radius=$boundingRadius");
   }
 
   void loadObj(RenderingContext gl, Obj o) {
@@ -366,6 +374,10 @@ class Model {
     piecesReady = true;
   }
 
+  
+  void saveIndexSize(int indexSize) {
+    }
+  
   frontUpCallbackFunc frontUpCallback;
 
   void callWhenFrontUpDone(frontUpCallbackFunc callback) {
@@ -374,7 +386,10 @@ class Model {
     assert(frontUpCallback != null);
   }
 
-  Model.fromOBJ(RenderingContext gl, this._URL, Vector3 front, Vector3 up) {
+  Model.fromOBJ(RenderingContext gl, this._modelName, this._objURL,
+      Vector3 front, Vector3 up) {
+
+    log("Model.fromOBJ: model=$modelName URL=$_objURL front=$_front up=$_up");
 
     void handleResponse(String response) {
       //log("Model.fromOBJ: fetched OBJ from URL: $URL");
@@ -382,13 +397,14 @@ class Model {
       _front = front.clone();
       _up = up.clone();
 
-      debug("model=$_URL front=$_front up=$_up");
+      log(
+          "Model.fromOBJ: handleResponse: model=$modelName URL=$_objURL front=$_front up=$_up");
 
       if (frontUpCallback != null) {
         frontUpCallback();
       }
 
-      Obj obj = new Obj.fromString(_URL, response);
+      Obj obj = new Obj.fromString(_objURL, response);
 
       showObjStats(obj);
 
@@ -403,10 +419,62 @@ class Model {
     }
 
     void handleError(Object err) {
-      err("Model.fromOBJ: failure fetching OBJ from URL=$_URL: $err");
+      err("Model.fromOBJ: failure fetching OBJ from URL=$_objURL: $err");
     }
 
-    HttpRequest.getString(_URL).then(handleResponse).catchError(handleError);
+    HttpRequest.getString(_objURL).then(handleResponse).catchError(handleError);
+  }
+
+  Model.fromGlobe(RenderingContext gl, this._modelName, double radius,
+      Vector3 front, Vector3 up) {
+
+    _front = front.clone();
+    _up = up.clone();
+
+    log("Model.fromGlobe: model=$modelName front=$_front up=$_up");
+
+    if (frontUpCallback != null) {
+      frontUpCallback();
+    }
+
+    // generateGeometry
+    SphereGenerator gen = new SphereGenerator();
+    MeshGeometry geo = gen.createSphere(
+        radius,
+        flags: new GeometryGeneratorFlags(
+            texCoords: false,
+            normals: false,
+            tangents: false));
+
+    Uint16List globeIndices;
+    Float32List globePosCoord;
+    Float32List globeTexCoord;
+
+    globeIndices = new Uint16List.fromList([0, 1, 2]);
+    globePosCoord = new Float32List.fromList([-radius, -radius, 0.0, radius, -radius, 0.0, radius, radius, 0.0]);
+    globeTexCoord = new Float32List.fromList([0.0, 0.0, 1.0, 0.0, 1.0, 1.0]);
+    
+    int indexSize = globeIndices.length;
+    saveIndexSize(indexSize);
+    
+    /*
+    globeIndices = geo.indices;
+
+    Vector3List posCoordList = new Vector3List(indexSize);
+    Vector2List texCoordList = new Vector2List(indexSize);
+    gen.generateVertexPositions(posCoordList, globeIndices);
+    gen.generateVertexTexCoords(texCoordList, posCoordList, globeIndices);
+
+    globePosCoord = posCoordList.buffer;
+    globeTexCoord = texCoordList.buffer;
+     */
+    
+    log("globe indexSize=$indexSize");
+    log("globe indices: size=${globeIndices.length} $globeIndices");
+    log("globe positions: size=${globePosCoord.length} $globePosCoord");
+    log("globe tex coord: size=${globeTexCoord.length} $globeTexCoord");
+    
+    _createBuffers(gl, globeIndices, globePosCoord, globeTexCoord, null);
   }
 
   void addInstance(Instance i) {

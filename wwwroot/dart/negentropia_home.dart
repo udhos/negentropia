@@ -305,10 +305,21 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       String scale = tab['scale'];
       //String mission = tab['mission'];
 
-      debug("dispatcher: instance: id=$id obj=$objURL");
+      String globeRadius;
+      String globeTextureURL;
+      if (objURL == null || objURL.isEmpty) {
+        globeRadius = tab['globeRadius'];
+        globeTextureURL = tab['globeTextureURL'];
+        log("dispatcher: instance: id=$id globeTextureURL=$globeTextureURL");
+        
+        return; // FIXME ///////////////////////////////////////////////////////////////////
+        
+      } else {
+        log("dispatcher: instance: id=$id obj=$objURL");
+      }
 
       if (id == null || id.isEmpty) {
-        err("instance: id=$id obj=$objURL: bad id");
+        err("instance: id=$id: bad id");
         return;
       }
 
@@ -326,7 +337,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
 
       if (!vector3Orthogonal(f, u)) {
         err(
-            "instance: id=$id obj=$objURL: front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
+            "instance: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
         return;
       }
 
@@ -336,7 +347,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       */
       Vector3 c = parseVector3(coord);
       if (c == null) {
-        err("instance: id=$id obj=$objURL: parsing failure: coord=$coord");
+        err("instance: id=$id parsing failure: coord=$coord");
         return;
       }
 
@@ -344,20 +355,31 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
 
       TexShaderProgram prog = findTexShader(programName);
       if (prog == null) {
-        err(
-            "instance: id=$id obj=$objURL: could not find programName=$programName");
+        err("instance: id=$id could not find programName=$programName");
         return;
       }
 
-      TexModel model = prog.findModel(objURL);
-      if (model == null) {
-        model = new TexModel.fromOBJ(gl, objURL, f, u, textureTable, asset);
-        prog.addModel(model);
+      TexModel model;
+
+      if (objURL == null) {
+        double radius = double.parse(globeRadius);
+        model = new TexModel.fromGlobe(
+            gl,
+            id,
+            radius,
+            globeTextureURL,
+            f,
+            u,
+            textureTable,
+            asset);
+      } else {
+        model = new TexModel.fromOBJ(gl, id, objURL, f, u, textureTable, asset);
       }
+      prog.addModel(model);
 
       TexInstance instance = model.findInstance(id);
       if (instance != null) {
-        err("instance: id=$id obj=$objURL: already exists");
+        err("instance: id=$id already exists");
         return;
       }
       instance = new TexInstance(id, model, c, sc, generatePickColor());
@@ -485,7 +507,7 @@ void demoInitSquares(RenderingContext gl) {
       "${asset.shader}/clip_vs.txt",
       "${asset.shader}/clip_fs.txt");
   Model squareModel =
-      new Model.fromJson(gl, "${asset.mesh}/square.json", false);
+      new Model.fromJson(gl, "squareModel", "${asset.mesh}/square.json", false);
   squareProgram.addModel(squareModel);
   Instance squareInstance =
       new Instance('square', squareModel, new Vector3(0.0, 0.0, 0.0), 1.0);
@@ -501,7 +523,7 @@ void demoInitSquares(RenderingContext gl) {
         "${asset.shader}/clip2_fs.txt");
   });
   Model squareModel2 =
-      new Model.fromJson(gl, "${asset.mesh}/square2.json", false);
+      new Model.fromJson(gl, "square2Model", "${asset.mesh}/square2.json", false);
   squareProgram2.addModel(squareModel2);
   Instance squareInstance2 =
       new Instance('square2', squareModel2, new Vector3(0.0, 0.0, 0.0), 1.0);
@@ -514,7 +536,7 @@ void demoInitSquares(RenderingContext gl) {
       "${asset.shader}/clip_vs.txt",
       "${asset.shader}/clip3_fs.txt");
   Model squareModel3 =
-      new Model.fromJson(gl, "${asset.mesh}/square3.json", false);
+      new Model.fromJson(gl, "square3Model", "${asset.mesh}/square3.json", false);
   squareProgram3.addModel(squareModel3);
   Instance squareInstance3 =
       new Instance('square3', squareModel3, new Vector3(0.0, 0.0, 0.0), 1.0);
@@ -524,7 +546,8 @@ void demoInitSquares(RenderingContext gl) {
 void addSkybox(RenderingContext gl, Map<String, String> s) {
   skybox = new SkyboxProgram(gl);
   skybox.fetch(shaderCache, s['vertexShader'], s['fragmentShader']);
-  SkyboxModel skyboxModel = new SkyboxModel.fromJson(gl, s['cube'], true);
+  SkyboxModel skyboxModel =
+      new SkyboxModel.fromJson(gl, "skyboxModel", s['cube'], true);
   skyboxModel.addCubemapFace(
       gl,
       RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -567,8 +590,11 @@ void demoInitSkybox(RenderingContext gl) {
       shaderCache,
       "${asset.shader}/skybox_vs.txt",
       "${asset.shader}/skybox_fs.txt");
-  SkyboxModel skyboxModel =
-      new SkyboxModel.fromJson(gl, "${asset.mesh}/cube.json", true);
+  SkyboxModel skyboxModel = new SkyboxModel.fromJson(
+      gl,
+      "demoSkyboxModel",
+      "${asset.mesh}/cube.json",
+      true);
   skyboxModel.addCubemapFace(
       gl,
       RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -612,6 +638,7 @@ void demoInitAirship(RenderingContext gl) {
       "${asset.shader}/simple_fs.txt");
   Model airshipModel = new Model.fromOBJ(
       gl,
+      "demoAirshipModel",
       "${asset.obj}/airship.obj",
       new Vector3.zero(),
       new Vector3.zero());
@@ -637,6 +664,7 @@ void demoInitAirshipTex(RenderingContext gl) {
 
   TexModel airshipModel = new TexModel.fromOBJ(
       gl,
+      "demoAirshipTexModel",
       objURL,
       new Vector3.zero(),
       new Vector3.zero(),
@@ -653,6 +681,7 @@ void demoInitAirshipTex(RenderingContext gl) {
 
   TexModel airshipModel2 = new TexModel.fromOBJ(
       gl,
+      "demoAirship2TexModel",
       objURL,
       new Vector3.zero(),
       new Vector3.zero(),
@@ -670,6 +699,7 @@ void demoInitAirshipTex(RenderingContext gl) {
   String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";
   TexModel colonyShipModel = new TexModel.fromOBJ(
       gl,
+      "demoColonyshipTexModel",
       colonyShipURL,
       new Vector3.zero(),
       new Vector3.zero(),
@@ -687,6 +717,7 @@ void demoInitAirshipTex(RenderingContext gl) {
   String coneURL = "${asset.obj}/cone.obj";
   TexModel coneModel = new TexModel.fromOBJ(
       gl,
+      "demoConeTexModel",
       coneURL,
       new Vector3.zero(),
       new Vector3.zero(),
