@@ -27,8 +27,6 @@ import 'message.dart';
 import 'wheel.dart';
 import 'fullscreen.dart';
 
-//CanvasElement canvas;
-ShaderProgram shaderProgram;
 bool debugLostContext = true;
 List<ShaderProgram> programList;
 Map<String, Shader> shaderCache;

@@ -1,9 +1,15 @@
 TODO
 
-T2 OAUTH2 
-   See http://code.google.com/p/goauth2/
-       https://developers.google.com/accounts/docs/OAuth2WebServer
-   
-T1 CANCELLED See https://developers.google.com/identity-toolkit/v1/acguide
+1. put a big planet on zone z:0
+
+2. put a terrain vehicle (car) on big planet surface
+
+3. make the terrain vehicle to move on planet surface
+
+4. create gates between zones z:0 and z:1
+
+5. make a control to order a unit to move towards a target
+
+6. make units to cross the zone gates
 
 END
