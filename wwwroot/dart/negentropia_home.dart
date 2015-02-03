@@ -311,7 +311,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         globeRadius = tab['globeRadius'];
         globeTextureURL = tab['globeTextureURL'];
         log("dispatcher: instance: id=$id globeTextureURL=$globeTextureURL");
-
+        
         return; // FIXME ///////////////////////////////////////////////////////////////////
 
       } else {

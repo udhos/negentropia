@@ -50,7 +50,7 @@ class Instance {
   Matrix4 MV = new Matrix4.identity(); // model-view matrix
 
   Matrix4 _undoModelRotation = new Matrix4.identity();
-  Matrix4 _model_TRU = new Matrix4.identity();
+  Matrix4 _rotation = new Matrix4.identity();
 
   Vector3 _front = new Vector3(1.0, 0.0, 0.0);
   Vector3 _up = new Vector3(0.0, 1.0, 0.0);
@@ -76,7 +76,7 @@ class Instance {
   // setRotationFromIdentity: do not perform any rotation
   // useful for debug
   void setRotationFromIdentity() {
-    _model_TRU.setIdentity();
+    _rotation.setIdentity();
   }
 
   // preload on _undoModelRotation a matrix to
@@ -110,6 +110,7 @@ class Instance {
     // U = first undo model intrinsic local rotation
     // R = then apply the specific rotation we want for the object
     // T = finally translate the object
+    /*
     setModelMatrix(
         _model_TRU,
         _front,
@@ -118,6 +119,9 @@ class Instance {
         _center[1],
         _center[2]); // _model_TRU = T*R
     _model_TRU.multiply(_undoModelRotation); // _model_TRU = T*R*U
+     */
+    setRotationMatrix(_rotation, _front, _up); // _rotation = R
+    _rotation.multiply(_undoModelRotation); // _rotation = R*U
   }
 
   String getOrientation() {
@@ -157,9 +161,9 @@ class Instance {
      */
     cam.loadViewMatrixInto(MV); // MV = V
 
-    //MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
+    MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
 
-    MV.multiply(_model_TRU); // MV = V*T*R*U
+    MV.multiply(_rotation); // MV = V*T*R*U
 
     MV.scale(rescale, rescale, rescale); // MV = V*T*R*U*S
 
@@ -444,10 +448,24 @@ class Model {
     Float32List globeTexCoord;
     int indexSize;
 
+    // texturized rectangle
     globeIndices = new Uint16List.fromList([0, 1, 2, 0, 2, 3]);
     globePosCoord = new Float32List.fromList(
-        [-radius, -radius, 0.0, radius, -radius, 0.0, radius, radius, 0.0, -radius, radius, 0.0]);
-    globeTexCoord = new Float32List.fromList([0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0]);
+        [
+            -radius,
+            -radius,
+            0.0,
+            radius,
+            -radius,
+            0.0,
+            radius,
+            radius,
+            0.0,
+            -radius,
+            radius,
+            0.0]);
+    globeTexCoord =
+        new Float32List.fromList([0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0]);
     indexSize = globeIndices.length;
 
     /*
@@ -458,7 +476,7 @@ class Model {
             texCoords: false,
             normals: false,
             tangents: false));
-    
+
     globeIndices = geo.indices;
     indexSize = globeIndices.length;
 
@@ -472,7 +490,7 @@ class Model {
      */
 
     saveIndexSize(indexSize);
-    
+
     log("globe indexSize=$indexSize");
     log("globe indices: size=${globeIndices.length} $globeIndices");
     log("globe positions: size=${globePosCoord.length} $globePosCoord");
