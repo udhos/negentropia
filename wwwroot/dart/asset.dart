@@ -1,7 +1,6 @@
 library asset;
 
 class Asset {
-
   String _mesh;
   String _mtl;
   String _obj;

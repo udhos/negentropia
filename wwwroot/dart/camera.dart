@@ -29,7 +29,6 @@ void trackKey(bool isDown) {
 }
 
 class Camera {
-
   static final Vector3 Y = new Vector3(0.0, 1.0, 0.0);
 
   Vector3 _position = new Vector3(0.0, 0.0, 10.0);
@@ -157,7 +156,6 @@ class Camera {
     _skyboxFollowPosition();
   }
 
-
   void moveTo(Vector3 coord) {
     _position.setFrom(coord);
 
@@ -169,7 +167,6 @@ class Camera {
   }
 
   void focusAt(Vector3 coord) {
-
     if (coord[0] == _focusPosition[0] &&
         coord[1] == _focusPosition[1] &&
         coord[2] == _focusPosition[2]) return;

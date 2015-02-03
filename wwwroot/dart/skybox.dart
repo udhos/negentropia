@@ -13,7 +13,6 @@ import 'interpolate.dart';
 import 'logg.dart';
 
 class SkyboxProgram extends ShaderProgram {
-
   UniformLocation u_Skybox;
 
   SkyboxProgram(RenderingContext gl) : super(gl, "skyboxShader");
@@ -31,7 +30,6 @@ class SkyboxProgram extends ShaderProgram {
   */
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
-
     if (!shaderReady) {
       return;
     }
@@ -56,55 +54,39 @@ class SkyboxProgram extends ShaderProgram {
 
     //gl.disableVertexAttribArray(a_Position); // needed ??
   }
-
 }
 
 class SkyboxModel extends Model {
-
   Texture cubemapTexture;
   bool cubemapReady = false;
   final int textureUnit = 2;
 
   double get halfEdge => 1.0;
 
-  SkyboxModel.fromJson(RenderingContext gl, String name, String URL,
-      bool reverse)
+  SkyboxModel.fromJson(
+      RenderingContext gl, String name, String URL, bool reverse)
       : super.fromJson(gl, name, URL, reverse) {
     cubemapTexture = gl.createTexture();
   }
 
   void addCubemapFace(RenderingContext gl, int face, String URL) {
-
     ImageElement image = new ImageElement();
 
     void handleDone(Event e) {
       gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
-      gl.texParameteri(
-          RenderingContext.TEXTURE_CUBE_MAP,
-          RenderingContext.TEXTURE_MAG_FILTER,
-          RenderingContext.NEAREST);
-      gl.texParameteri(
-          RenderingContext.TEXTURE_CUBE_MAP,
-          RenderingContext.TEXTURE_MIN_FILTER,
-          RenderingContext.NEAREST);
+      gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
+          RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
+      gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
+          RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.NEAREST);
 
-      gl.texImage2DImage(
-          face,
-          0,
-          RenderingContext.RGBA,
-          RenderingContext.RGBA,
-          RenderingContext.UNSIGNED_BYTE,
-          image);
+      gl.texImage2DImage(face, 0, RenderingContext.RGBA, RenderingContext.RGBA,
+          RenderingContext.UNSIGNED_BYTE, image);
 
-      gl.texParameteri(
-          RenderingContext.TEXTURE_CUBE_MAP,
-          RenderingContext.TEXTURE_WRAP_S,
-          RenderingContext.CLAMP_TO_EDGE);
-      gl.texParameteri(
-          RenderingContext.TEXTURE_CUBE_MAP,
-          RenderingContext.TEXTURE_WRAP_T,
-          RenderingContext.CLAMP_TO_EDGE);
+      gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
+          RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
+      gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
+          RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
 
       //anisotropic_filtering_enable(gl);
 
@@ -114,14 +96,13 @@ class SkyboxModel extends Model {
     }
 
     void handleError(Event e) {
-      err(
-          "addCubemapFace: handleError: failure loading image from URL: $URL: $e");
+      err("addCubemapFace: handleError: failure loading image from URL: $URL: $e");
     }
 
     image
-        ..onLoad.listen(handleDone)
-        ..onError.listen(handleError)
-        ..src = URL;
+      ..onLoad.listen(handleDone)
+      ..onError.listen(handleError)
+      ..src = URL;
   }
 
   void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
@@ -151,12 +132,11 @@ class SkyboxInstance extends Instance {
 
   double get halfEdge => scale * (model as SkyboxModel).halfEdge;
 
-  SkyboxInstance(String id, Model model, Vector3 center, double scale,
-      this.demoAnimate)
+  SkyboxInstance(
+      String id, Model model, Vector3 center, double scale, this.demoAnimate)
       : super(id, model, center, scale);
 
   void update(GameLoopHtml gameLoop) {
-
     if (demoAnimate) {
       _oldAngle = _angle;
       _angle = gameLoop.gameTime * this.degreesPerSec % 360.0;
@@ -164,12 +144,11 @@ class SkyboxInstance extends Instance {
   }
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
-
     double rescale;
 
     if (demoAnimate) {
-      double deg =
-          interpolateDegree(_angle, _oldAngle, gameLoop.renderInterpolationFactor);
+      double deg = interpolateDegree(
+          _angle, _oldAngle, gameLoop.renderInterpolationFactor);
       double rad = deg * math.PI / 180.0;
       double size = 15 * math.sin(rad).abs() + 1;
       rescale = scale * size;
@@ -182,25 +161,16 @@ class SkyboxInstance extends Instance {
     uploadModelView(gl, prog.u_MV, cam, rescale); // set up MV matrix
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
-    gl.vertexAttribPointer(
-        prog.a_Position,
-        model.vertexPositionBufferItemSize,
-        RenderingContext.FLOAT,
-        false,
-        0,
-        0);
+    gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize,
+        RenderingContext.FLOAT, false, 0, 0);
 
     gl.bindBuffer(
-        RenderingContext.ELEMENT_ARRAY_BUFFER,
-        model.vertexIndexBuffer);
+        RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
 
     model.pieceList.forEach((piece) {
-      gl.drawElements(
-          RenderingContext.TRIANGLES,
-          piece.vertexIndexLength,
+      gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
           RenderingContext.UNSIGNED_SHORT,
           piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });
-
   }
 }

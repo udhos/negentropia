@@ -28,11 +28,7 @@ typedef void dispatcherFunc(int code, String data, Map<String, String> tab);
 dispatcherFunc _dispatcher;
 
 void missionNext(Map m) {
-  wsSendMap({
-    'Code': CM_CODE_MISSION_NEXT,
-    'Data': "",
-    'Tab': m
-  });
+  wsSendMap({'Code': CM_CODE_MISSION_NEXT, 'Data': "", 'Tab': m});
 }
 
 void requestZone() {
@@ -41,10 +37,7 @@ void requestZone() {
   msg["Code"] = CM_CODE_REQZ;
   msg["Data"] = "";
   */
-  Map msg = {
-    'Code': CM_CODE_REQZ,
-    'Data': ""
-  };
+  Map msg = {'Code': CM_CODE_REQZ, 'Data': ""};
 
   wsSendMap(msg);
 }
@@ -76,7 +69,6 @@ void wsFlush() {
 
 void initWebSocket(String wsUri, String sid, int retrySeconds, Element status,
     dispatcherFunc dispatch) {
-
   _dispatcher = dispatch;
 
   status.text = "opening $wsUri";
@@ -104,8 +96,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status,
     }
 
     debug("websocket: retrying in $retrySeconds seconds");
-    new Timer(
-        new Duration(seconds: retrySeconds),
+    new Timer(new Duration(seconds: retrySeconds),
         () => initWebSocket(wsUri, sid, 2 * retrySeconds, status, dispatch));
 
     reconnectScheduled = true;
@@ -120,10 +111,7 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status,
     msg["Code"] = CM_CODE_AUTH;
     msg["Data"] = sid;
     */
-    Map msg = {
-      'Code': CM_CODE_AUTH,
-      'Data': sid
-    };
+    Map msg = {'Code': CM_CODE_AUTH, 'Data': sid};
 
     String jsonMsg = JSON.encode(msg);
 
@@ -147,14 +135,12 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status,
   });
 
   subMessage = _ws.onMessage.listen((MessageEvent e) {
-
     Map msg = JSON.decode(e.data);
     int code = msg["Code"];
     String data = msg["Data"];
     Map<String, String> tab = msg["Tab"];
 
     if (code == CM_CODE_KILL) {
-
       String killInfo = data;
       String m = "server killed our session: $killInfo";
 
@@ -174,4 +160,3 @@ void initWebSocket(String wsUri, String sid, int retrySeconds, Element status,
     _dispatcher(code, data, tab);
   });
 }
-

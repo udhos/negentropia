@@ -1,7 +1,6 @@
 part of shader;
 
 class TexShaderProgram extends ShaderProgram {
-
   int a_TextureCoord;
   UniformLocation u_Sampler;
 
@@ -22,7 +21,6 @@ class TexShaderProgram extends ShaderProgram {
   }
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
-
     if (!shaderReady) {
       return;
     }
@@ -38,18 +36,15 @@ class TexShaderProgram extends ShaderProgram {
 
     //gl.disableVertexAttribArray(a_Position); // needed ??
   }
-
 }
 
 class TexPiece extends Piece {
-
   TextureInfo texInfo;
 
   TexPiece(int indexOffset, int indexLength) : super(indexOffset, indexLength);
 }
 
 class TexModel extends Model {
-
   Buffer textureCoordBuffer;
   final int textureCoordBufferItemSize = 2; // coord s,t
   Asset asset;
@@ -69,17 +64,14 @@ class TexModel extends Model {
   // redefine _createBuffers() used by Model's constructor
   void _createBuffers(RenderingContext gl, List<int> indices,
       List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
-
     assert(!modelReady);
 
     log("TexModel._createBuffers model=$modelName");
 
     textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
-    gl.bufferDataTyped(
-        RenderingContext.ARRAY_BUFFER,
-        new Float32List.fromList(textCoord),
-        RenderingContext.STATIC_DRAW);
+    gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER,
+        new Float32List.fromList(textCoord), RenderingContext.STATIC_DRAW);
 
     super._createBuffers(gl, indices, vertCoord, textCoord, normCoord);
 
@@ -87,13 +79,11 @@ class TexModel extends Model {
   }
 
   void loadObj(RenderingContext gl, Obj obj) {
-
     assert(obj != null);
 
     String mtlURL = "${asset.mtl}/${obj.mtllib}";
 
     void onMtlLibLoaded(String materialResponse) {
-
       assert(!piecesReady);
 
       Map<String, Material> lib = mtllib_parse(materialResponse, mtlURL);
@@ -102,13 +92,11 @@ class TexModel extends Model {
       int i = 0;
 
       obj.partList.forEach((pa) {
-
         String usemtl = pa.usemtl;
 
         Material mtl = lib[usemtl];
         if (mtl == null) {
-          err(
-              "loadObj $i: material usemtl=$usemtl NOT FOUND on mtllib=$mtlURL");
+          err("loadObj $i: material usemtl=$usemtl NOT FOUND on mtllib=$mtlURL");
         }
 
         int r = (mtl.Kd[0] * 255.0).round();
@@ -123,8 +111,8 @@ class TexModel extends Model {
           textureURL = "${asset.texture}/$texFile";
         }
 
-        TextureInfo texInfo =
-            new TextureInfo(gl, textureTable, textureURL, temporaryColor, textureUnit);
+        TextureInfo texInfo = new TextureInfo(
+            gl, textureTable, textureURL, temporaryColor, textureUnit);
 
         addTexture(pa.indexFirst, pa.indexListSize, texInfo);
 
@@ -153,19 +141,18 @@ class TexModel extends Model {
       : super.fromOBJ(gl, name, URL, front, up);
 
   TexModel.fromGlobe(RenderingContext gl, String name, double radius,
-      String textureURL, Vector3 front, Vector3 up, this.textureTable, this.asset)
+      String textureURL, Vector3 front, Vector3 up, this.textureTable,
+      this.asset)
       : super.fromGlobe(gl, name, radius, front, up) {
-
-    log(
-        "TexModel.fromGlobe: model=$modelName tex=$textureURL front=$_front up=$_up");
+    log("TexModel.fromGlobe: model=$modelName tex=$textureURL front=$_front up=$_up");
 
     assert(!piecesReady);
     assert(pieceList.length == 0);
 
     List<int> temporaryColor = [127, 127, 127, 255];
 
-    TextureInfo texInfo =
-        new TextureInfo(gl, textureTable, textureURL, temporaryColor, textureUnit);
+    TextureInfo texInfo = new TextureInfo(
+        gl, textureTable, textureURL, temporaryColor, textureUnit);
 
     assert(globeIndexSize != null);
     assert(globeIndexSize > 0);
@@ -180,12 +167,9 @@ class TexModel extends Model {
 
     //DEBUG:
     TexPiece tp = pieceList.first as TexPiece;
-    log(
-        "TexModel.fromGlobe vertexPositionBufferItemSize=$vertexPositionBufferItemSize");
-    log(
-        "TexModel.fromGlobe textureCoordBufferItemSize=$textureCoordBufferItemSize");
-    log(
-        "TexModel.fromGlobe vertexIndexBufferItemSize=$vertexIndexBufferItemSize");
+    log("TexModel.fromGlobe vertexPositionBufferItemSize=$vertexPositionBufferItemSize");
+    log("TexModel.fromGlobe textureCoordBufferItemSize=$textureCoordBufferItemSize");
+    log("TexModel.fromGlobe vertexIndexBufferItemSize=$vertexIndexBufferItemSize");
     log("TexModel.fromGlobe piece vertexIndexOffset=${tp.vertexIndexOffset}");
     log("TexModel.fromGlobe piece vertexIndexLength=${tp.vertexIndexLength}");
   }
@@ -210,45 +194,31 @@ class TexModel extends Model {
 
     // vertex coord
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
-    gl.vertexAttribPointer(
-        program.a_Position,
-        vertexPositionBufferItemSize,
-        RenderingContext.FLOAT,
-        false,
-        0,
-        0);
+    gl.vertexAttribPointer(program.a_Position,
+        vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
 
     // texture coord
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
-    gl.vertexAttribPointer(
-        (program as TexShaderProgram).a_TextureCoord,
-        textureCoordBufferItemSize,
-        RenderingContext.FLOAT,
-        false,
-        0,
-        0);
+    gl.vertexAttribPointer((program as TexShaderProgram).a_TextureCoord,
+        textureCoordBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
 
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 
     instanceList.forEach((i) => i.draw(gameLoop, program, cam));
   }
-
 }
 
 class TexInstance extends Instance {
-
   TexInstance(id, TexModel model, Vector3 center, double scale,
       [Float32List pick = null])
       : super(id, model, center, scale, pick);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
-
     RenderingContext gl = prog.gl;
 
     uploadModelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
     (model as TexModel).pieceList.forEach((pi) {
-
       TexPiece tp = pi as TexPiece;
       TextureInfo ti = tp.texInfo;
 
@@ -258,13 +228,9 @@ class TexInstance extends Instance {
       gl.bindTexture(RenderingContext.TEXTURE_2D, ti.texture);
       gl.uniform1i((prog as TexShaderProgram).u_Sampler, unit);
 
-      gl.drawElements(
-          RenderingContext.TRIANGLES,
-          tp.vertexIndexLength,
+      gl.drawElements(RenderingContext.TRIANGLES, tp.vertexIndexLength,
           RenderingContext.UNSIGNED_SHORT,
           tp.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });
-
   }
-
 }

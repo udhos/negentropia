@@ -24,7 +24,6 @@ part 'picker.dart';
 part 'solid.dart';
 
 class ShaderProgram {
-
   Program program;
   RenderingContext gl;
   String programName;
@@ -50,9 +49,8 @@ class ShaderProgram {
 
   void fetch(Map<String, Shader> shaderCache, String vertexShaderURL,
       String fragmentShaderURL) {
-
-    Shader compileShader(String shaderURL, String shaderSource, int shaderType)
-        {
+    Shader compileShader(
+        String shaderURL, String shaderSource, int shaderType) {
       Shader shader = gl.createShader(shaderType);
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
@@ -62,15 +60,15 @@ class ShaderProgram {
         String infoLog = gl.getShaderInfoLog(shader);
         err("compileShader: compilation FAILURE: $shaderURL: info=$infoLog");
         if (gl.isContextLost()) {
-          err(
-              "compileShader: compilation FAILURE: $shaderURL: info=$infoLog: context is lost");
+          err("compileShader: compilation FAILURE: $shaderURL: info=$infoLog: context is lost");
         }
         return null;
       }
 
       if (shaderCache[shaderURL] != null) {
-        err(
-            "compileShader: " + shaderURL + ": FIXME: overwriting shader cache");
+        err("compileShader: " +
+            shaderURL +
+            ": FIXME: overwriting shader cache");
       }
       shaderCache[shaderURL] = shader;
 
@@ -94,8 +92,7 @@ class ShaderProgram {
         String infoLog = gl.getProgramInfoLog(p);
         err("tryLink: shader program link FAILURE: $infoLog");
         if (gl.isContextLost()) {
-          err(
-              "tryLink: shader program link FAILURE: $infoLog: context is lost");
+          err("tryLink: shader program link FAILURE: $infoLog: context is lost");
         }
         return;
       }
@@ -108,7 +105,6 @@ class ShaderProgram {
     }
 
     void fetchVertexShader() {
-
       String url = vertexShaderURL;
 
       var requestVert = new HttpRequest();
@@ -130,7 +126,6 @@ class ShaderProgram {
     }
 
     void fetchFragmentShader() {
-
       String url = fragmentShaderURL;
 
       var requestFrag = new HttpRequest();
@@ -200,7 +195,6 @@ class ShaderProgram {
   }
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
-
     if (!shaderReady) {
       return;
     }
@@ -224,4 +218,3 @@ class ShaderProgram {
     modelList.forEach((m) => m.update(gameLoop));
   }
 }
-

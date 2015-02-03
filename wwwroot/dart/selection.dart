@@ -40,7 +40,6 @@ bool getSelectionPosition(Vector3 result) {
 }
 
 PickerInstance colorHit(Iterable<Instance> list, int r, int g, int b) {
-
   bool match(Instance i) {
     Float32List f = i.pickColor;
     return (255.0 * f[0] - r.toDouble()).abs() < 1.0 &&
@@ -60,7 +59,6 @@ PickerInstance colorHit(Iterable<Instance> list, int r, int g, int b) {
 }
 
 void handleSelection(PickerInstance pi, bool shift) {
-
   assert(shift != null);
 
   if (pi == null) {
@@ -137,14 +135,8 @@ void bandSelection(int x, int y, int width, int height, PickerShader picker,
   }
 
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, picker.framebuffer);
-  gl.readPixels(
-      x,
-      y,
-      width,
-      height,
-      RenderingContext.RGBA,
-      RenderingContext.UNSIGNED_BYTE,
-      _color);
+  gl.readPixels(x, y, width, height, RenderingContext.RGBA,
+      RenderingContext.UNSIGNED_BYTE, _color);
 
   if (!shift) {
     // shift is released
@@ -159,7 +151,6 @@ void bandSelection(int x, int y, int width, int height, PickerShader picker,
   int searches = 0;
 
   for (int i = 0; i < size; i += 4, ++pixels) {
-
     if (_selection.length >= picker.numberOfInstances) {
       // optimization: selected all available objects, no need to keep searching
       break;
@@ -197,6 +188,5 @@ void bandSelection(int x, int y, int width, int height, PickerShader picker,
   DateTime end = new DateTime.now();
   Duration elapsed = end.difference(begin);
 
-  log(
-      "bandSelection: $_selection took ${elapsed.inMilliseconds} msecs (pixels total=$size scanned=$pixels, background hits=$bgHits, cache size=${cache.length} hits=$cacheHits, searches=$searches)");
+  log("bandSelection: $_selection took ${elapsed.inMilliseconds} msecs (pixels total=$size scanned=$pixels, background hits=$bgHits, cache size=${cache.length} hits=$cacheHits, searches=$searches)");
 }

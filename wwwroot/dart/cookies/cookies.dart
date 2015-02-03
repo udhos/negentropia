@@ -5,7 +5,6 @@ import 'dart:html';
 const ONEDAY_MILLISEC = 24 * 60 * 60 * 1000;
 
 class Cookie {
-
   static Map<String, String> _readCookie() {
     Map<String, String> cookie = new Map<String, String>();
     String c = document.cookie;
@@ -51,6 +50,3 @@ class Cookie {
     return null;
   }
 }
-
-
-

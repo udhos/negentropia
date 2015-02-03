@@ -1,7 +1,6 @@
 part of shader;
 
 class Instance {
-
   String id;
   Model model;
   double scale;
@@ -82,7 +81,6 @@ class Instance {
   // preload on _undoModelRotation a matrix to
   // undo the model intrinsic local rotation
   void _undoModelRotationFrom(Vector3 modelFront, Vector3 modelUp) {
-
     Vector3 zeroPosition = new Vector3.zero();
 
     // rotation matrix = model matrix = inverse of view matrix
@@ -90,7 +88,6 @@ class Instance {
   }
 
   void setRotationFrom(Vector3 newFront, Vector3 newUp) {
-
     if (inputLock == Keyboard.R) {
       setRotationFromIdentity();
       return;
@@ -129,12 +126,11 @@ class Instance {
   }
 
   void debugLocation([String label = ""]) {
-    log(
-        "$label$this - model: orient[${this.model.debugOrientation()}] - obj: pos[$_center] orient: ${this.getOrientation()}");
+    log("$label$this - model: orient[${this.model.debugOrientation()}] - obj: pos[$_center] orient: ${this.getOrientation()}");
   }
 
-  Instance(this.id, this.model, this._center, this.scale, [this.pickColor =
-      null]) {
+  Instance(this.id, this.model, this._center, this.scale,
+      [this.pickColor = null]) {
     Vector3 modelFront = this.model._front.normalized();
     Vector3 modelUp = this.model._up.normalized();
     _undoModelRotationFrom(modelFront, modelUp);
@@ -143,14 +139,13 @@ class Instance {
         "new instance: $this $id model=${model.modelName} center=$_center ${this.getOrientation()}");
   }
 
-  void update(GameLoopHtml gameLoop) {
-  }
+  void update(GameLoopHtml gameLoop) {}
 
   /**
    * Send this object's full OpenGL view matrix into GPU.
    */
-  void uploadModelView(RenderingContext gl, UniformLocation u_MV, Camera cam,
-      double rescale) {
+  void uploadModelView(
+      RenderingContext gl, UniformLocation u_MV, Camera cam, double rescale) {
 
     /*
       V = View (inverse of camera matrix -- translation and rotation)
@@ -171,28 +166,19 @@ class Instance {
   }
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
-
     RenderingContext gl = prog.gl;
 
     uploadModelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
-    gl.vertexAttribPointer(
-        prog.a_Position,
-        model.vertexPositionBufferItemSize,
-        RenderingContext.FLOAT,
-        false,
-        0,
-        0);
+    gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize,
+        RenderingContext.FLOAT, false, 0, 0);
 
     gl.bindBuffer(
-        RenderingContext.ELEMENT_ARRAY_BUFFER,
-        model.vertexIndexBuffer);
+        RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
 
     model.pieceList.forEach((piece) {
-      gl.drawElements(
-          RenderingContext.TRIANGLES,
-          piece.vertexIndexLength,
+      gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
           RenderingContext.UNSIGNED_SHORT,
           piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });
@@ -209,7 +195,6 @@ class Piece {
 typedef void frontUpCallbackFunc();
 
 class Model {
-
   Buffer vertexPositionBuffer;
   Buffer vertexIndexBuffer;
   final int vertexPositionBufferItemSize = 3; // coord x,y,z
@@ -237,20 +222,15 @@ class Model {
 
   void _createBuffers(RenderingContext gl, List<int> indices,
       List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
-
     vertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
-    gl.bufferDataTyped(
-        RenderingContext.ARRAY_BUFFER,
-        new Float32List.fromList(vertCoord),
-        RenderingContext.STATIC_DRAW);
+    gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER,
+        new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
 
     vertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
-    gl.bufferDataTyped(
-        RenderingContext.ELEMENT_ARRAY_BUFFER,
-        new Uint16List.fromList(indices),
-        RenderingContext.STATIC_DRAW);
+    gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER,
+        new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
 
     // clean-up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -276,8 +256,8 @@ class Model {
   }
   */
 
-  Model.fromJson(RenderingContext gl, this._modelName, String this._objURL,
-      bool reverse) {
+  Model.fromJson(
+      RenderingContext gl, this._modelName, String this._objURL, bool reverse) {
 
     /*
     // load JSON from URL
@@ -302,7 +282,6 @@ class Model {
     */
 
     void handleResponse(String response) {
-
       Map m;
       try {
         m = JSON.decode(response);
@@ -331,7 +310,6 @@ class Model {
   }
 
   void showObjStats(Obj o) {
-
     double min_x = double.INFINITY;
     double min_y = double.INFINITY;
     double min_z = double.INFINITY;
@@ -378,9 +356,7 @@ class Model {
     piecesReady = true;
   }
 
-
-  void saveIndexSize(int indexSize) {
-  }
+  void saveIndexSize(int indexSize) {}
 
   frontUpCallbackFunc frontUpCallback;
 
@@ -392,7 +368,6 @@ class Model {
 
   Model.fromOBJ(RenderingContext gl, this._modelName, this._objURL,
       Vector3 front, Vector3 up) {
-
     log("Model.fromOBJ: model=$modelName URL=$_objURL front=$_front up=$_up");
 
     void handleResponse(String response) {
@@ -401,8 +376,7 @@ class Model {
       _front = front.clone();
       _up = up.clone();
 
-      log(
-          "Model.fromOBJ: handleResponse: model=$modelName URL=$_objURL front=$_front up=$_up");
+      log("Model.fromOBJ: handleResponse: model=$modelName URL=$_objURL front=$_front up=$_up");
 
       if (frontUpCallback != null) {
         frontUpCallback();
@@ -415,11 +389,7 @@ class Model {
       loadObj(gl, obj);
 
       _createBuffers(
-          gl,
-          obj.indices,
-          obj.vertCoord,
-          obj.textCoord,
-          obj.normCoord);
+          gl, obj.indices, obj.vertCoord, obj.textCoord, obj.normCoord);
     }
 
     void handleError(Object err) {
@@ -431,7 +401,6 @@ class Model {
 
   Model.fromGlobe(RenderingContext gl, this._modelName, double radius,
       Vector3 front, Vector3 up) {
-
     _front = front.clone();
     _up = up.clone();
 
@@ -450,20 +419,20 @@ class Model {
 
     // texturized rectangle
     globeIndices = new Uint16List.fromList([0, 1, 2, 0, 2, 3]);
-    globePosCoord = new Float32List.fromList(
-        [
-            -radius,
-            -radius,
-            0.0,
-            radius,
-            -radius,
-            0.0,
-            radius,
-            radius,
-            0.0,
-            -radius,
-            radius,
-            0.0]);
+    globePosCoord = new Float32List.fromList([
+      -radius,
+      -radius,
+      0.0,
+      radius,
+      -radius,
+      0.0,
+      radius,
+      radius,
+      0.0,
+      -radius,
+      radius,
+      0.0
+    ]);
     globeTexCoord =
         new Float32List.fromList([0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0]);
     indexSize = globeIndices.length;
@@ -524,5 +493,4 @@ class Model {
   void update(GameLoopHtml gameLoop) {
     instanceList.forEach((i) => i.update(gameLoop));
   }
-
 }

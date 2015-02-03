@@ -15,9 +15,8 @@ bool contextIsLost() {
   return _lost;
 }
 
-void initHandleLostContext(RenderingContext gl, GameLoopHtml gameLoop, void
-    initContextCall(RenderingContext, GameLoopHtml)) {
-
+void initHandleLostContext(RenderingContext gl, GameLoopHtml gameLoop,
+    void initContextCall(RenderingContext, GameLoopHtml)) {
   _lost = gl.isContextLost();
   assert(_lost != null);
 

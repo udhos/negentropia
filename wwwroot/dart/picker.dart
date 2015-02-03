@@ -5,7 +5,7 @@ void _nextColor(List<double> color) {
 
   int i = 0;
 
-  for ( ; i < 3; ++i) {
+  for (; i < 3; ++i) {
     color[i] += d;
     if (color[i] <= 1.0) {
       break;
@@ -23,20 +23,15 @@ void _nextColor(List<double> color) {
 List<double> _currentPickColor = [0.0, 0.0, 0.0, 1.0];
 
 Float32List generatePickColor() {
-
   _nextColor(_currentPickColor);
 
   bool bgHit = backgroundColorDouble(
-      _currentPickColor[0],
-      _currentPickColor[1],
-      _currentPickColor[2]);
+      _currentPickColor[0], _currentPickColor[1], _currentPickColor[2]);
   if (bgHit) {
     _nextColor(_currentPickColor);
 
     bgHit = backgroundColorDouble(
-        _currentPickColor[0],
-        _currentPickColor[1],
-        _currentPickColor[2]);
+        _currentPickColor[0], _currentPickColor[1], _currentPickColor[2]);
     if (bgHit) {
       err("ugh: generatePickColor: background color: $_currentPickColor");
     }
@@ -54,7 +49,6 @@ PickerInstance mouseClickHit(Iterable<Instance> list, Uint8List color) {
 */
 
 class PickerInstance extends Instance {
-
   PickerInstance(Instance i)
       : super(i.id, i.model, i._center, i.scale, i.pickColor);
 
@@ -68,7 +62,6 @@ class PickerInstance extends Instance {
 }
 
 class PickerShader extends ShaderProgram {
-
   UniformLocation u_Color;
   List<PickerInstance> _instanceList = new List<PickerInstance>();
 
@@ -98,39 +91,24 @@ class PickerShader extends ShaderProgram {
     gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
     //gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
 
-    gl.texImage2DTyped(
-        RenderingContext.TEXTURE_2D,
-        0,
-        RenderingContext.RGBA,
-        width,
-        height,
-        0,
-        RenderingContext.RGBA,
-        RenderingContext.UNSIGNED_BYTE,
+    gl.texImage2DTyped(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA,
+        width, height, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE,
         null);
 
     // 2. Init Render Buffer
     Renderbuffer renderbuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(RenderingContext.RENDERBUFFER, renderbuffer);
-    gl.renderbufferStorage(
-        RenderingContext.RENDERBUFFER,
-        RenderingContext.DEPTH_COMPONENT16,
-        width,
-        height);
+    gl.renderbufferStorage(RenderingContext.RENDERBUFFER,
+        RenderingContext.DEPTH_COMPONENT16, width, height);
 
     // 3. Init Frame Buffer
     framebuffer = gl.createFramebuffer();
     gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, framebuffer);
-    gl.framebufferTexture2D(
-        RenderingContext.FRAMEBUFFER,
-        RenderingContext.COLOR_ATTACHMENT0,
-        RenderingContext.TEXTURE_2D,
-        texture,
-        0);
-    gl.framebufferRenderbuffer(
-        RenderingContext.FRAMEBUFFER,
-        RenderingContext.DEPTH_ATTACHMENT,
-        RenderingContext.RENDERBUFFER,
+    gl.framebufferTexture2D(RenderingContext.FRAMEBUFFER,
+        RenderingContext.COLOR_ATTACHMENT0, RenderingContext.TEXTURE_2D,
+        texture, 0);
+    gl.framebufferRenderbuffer(RenderingContext.FRAMEBUFFER,
+        RenderingContext.DEPTH_ATTACHMENT, RenderingContext.RENDERBUFFER,
         renderbuffer);
 
     // 4. Check Frame Buffer status
@@ -184,7 +162,6 @@ class PickerShader extends ShaderProgram {
   }
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
-
     if (!shaderReady) {
       return;
     }
@@ -209,5 +186,4 @@ class PickerShader extends ShaderProgram {
 
     //gl.disableVertexAttribArray(a_Position); // needed ??
   }
-
 }

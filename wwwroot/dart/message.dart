@@ -28,12 +28,10 @@ void repositionMessagebox(CanvasElement c) {
   _messagebox.style.left = "${left}px";
   _messagebox.style.top = "${top}px";
 
-  log(
-      "repositionMessagebox: left=${_messagebox.style.left} top=${_messagebox.style.top}");
+  log("repositionMessagebox: left=${_messagebox.style.left} top=${_messagebox.style.top}");
 }
 
 DivElement _createMessagebox(String id, CanvasElement c) {
-
   DivElement mbox = new DivElement();
   mbox.id = id;
 
@@ -51,7 +49,6 @@ DivElement _createMessagebox(String id, CanvasElement c) {
 }
 
 void messageUser(String m) {
-
   _msgList.add(m);
 
   while (_msgList.length > _maxList) {

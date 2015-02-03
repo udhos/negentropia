@@ -23,9 +23,8 @@ void pauseKey(bool isDown) {
   _wasDown = isDown; // update status
 }
 
-double interpolateDegree(double angleNew, double angleOld,
-    double interpolationFactor) {
-
+double interpolateDegree(
+    double angleNew, double angleOld, double interpolationFactor) {
   if (paused()) {
     return angleNew;
   }

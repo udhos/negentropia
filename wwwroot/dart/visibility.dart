@@ -20,17 +20,14 @@ bool pageHidden() {
 }
 
 void initPageVisibility(GameLoopHtml gameLoop) {
-
   document.onVisibilityChange.listen((e) {
     bool hidden = pageHidden();
     debug("onVisibilityChange: visibility changed to hidden=$hidden");
     updateGameLoop(gameLoop, contextIsLost(), hidden);
   });
-
 }
 
 void updateGameLoop(GameLoopHtml gameLoop, bool contextLost, bool pageHidden) {
-
   assert(contextLost != null);
   assert(pageHidden != null);
   assert(contextLost is bool);

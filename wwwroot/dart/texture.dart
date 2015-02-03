@@ -8,7 +8,6 @@ import 'anisotropic.dart';
 import 'logg.dart';
 
 class TextureInfo {
-
   String textureName;
   Texture texture;
   List<int> temporaryColor;
@@ -17,37 +16,21 @@ class TextureInfo {
   void loadSolidColor(RenderingContext gl) {
     gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
     gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
-    gl.texImage2DTyped(
-        RenderingContext.TEXTURE_2D,
-        0,
-        RenderingContext.RGBA,
-        1,
-        1,
-        0,
-        RenderingContext.RGBA,
-        RenderingContext.UNSIGNED_BYTE,
+    gl.texImage2DTyped(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, 1,
+        1, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE,
         new Uint8List.fromList(temporaryColor));
-    gl.texParameteri(
-        RenderingContext.TEXTURE_2D,
-        RenderingContext.TEXTURE_MAG_FILTER,
-        RenderingContext.NEAREST);
-    gl.texParameteri(
-        RenderingContext.TEXTURE_2D,
-        RenderingContext.TEXTURE_MIN_FILTER,
-        RenderingContext.NEAREST);
-    gl.texParameteri(
-        RenderingContext.TEXTURE_2D,
-        RenderingContext.TEXTURE_WRAP_S,
-        RenderingContext.CLAMP_TO_EDGE);
-    gl.texParameteri(
-        RenderingContext.TEXTURE_2D,
-        RenderingContext.TEXTURE_WRAP_T,
-        RenderingContext.CLAMP_TO_EDGE);
+    gl.texParameteri(RenderingContext.TEXTURE_2D,
+        RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
+    gl.texParameteri(RenderingContext.TEXTURE_2D,
+        RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.NEAREST);
+    gl.texParameteri(RenderingContext.TEXTURE_2D,
+        RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
+    gl.texParameteri(RenderingContext.TEXTURE_2D,
+        RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
     gl.bindTexture(RenderingContext.TEXTURE_2D, null);
   }
 
   void _loadTexture2D(RenderingContext gl, Map<String, Texture> textureTable) {
-
     assert(texture != null);
 
     ImageElement image = new ImageElement();
@@ -60,36 +43,22 @@ class TextureInfo {
     loadSolidColor(gl);
 
     void onDone(Event e) {
-
       gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
       gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
       //gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, true);
       gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
 
-      gl.texImage2DImage(
-          RenderingContext.TEXTURE_2D,
-          0,
-          RenderingContext.RGBA,
-          RenderingContext.RGBA,
-          RenderingContext.UNSIGNED_BYTE,
-          image);
+      gl.texImage2DImage(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA,
+          RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, image);
 
-      gl.texParameteri(
-          RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_MAG_FILTER,
-          RenderingContext.NEAREST);
-      gl.texParameteri(
-          RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_MIN_FILTER,
-          RenderingContext.NEAREST);
-      gl.texParameteri(
-          RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_WRAP_S,
-          RenderingContext.CLAMP_TO_EDGE);
-      gl.texParameteri(
-          RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_WRAP_T,
-          RenderingContext.CLAMP_TO_EDGE);
+      gl.texParameteri(RenderingContext.TEXTURE_2D,
+          RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
+      gl.texParameteri(RenderingContext.TEXTURE_2D,
+          RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.NEAREST);
+      gl.texParameteri(RenderingContext.TEXTURE_2D,
+          RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
+      gl.texParameteri(RenderingContext.TEXTURE_2D,
+          RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
 
       anisotropic_filtering_enable(gl);
 
@@ -97,19 +66,17 @@ class TextureInfo {
     }
 
     void onError(Event e) {
-      err(
-          "TextureInfo: handleError: failure loading image from URL: $textureName: $e");
+      err("TextureInfo: handleError: failure loading image from URL: $textureName: $e");
     }
 
     // fetch definitive texture
     image
-        ..onLoad.listen(onDone)
-        ..onError.listen(onError)
-        ..src = textureName;
+      ..onLoad.listen(onDone)
+      ..onError.listen(onError)
+      ..src = textureName;
   }
 
   void createTexture(RenderingContext gl, Map<String, Texture> textureTable) {
-
     texture = gl.createTexture();
     if (texture == null) {
       err("TextureInfo: could not create texture for: $textureName");
@@ -125,7 +92,6 @@ class TextureInfo {
   }
 
   void loadTexture(RenderingContext gl, Map<String, Texture> textureTable) {
-
     if (textureName != null) {
       texture = textureTable[textureName];
       if (texture != null) {

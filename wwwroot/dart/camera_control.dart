@@ -22,7 +22,6 @@ double mouseToRadians(int mouse) {
 }
 
 class CameraControl {
-
   int orbitFocusDx = 0;
   int orbitFocusDy = 0;
   int forwardDy = 0;
@@ -48,7 +47,6 @@ class CameraControl {
       cam.moveForward(wheelToDistance(forwardDy));
       forwardDy = 0;
     }
-
   }
 
   void orbitFocus(int dx, int dy) {
@@ -78,6 +76,7 @@ class CameraControl {
         return;
       }
     } else {
+
       // getting away - farthest distance is skybox half edge (minus bounding diameter)
 
       double halfEdge = cam.skyboxHalfEdge;
@@ -103,5 +102,4 @@ class CameraControl {
 
     cam.setForwardDistance(2.0 * getBoundingRadius()); // move to close distance
   }
-
 }

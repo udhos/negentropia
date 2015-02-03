@@ -55,7 +55,6 @@ int mouseDragCurrY = null;
 int fullRateFrames = 0; // periodic rendering
 
 RenderingContext initGL(CanvasElement canvas) {
-
   RenderingContext gl = canvas.getContext3d(preserveDrawingBuffer: false);
   if (gl == null) {
     err("WebGL: initialization failure");
@@ -135,7 +134,6 @@ Instance findInstance(String id) {
 
 void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
     Vector3 up, Vector3 center, String mission) {
-
   switch (i.inputLock) {
     case Keyboard.ONE:
       front = new Vector3(0.0, 0.0, 1.0);
@@ -172,8 +170,8 @@ void updateInstance(Instance i, Instance j, Instance k, Vector3 front,
   }
 }
 
-void updateInstanceById(String id, Vector3 front, Vector3 up, Vector3 center,
-    String mission) {
+void updateInstanceById(
+    String id, Vector3 front, Vector3 up, Vector3 center, String mission) {
   Instance i = findInstance(id);
   if (i == null) {
     err("updateInstanceById: NOT FOUND: id=$id");
@@ -201,12 +199,10 @@ void updateInstanceById(String id, Vector3 front, Vector3 up, Vector3 center,
   updateInstance(i, j, k, front, up, center, mission);
 }
 
-void dispatcher(RenderingContext gl, int code, String data, Map<String,
-    String> tab) {
-
+void dispatcher(
+    RenderingContext gl, int code, String data, Map<String, String> tab) {
   switch (code) {
     case CM_CODE_INFO:
-
       log("dispatcher: server sent info: $data");
 
       if (data.startsWith("welcome")) {
@@ -216,18 +212,13 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         m["Code"] = CM_CODE_ECHO;
         m["Data"] = "hi there";
         */
-        Map m = {
-          "Code": CM_CODE_ECHO,
-          "Data": "hi there"
-        };
+        Map m = {"Code": CM_CODE_ECHO, "Data": "hi there"};
         wsSendMap(m);
       }
       break;
 
     case CM_CODE_ZONE:
-
       if (tab != null) {
-
         String culling = tab['backfaceCulling'];
         if (culling != null) {
           backfaceCulling = culling.toLowerCase().startsWith("t");
@@ -255,7 +246,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         } else {
           err("cameraCoord: parsing failure: camCoord=$camCoord");
         }
-
       }
 
       resetZone(gl);
@@ -266,7 +256,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       break;
 
     case CM_CODE_SKYBOX:
-
       String skyboxURL = tab['skyboxURL'];
 
       void handleResponse(String response) {
@@ -281,7 +270,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       break;
 
     case CM_CODE_PROGRAM:
-
       String programName = tab['programName'];
       TexShaderProgram prog = findTexShader(programName);
       if (prog != null) {
@@ -295,7 +283,6 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       break;
 
     case CM_CODE_INSTANCE:
-
       String id = tab['id'];
       String objURL = tab['objURL'];
       String programName = tab['programName'];
@@ -311,8 +298,10 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         globeRadius = tab['globeRadius'];
         globeTextureURL = tab['globeTextureURL'];
         log("dispatcher: instance: id=$id globeTextureURL=$globeTextureURL");
-        
-        return; // FIXME ///////////////////////////////////////////////////////////////////
+
+        return;
+
+        // FIXME ///////////////////////////////////////////////////////////////////
 
       } else {
         log("dispatcher: instance: id=$id obj=$objURL");
@@ -336,8 +325,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       }
 
       if (!vector3Orthogonal(f, u)) {
-        err(
-            "instance: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
+        err("instance: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
         return;
       }
 
@@ -364,14 +352,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       if (objURL == null) {
         double radius = double.parse(globeRadius);
         model = new TexModel.fromGlobe(
-            gl,
-            id,
-            radius,
-            globeTextureURL,
-            f,
-            u,
-            textureTable,
-            asset);
+            gl, id, radius, globeTextureURL, f, u, textureTable, asset);
       } else {
         model = new TexModel.fromOBJ(gl, id, objURL, f, u, textureTable, asset);
       }
@@ -396,13 +377,11 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       break;
 
     case CM_CODE_INSTANCE_UPDATE:
-
       String id = tab['id'];
       String front = tab['front'];
       String up = tab['up'];
       String coord = tab['coord'];
       String mission = tab['mission'];
-
 
       Vector3 f = parseVector3(front);
       if (f == null) {
@@ -423,8 +402,7 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
       }
 
       if (!vector3Orthogonal(f, u)) {
-        err(
-            "instance update: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
+        err("instance update: id=$id front=$f up=$u vectors are not orthogonal: dot=${f.dot(u)}");
       }
 
       //updateInstance(i, j, k, f, u, c, mission);
@@ -502,9 +480,7 @@ RenderingContext boot() {
 void demoInitSquares(RenderingContext gl) {
   ShaderProgram squareProgram = new ShaderProgram(gl, "clip");
   programList.add(squareProgram);
-  squareProgram.fetch(
-      shaderCache,
-      "${asset.shader}/clip_vs.txt",
+  squareProgram.fetch(shaderCache, "${asset.shader}/clip_vs.txt",
       "${asset.shader}/clip_fs.txt");
   Model squareModel =
       new Model.fromJson(gl, "squareModel", "${asset.mesh}/square.json", false);
@@ -517,13 +493,11 @@ void demoInitSquares(RenderingContext gl) {
   programList.add(squareProgram2);
   // execute after 2 secs, giving time to first program populate shadeCache
   new Timer(new Duration(seconds: 2), () {
-    squareProgram2.fetch(
-        shaderCache,
-        "${asset.shader}/clip_vs.txt",
+    squareProgram2.fetch(shaderCache, "${asset.shader}/clip_vs.txt",
         "${asset.shader}/clip2_fs.txt");
   });
-  Model squareModel2 =
-      new Model.fromJson(gl, "square2Model", "${asset.mesh}/square2.json", false);
+  Model squareModel2 = new Model.fromJson(
+      gl, "square2Model", "${asset.mesh}/square2.json", false);
   squareProgram2.addModel(squareModel2);
   Instance squareInstance2 =
       new Instance('square2', squareModel2, new Vector3(0.0, 0.0, 0.0), 1.0);
@@ -531,12 +505,10 @@ void demoInitSquares(RenderingContext gl) {
 
   ShaderProgram squareProgram3 = new ShaderProgram(gl, "clip3");
   programList.add(squareProgram3);
-  squareProgram3.fetch(
-      shaderCache,
-      "${asset.shader}/clip_vs.txt",
+  squareProgram3.fetch(shaderCache, "${asset.shader}/clip_vs.txt",
       "${asset.shader}/clip3_fs.txt");
-  Model squareModel3 =
-      new Model.fromJson(gl, "square3Model", "${asset.mesh}/square3.json", false);
+  Model squareModel3 = new Model.fromJson(
+      gl, "square3Model", "${asset.mesh}/square3.json", false);
   squareProgram3.addModel(squareModel3);
   Instance squareInstance3 =
       new Instance('square3', squareModel3, new Vector3(0.0, 0.0, 0.0), 1.0);
@@ -549,36 +521,20 @@ void addSkybox(RenderingContext gl, Map<String, String> s) {
   SkyboxModel skyboxModel =
       new SkyboxModel.fromJson(gl, "skyboxModel", s['cube'], true);
   skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X,
-      s['faceRight']);
+      gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X, s['faceRight']);
   skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X,
-      s['faceLeft']);
+      gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X, s['faceLeft']);
   skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y,
-      s['faceUp']);
+      gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y, s['faceUp']);
   skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-      s['faceDown']);
+      gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y, s['faceDown']);
   skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z,
-      s['faceFront']);
+      gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z, s['faceFront']);
   skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z,
-      s['faceBack']);
+      gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z, s['faceBack']);
   skybox.addModel(skyboxModel);
   SkyboxInstance skyboxInstance = new SkyboxInstance(
-      'skybox',
-      skyboxModel,
-      new Vector3(0.0, 0.0, 0.0),
-      skyboxScale,
-      false);
+      'skybox', skyboxModel, new Vector3(0.0, 0.0, 0.0), skyboxScale, false);
   skyboxModel.addInstance(skyboxInstance);
 
   cam.skybox = skyboxInstance;
@@ -586,150 +542,78 @@ void addSkybox(RenderingContext gl, Map<String, String> s) {
 
 void demoInitSkybox(RenderingContext gl) {
   skybox = new SkyboxProgram(gl);
-  skybox.fetch(
-      shaderCache,
-      "${asset.shader}/skybox_vs.txt",
+  skybox.fetch(shaderCache, "${asset.shader}/skybox_vs.txt",
       "${asset.shader}/skybox_fs.txt");
   SkyboxModel skyboxModel = new SkyboxModel.fromJson(
-      gl,
-      "demoSkyboxModel",
-      "${asset.mesh}/cube.json",
-      true);
-  skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X,
+      gl, "demoSkyboxModel", "${asset.mesh}/cube.json", true);
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_X,
       '${asset.texture}/space_rt.jpg');
-  skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X,
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_X,
       '${asset.texture}/space_lf.jpg');
-  skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y,
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y,
       '${asset.texture}/space_up.jpg');
-  skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y,
       '${asset.texture}/space_dn.jpg');
-  skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z,
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z,
       '${asset.texture}/space_fr.jpg');
-  skyboxModel.addCubemapFace(
-      gl,
-      RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+  skyboxModel.addCubemapFace(gl, RenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z,
       '${asset.texture}/space_bk.jpg');
   skybox.addModel(skyboxModel);
   SkyboxInstance skyboxInstance = new SkyboxInstance(
-      'skybox',
-      skyboxModel,
-      new Vector3(0.0, 0.0, 0.0),
-      1.0,
-      true);
+      'skybox', skyboxModel, new Vector3(0.0, 0.0, 0.0), 1.0, true);
   skyboxModel.addInstance(skyboxInstance);
 }
 
 void demoInitAirship(RenderingContext gl) {
   ShaderProgram prog = new ShaderProgram(gl, "simple");
   programList.add(prog);
-  prog.fetch(
-      shaderCache,
-      "${asset.shader}/simple_vs.txt",
+  prog.fetch(shaderCache, "${asset.shader}/simple_vs.txt",
       "${asset.shader}/simple_fs.txt");
-  Model airshipModel = new Model.fromOBJ(
-      gl,
-      "demoAirshipModel",
-      "${asset.obj}/airship.obj",
-      new Vector3.zero(),
-      new Vector3.zero());
+  Model airshipModel = new Model.fromOBJ(gl, "demoAirshipModel",
+      "${asset.obj}/airship.obj", new Vector3.zero(), new Vector3.zero());
   prog.addModel(airshipModel);
-  Instance airshipInstance = new Instance(
-      'airship',
-      airshipModel,
-      new Vector3(-8.0, 0.0, 0.0),
-      1.0,
-      generatePickColor());
+  Instance airshipInstance = new Instance('airship', airshipModel,
+      new Vector3(-8.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel.addInstance(airshipInstance);
 }
 
 void demoInitAirshipTex(RenderingContext gl) {
   TexShaderProgram prog = new TexShaderProgram(gl, "simpleTexturizer");
   programList.add(prog);
-  prog.fetch(
-      shaderCache,
-      "${asset.shader}/simpleTex_vs.txt",
+  prog.fetch(shaderCache, "${asset.shader}/simpleTex_vs.txt",
       "${asset.shader}/simpleTex_fs.txt");
 
   String objURL = "${asset.obj}/airship.obj";
 
-  TexModel airshipModel = new TexModel.fromOBJ(
-      gl,
-      "demoAirshipTexModel",
-      objURL,
-      new Vector3.zero(),
-      new Vector3.zero(),
-      textureTable,
-      asset);
+  TexModel airshipModel = new TexModel.fromOBJ(gl, "demoAirshipTexModel",
+      objURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset);
   prog.addModel(airshipModel);
-  TexInstance airshipInstance = new TexInstance(
-      'airship',
-      airshipModel,
-      new Vector3(0.0, 0.0, 0.0),
-      1.0,
-      generatePickColor());
+  TexInstance airshipInstance = new TexInstance('airship', airshipModel,
+      new Vector3(0.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel.addInstance(airshipInstance);
 
-  TexModel airshipModel2 = new TexModel.fromOBJ(
-      gl,
-      "demoAirship2TexModel",
-      objURL,
-      new Vector3.zero(),
-      new Vector3.zero(),
-      textureTable,
-      asset);
+  TexModel airshipModel2 = new TexModel.fromOBJ(gl, "demoAirship2TexModel",
+      objURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset);
   prog.addModel(airshipModel2);
-  TexInstance airshipInstance2 = new TexInstance(
-      'airship2',
-      airshipModel2,
-      new Vector3(8.0, 0.0, 0.0),
-      1.0,
-      generatePickColor());
+  TexInstance airshipInstance2 = new TexInstance('airship2', airshipModel2,
+      new Vector3(8.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel2.addInstance(airshipInstance2);
 
   String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";
-  TexModel colonyShipModel = new TexModel.fromOBJ(
-      gl,
-      "demoColonyshipTexModel",
-      colonyShipURL,
-      new Vector3.zero(),
-      new Vector3.zero(),
-      textureTable,
+  TexModel colonyShipModel = new TexModel.fromOBJ(gl, "demoColonyshipTexModel",
+      colonyShipURL, new Vector3.zero(), new Vector3.zero(), textureTable,
       asset);
   prog.addModel(colonyShipModel);
-  TexInstance colonyShipInstance = new TexInstance(
-      'colonyShip',
-      colonyShipModel,
-      new Vector3(0.0, -5.0, -50.0),
-      1.0,
-      generatePickColor());
+  TexInstance colonyShipInstance = new TexInstance('colonyShip',
+      colonyShipModel, new Vector3(0.0, -5.0, -50.0), 1.0, generatePickColor());
   colonyShipModel.addInstance(colonyShipInstance);
 
   String coneURL = "${asset.obj}/cone.obj";
-  TexModel coneModel = new TexModel.fromOBJ(
-      gl,
-      "demoConeTexModel",
-      coneURL,
-      new Vector3.zero(),
-      new Vector3.zero(),
-      textureTable,
-      asset);
+  TexModel coneModel = new TexModel.fromOBJ(gl, "demoConeTexModel", coneURL,
+      new Vector3.zero(), new Vector3.zero(), textureTable, asset);
   prog.addModel(coneModel);
-  TexInstance coneInstance = new TexInstance(
-      'cone',
-      coneModel,
-      new Vector3(0.0, 2.0, -10.0),
-      1.0,
-      generatePickColor());
+  TexInstance coneInstance = new TexInstance('cone', coneModel,
+      new Vector3(0.0, 2.0, -10.0), 1.0, generatePickColor());
   coneModel.addInstance(coneInstance);
 }
 
@@ -740,25 +624,19 @@ void demoInitShips(RenderingContext gl) {
 
 void addPicker(RenderingContext gl) {
   picker = new PickerShader(gl, programList, gl.canvas.width, gl.canvas.height);
-  picker.fetch(
-      shaderCache,
-      "${asset.shader}/picker_vs.txt",
+  picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt",
       "${asset.shader}/picker_fs.txt");
 }
 
 void demoInitPicker(RenderingContext gl) {
   picker = new PickerShader(gl, programList, gl.canvas.width, gl.canvas.height);
-  picker.fetch(
-      shaderCache,
-      "${asset.shader}/picker_vs.txt",
+  picker.fetch(shaderCache, "${asset.shader}/picker_vs.txt",
       "${asset.shader}/picker_fs.txt");
 }
 
 void addSolidShader(RenderingContext gl) {
   solidShader = new SolidShader(gl, programList);
-  solidShader.fetch(
-      shaderCache,
-      "${asset.shader}/uniformColor_vs.txt",
+  solidShader.fetch(shaderCache, "${asset.shader}/uniformColor_vs.txt",
       "${asset.shader}/uniformColor_fs.txt");
 }
 
@@ -785,7 +663,6 @@ void clearColor(RenderingContext gl, double r, g, b, a) {
 }
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
-
   requestZone();
 
   clearColor(gl, 0.5, 0.5, 0.5, 1.0);
@@ -823,9 +700,9 @@ void regularDraw(RenderingContext gl, GameLoopHtml gameLoop) {
     solidShader.drawModels(gameLoop, cam, pMatrix);
   }
   if (programList != null) {
-    programList.where(
-        (p) =>
-            !p.modelList.isEmpty).forEach((p) => p.drawModels(gameLoop, cam, pMatrix));
+    programList
+        .where((p) => !p.modelList.isEmpty)
+        .forEach((p) => p.drawModels(gameLoop, cam, pMatrix));
   }
   if (skybox != null) {
     skybox.drawModels(gameLoop, cam, pMatrix);
@@ -845,11 +722,7 @@ void setPerspective() {
   //
   // aspect = canvas.width / canvas.height
   setPerspectiveMatrix(
-      pMatrix,
-      fieldOfViewYRadians,
-      canvasAspect,
-      planeNear,
-      planeFar);
+      pMatrix, fieldOfViewYRadians, canvasAspect, planeNear, planeFar);
 }
 
 void draw(RenderingContext gl, GameLoopHtml gameLoop) {
@@ -906,13 +779,7 @@ void readColor(String label, RenderingContext gl, int x, int y,
     Framebuffer framebuffer, Uint8List color) {
   gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, framebuffer);
   gl.readPixels(
-      x,
-      y,
-      1,
-      1,
-      RenderingContext.RGBA,
-      RenderingContext.UNSIGNED_BYTE,
-      color);
+      x, y, 1, 1, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, color);
 }
 
 DivElement dragBox;
@@ -940,7 +807,6 @@ void deleteBandSelectionBox(RenderingContext gl, bool shift) {
 }
 
 void createBandSelectionBox(RenderingContext gl) {
-
   assert(canvasbox != null);
 
   if (dragBox == null) {
@@ -991,7 +857,6 @@ void viewportGrow(RenderingContext gl) {
 }
 
 PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
-
   if (picker == null) {
     err("mouseLeftClick: picker not available");
     return null;
@@ -1008,7 +873,6 @@ PickerInstance mouseLeftClick(RenderingContext gl, Mouse m) {
 }
 
 void setRotationLock(String id, int num) {
-
   log("setRotationLock: locking identity rotation: $id");
 
   // update debug axis
@@ -1028,7 +892,6 @@ void setRotationLock(String id, int num) {
       k.inputLock = num;
     }
   }
-
 }
 
 void checkInputLock(Keyboard k, int num) {
@@ -1212,8 +1075,7 @@ void checkAntialias(RenderingContext gl) {
   ContextAttributes attr = gl.getContextAttributes();
 
   if (attr == null) {
-    err(
-        "ugh: gl.getContextAttributes() returned null -- gl.isContextLost() is ${gl.isContextLost()}");
+    err("ugh: gl.getContextAttributes() returned null -- gl.isContextLost() is ${gl.isContextLost()}");
     err("antialias: UNKNOWN");
   } else if (attr is! ContextAttributes) {
     err("ugh: gl.getContextAttributes() returned non-ContextAttributes: $attr");

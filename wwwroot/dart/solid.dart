@@ -1,7 +1,6 @@
 part of shader;
 
 class AxisInstance extends Instance {
-
   static final Float32List red = new Float32List.fromList([1.0, 0.0, 0.0, 1.0]);
   static final Float32List green =
       new Float32List.fromList([0.0, 1.0, 0.0, 1.0]);
@@ -15,7 +14,6 @@ class AxisInstance extends Instance {
       : super(id, am, i._center, i.scale);
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
-
     if (!(model as AxisModel)._axisReady) {
       return;
     }
@@ -25,17 +23,11 @@ class AxisInstance extends Instance {
     uploadModelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, model.vertexPositionBuffer);
-    gl.vertexAttribPointer(
-        prog.a_Position,
-        model.vertexPositionBufferItemSize,
-        RenderingContext.FLOAT,
-        false,
-        0,
-        0);
+    gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize,
+        RenderingContext.FLOAT, false, 0, 0);
 
     gl.bindBuffer(
-        RenderingContext.ELEMENT_ARRAY_BUFFER,
-        model.vertexIndexBuffer);
+        RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
 
     Piece p;
 
@@ -44,35 +36,27 @@ class AxisInstance extends Instance {
     // draw front/red arrow
     gl.uniform4fv((prog as SolidShader).u_Color, red);
     p = model.pieceList[0];
-    gl.drawElements(
-        RenderingContext.LINES,
-        p.vertexIndexLength,
+    gl.drawElements(RenderingContext.LINES, p.vertexIndexLength,
         RenderingContext.UNSIGNED_SHORT,
         p.vertexIndexOffset * model.vertexIndexBufferItemSize);
 
     // draw up/green arrow
     gl.uniform4fv((prog as SolidShader).u_Color, green);
     p = model.pieceList[1];
-    gl.drawElements(
-        RenderingContext.LINES,
-        p.vertexIndexLength,
+    gl.drawElements(RenderingContext.LINES, p.vertexIndexLength,
         RenderingContext.UNSIGNED_SHORT,
         p.vertexIndexOffset * model.vertexIndexBufferItemSize);
 
     // draw right/blue arrow
     gl.uniform4fv((prog as SolidShader).u_Color, blue);
     p = model.pieceList[2];
-    gl.drawElements(
-        RenderingContext.LINES,
-        p.vertexIndexLength,
+    gl.drawElements(RenderingContext.LINES, p.vertexIndexLength,
         RenderingContext.UNSIGNED_SHORT,
         p.vertexIndexOffset * model.vertexIndexBufferItemSize);
   }
-
 }
 
 class AxisModel extends Model {
-
   bool _axisReady = false;
 
   void _push(List<double> d, List<int> i, double x, double y, double z) {
@@ -85,7 +69,6 @@ class AxisModel extends Model {
 
   AxisModel(RenderingContext gl, Vector3 front, Vector3 up, Vector3 right)
       : super.init() {
-
     List<int> indices = new List<int>();
     List<double> vertCoord = new List<double>();
 
@@ -117,7 +100,6 @@ class AxisModel extends Model {
   }
 
   AxisModel.fromModel(RenderingContext gl, Model m) : super.init() {
-
     debug("AxisModel: creating from model=${m._objURL}");
 
     List<int> indices = new List<int>();
@@ -161,7 +143,6 @@ class AxisModel extends Model {
 }
 
 class SolidShader extends ShaderProgram {
-
   static final Vector3 FRONT = new Vector3(1.0, 0.0, 0.0);
   static final Vector3 UP = new Vector3(0.0, 1.0, 0.0);
   static final Vector3 RIGHT = new Vector3(0.0, 0.0, 1.0);
@@ -183,8 +164,7 @@ class SolidShader extends ShaderProgram {
   void _loadDebugOrigin(RenderingContext gl) {
     double scale = 200.0;
     Vector3 origin = new Vector3.zero();
-    log(
-        "SolidShader._loadDebugOrigin: creating {$scale}-meter xyz debug marker at origin $origin");
+    log("SolidShader._loadDebugOrigin: creating {$scale}-meter xyz debug marker at origin $origin");
     AxisModel m = new AxisModel(gl, FRONT, UP, RIGHT);
     AxisInstance i = new AxisInstance("origin", m, origin, scale);
     i.setRotationFromIdentity(); // do not rotate this
@@ -193,7 +173,6 @@ class SolidShader extends ShaderProgram {
 
   SolidShader(RenderingContext gl, List<ShaderProgram> programList)
       : super(gl, "solidShader") {
-
     _loadDebugOrigin(gl);
 
     // copy clickable instances
@@ -220,7 +199,6 @@ class SolidShader extends ShaderProgram {
 
     debug(
         "SolidShader: ${instanceList.length} axis instances have been created");
-
   }
 
   void getLocations() {
@@ -232,7 +210,6 @@ class SolidShader extends ShaderProgram {
   }
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
-
     if (!shaderReady) {
       return;
     }
@@ -248,6 +225,4 @@ class SolidShader extends ShaderProgram {
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
   }
-
 }
-

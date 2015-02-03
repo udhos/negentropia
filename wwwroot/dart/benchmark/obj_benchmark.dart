@@ -35,9 +35,7 @@ class MtlBenchmark extends BenchmarkBase {
 }
 
 void main() {
-
   void fetchMtl(String URL) {
-
     void done(String response) {
       mtlURL = URL;
       mtlString = response;
@@ -50,7 +48,6 @@ void main() {
   }
 
   void fetchObj(String URL) {
-
     void done(String response) {
       objURL = URL;
       objString = response;

@@ -15,6 +15,9 @@ call %DEVEL%\negentropia\win-gotest.cmd
 @rem build go servers
 call %DEVEL%\negentropia\win-goinstall.cmd
 
+@rem format dart code
+call %DEVEL%\negentropia\win-dartformat.cmd
+
 @rem build dart client
 set NEG_DART_SDK=%DART_SDK%
 set NEG_DART_SRC=%DEVEL%\negentropia\wwwroot\dart
