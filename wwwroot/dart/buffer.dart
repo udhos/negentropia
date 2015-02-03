@@ -460,10 +460,14 @@ class Model {
 
     saveIndexSize(indexSize);
 
+    int vertexCount1 = globePosCoord.length.toInt() ~/ 3;
+    int vertexCount2 = globeTexCoord.length.toInt() ~/ 2;
+
+    log("globe vertexCount=${vertexCount1} vertexCount=${vertexCount2}");
     log("globe indexSize=$indexSize");
     log("globe indices: size=${globeIndices.length} $globeIndices");
-    log("globe positions: size=${globePosCoord.length} $globePosCoord");
-    log("globe tex coord: size=${globeTexCoord.length} $globeTexCoord");
+    log("globe positions: size=${globePosCoord.length} (3 * $vertexCount1) $globePosCoord");
+    log("globe tex coord: size=${globeTexCoord.length} (2 * $vertexCount1) $globeTexCoord");
 
     _createBuffers(gl, globeIndices, globePosCoord, globeTexCoord, null);
   }
