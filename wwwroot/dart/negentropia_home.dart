@@ -28,7 +28,7 @@ import 'wheel.dart';
 import 'fullscreen.dart';
 
 bool debugLostContext = true;
-List<ShaderProgram> programList;
+List<ShaderProgram> programList = new List<ShaderProgram>();
 Map<String, Shader> shaderCache;
 Map<String, Texture> textureTable;
 Matrix4 pMatrix = new Matrix4.zero();
@@ -311,9 +311,9 @@ void dispatcher(RenderingContext gl, int code, String data, Map<String,
         globeRadius = tab['globeRadius'];
         globeTextureURL = tab['globeTextureURL'];
         log("dispatcher: instance: id=$id globeTextureURL=$globeTextureURL");
-        
+
         return; // FIXME ///////////////////////////////////////////////////////////////////
-        
+
       } else {
         log("dispatcher: instance: id=$id obj=$objURL");
       }

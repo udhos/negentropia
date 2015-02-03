@@ -374,10 +374,10 @@ class Model {
     piecesReady = true;
   }
 
-  
+
   void saveIndexSize(int indexSize) {
-    }
-  
+  }
+
   frontUpCallbackFunc frontUpCallback;
 
   void callWhenFrontUpDone(frontUpCallbackFunc callback) {
@@ -438,6 +438,19 @@ class Model {
     }
 
     // generateGeometry
+
+    Uint16List globeIndices;
+    Float32List globePosCoord;
+    Float32List globeTexCoord;
+    int indexSize;
+
+    globeIndices = new Uint16List.fromList([0, 1, 2, 0, 2, 3]);
+    globePosCoord = new Float32List.fromList(
+        [-radius, -radius, 0.0, radius, -radius, 0.0, radius, radius, 0.0, -radius, radius, 0.0]);
+    globeTexCoord = new Float32List.fromList([0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0]);
+    indexSize = globeIndices.length;
+
+    /*
     SphereGenerator gen = new SphereGenerator();
     MeshGeometry geo = gen.createSphere(
         radius,
@@ -445,20 +458,9 @@ class Model {
             texCoords: false,
             normals: false,
             tangents: false));
-
-    Uint16List globeIndices;
-    Float32List globePosCoord;
-    Float32List globeTexCoord;
-
-    globeIndices = new Uint16List.fromList([0, 1, 2]);
-    globePosCoord = new Float32List.fromList([-radius, -radius, 0.0, radius, -radius, 0.0, radius, radius, 0.0]);
-    globeTexCoord = new Float32List.fromList([0.0, 0.0, 1.0, 0.0, 1.0, 1.0]);
     
-    int indexSize = globeIndices.length;
-    saveIndexSize(indexSize);
-    
-    /*
     globeIndices = geo.indices;
+    indexSize = globeIndices.length;
 
     Vector3List posCoordList = new Vector3List(indexSize);
     Vector2List texCoordList = new Vector2List(indexSize);
@@ -468,12 +470,14 @@ class Model {
     globePosCoord = posCoordList.buffer;
     globeTexCoord = texCoordList.buffer;
      */
+
+    saveIndexSize(indexSize);
     
     log("globe indexSize=$indexSize");
     log("globe indices: size=${globeIndices.length} $globeIndices");
     log("globe positions: size=${globePosCoord.length} $globePosCoord");
     log("globe tex coord: size=${globeTexCoord.length} $globeTexCoord");
-    
+
     _createBuffers(gl, globeIndices, globePosCoord, globeTexCoord, null);
   }
 

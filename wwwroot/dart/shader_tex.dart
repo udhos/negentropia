@@ -71,7 +71,7 @@ class TexModel extends Model {
       List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
 
     assert(!modelReady);
-    
+
     log("TexModel._createBuffers model=$modelName");
 
     textureCoordBuffer = gl.createBuffer();
@@ -157,11 +157,11 @@ class TexModel extends Model {
       : super.fromGlobe(gl, name, radius, front, up) {
 
     log(
-        "TexModel.fromGlobe: model=$modelName tex=$textureURL front=$_front up=$_up");   
+        "TexModel.fromGlobe: model=$modelName tex=$textureURL front=$_front up=$_up");
 
     assert(!piecesReady);
     assert(pieceList.length == 0);
-    
+
     List<int> temporaryColor = [127, 127, 127, 255];
 
     TextureInfo texInfo =
@@ -170,19 +170,22 @@ class TexModel extends Model {
     assert(globeIndexSize != null);
     assert(globeIndexSize > 0);
     addTexture(0, globeIndexSize, texInfo);
-    
+
     assert(pieceList.length == 1);
     assert(pieceList.first is TexPiece);
     assert((pieceList.first as TexPiece).texInfo != null);
     assert((pieceList.first as TexPiece).texInfo == texInfo);
-    
+
     piecesReady = true;
 
     //DEBUG:
     TexPiece tp = pieceList.first as TexPiece;
-    log("TexModel.fromGlobe vertexPositionBufferItemSize=$vertexPositionBufferItemSize");
-    log("TexModel.fromGlobe textureCoordBufferItemSize=$textureCoordBufferItemSize");
-    log("TexModel.fromGlobe vertexIndexBufferItemSize=$vertexIndexBufferItemSize");
+    log(
+        "TexModel.fromGlobe vertexPositionBufferItemSize=$vertexPositionBufferItemSize");
+    log(
+        "TexModel.fromGlobe textureCoordBufferItemSize=$textureCoordBufferItemSize");
+    log(
+        "TexModel.fromGlobe vertexIndexBufferItemSize=$vertexIndexBufferItemSize");
     log("TexModel.fromGlobe piece vertexIndexOffset=${tp.vertexIndexOffset}");
     log("TexModel.fromGlobe piece vertexIndexLength=${tp.vertexIndexLength}");
   }

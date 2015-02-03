@@ -20,7 +20,7 @@
 @rem add instance list to zone
 %REDIS_BIN% hset z:0 instanceList l:0
 %REDIS_BIN% del l:0
-%REDIS_BIN% sadd l:0 m:0 m:1 m:2 m:3 m:4 m:5 m:6
+%REDIS_BIN% sadd l:0 m:0 m:1 m:2 m:3 m:4 m:5 m:6 m:7
 
 @rem add object/model o:airship
 %REDIS_BIN% hset o:airship objURL /obj/airship.obj
@@ -46,6 +46,12 @@
 %REDIS_BIN% hset o:bigearth programName p:simpleTexturizer
 %REDIS_BIN% hset o:bigearth modelFront 200.0,0.0,0.0
 %REDIS_BIN% hset o:bigearth modelUp 0.0,200.0,0.0
+
+@rem add object/model o:red_box
+%REDIS_BIN% hset o:red_box objURL /obj/red_cube.obj
+%REDIS_BIN% hset o:red_box programName p:simpleTexturizer
+%REDIS_BIN% hset o:red_box modelFront 10.0,0.0,0.0
+%REDIS_BIN% hset o:red_box modelUp 0.0,10.0,0.0
 
 @rem create instance
 %REDIS_BIN% hset m:0 obj o:airship
@@ -89,8 +95,13 @@
 
 @rem create instance
 %REDIS_BIN% hset m:6 obj o:bigearth
-%REDIS_BIN% hset m:6 coord 500.0,500.0,-500.0
+%REDIS_BIN% hset m:6 coord 100.0,100.0,-400.0
 %REDIS_BIN% hset m:6 scale 1.0
+
+@rem create instance
+%REDIS_BIN% hset m:7 obj o:red_box
+%REDIS_BIN% hset m:7 coord -10.0,10.0,-20.0
+%REDIS_BIN% hset m:7 scale 1.0
 
 @rem add zone ------------------------------------------------------------
 
