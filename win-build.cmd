@@ -22,6 +22,7 @@ call %DEVEL%\negentropia\win-dartformat.cmd
 set NEG_DART_SDK=%DART_SDK%
 set NEG_DART_SRC=%DEVEL%\negentropia\wwwroot\dart
 set OLD_CD=%CD%
+@echo on
 cd %NEG_DART_SRC%
 call %NEG_DART_SDK%\bin\pub get
 @echo on

@@ -299,9 +299,7 @@ void dispatcher(
         globeTextureURL = tab['globeTextureURL'];
         log("dispatcher: instance: id=$id globeTextureURL=$globeTextureURL");
 
-        return;
-
-        // FIXME ///////////////////////////////////////////////////////////////////
+        return; // FIXME ///////////////////////////////////////////////////////////////////
 
       } else {
         log("dispatcher: instance: id=$id obj=$objURL");

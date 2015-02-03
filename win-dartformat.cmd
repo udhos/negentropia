@@ -15,6 +15,7 @@ set NEG_DART_SRC=%DEVEL%\negentropia\wwwroot\dart
 call %DART_SDK%\bin\pub global activate dart_style
 set PATH=%PATH%;%DART_SDK%\bin
 echo PATH=%PATH%
+@echo on
 %APPDATA%\pub\cache\bin\dartformat -w %NEG_DART_SRC%
 
 @rem eof
