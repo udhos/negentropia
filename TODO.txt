@@ -1,5 +1,9 @@
 TODO
 
+0. remove textureUnit code
+   because we don't need to sample multiple textures
+   on a single shader pass
+
 1. put a big planet on zone z:0
 
 2. put a terrain vehicle (car) on big planet surface

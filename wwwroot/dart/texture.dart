@@ -14,8 +14,11 @@ class TextureInfo {
   int textureUnit;
 
   void loadSolidColor(RenderingContext gl) {
-    gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
+
+    // bind textureUnit to texture
+    //gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
     gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
+
     gl.texImage2DTyped(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, 1,
         1, 0, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE,
         new Uint8List.fromList(temporaryColor));
@@ -27,6 +30,7 @@ class TextureInfo {
         RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
     gl.texParameteri(RenderingContext.TEXTURE_2D,
         RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
+    
     gl.bindTexture(RenderingContext.TEXTURE_2D, null);
   }
 
@@ -43,13 +47,19 @@ class TextureInfo {
     loadSolidColor(gl);
 
     void onDone(Event e) {
-      gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
+
+      // bind textureUnit to texture
+      //gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
       gl.bindTexture(RenderingContext.TEXTURE_2D, texture);
+
       //gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, true);
       gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 1);
 
       gl.texImage2DImage(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA,
           RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, image);
+      
+      // undo flip Y otherwise it could affect other texImage calls
+      gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 0);
 
       gl.texParameteri(RenderingContext.TEXTURE_2D,
           RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);

@@ -49,7 +49,7 @@ class TexModel extends Model {
   final int textureCoordBufferItemSize = 2; // coord s,t
   Asset asset;
   Map<String, Texture> textureTable;
-  final int textureUnit = 1;
+  final int textureUnit = 0;
   int globeIndexSize;
 
   /*
@@ -222,11 +222,15 @@ class TexInstance extends Instance {
       TexPiece tp = pi as TexPiece;
       TextureInfo ti = tp.texInfo;
 
-      // set texture sampler
       int unit = (model as TexModel).textureUnit;
-      gl.activeTexture(RenderingContext.TEXTURE0 + unit);
+
+      // bind unit to texture
+      //gl.activeTexture(RenderingContext.TEXTURE0 + unit);
       gl.bindTexture(RenderingContext.TEXTURE_2D, ti.texture);
-      gl.uniform1i((prog as TexShaderProgram).u_Sampler, unit);
+
+      // set sampler to use texture assigned to unit
+      //gl.uniform1i((prog as TexShaderProgram).u_Sampler, unit);
+      gl.uniform1i((prog as TexShaderProgram).u_Sampler, 0);
 
       gl.drawElements(RenderingContext.TRIANGLES, tp.vertexIndexLength,
           RenderingContext.UNSIGNED_SHORT,

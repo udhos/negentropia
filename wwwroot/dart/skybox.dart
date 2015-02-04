@@ -59,7 +59,7 @@ class SkyboxProgram extends ShaderProgram {
 class SkyboxModel extends Model {
   Texture cubemapTexture;
   bool cubemapReady = false;
-  final int textureUnit = 2;
+  final int textureUnit = 0;
 
   double get halfEdge => 1.0;
 
@@ -73,8 +73,11 @@ class SkyboxModel extends Model {
     ImageElement image = new ImageElement();
 
     void handleDone(Event e) {
-      gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
+
+      // bind texture cubemapTexture to unit textureUnit
+      //gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
+
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
           RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
       gl.texParameteri(RenderingContext.TEXTURE_CUBE_MAP,
@@ -112,9 +115,13 @@ class SkyboxModel extends Model {
 
     RenderingContext gl = program.gl;
 
-    gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
+    // bind textureUnit to cubemapTexture
+    //gl.activeTexture(RenderingContext.TEXTURE0 + textureUnit);
     gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, cubemapTexture);
-    gl.uniform1i((program as SkyboxProgram).u_Skybox, textureUnit);
+
+    // set sampler to use texture assigned to textureUnit
+    //gl.uniform1i((program as SkyboxProgram).u_Skybox, textureUnit);
+    gl.uniform1i((program as SkyboxProgram).u_Skybox, 0);
 
     instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
 
@@ -168,6 +175,9 @@ class SkyboxInstance extends Instance {
         RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
 
     model.pieceList.forEach((piece) {
+      
+      //gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, (model as SkyboxModel).cubemapTexture);
+      
       gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
           RenderingContext.UNSIGNED_SHORT,
           piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
