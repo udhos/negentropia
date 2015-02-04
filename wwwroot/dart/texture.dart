@@ -30,7 +30,7 @@ class TextureInfo {
         RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
     gl.texParameteri(RenderingContext.TEXTURE_2D,
         RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
-    
+
     gl.bindTexture(RenderingContext.TEXTURE_2D, null);
   }
 
@@ -57,7 +57,7 @@ class TextureInfo {
 
       gl.texImage2DImage(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA,
           RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, image);
-      
+
       // undo flip Y otherwise it could affect other texImage calls
       gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 0);
 

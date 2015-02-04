@@ -58,7 +58,7 @@ class SkyboxProgram extends ShaderProgram {
 
 class SkyboxModel extends Model {
   Texture cubemapTexture;
-  bool cubemapReady = false;
+  int cubemapFaces = 0;
   final int textureUnit = 0;
 
   double get halfEdge => 1.0;
@@ -95,7 +95,7 @@ class SkyboxModel extends Model {
 
       gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, null);
 
-      cubemapReady = true;
+      ++cubemapFaces;
     }
 
     void handleError(Event e) {
@@ -109,7 +109,7 @@ class SkyboxModel extends Model {
   }
 
   void drawInstances(GameLoopHtml gameLoop, ShaderProgram program, Camera cam) {
-    if (!modelReady || !cubemapReady) {
+    if (!modelReady || cubemapFaces < 6) {
       return;
     }
 
@@ -175,9 +175,9 @@ class SkyboxInstance extends Instance {
         RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
 
     model.pieceList.forEach((piece) {
-      
+
       //gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, (model as SkyboxModel).cubemapTexture);
-      
+
       gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
           RenderingContext.UNSIGNED_SHORT,
           piece.vertexIndexOffset * model.vertexIndexBufferItemSize);

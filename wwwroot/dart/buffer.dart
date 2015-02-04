@@ -417,7 +417,8 @@ class Model {
     Float32List globeTexCoord;
     int indexSize;
 
-    // texturized rectangle
+    /*
+    // texturized rectangle - begin
     globeIndices = new Uint16List.fromList([0, 1, 2, 0, 2, 3]);
     globePosCoord = new Float32List.fromList([
       -radius,
@@ -436,15 +437,14 @@ class Model {
     globeTexCoord =
         new Float32List.fromList([0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0]);
     indexSize = globeIndices.length;
+    // texturized rectangle - end
+     */
 
-    /*
+    // globe begin
     SphereGenerator gen = new SphereGenerator();
-    MeshGeometry geo = gen.createSphere(
-        radius,
+    MeshGeometry geo = gen.createSphere(radius,
         flags: new GeometryGeneratorFlags(
-            texCoords: false,
-            normals: false,
-            tangents: false));
+            texCoords: false, normals: false, tangents: false));
 
     globeIndices = geo.indices;
     indexSize = globeIndices.length;
@@ -456,7 +456,7 @@ class Model {
 
     globePosCoord = posCoordList.buffer;
     globeTexCoord = texCoordList.buffer;
-     */
+    // globe end
 
     saveIndexSize(indexSize);
 
