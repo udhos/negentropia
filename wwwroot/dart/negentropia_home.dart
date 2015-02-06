@@ -26,6 +26,7 @@ import 'selection.dart';
 import 'message.dart';
 import 'wheel.dart';
 import 'fullscreen.dart';
+import 'texture.dart';
 
 bool debugLostContext = true;
 List<ShaderProgram> programList = new List<ShaderProgram>();
@@ -671,6 +672,9 @@ void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   setViewport(gl, gl.canvas.width, gl.canvas.height);
 
   updateCulling(gl);
+
+  // set default texture unit
+  gl.activeTexture(RenderingContext.TEXTURE0 + defaultTextureUnit);
 
   if (fullRateFrames > 0) {
     log("firing $fullRateFrames frames at full rate");

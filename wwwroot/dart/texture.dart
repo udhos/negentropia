@@ -7,6 +7,8 @@ import 'dart:typed_data';
 import 'anisotropic.dart';
 import 'logg.dart';
 
+int defaultTextureUnit = 0;
+
 class TextureInfo {
   String textureName;
   Texture texture;

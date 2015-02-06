@@ -222,7 +222,7 @@ class TexInstance extends Instance {
       TexPiece tp = pi as TexPiece;
       TextureInfo ti = tp.texInfo;
 
-      int unit = (model as TexModel).textureUnit;
+      //int unit = (model as TexModel).textureUnit;
 
       // bind unit to texture
       //gl.activeTexture(RenderingContext.TEXTURE0 + unit);
@@ -230,7 +230,7 @@ class TexInstance extends Instance {
 
       // set sampler to use texture assigned to unit
       //gl.uniform1i((prog as TexShaderProgram).u_Sampler, unit);
-      gl.uniform1i((prog as TexShaderProgram).u_Sampler, 0);
+      gl.uniform1i((prog as TexShaderProgram).u_Sampler, defaultTextureUnit);
 
       gl.drawElements(RenderingContext.TRIANGLES, tp.vertexIndexLength,
           RenderingContext.UNSIGNED_SHORT,

@@ -16,4 +16,6 @@ TODO
 
 6. make units to cross the zone gates
 
+7. add smooth shader
+
 END

@@ -20,7 +20,7 @@
 @rem add instance list to zone
 %REDIS_BIN% hset z:0 instanceList l:0
 %REDIS_BIN% del l:0
-%REDIS_BIN% sadd l:0 m:0 m:1 m:2 m:3 m:4 m:5 m:6 m:7
+%REDIS_BIN% sadd l:0 m:0 m:1 m:2 m:3 m:4 m:5 m:6 m:7 m:car1
 
 @rem add object/model o:airship
 %REDIS_BIN% hset o:airship objURL /obj/airship.obj
@@ -52,6 +52,12 @@
 %REDIS_BIN% hset o:red_box programName p:simpleTexturizer
 %REDIS_BIN% hset o:red_box modelFront 10.0,0.0,0.0
 %REDIS_BIN% hset o:red_box modelUp 0.0,10.0,0.0
+
+@rem add object/model o:car
+%REDIS_BIN% hset o:car objURL /obj/mustang_impala.obj
+%REDIS_BIN% hset o:car programName p:simpleTexturizer
+%REDIS_BIN% hset o:car modelFront 10.0,0.0,0.0
+%REDIS_BIN% hset o:car modelUp 0.0,10.0,0.0
 
 @rem create instance
 %REDIS_BIN% hset m:0 obj o:airship
@@ -102,6 +108,11 @@
 %REDIS_BIN% hset m:7 obj o:red_box
 %REDIS_BIN% hset m:7 coord -10.0,10.0,-20.0
 %REDIS_BIN% hset m:7 scale 1.0
+
+@rem create instance
+%REDIS_BIN% hset m:car1 obj o:car
+%REDIS_BIN% hset m:car1 coord -10.0,0.0,-20.0
+%REDIS_BIN% hset m:car1 scale 1.0
 
 @rem add zone ------------------------------------------------------------
 

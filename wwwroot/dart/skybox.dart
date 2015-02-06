@@ -11,6 +11,7 @@ import 'shader.dart';
 import 'camera.dart';
 import 'interpolate.dart';
 import 'logg.dart';
+import 'texture.dart';
 
 class SkyboxProgram extends ShaderProgram {
   UniformLocation u_Skybox;
@@ -121,7 +122,7 @@ class SkyboxModel extends Model {
 
     // set sampler to use texture assigned to textureUnit
     //gl.uniform1i((program as SkyboxProgram).u_Skybox, textureUnit);
-    gl.uniform1i((program as SkyboxProgram).u_Skybox, 0);
+    gl.uniform1i((program as SkyboxProgram).u_Skybox, defaultTextureUnit);
 
     instanceList.forEach((Instance i) => i.draw(gameLoop, program, cam));
 

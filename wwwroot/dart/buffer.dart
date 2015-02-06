@@ -382,7 +382,8 @@ class Model {
         frontUpCallback();
       }
 
-      Obj obj = new Obj.fromString(_objURL, response, printStats: true);
+      Obj obj = new Obj.fromString(_objURL, response,
+          printStats: true, defaultName: "noname");
 
       showObjStats(obj);
 
