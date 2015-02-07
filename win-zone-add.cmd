@@ -21,6 +21,7 @@
 %REDIS_BIN% hset z:0 instanceList l:0
 %REDIS_BIN% del l:0
 %REDIS_BIN% sadd l:0 m:0 m:1 m:2 m:3 m:4 m:5 m:6 m:7 m:car1
+@rem %REDIS_BIN% sadd l:0 m:car1
 
 @rem add object/model o:airship
 %REDIS_BIN% hset o:airship objURL /obj/airship.obj
@@ -56,12 +57,12 @@
 @rem add object/model o:car
 %REDIS_BIN% hset o:car objURL /obj/mustang_impala.obj
 %REDIS_BIN% hset o:car programName p:simpleTexturizer
-%REDIS_BIN% hset o:car modelFront 10.0,0.0,0.0
-%REDIS_BIN% hset o:car modelUp 0.0,10.0,0.0
+%REDIS_BIN% hset o:car modelFront 0.0,0.0,-40.0
+%REDIS_BIN% hset o:car modelUp 0.0,40.0,0.0
 
 @rem create instance
 %REDIS_BIN% hset m:0 obj o:airship
-%REDIS_BIN% hset m:0 coord 0.0,0.0,0.0
+%REDIS_BIN% hset m:0 coord 0.0,7.0,0.0
 %REDIS_BIN% hset m:0 scale 1.0
 %REDIS_BIN% hset m:0 mission rotateYaw
 %REDIS_BIN% hset m:0 team alpha0
@@ -69,7 +70,7 @@
 
 @rem create instance
 %REDIS_BIN% hset m:1 obj o:airship
-%REDIS_BIN% hset m:1 coord 0.0,7.0,5.0
+%REDIS_BIN% hset m:1 coord 0.0,7.0,10.0
 %REDIS_BIN% hset m:1 scale .5
 %REDIS_BIN% hset m:1 team alpha1
 %REDIS_BIN% hset m:1 mission hunt
@@ -77,7 +78,7 @@
 
 @rem create instance
 %REDIS_BIN% hset m:2 obj o:airship
-%REDIS_BIN% hset m:2 coord 0.0,7.0,0.0
+%REDIS_BIN% hset m:2 coord 0.0,7.0,5.0
 %REDIS_BIN% hset m:2 scale .5
 %REDIS_BIN% hset m:2 team alpha1
 %REDIS_BIN% hset m:2 mission hunt
@@ -111,7 +112,7 @@
 
 @rem create instance
 %REDIS_BIN% hset m:car1 obj o:car
-%REDIS_BIN% hset m:car1 coord -10.0,0.0,-20.0
+%REDIS_BIN% hset m:car1 coord -10.0,0.0,-60.0
 %REDIS_BIN% hset m:car1 scale 1.0
 
 @rem add zone ------------------------------------------------------------

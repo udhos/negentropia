@@ -75,6 +75,8 @@ class TextureInfo {
       anisotropic_filtering_enable(gl);
 
       gl.bindTexture(RenderingContext.TEXTURE_2D, null);
+      
+      log("texture loaded: $textureName");
     }
 
     void onError(Event e) {

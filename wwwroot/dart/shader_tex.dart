@@ -110,6 +110,8 @@ class TexModel extends Model {
         if (texFile != null) {
           textureURL = "${asset.texture}/$texFile";
         }
+        
+        log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL");
 
         TextureInfo texInfo = new TextureInfo(
             gl, textureTable, textureURL, temporaryColor, textureUnit);
