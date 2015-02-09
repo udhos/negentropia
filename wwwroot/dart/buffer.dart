@@ -368,7 +368,7 @@ class Model {
 
   Model.fromOBJ(RenderingContext gl, this._modelName, this._objURL,
       Vector3 front, Vector3 up) {
-    log("Model.fromOBJ: model=$modelName URL=$_objURL front=$_front up=$_up");
+    //log("Model.fromOBJ: model=$modelName URL=$_objURL front=$_front up=$_up");
 
     void handleResponse(String response) {
       //log("Model.fromOBJ: fetched OBJ from URL: $URL");
@@ -376,14 +376,13 @@ class Model {
       _front = front.clone();
       _up = up.clone();
 
-      log("Model.fromOBJ: handleResponse: model=$modelName URL=$_objURL front=$_front up=$_up");
+      //log("Model.fromOBJ: handleResponse: model=$modelName URL=$_objURL front=$_front up=$_up");
 
       if (frontUpCallback != null) {
         frontUpCallback();
       }
 
-      Obj obj = new Obj.fromString(_objURL, response,
-          printStats: true, defaultName: "noname");
+      Obj obj = new Obj.fromString(_objURL, response, defaultName: "noname");
 
       showObjStats(obj);
 
@@ -405,7 +404,7 @@ class Model {
     _front = front.clone();
     _up = up.clone();
 
-    log("Model.fromGlobe: model=$modelName front=$_front up=$_up");
+    //log("Model.fromGlobe: model=$modelName front=$_front up=$_up");
 
     if (frontUpCallback != null) {
       frontUpCallback();
@@ -461,14 +460,16 @@ class Model {
 
     saveIndexSize(indexSize);
 
+    /*
+    // DEBUG
     int vertexCount1 = globePosCoord.length.toInt() ~/ 3;
     int vertexCount2 = globeTexCoord.length.toInt() ~/ 2;
-
     log("globe vertexCount=${vertexCount1} vertexCount=${vertexCount2}");
     log("globe indexSize=$indexSize");
     log("globe indices: size=${globeIndices.length} $globeIndices");
     log("globe positions: size=${globePosCoord.length} (3 * $vertexCount1) $globePosCoord");
     log("globe tex coord: size=${globeTexCoord.length} (2 * $vertexCount1) $globeTexCoord");
+     */
 
     _createBuffers(gl, globeIndices, globePosCoord, globeTexCoord, null);
   }

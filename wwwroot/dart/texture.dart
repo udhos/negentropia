@@ -76,7 +76,7 @@ class TextureInfo {
 
       gl.bindTexture(RenderingContext.TEXTURE_2D, null);
 
-      log("texture loaded: $textureName");
+      //log("texture loaded: $textureName");
     }
 
     void onError(Event e) {

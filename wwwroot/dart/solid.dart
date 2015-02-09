@@ -164,7 +164,7 @@ class SolidShader extends ShaderProgram {
   void _loadDebugOrigin(RenderingContext gl) {
     double scale = 200.0;
     Vector3 origin = new Vector3.zero();
-    log("SolidShader._loadDebugOrigin: creating {$scale}-meter xyz debug marker at origin $origin");
+    //log("SolidShader._loadDebugOrigin: creating {$scale}-meter xyz debug marker at origin $origin");
     AxisModel m = new AxisModel(gl, FRONT, UP, RIGHT);
     AxisInstance i = new AxisInstance("origin", m, origin, scale);
     i.setRotationFromIdentity(); // do not rotate this

@@ -66,7 +66,7 @@ class TexModel extends Model {
       List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
     assert(!modelReady);
 
-    log("TexModel._createBuffers model=$modelName");
+    //log("TexModel._createBuffers model=$modelName");
 
     textureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
@@ -111,7 +111,7 @@ class TexModel extends Model {
           textureURL = "${asset.texture}/$texFile";
         }
 
-        log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL");
+        //log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL");
 
         TextureInfo texInfo = new TextureInfo(
             gl, textureTable, textureURL, temporaryColor, textureUnit);
@@ -146,7 +146,7 @@ class TexModel extends Model {
       String textureURL, Vector3 front, Vector3 up, this.textureTable,
       this.asset)
       : super.fromGlobe(gl, name, radius, front, up) {
-    log("TexModel.fromGlobe: model=$modelName tex=$textureURL front=$_front up=$_up");
+    //log("TexModel.fromGlobe: model=$modelName tex=$textureURL front=$_front up=$_up");
 
     assert(!piecesReady);
     assert(pieceList.length == 0);
@@ -167,6 +167,7 @@ class TexModel extends Model {
 
     piecesReady = true;
 
+    /*
     //DEBUG:
     TexPiece tp = pieceList.first as TexPiece;
     log("TexModel.fromGlobe vertexPositionBufferItemSize=$vertexPositionBufferItemSize");
@@ -174,6 +175,7 @@ class TexModel extends Model {
     log("TexModel.fromGlobe vertexIndexBufferItemSize=$vertexIndexBufferItemSize");
     log("TexModel.fromGlobe piece vertexIndexOffset=${tp.vertexIndexOffset}");
     log("TexModel.fromGlobe piece vertexIndexLength=${tp.vertexIndexLength}");
+     */
   }
 
   Piece addPiece(int offset, int length) {
