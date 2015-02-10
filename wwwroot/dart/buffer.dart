@@ -382,7 +382,8 @@ class Model {
         frontUpCallback();
       }
 
-      Obj obj = new Obj.fromString(_objURL, response, defaultName: "noname");
+      Obj obj = new Obj.fromString(_objURL, response,
+          defaultName: "noname", fillMissingTextCoord: true);
 
       showObjStats(obj);
 
