@@ -1,0 +1,11 @@
+{
+	"vertexShader":		"/shader/skybox_vs.txt",
+	"fragmentShader":	"/shader/skybox_fs.txt",
+	"cube":				"/mesh/cube.json",
+	"faceRight":		"/texture/skybox_jf_canyon/mine_right.jpg",
+	"faceLeft":			"/texture/skybox_jf_canyon/mine_left.jpg",
+	"faceUp":			"/texture/skybox_jf_canyon/mine_top.jpg",
+	"faceDown":			"/texture/skybox_jf_canyon/mine_down.png",
+	"faceFront":		"/texture/skybox_jf_canyon/mine_front.jpg",
+	"faceBack":			"/texture/skybox_jf_canyon/mine_back.jpg"
+}

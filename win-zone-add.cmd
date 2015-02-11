@@ -1,7 +1,8 @@
 @set REDIS_BIN=\redis\redis-cli
 
 @rem assign zone to user
-%REDIS_BIN% hset everton.marques@gmail.com location z:0
+@rem %REDIS_BIN% hset everton.marques@gmail.com location z:0
+%REDIS_BIN% hset everton.marques@gmail.com location z:zero_city0
 %REDIS_BIN% hset udhos0@gmail.com          location z:1
 
 @rem add shader program
@@ -128,5 +129,54 @@
 %REDIS_BIN% hset z:1 instanceList l:1
 %REDIS_BIN% del l:1
 %REDIS_BIN% sadd l:1 m:4
+
+@rem add zone ------------------------------------------------------------
+
+@rem zero city0 at planet0
+%REDIS_BIN% hset z:zero_city0 backfaceCulling true
+%REDIS_BIN% hset z:zero_city0 skyboxURL /skybox/skybox_canyon.json
+%REDIS_BIN% hset z:zero_city0 programName p:simpleTexturizer
+%REDIS_BIN% hset z:zero_city0 cameraCoord 0.0,0.0,90.0
+
+@rem add instance list to zone
+%REDIS_BIN% hset z:zero_city0 instanceList l:zero_city0
+%REDIS_BIN% del l:zero_city0
+%REDIS_BIN% sadd l:zero_city0 m:4
+
+@rem zero mine0 at planet0
+%REDIS_BIN% hset z:zero_mine0 backfaceCulling true
+%REDIS_BIN% hset z:zero_mine0 skyboxURL /skybox/skybox_canyon.json
+%REDIS_BIN% hset z:zero_mine0 programName p:simpleTexturizer
+%REDIS_BIN% hset z:zero_mine0 cameraCoord 0.0,0.0,90.0
+
+@rem zero planet0 at solar0
+%REDIS_BIN% hset z:zero_planet0 backfaceCulling true
+%REDIS_BIN% hset z:zero_planet0 skyboxURL /skybox/skybox_galaxy.json
+%REDIS_BIN% hset z:zero_planet0 programName p:simpleTexturizer
+%REDIS_BIN% hset z:zero_planet0 cameraCoord 0.0,0.0,90.0
+
+@rem zero city1 at planet1
+%REDIS_BIN% hset z:zero_city0 backfaceCulling true
+%REDIS_BIN% hset z:zero_city0 skyboxURL /skybox/skybox_canyon.json
+%REDIS_BIN% hset z:zero_city0 programName p:simpleTexturizer
+%REDIS_BIN% hset z:zero_city0 cameraCoord 0.0,0.0,90.0
+
+@rem zero planet1 at solar0
+%REDIS_BIN% hset z:zero_planet1 backfaceCulling true
+%REDIS_BIN% hset z:zero_planet1 skyboxURL /skybox/skybox_galaxy.json
+%REDIS_BIN% hset z:zero_planet1 programName p:simpleTexturizer
+%REDIS_BIN% hset z:zero_planet1 cameraCoord 0.0,0.0,90.0
+
+@rem zero solar0 at galaxy0
+%REDIS_BIN% hset z:zero_solar0 backfaceCulling true
+%REDIS_BIN% hset z:zero_solar0 skyboxURL /skybox/skybox_galaxy.json
+%REDIS_BIN% hset z:zero_solar0 programName p:simpleTexturizer
+%REDIS_BIN% hset z:zero_solar0 cameraCoord 0.0,0.0,90.0
+
+@rem zero galaxy0
+%REDIS_BIN% hset z:zero_galaxy0 backfaceCulling true
+%REDIS_BIN% hset z:zero_galaxy0 skyboxURL /skybox/skybox_galaxy.json
+%REDIS_BIN% hset z:zero_galaxy0 programName p:simpleTexturizer
+%REDIS_BIN% hset z:zero_galaxy0 cameraCoord 0.0,0.0,90.0
 
 @rem eof
