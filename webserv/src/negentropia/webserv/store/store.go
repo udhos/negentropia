@@ -20,7 +20,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/vmihailenco/redis/v2"
+	//"github.com/vmihailenco/redis/v2"
+	"gopkg.in/redis.v2" // github: github.com/go-redis/redis
 )
 
 type KeyField struct {

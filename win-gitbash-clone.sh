@@ -18,7 +18,8 @@ go_get () {
 # fetch from github with git bash
 #
 #go_get github.com/vmihailenco/redis
-go_get github.com/vmihailenco/redis/v2
+#go_get github.com/vmihailenco/redis/v2
+go get gopkg.in/redis.v2 ;# github: github.com/go-redis/redis
 #go_get github.com/HairyMezican/goauth2/oauth
 #go_get github.com/spate/vectormath
 go_get github.com/udhos/vectormath
