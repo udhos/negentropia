@@ -1,0 +1,198 @@
+
+# assign zone to user
+# this puts the user camera into a specific zone
+# hset everton.marques@gmail.com location z:0
+hset everton.marques@gmail.com location z:zero_city0
+hset udhos0@gmail.com          location z:1
+
+# add shader program
+hset p:simpleTexturizer vertexShader /shader/simpleTex_vs.txt
+hset p:simpleTexturizer fragmentShader /shader/simpleTex_fs.txt
+
+# add zone ------------------------------------------------------------
+
+hset z:0 backfaceCulling true
+# hset z:0 skyboxURL /skybox/skybox_galaxy.json
+# hset z:0 skyboxURL /skybox/skybox_alien.json
+hset z:0 skyboxURL /skybox/skybox_sky30.json
+hset z:0 programName p:simpleTexturizer
+hset z:0 cameraCoord 0.0,0.0,90.0
+
+# add instance list to zone
+hset z:0 instanceList l:0
+del l:0
+sadd l:0 m:0 m:1 m:2 m:3 m:4 m:5 m:6 m:7 m:car1
+
+# add object/model o:airship
+hset o:airship objURL /obj/airship.obj
+hset o:airship programName p:simpleTexturizer
+hset o:airship modelFront 5.0,0.0,0.0
+hset o:airship modelUp 0.0,5.0,0.0
+
+# add object/model o:old_house
+hset o:old_house objURL /obj/old_house.obj
+hset o:old_house programName p:simpleTexturizer
+hset o:old_house modelFront 40.0,0.0,0.0
+hset o:old_house modelUp 0.0,40.0,0.0
+
+# add object/model o:mars
+hset o:mars objURL /obj/MarsPlanet.obj
+hset o:mars programName p:simpleTexturizer
+hset o:mars modelFront 20.0,0.0,0.0
+hset o:mars modelUp 0.0,20.0,0.0
+
+# add object/model o:bigearth
+hset o:bigearth globeRadius 200.0
+hset o:bigearth globeTextureURL /texture/earthmap1k.jpg
+hset o:bigearth programName p:simpleTexturizer
+hset o:bigearth modelFront 200.0,0.0,0.0
+hset o:bigearth modelUp 0.0,200.0,0.0
+
+# add object/model o:red_box
+hset o:red_box objURL /obj/red_cube.obj
+hset o:red_box programName p:simpleTexturizer
+hset o:red_box modelFront 10.0,0.0,0.0
+hset o:red_box modelUp 0.0,10.0,0.0
+
+# add object/model o:car
+hset o:car objURL /obj/mustang_impala.obj
+hset o:car programName p:simpleTexturizer
+hset o:car modelFront 0.0,0.0,-40.0
+hset o:car modelUp 0.0,40.0,0.0
+
+# create instance
+hset m:0 obj o:airship
+hset m:0 coord 0.0,7.0,0.0
+hset m:0 scale 1.0
+hset m:0 mission rotateYaw
+hset m:0 team alpha0
+hset m:0 owner udhos0@gmail.com
+
+# create instance
+hset m:1 obj o:airship
+hset m:1 coord 0.0,7.0,10.0
+hset m:1 scale .5
+hset m:1 team alpha1
+hset m:1 mission hunt
+hset m:1 owner everton.marques@gmail.com
+
+# create instance
+hset m:2 obj o:airship
+hset m:2 coord 0.0,7.0,5.0
+hset m:2 scale .5
+hset m:2 team alpha1
+hset m:2 mission hunt
+hset m:2 owner everton.marques@gmail.com
+
+# create instance
+hset m:3 obj o:airship
+hset m:3 coord 0.0,7.0,-5.0
+hset m:3 scale .5
+hset m:3 team alpha1
+
+# create instance
+hset m:4 obj o:old_house
+hset m:4 coord -50.0,0.0,0.0
+hset m:4 scale 1.0
+
+# create instance
+hset m:5 obj o:mars
+hset m:5 coord 20.0,20.0,-20.0
+hset m:5 scale 1.0
+
+# create instance
+hset m:6 obj o:bigearth
+hset m:6 coord 100.0,100.0,-400.0
+hset m:6 scale 1.0
+
+# create instance
+hset m:7 obj o:red_box
+hset m:7 coord -10.0,10.0,-20.0
+hset m:7 scale 1.0
+
+# create instance
+hset m:car1 obj o:car
+hset m:car1 coord -10.0,0.0,-60.0
+hset m:car1 scale 1.0
+
+# add zone ------------------------------------------------------------
+
+hset z:1 backfaceCulling true
+# hset z:1 skyboxURL /skybox/skybox_galaxy.json
+hset z:1 skyboxURL /skybox/skybox_alien.json
+# hset z:1 skyboxURL /skybox/skybox_sky30.json
+hset z:1 programName p:simpleTexturizer
+hset z:1 cameraCoord 0.0,0.0,90.0
+
+# add instance list to zone
+hset z:1 instanceList l:1
+del l:1
+sadd l:1 m:4
+
+# add zone ------------------------------------------------------------
+
+# zero city0 at planet0
+hset z:zero_city0 backfaceCulling true
+hset z:zero_city0 skyboxURL /skybox/skybox_canyon.json
+hset z:zero_city0 programName p:simpleTexturizer
+hset z:zero_city0 cameraCoord 0.0,0.0,90.0
+
+# create instance
+hset m:zero_car0 obj o:car
+hset m:zero_car0 coord 0.0,0.0,0.0
+hset m:zero_car0 scale 1.0
+
+# create instance
+hset m:zero_car1 obj o:car
+hset m:zero_car1 coord 30.0,0.0,0.0
+hset m:zero_car1 scale 1.0
+
+# create instance
+hset m:zero_car2 obj o:car
+hset m:zero_car2 coord 60.0,0.0,0.0
+hset m:zero_car2 scale 1.0
+
+# add instance list to zone
+hset z:zero_city0 instanceList l:zero_city0_list
+del l:zero_city0_list
+sadd l:zero_city0_list m:zero_car0 m:zero_car1 m:zero_car2
+
+# zero mine0 at planet0
+hset z:zero_mine0 backfaceCulling true
+hset z:zero_mine0 skyboxURL /skybox/skybox_canyon.json
+hset z:zero_mine0 programName p:simpleTexturizer
+hset z:zero_mine0 cameraCoord 0.0,0.0,90.0
+
+# zero planet0 at solar0
+hset z:zero_planet0 backfaceCulling true
+hset z:zero_planet0 skyboxURL /skybox/skybox_galaxy.json
+hset z:zero_planet0 programName p:simpleTexturizer
+hset z:zero_planet0 cameraCoord 0.0,0.0,90.0
+
+# zero city1 at planet1
+hset z:zero_city0 backfaceCulling true
+hset z:zero_city0 skyboxURL /skybox/skybox_canyon.json
+hset z:zero_city0 programName p:simpleTexturizer
+hset z:zero_city0 cameraCoord 0.0,0.0,90.0
+
+# zero planet1 at solar0
+hset z:zero_planet1 backfaceCulling true
+hset z:zero_planet1 skyboxURL /skybox/skybox_galaxy.json
+hset z:zero_planet1 programName p:simpleTexturizer
+hset z:zero_planet1 cameraCoord 0.0,0.0,90.0
+
+# zero solar0 at galaxy0
+hset z:zero_solar0 backfaceCulling true
+hset z:zero_solar0 skyboxURL /skybox/skybox_galaxy.json
+hset z:zero_solar0 programName p:simpleTexturizer
+hset z:zero_solar0 cameraCoord 0.0,0.0,90.0
+
+# zero galaxy0
+hset z:zero_galaxy0 backfaceCulling true
+hset z:zero_galaxy0 skyboxURL /skybox/skybox_galaxy.json
+hset z:zero_galaxy0 programName p:simpleTexturizer
+hset z:zero_galaxy0 cameraCoord 0.0,0.0,90.0
+
+save
+
+# eof
