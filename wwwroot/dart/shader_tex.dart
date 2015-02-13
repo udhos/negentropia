@@ -51,6 +51,7 @@ class TexModel extends Model {
   Map<String, Texture> textureTable;
   final int textureUnit = 0;
   int globeIndexSize;
+  bool repeatTexture;
 
   /*
   void initContext(RenderingContext gl, Map<String,Texture> textureTable) {
@@ -111,10 +112,17 @@ class TexModel extends Model {
           textureURL = "${asset.texture}/$texFile";
         }
 
-        //log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL");
+        int wrap;
+        if (repeatTexture) {
+          wrap = RenderingContext.REPEAT;
+          log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL wrap=REPEAT");
+        } else {
+          wrap = RenderingContext.CLAMP_TO_EDGE;
+          log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL wrap=CLAMP_TO_EDGE");
+        }
 
         TextureInfo texInfo = new TextureInfo(
-            gl, textureTable, textureURL, temporaryColor, textureUnit);
+            gl, textureTable, textureURL, temporaryColor, textureUnit, wrap);
 
         addTexture(pa.indexFirst, pa.indexListSize, texInfo);
 
@@ -139,12 +147,12 @@ class TexModel extends Model {
   }
 
   TexModel.fromOBJ(RenderingContext gl, String name, String URL, Vector3 front,
-      Vector3 up, this.textureTable, this.asset)
+      Vector3 up, this.textureTable, this.asset, this.repeatTexture)
       : super.fromOBJ(gl, name, URL, front, up);
 
   TexModel.fromGlobe(RenderingContext gl, String name, double radius,
       String textureURL, Vector3 front, Vector3 up, this.textureTable,
-      this.asset)
+      this.asset, this.repeatTexture)
       : super.fromGlobe(gl, name, radius, front, up) {
     //log("TexModel.fromGlobe: model=$modelName tex=$textureURL front=$_front up=$_up");
 
@@ -153,8 +161,8 @@ class TexModel extends Model {
 
     List<int> temporaryColor = [127, 127, 127, 255];
 
-    TextureInfo texInfo = new TextureInfo(
-        gl, textureTable, textureURL, temporaryColor, textureUnit);
+    TextureInfo texInfo = new TextureInfo(gl, textureTable, textureURL,
+        temporaryColor, textureUnit, RenderingContext.CLAMP_TO_EDGE);
 
     assert(globeIndexSize != null);
     assert(globeIndexSize > 0);

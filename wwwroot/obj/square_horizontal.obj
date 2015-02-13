@@ -1,0 +1,17 @@
+mtllib square_horizontal.mtl
+
+v -1.0 0.0 -1.0
+v -1.0 0.0 1.0
+v 1.0 0.0 1.0
+v 1.0 0.0 -1.0
+
+usemtl concrete
+
+vt 0.0 1.0
+vt 0.0 0.0
+vt 1.0 0.0
+vt 1.0 1.0
+
+s off
+f 1 2 4
+f 2 3 4 

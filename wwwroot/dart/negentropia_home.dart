@@ -291,6 +291,7 @@ void dispatcher(
       String up = tab['modelUp'];
       String coord = tab['coord'];
       String scale = tab['scale'];
+      String repeatTexture = tab['repeatTexture'];
       //String mission = tab['mission'];
 
       String globeRadius;
@@ -346,14 +347,21 @@ void dispatcher(
         return;
       }
 
+      bool repeat = repeatTexture != null &&
+          !repeatTexture.isEmpty &&
+          !repeatTexture.startsWith("f") &&
+          !repeatTexture.startsWith("o") &&
+          !repeatTexture.startsWith("0");
+
       TexModel model;
 
       if (objURL == null) {
         double radius = double.parse(globeRadius);
         model = new TexModel.fromGlobe(
-            gl, id, radius, globeTextureURL, f, u, textureTable, asset);
+            gl, id, radius, globeTextureURL, f, u, textureTable, asset, repeat);
       } else {
-        model = new TexModel.fromOBJ(gl, id, objURL, f, u, textureTable, asset);
+        model = new TexModel.fromOBJ(
+            gl, id, objURL, f, u, textureTable, asset, repeat);
       }
       prog.addModel(model);
 
@@ -585,14 +593,16 @@ void demoInitAirshipTex(RenderingContext gl) {
   String objURL = "${asset.obj}/airship.obj";
 
   TexModel airshipModel = new TexModel.fromOBJ(gl, "demoAirshipTexModel",
-      objURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset);
+      objURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset,
+      false);
   prog.addModel(airshipModel);
   TexInstance airshipInstance = new TexInstance('airship', airshipModel,
       new Vector3(0.0, 0.0, 0.0), 1.0, generatePickColor());
   airshipModel.addInstance(airshipInstance);
 
   TexModel airshipModel2 = new TexModel.fromOBJ(gl, "demoAirship2TexModel",
-      objURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset);
+      objURL, new Vector3.zero(), new Vector3.zero(), textureTable, asset,
+      false);
   prog.addModel(airshipModel2);
   TexInstance airshipInstance2 = new TexInstance('airship2', airshipModel2,
       new Vector3(8.0, 0.0, 0.0), 1.0, generatePickColor());
@@ -601,7 +611,7 @@ void demoInitAirshipTex(RenderingContext gl) {
   String colonyShipURL = "${asset.obj}/Colony Ship Ogame Fleet.obj";
   TexModel colonyShipModel = new TexModel.fromOBJ(gl, "demoColonyshipTexModel",
       colonyShipURL, new Vector3.zero(), new Vector3.zero(), textureTable,
-      asset);
+      asset, false);
   prog.addModel(colonyShipModel);
   TexInstance colonyShipInstance = new TexInstance('colonyShip',
       colonyShipModel, new Vector3(0.0, -5.0, -50.0), 1.0, generatePickColor());
@@ -609,7 +619,7 @@ void demoInitAirshipTex(RenderingContext gl) {
 
   String coneURL = "${asset.obj}/cone.obj";
   TexModel coneModel = new TexModel.fromOBJ(gl, "demoConeTexModel", coneURL,
-      new Vector3.zero(), new Vector3.zero(), textureTable, asset);
+      new Vector3.zero(), new Vector3.zero(), textureTable, asset, false);
   prog.addModel(coneModel);
   TexInstance coneInstance = new TexInstance('cone', coneModel,
       new Vector3(0.0, 2.0, -10.0), 1.0, generatePickColor());

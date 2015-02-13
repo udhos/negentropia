@@ -189,17 +189,19 @@ func sendZoneDynamic(p *Player, loc string) {
 			program := store.QueryField(obj, "programName")
 			front := store.QueryField(obj, "modelFront")
 			up := store.QueryField(obj, "modelUp")
+			repeat := store.QueryField(obj, "repeatTexture")
 
 			log.Printf("sendZoneDynamic: id=%s obj=%s objURL=%s", inst, obj, url)
 
 			m := map[string]string{
-				"id":          inst,
-				"programName": program,
-				"modelFront":  front,
-				"modelUp":     up,
-				"coord":       coord,
-				"scale":       scale,
-				"mission":     mission,
+				"id":            inst,
+				"programName":   program,
+				"modelFront":    front,
+				"modelUp":       up,
+				"repeatTexture": repeat,
+				"coord":         coord,
+				"scale":         scale,
+				"mission":       mission,
 			}
 
 			if url != "" {

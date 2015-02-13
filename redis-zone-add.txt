@@ -137,6 +137,18 @@ hset z:zero_city0 skyboxURL /skybox/skybox_canyon.json
 hset z:zero_city0 programName p:simpleTexturizer
 hset z:zero_city0 cameraCoord 0.0,0.0,90.0
 
+# floor model
+hset o:concrete objURL /obj/square_horizontal.obj
+hset o:concrete programName p:simpleTexturizer
+hset o:concrete modelFront 600.0,0.0,0.0
+hset o:concrete modelUp 0.0,5.0,0.0
+hset o:concrete repeatTexture f
+
+# floor instance
+hset m:zero_city0_floor obj o:concrete
+hset m:zero_city0_floor coord 0.0,0.0,0.0
+hset m:zero_city0_floor scale 500.0
+
 # create instance
 hset m:zero_car0 obj o:car
 hset m:zero_car0 coord 0.0,0.0,0.0
@@ -155,7 +167,7 @@ hset m:zero_car2 scale 1.0
 # add instance list to zone
 hset z:zero_city0 instanceList l:zero_city0_list
 del l:zero_city0_list
-sadd l:zero_city0_list m:zero_car0 m:zero_car1 m:zero_car2
+sadd l:zero_city0_list m:zero_city0_floor m:zero_car0 m:zero_car1 m:zero_car2
 
 # zero mine0 at planet0
 hset z:zero_mine0 backfaceCulling true

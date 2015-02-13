@@ -14,6 +14,7 @@ class TextureInfo {
   Texture texture;
   List<int> temporaryColor;
   int textureUnit;
+  int wrap;
 
   void loadSolidColor(RenderingContext gl) {
 
@@ -67,16 +68,17 @@ class TextureInfo {
           RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
       gl.texParameteri(RenderingContext.TEXTURE_2D,
           RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.NEAREST);
-      gl.texParameteri(RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
-      gl.texParameteri(RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
+
+      gl.texParameteri(
+          RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_S, wrap);
+      gl.texParameteri(
+          RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_T, wrap);
 
       anisotropic_filtering_enable(gl);
 
       gl.bindTexture(RenderingContext.TEXTURE_2D, null);
 
-      //log("texture loaded: $textureName");
+      log("texture loaded: $textureName");
     }
 
     void onError(Event e) {
@@ -117,7 +119,8 @@ class TextureInfo {
   }
 
   TextureInfo(RenderingContext gl, Map<String, Texture> textureTable,
-      this.textureName, List<int> this.temporaryColor, this.textureUnit) {
+      this.textureName, List<int> this.temporaryColor, this.textureUnit,
+      this.wrap) {
     loadTexture(gl, textureTable);
   }
 }
