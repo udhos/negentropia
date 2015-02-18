@@ -74,11 +74,11 @@ class TextureInfo {
       gl.texParameteri(
           RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_T, wrap);
 
-      anisotropic_filtering_enable(gl);
+      anisotropic_filtering_enable(gl, textureName);
 
       gl.bindTexture(RenderingContext.TEXTURE_2D, null);
 
-      log("texture loaded: $textureName");
+      //log("texture loaded: $textureName");
     }
 
     void onError(Event e) {

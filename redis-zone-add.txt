@@ -142,7 +142,7 @@ hset o:concrete objURL /obj/square_horizontal.obj
 hset o:concrete programName p:simpleTexturizer
 hset o:concrete modelFront 600.0,0.0,0.0
 hset o:concrete modelUp 0.0,5.0,0.0
-hset o:concrete repeatTexture f
+hset o:concrete repeatTexture t
 
 # floor instance
 hset m:zero_city0_floor obj o:concrete

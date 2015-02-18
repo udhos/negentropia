@@ -21,7 +21,7 @@ void anisotropic_filtering_detect(RenderingContext gl) {
       _anisotropy = max_anisotropy;
     }
 
-    debug("using anisotropy=$_anisotropy");
+    log("using anisotropy=$_anisotropy");
 
     _extAnisotropic = ext;
   }
@@ -45,7 +45,7 @@ void anisotropic_filtering_detect(RenderingContext gl) {
   warn("anisotropic filtering: NOT SUPPORTED");
 }
 
-void anisotropic_filtering_enable(RenderingContext gl) {
+void anisotropic_filtering_enable(RenderingContext gl, String url) {
   if (_anisotropy < 2 || _extAnisotropic == null) {
     // not supported
     return;
@@ -58,7 +58,7 @@ void anisotropic_filtering_enable(RenderingContext gl) {
   double result = gl.getTexParameter(RenderingContext.TEXTURE_2D,
       ExtTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT);
 
-  debug("texture anisotropy=$result");
+  log("texture url=$url anisotropy=$result");
 
   if (result != _anisotropy.toDouble()) {
     warn(
