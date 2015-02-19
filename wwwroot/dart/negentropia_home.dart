@@ -42,9 +42,9 @@ Asset asset = new Asset("/");
 SkyboxProgram skybox;
 PickerShader picker;
 SolidShader solidShader;
-double planeNear = 1.0;
-double planeFar = 2000.0;
-double skyboxScale = 1000.0;
+double planeNear = 2.0; // 2m
+double planeFar = 10000.0; // 10km 
+double skyboxScale = 1000.0; // 1km scale => 2km edge
 int mouseDragBeginX = null;
 int mouseDragBeginY = null;
 int mouseDragCurrX = null;

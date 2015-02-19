@@ -89,7 +89,7 @@ class CameraControl {
       }
     }
 
-    forwardDy += dy;
+    forwardDy += dy; // accumulate
   }
 
   void alignHorizontal(Camera cam) {
