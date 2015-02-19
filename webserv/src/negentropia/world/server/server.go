@@ -245,6 +245,12 @@ func input(p *Player, m *ClientMsg) {
 	case CM_CODE_ECHO:
 		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: "echo: " + m.Data}
 	case CM_CODE_REQZ:
+		/*
+			location:
+				""    --> send "demo"       --> client will load hard-coded demo zone
+				"z:*" --> send dynamic zone (loaded from redis db)
+				"*"   --> send static zone (hard-coded at server)
+		*/
 		if loc := store.QueryField(p.Email, "location"); loc == "" {
 			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE, Data: "demo"}
 		} else {
