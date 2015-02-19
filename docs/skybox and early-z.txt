@@ -1,0 +1,34 @@
+==================
+skybox and early-z
+==================
+
+Option 1:
+If you want your skybox to be always visible at any distance...
+Set up a viewport with MinDepth 1 and MaxDepth 1.
+Draw it as a 10x10x10 (adjust size to suit your near clipping plane) cube centered on the view origin.
+That's really all there is to it.  Do it last after all other opaque objects in your scene, of course,
+so that you'll get the benefit of early-Z rejection.
+Otherwise this will absolutely guarantee that the skybox will be drawn at the very furthest depth,
+no matter what values you pick for zNear and zFar, and you don't need to do anything fancy.
+Just the most basic shaders and you get the desired result.
+
+Option 2:
+To make it always render to the far-plane, you can also put this at the end of your
+vertex shader (instead of your logarithmic z line).
+output.Position.z = output.Position.w;
+
+Source: http://www.gamedev.net/topic/661117-skybox-issue/
+
+Love your Z Buffer:
+"Always put zNear as far from the eye as you can tolerate."
+http://www.sjbaker.org/steve/omniv/love_your_z_buffer.html
+
+Z buffer optimizations
+http://pt.slideshare.net/pjcozzi/z-buffer-optimizations
+
+Projection Matrix Tricks:
+http://www.terathon.com/gdc07_lengyel.pdf
+
+===========
+end-of-file
+===========
