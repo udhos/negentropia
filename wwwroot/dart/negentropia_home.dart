@@ -27,6 +27,7 @@ import 'message.dart';
 import 'wheel.dart';
 import 'fullscreen.dart';
 import 'texture.dart';
+import 'string.dart';
 
 bool debugLostContext = true;
 List<ShaderProgram> programList = new List<ShaderProgram>();
@@ -221,8 +222,8 @@ void dispatcher(
     case CM_CODE_ZONE:
       if (tab != null) {
         String culling = tab['backfaceCulling'];
-        if (culling != null) {
-          backfaceCulling = culling.toLowerCase().startsWith("t");
+        backfaceCulling = stringIsTrue(culling);
+        if (backfaceCulling) {
           updateCulling(gl);
         }
 
@@ -347,11 +348,7 @@ void dispatcher(
         return;
       }
 
-      bool repeat = repeatTexture != null &&
-          !repeatTexture.isEmpty &&
-          !repeatTexture.startsWith("f") &&
-          !repeatTexture.startsWith("o") &&
-          !repeatTexture.startsWith("0");
+      bool repeat = stringIsTrue(repeatTexture);
 
       TexModel model;
 
@@ -998,6 +995,10 @@ void update(RenderingContext gl, GameLoopHtml gameLoop) {
 
   if (f2Pressed) {
     missionNext(getSelectionIdList());
+  }
+
+  if (k.pressed(Keyboard.Z)) {
+    switchZone();
   }
 
   if (k.pressed(Keyboard.SPACE)) {

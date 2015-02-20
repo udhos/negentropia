@@ -4,10 +4,12 @@ import 'package:unittest/unittest.dart';
 import 'package:vector_math/vector_math.dart';
 
 import '../vec.dart';
+import '../string.dart';
 
 void main() {
   vec_test();
   quat_test();
+  string_test();
 }
 
 typedef void echo_func(String);
@@ -109,5 +111,56 @@ void quat_test() {
   test("quat_test: quat applied to vec=(1,0,0)", () {
     expect(vec.toString(),
         equals("[-0.3333333134651184,0.6666666269302368,0.6666666269302368]"));
+  });
+}
+
+void string_test() {
+  test('stringIsTrue(null)', () {
+    expect(stringIsTrue(null), isFalse);
+  });
+  test('stringIsTrue("")', () {
+    expect(stringIsTrue(""), isFalse);
+  });
+  test('stringIsTrue(" ")', () {
+    expect(stringIsTrue(" "), isFalse);
+  });
+  test('stringIsTrue(" 1 ")', () {
+    expect(stringIsTrue(" 1 "), isTrue);
+  });
+  test('stringIsTrue(" 0.1 ")', () {
+    expect(stringIsTrue(" 0.1 "), isTrue);
+  });
+  test('stringIsTrue(" 0 ")', () {
+    expect(stringIsTrue(" 0 "), isFalse);
+  });
+  test('stringIsTrue(" 05 ")', () {
+    expect(stringIsTrue(" 05 "), isTrue);
+  });
+  test('stringIsTrue(" f ")', () {
+    expect(stringIsTrue(" f "), isFalse);
+  });
+  test('stringIsTrue(" false ")', () {
+    expect(stringIsTrue(" false "), isFalse);
+  });
+  test('stringIsTrue(" F ")', () {
+    expect(stringIsTrue(" F "), isFalse);
+  });
+  test('stringIsTrue(" o ")', () {
+    expect(stringIsTrue(" o "), isTrue);
+  });
+  test('stringIsTrue(" of ")', () {
+    expect(stringIsTrue(" of "), isFalse);
+  });
+  test('stringIsTrue(" off ")', () {
+    expect(stringIsTrue(" off "), isFalse);
+  });
+  test('stringIsTrue(" OFF ")', () {
+    expect(stringIsTrue(" OFF "), isFalse);
+  });
+  test('stringIsTrue(" on ")', () {
+    expect(stringIsTrue(" on "), isTrue);
+  });
+  test('stringIsTrue(" 0XXX45 ")', () {
+    expect(stringIsTrue(" 0XXX45 "), isTrue);
   });
 }

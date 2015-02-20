@@ -25,6 +25,7 @@ const (
 	CM_CODE_INSTANCE_UPDATE = 10 // server->client: update instance
 	CM_CODE_MESSAGE         = 11 // server->client: message for user
 	CM_CODE_MISSION_NEXT    = 12 // client->server: switch mission
+	CM_CODE_SWITCH_ZONE     = 13 // client->server: switch zone
 )
 
 type ClientMsg struct {
@@ -260,6 +261,8 @@ func input(p *Player, m *ClientMsg) {
 		for id := range m.Tab {
 			missionNext(p, id)
 		}
+	case CM_CODE_SWITCH_ZONE:
+		switchZone(p)
 	default:
 		log.Printf("server.input: unknown code=%d", m.Code)
 		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: fmt.Sprintf("unknown code=%d", m.Code)}

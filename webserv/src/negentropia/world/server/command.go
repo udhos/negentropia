@@ -44,3 +44,22 @@ func missionNext(p *Player, unitId string) {
 
 	msgPlayer(p, fmt.Sprintf("unit %v: new mission: [%v]", unitId, unit.mission))
 }
+
+func switchZone(p *Player) {
+
+	//
+	// 1. Scan zones
+	//
+	zones := store.QueryKeys("z:*") // FIXME: replace redis KEYS with redis SCAN
+	if len(zones) < 1 {
+		log.Printf("switchZone: no zone found")
+		return
+	}
+
+	log.Printf("switchZone: FIXME WRITEME")
+
+	// 2. Sort zone list
+
+	// 3. Switch to next zone
+
+}

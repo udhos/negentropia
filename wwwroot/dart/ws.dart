@@ -21,6 +21,7 @@ const CM_CODE_INSTANCE = 9; // server->client: set instance
 const CM_CODE_INSTANCE_UPDATE = 10; // server->client: update instance
 const CM_CODE_MESSAGE = 11; // server->client: message for user
 const CM_CODE_MISSION_NEXT = 12; // client->server: switch mission
+const CM_CODE_SWITCH_ZONE = 13; // client->server: switch zone
 
 WebSocket _ws;
 ListQueue<String> _wsQueue = new ListQueue<String>();
@@ -29,6 +30,10 @@ dispatcherFunc _dispatcher;
 
 void missionNext(Map m) {
   wsSendMap({'Code': CM_CODE_MISSION_NEXT, 'Data': "", 'Tab': m});
+}
+
+void switchZone() {
+  wsSendMap({'Code': CM_CODE_SWITCH_ZONE, 'Data': ""});
 }
 
 void requestZone() {
