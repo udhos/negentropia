@@ -115,10 +115,10 @@ class TexModel extends Model {
         int wrap;
         if (repeatTexture) {
           wrap = RenderingContext.REPEAT;
-          log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL wrap=REPEAT");
+          //log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL wrap=REPEAT");
         } else {
           wrap = RenderingContext.CLAMP_TO_EDGE;
-          log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL wrap=CLAMP_TO_EDGE");
+          //log("onMtlLibLoaded: mtlURL=$mtlURL texFile=$texFile textureURL=$textureURL wrap=CLAMP_TO_EDGE");
         }
 
         TextureInfo texInfo = new TextureInfo(

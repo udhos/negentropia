@@ -220,7 +220,7 @@ func sendZoneDynamic(p *Player, loc string) {
 		}
 	}
 
-	max := 15
+	max := 3
 	for i := 1; i <= max; i++ {
 		msgPlayer(p, fmt.Sprintf("world server: line %d of %d", i, max))
 	}

@@ -67,8 +67,6 @@ func switchZone(p *Player) {
 		return
 	}
 
-	msgPlayer(p, fmt.Sprintf("switchZone: curr=%s", loc))
-
 	// 2. Sort zone list
 
 	sort.Strings(zones)
