@@ -29,6 +29,83 @@ http://pt.slideshare.net/pjcozzi/z-buffer-optimizations
 Projection Matrix Tricks:
 http://www.terathon.com/gdc07_lengyel.pdf
 
+----
+
+There are three major ways drawing a simple sky box:
+
+=== Method A.1 - Backdrop 1 ===
+1. Clear the Framebuffer (technically just clearing the depth buffer
+   would be sufficient), disable Depth Writing
+   glClear(GL_DEPTH_BUFFER_BIT);
+   glDisable(GL_DEPTH_TEST);
+   glDepthMask(GL_FALSE);
+
+2. Render the sky box, thus "clearing" the colour part of the
+   framebuffer to the sky box.
+
+3. Render the scene as ususal, i.e. with the usual depth writing and
+   depth testing
+   glEnable(GL_DEPTH_TEST);
+   glDepthMask(GL_TRUE);
+
+=== Method A.2 - Backdrop 2 ===
+1. Clear the Framebuffer as usual, use normal rendering settings
+   glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+2. Render the sky box, thus "clearing" the colour part of the
+   framebuffer to the sky box.
+
+3. Clear the depth buffer contents (only the depth buffer!)
+   glClear(GL_DEPTH_BUFFER_BIT);
+
+3. Render the scene as ususal
+
+
+=== Method B - Pseudoclearing ===
+1. Set depth func to always pass, the depth range to 1.0 to 1.0,
+   enable depth testing and writing
+   glDepthFunc(GL_ALWAYS);
+   glDepthRange(1., 1.);
+   glDepthMask(GL_TRUE);
+   glEnable(GL_DEPTH_TEST);
+
+2. Render sky box
+
+3. Render scene as usual
+   glDepthFunc(GL_LESS);
+   glDepthRange(0., 1.);
+
+=== Method C - Fill the Gaps ===
+1. Render the opaque parts of the scene as usual. The parts where
+   there's still sky visible still have depth value 1.0 then
+
+2. Set the depth testing so that incoming fragments only pass if the
+   are equal to the cleared depth buffer and that all incoming
+   fragments have only that one value (depth writing doesn't matter as
+   the values wouldn't be changed, however disabling depth writing may
+   give a minimal increase in performance):
+   glEnable(GL_DEPTH_TEST);
+   glDepthFunc(GL_EQUAL);
+   glDepthRange(1., 1.);
+
+3. Render the sky box
+
+4. Switch back to normal depth testing, render the parts of the scene
+   that involve blending.
+   glDepthFunc(GL_LESS);
+   glDepthRange(0., 1.);
+
+
+If one moves away from simple sky boxes to more advanced methods, like
+multiple layered sky boxes that apply some parallax to give an improved
+feeling of distance, or even a simplified scene as backdrop (both
+methods are for example used by the Source engine of Valve) the
+set of available methods gets smaller. The most flexible method is the
+second backdrop method (Method A.2 - Backdrop 2).
+
+Wolfgang post on:
+https://groups.google.com/forum/#!topic/comp.graphics.api.opengl/1Qc1tZ35IeQ
+
 ===========
 end-of-file
 ===========

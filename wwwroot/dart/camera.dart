@@ -53,6 +53,7 @@ class Camera {
 
   void set skybox(SkyboxInstance box) {
     _skybox = box;
+    _skyboxFollowPosition();
   }
 
   void _skyboxFollowPosition() {

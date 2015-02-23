@@ -31,12 +31,15 @@ class SkyboxProgram extends ShaderProgram {
   */
 
   void drawModels(GameLoopHtml gameLoop, Camera cam, Matrix4 pMatrix) {
+        
     if (!shaderReady) {
       return;
     }
-
+    
+    gl.depthRange(1.0, 1.0); // draw skybox at far plane    
+    
     gl.useProgram(program);
-    gl.enableVertexAttribArray(a_Position);
+    gl.enableVertexAttribArray(a_Position);   
 
     /*
     int unit = 0;
@@ -54,6 +57,8 @@ class SkyboxProgram extends ShaderProgram {
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
 
     //gl.disableVertexAttribArray(a_Position); // needed ??
+    
+    gl.depthRange(0.0, 1.0); // restore default
   }
 }
 
