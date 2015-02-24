@@ -1,0 +1,5 @@
+Super-shaders versus switching multiple programs
+
+"Generally speaking, super-shaders are the wrong way to go, particularly on some hardware. We know of some (now-older) mobile GPUs that indeed have 2^N execution time for N branches in a shader. Newer stuff behaves better, but branches are generally still a big performance hit. Changing programs during rendering is fine."
+
+Jeff Dash on WebGL-dev-list (https://groups.google.com/forum/#!topic/webgl-dev-list/IxuOthAQHwQ)﻿
