@@ -76,16 +76,13 @@ class CameraControl {
         return;
       }
     } else {
-      // getting away - farthest distance is skybox half edge (minus bounding diameter)
+      // getting away - farthest distance is far plane
 
-      double halfEdge = cam.skyboxHalfEdge;
-      if (halfEdge != null) {
-        double maxDistance = halfEdge - 2.0 * getBoundingRadius();
-        double currDistance = cam.frontVector.length;
-        if (currDistance + wheelToDistance(dy) > maxDistance) {
-          messageUser("camera: maximum distance reached: $maxDistance");
-          return;
-        }
+      double maxDistance = cam.planeFar;
+      double currDistance = cam.frontVector.length;
+      if (currDistance + wheelToDistance(dy) > maxDistance) {
+        messageUser("camera: maximum distance reached: $maxDistance");
+        return;
       }
     }
 

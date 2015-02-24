@@ -3,6 +3,7 @@ library camera;
 import 'package:vector_math/vector_math.dart';
 
 import 'logg.dart';
+import 'message.dart';
 import 'vec.dart';
 import 'skybox.dart';
 
@@ -22,7 +23,8 @@ void trackKey(bool isDown) {
     // only on UP->DOWN: toogle pause on/off
     _cameraTracking = !_cameraTracking;
     String t = cameraTracking ? "on" : "off";
-    debug("Camera tracking: $t");
+    String msg = "camera tracking: $t";
+    messageUser(msg);
   }
 
   _trackWasDown = isDown; // update status
@@ -43,6 +45,9 @@ class Camera {
 
   SkyboxInstance _skybox;
 
+  double planeFar;
+
+  /*
   double get skyboxHalfEdge {
     if (_skybox == null) {
       return null;
@@ -50,6 +55,7 @@ class Camera {
 
     return _skybox.halfEdge;
   }
+   */
 
   void set skybox(SkyboxInstance box) {
     _skybox = box;
@@ -67,7 +73,7 @@ class Camera {
     return 'pos=$_position focus=$_focusPosition up=$_upDirection';
   }
 
-  Camera(Vector3 coord) {
+  Camera(Vector3 coord, this.planeFar) {
     moveTo(coord);
     _focusPosition = new Vector3(0.0, 0.0, -1.0);
     _upDirection = new Vector3(0.0, 1.0, 0.0);

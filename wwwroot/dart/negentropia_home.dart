@@ -35,7 +35,10 @@ Map<String, Shader> shaderCache;
 Map<String, Texture> textureTable;
 Matrix4 pMatrix = new Matrix4.zero();
 double fieldOfViewYRadians = 45 * math.PI / 180;
-Camera cam = new Camera(new Vector3(0.0, 0.0, 15.0));
+double planeNear = 2.0; // 2m
+double planeFar = 10000.0; // 10km
+double skyboxScale = planeNear * 1.8; // side > nearPlane * sqrt(3)
+Camera cam = new Camera(new Vector3(0.0, 0.0, 15.0), planeFar);
 CameraControl camControl = new CameraControl();
 bool backfaceCulling = false;
 bool showPicking = false;
@@ -43,9 +46,6 @@ Asset asset = new Asset("/");
 SkyboxProgram skybox;
 PickerShader picker;
 SolidShader solidShader;
-double planeNear = 2.0; // 2m
-double planeFar = 10000.0; // 10km
-double skyboxScale = 5.0; // 5m
 int mouseDragBeginX = null;
 int mouseDragBeginY = null;
 int mouseDragCurrX = null;

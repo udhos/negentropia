@@ -472,6 +472,8 @@ class Model {
     log("globe tex coord: size=${globeTexCoord.length} (2 * $vertexCount1) $globeTexCoord");
      */
 
+    boundingRadius = radius;
+
     _createBuffers(gl, globeIndices, globePosCoord, globeTexCoord, null);
   }
 
