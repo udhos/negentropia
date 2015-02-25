@@ -36,7 +36,7 @@ Map<String, Texture> textureTable;
 Matrix4 pMatrix = new Matrix4.zero();
 double fieldOfViewYRadians = 45 * math.PI / 180;
 double planeNear = 2.0; // 2m
-double planeFar = 10000.0; // 10km
+double planeFar = 5000.0; // 5km
 double skyboxScale = planeNear * 1.8; // side > nearPlane * sqrt(3)
 Camera cam = new Camera(new Vector3(0.0, 0.0, 15.0), planeFar);
 CameraControl camControl = new CameraControl();

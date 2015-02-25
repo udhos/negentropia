@@ -37,6 +37,10 @@ class TextureInfo {
     gl.bindTexture(RenderingContext.TEXTURE_2D, null);
   }
 
+  bool isPowerOfTwo(int v) {
+    return v != 0 && (v & (v - 1)) == 0;
+  }
+
   void _loadTexture2D(RenderingContext gl, Map<String, Texture> textureTable) {
     assert(texture != null);
 
@@ -64,21 +68,33 @@ class TextureInfo {
       // undo flip Y otherwise it could affect other texImage calls
       gl.pixelStorei(RenderingContext.UNPACK_FLIP_Y_WEBGL, 0);
 
-      gl.texParameteri(RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
-      gl.texParameteri(RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.NEAREST);
+      bool mipmap = isPowerOfTwo(image.width) && isPowerOfTwo(image.height);
+
+      if (mipmap) {
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.LINEAR);
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_MIN_FILTER,
+            RenderingContext.LINEAR_MIPMAP_NEAREST);
+        gl.generateMipmap(RenderingContext.TEXTURE_2D);
+      } else {
+        log("can't enable MIPMAP for NPOT texture: $textureName");
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_MAG_FILTER, RenderingContext.NEAREST);
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_MIN_FILTER, RenderingContext.NEAREST);
+      }
 
       gl.texParameteri(
           RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_S, wrap);
       gl.texParameteri(
           RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_T, wrap);
 
-      anisotropic_filtering_enable(gl, textureName);
+      int anisotropy = anisotropic_filtering_enable(gl, textureName);
 
       gl.bindTexture(RenderingContext.TEXTURE_2D, null);
 
-      //log("texture loaded: $textureName");
+      log("texture loaded: url=$textureName size=${image.width}x${image.height} mipmap=$mipmap anisotropy=$anisotropy");
     }
 
     void onError(Event e) {
