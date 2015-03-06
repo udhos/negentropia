@@ -12,6 +12,7 @@ import 'camera.dart';
 import 'interpolate.dart';
 import 'logg.dart';
 import 'texture.dart';
+import 'extensions.dart';
 
 class SkyboxProgram extends ShaderProgram {
   UniformLocation u_Skybox;
@@ -184,7 +185,7 @@ class SkyboxInstance extends Instance {
       //gl.bindTexture(RenderingContext.TEXTURE_CUBE_MAP, (model as SkyboxModel).cubemapTexture);
 
       gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
-          RenderingContext.UNSIGNED_SHORT,
+          ext_get_element_type,
           piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });
   }

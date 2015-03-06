@@ -17,6 +17,7 @@ import 'texture.dart';
 import 'asset.dart';
 import 'logg.dart';
 import 'selection.dart';
+import 'extensions.dart';
 
 part 'buffer.dart';
 part 'shader_tex.dart';

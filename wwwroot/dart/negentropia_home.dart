@@ -28,6 +28,7 @@ import 'wheel.dart';
 import 'fullscreen.dart';
 import 'texture.dart';
 import 'string.dart';
+import 'extensions.dart';
 
 bool debugLostContext = true;
 List<ShaderProgram> programList = new List<ShaderProgram>();
@@ -223,9 +224,7 @@ void dispatcher(
       if (tab != null) {
         String culling = tab['backfaceCulling'];
         backfaceCulling = stringIsTrue(culling);
-        if (backfaceCulling) {
-          updateCulling(gl);
-        }
+        updateCulling(gl);
 
         String camCoord = tab['cameraCoord'];
         /*
@@ -654,12 +653,15 @@ void resetZone(RenderingContext gl) {
 
 void updateCulling(RenderingContext gl) {
   if (backfaceCulling) {
+    print("backface culling: ON");
+
     gl.frontFace(RenderingContext.CCW);
     gl.cullFace(RenderingContext.BACK);
     gl.enable(RenderingContext.CULL_FACE);
     return;
   }
 
+  print("backface culling: OFF");
   gl.disable(RenderingContext.CULL_FACE);
 }
 
@@ -670,6 +672,8 @@ void clearColor(RenderingContext gl, double r, g, b, a) {
 
 void initContext(RenderingContext gl, GameLoopHtml gameLoop) {
   requestZone();
+
+  enable_extensions(gl);
 
   clearColor(gl, 0.5, 0.5, 0.5, 1.0);
   gl.enable(RenderingContext.DEPTH_TEST); // enable depth testing

@@ -2,7 +2,7 @@
 # assign zone to user
 # this puts the user camera into a specific zone
 # hset everton.marques@gmail.com location z:0
-hset everton.marques@gmail.com location z:zero_city0
+hset everton.marques@gmail.com location z:zero_mine0
 hset udhos0@gmail.com          location z:1
 
 # add shader program
@@ -170,10 +170,26 @@ del l:zero_city0_list
 sadd l:zero_city0_list m:zero_city0_floor m:zero_car0 m:zero_car1 m:zero_car2
 
 # zero mine0 at planet0
-hset z:zero_mine0 backfaceCulling true
+hset z:zero_mine0 backfaceCulling false
 hset z:zero_mine0 skyboxURL /skybox/skybox_canyon.json
 hset z:zero_mine0 programName p:simpleTexturizer
 hset z:zero_mine0 cameraCoord 0.0,0.0,90.0
+
+# add object/model
+hset o:minecraft_house objURL /obj/house.obj
+hset o:minecraft_house programName p:simpleTexturizer
+hset o:minecraft_house modelFront 100.0,0.0,0.0
+hset o:minecraft_house modelUp 0.0,100.0,0.0
+
+# create instance
+hset m:minecraft_house0 obj o:minecraft_house
+hset m:minecraft_house0 coord 0.0,0.0,0.0
+hset m:minecraft_house0 scale 1.0
+
+# add instance list to zone
+hset z:zero_mine0 instanceList l:zero_mine0_list
+del l:zero_mine0_list
+sadd l:zero_mine0_list m:minecraft_house0
 
 # zero planet0 at solar0
 hset z:zero_planet0 backfaceCulling true

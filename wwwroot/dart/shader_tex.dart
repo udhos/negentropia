@@ -221,6 +221,7 @@ class TexModel extends Model {
 }
 
 class TexInstance extends Instance {
+
   TexInstance(id, TexModel model, Vector3 center, double scale,
       [Float32List pick = null])
       : super(id, model, center, scale, pick);
@@ -244,8 +245,7 @@ class TexInstance extends Instance {
       //gl.uniform1i((prog as TexShaderProgram).u_Sampler, unit);
       gl.uniform1i((prog as TexShaderProgram).u_Sampler, defaultTextureUnit);
 
-      gl.drawElements(RenderingContext.TRIANGLES, tp.vertexIndexLength,
-          RenderingContext.UNSIGNED_SHORT,
+      gl.drawElements(RenderingContext.TRIANGLES, tp.vertexIndexLength, ext_get_element_type,
           tp.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });
   }

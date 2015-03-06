@@ -179,7 +179,7 @@ class Instance {
 
     model.pieceList.forEach((piece) {
       gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
-          RenderingContext.UNSIGNED_SHORT,
+          ext_get_element_type,
           piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
     });
   }
@@ -224,13 +224,20 @@ class Model {
       List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
     vertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
+
     gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER,
         new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
 
     vertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
-    gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER,
-        new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
+
+    if (ext_element_uint) {
+      gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER,
+          new Uint32List.fromList(indices), RenderingContext.STATIC_DRAW);
+    } else {
+      gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER,
+          new Uint16List.fromList(indices), RenderingContext.STATIC_DRAW);
+    }
 
     // clean-up
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
@@ -383,7 +390,10 @@ class Model {
       }
 
       Obj obj = new Obj.fromString(_objURL, response,
-          defaultName: "noname", fillMissingTextCoord: true);
+          defaultName: "noname",
+          fillMissingTextCoord: true,
+          printStats: true,
+          debugPrintParts: true);
 
       showObjStats(obj);
 
