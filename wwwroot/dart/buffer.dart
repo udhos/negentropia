@@ -198,7 +198,11 @@ class Model {
   Buffer vertexPositionBuffer;
   Buffer vertexIndexBuffer;
   final int vertexPositionBufferItemSize = 3; // coord x,y,z
-  final int vertexIndexBufferItemSize = 2; // size of Uint16Array
+  //final int vertexIndexBufferItemSize = 2; // size of Uint16Array
+  
+  int get vertexIndexBufferItemSize {
+    return ext_get_element_size;
+  }
 
   bool modelReady = false; // buffers
   bool piecesReady = false; // multiple OBJ pieces
