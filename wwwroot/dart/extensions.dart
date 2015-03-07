@@ -5,8 +5,8 @@ import 'dart:web_gl';
 import 'logg.dart';
 
 bool _ext_element_uint = false;
-int _ext_element_type;
-int _ext_element_size;
+int _ext_element_type = RenderingContext.UNSIGNED_SHORT;
+int _ext_element_size = 2;
 
 bool get ext_element_uint => _ext_element_uint;
 
