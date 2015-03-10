@@ -199,7 +199,7 @@ class Model {
   Buffer vertexIndexBuffer;
   final int vertexPositionBufferItemSize = 3; // coord x,y,z
   //final int vertexIndexBufferItemSize = 2; // size of Uint16Array
-  
+
   int get vertexIndexBufferItemSize {
     return ext_get_element_size;
   }
@@ -396,8 +396,7 @@ class Model {
       Obj obj = new Obj.fromString(_objURL, response,
           defaultName: "noname",
           fillMissingTextCoord: true,
-          printStats: true,
-          debugPrintParts: true);
+          printStats: true);
 
       showObjStats(obj);
 

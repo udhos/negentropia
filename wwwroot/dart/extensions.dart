@@ -25,12 +25,11 @@ void enable_element_uint(RenderingContext gl) {
   }
 
   _ext_element_uint = ext != null;
-  
+
   if (_ext_element_uint) {
     _ext_element_type = RenderingContext.UNSIGNED_INT;
     _ext_element_size = 4;
-  }
-  else {
+  } else {
     _ext_element_type = RenderingContext.UNSIGNED_SHORT;
     _ext_element_size = 2;
   }
