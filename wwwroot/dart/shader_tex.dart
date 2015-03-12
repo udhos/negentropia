@@ -196,8 +196,8 @@ class TexModel extends Model {
 
     // vertex coord
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
-    gl.vertexAttribPointer(program.a_Position,
-        vertexPositionBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(program.a_Position, vertexPositionBufferItemSize,
+        RenderingContext.FLOAT, false, 0, 0);
 
     // texture coord
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
