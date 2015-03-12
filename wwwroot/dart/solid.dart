@@ -37,22 +37,22 @@ class AxisInstance extends Instance {
     gl.uniform4fv((prog as SolidShader).u_Color, red);
     p = model.pieceList[0];
     gl.drawElements(RenderingContext.LINES, p.vertexIndexLength,
-        ext_get_element_type,
-        p.vertexIndexOffset * model.vertexIndexBufferItemSize);
+        model.vertexIndexElementType,
+        p.vertexIndexOffset * model.vertexIndexElementSize);
 
     // draw up/green arrow
     gl.uniform4fv((prog as SolidShader).u_Color, green);
     p = model.pieceList[1];
     gl.drawElements(RenderingContext.LINES, p.vertexIndexLength,
-        ext_get_element_type,
-        p.vertexIndexOffset * model.vertexIndexBufferItemSize);
+        model.vertexIndexElementType,
+        p.vertexIndexOffset * model.vertexIndexElementSize);
 
     // draw right/blue arrow
     gl.uniform4fv((prog as SolidShader).u_Color, blue);
     p = model.pieceList[2];
     gl.drawElements(RenderingContext.LINES, p.vertexIndexLength,
-        ext_get_element_type,
-        p.vertexIndexOffset * model.vertexIndexBufferItemSize);
+        model.vertexIndexElementType,
+        p.vertexIndexOffset * model.vertexIndexElementSize);
   }
 }
 

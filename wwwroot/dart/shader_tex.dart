@@ -174,16 +174,6 @@ class TexModel extends Model {
     assert((pieceList.first as TexPiece).texInfo == texInfo);
 
     piecesReady = true;
-
-    /*
-    //DEBUG:
-    TexPiece tp = pieceList.first as TexPiece;
-    log("TexModel.fromGlobe vertexPositionBufferItemSize=$vertexPositionBufferItemSize");
-    log("TexModel.fromGlobe textureCoordBufferItemSize=$textureCoordBufferItemSize");
-    log("TexModel.fromGlobe vertexIndexBufferItemSize=$vertexIndexBufferItemSize");
-    log("TexModel.fromGlobe piece vertexIndexOffset=${tp.vertexIndexOffset}");
-    log("TexModel.fromGlobe piece vertexIndexLength=${tp.vertexIndexLength}");
-     */
   }
 
   Piece addPiece(int offset, int length) {
@@ -245,8 +235,8 @@ class TexInstance extends Instance {
       gl.uniform1i((prog as TexShaderProgram).u_Sampler, defaultTextureUnit);
 
       gl.drawElements(RenderingContext.TRIANGLES, tp.vertexIndexLength,
-          ext_get_element_type,
-          tp.vertexIndexOffset * model.vertexIndexBufferItemSize);
+          model.vertexIndexElementType,
+          tp.vertexIndexOffset * model.vertexIndexElementSize);
     });
   }
 }

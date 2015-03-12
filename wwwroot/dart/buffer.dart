@@ -179,8 +179,8 @@ class Instance {
 
     model.pieceList.forEach((piece) {
       gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
-          ext_get_element_type,
-          piece.vertexIndexOffset * model.vertexIndexBufferItemSize);
+          model.vertexIndexElementType,
+          piece.vertexIndexOffset * model.vertexIndexElementSize);
     });
   }
 }
@@ -200,9 +200,16 @@ class Model {
   final int vertexPositionBufferItemSize = 3; // coord x,y,z
   //final int vertexIndexBufferItemSize = 2; // size of Uint16Array
 
-  int get vertexIndexBufferItemSize {
-    return ext_get_element_size;
-  }
+  int _indexElementType = RenderingContext.UNSIGNED_SHORT;
+  int _indexElementSize = 2;
+
+  bool _needBigIndex = false;
+
+  bool get useBigIndex => _needBigIndex && ext_element_uint;
+
+  int get vertexIndexElementType => _indexElementType;
+
+  int get vertexIndexElementSize => _indexElementSize;
 
   bool modelReady = false; // buffers
   bool piecesReady = false; // multiple OBJ pieces
@@ -235,7 +242,7 @@ class Model {
     vertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 
-    if (ext_element_uint) {
+    if (this.useBigIndex) {
       gl.bufferDataTyped(RenderingContext.ELEMENT_ARRAY_BUFFER,
           new Uint32List.fromList(indices), RenderingContext.STATIC_DRAW);
     } else {
@@ -394,9 +401,20 @@ class Model {
       }
 
       Obj obj = new Obj.fromString(_objURL, response,
-          defaultName: "noname",
-          fillMissingTextCoord: true,
-          printStats: true);
+          defaultName: "noname", fillMissingTextCoord: true, printStats: true);
+
+      this._needBigIndex = obj.bigIndexFound;
+
+      if (this._needBigIndex) {
+        log("OBJ URL=$_objURL requires support for big index>65535");
+        if (ext_element_uint) {
+          _indexElementType = RenderingContext.UNSIGNED_INT;
+          _indexElementSize = 4;
+        } else {
+          err("OBJ URL=$_objURL requires support for big index>65535, but OES_element_index_uint is unsupported");
+        }
+      }
+      log("OBJ URL=$_objURL useBigIndex=$useBigIndex");
 
       showObjStats(obj);
 

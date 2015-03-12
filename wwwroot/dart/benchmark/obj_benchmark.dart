@@ -19,6 +19,7 @@ class ObjBenchmark extends BenchmarkBase {
 
   void run() {
     Obj obj = new Obj.fromString(objURL, objString);
+    assert(obj != null);
   }
 }
 
@@ -31,6 +32,7 @@ class MtlBenchmark extends BenchmarkBase {
 
   void run() {
     Map<String, Material> lib = mtllib_parse(mtlString, mtlURL);
+    assert(lib != null);
   }
 }
 
