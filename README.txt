@@ -34,7 +34,7 @@ GENERAL BUILDING GUIDELINES:
 export DEVEL=/c/tmp/devel
 mkdir -p $DEVEL
 cd $DEVEL
-git clone https://code.google.com/p/negentropia/
+git clone https://github.com/udhos/negentropia
 
 # 2. Set GOPATH to negentropia/webserv
 export GOPATH=$DEVEL/negentropia/webserv

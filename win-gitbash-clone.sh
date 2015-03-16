@@ -6,7 +6,7 @@ export GOPATH=$DEVEL/negentropia/webserv
 [ -d $DEVEL ] || mkdir -p $DEVEL
 cd $DEVEL
 
-git clone https://code.google.com/p/negentropia/
+git clone https://github.com/udhos/negentropia
 
 go_get () {
 	local i=$1
