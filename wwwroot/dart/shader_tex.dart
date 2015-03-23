@@ -4,6 +4,11 @@ class TexShaderProgram extends ShaderProgram {
   int a_TextureCoord;
   UniformLocation u_Sampler;
 
+  final int stride =
+      5 * 4; /* (x,y,z),(u,v) = five 4-byte floats floats =  24 bytes */
+  final int a_Position_strideOffset = 0;
+  final int a_TextureCoord_strideOffset = 3 * 4;
+
   TexShaderProgram(RenderingContext gl, String programName)
       : super(gl, programName);
 
@@ -45,7 +50,8 @@ class TexPiece extends Piece {
 }
 
 class TexModel extends Model {
-  Buffer textureCoordBuffer;
+  Buffer vertexBuffer;
+  //Buffer textureCoordBuffer;
   final int textureCoordBufferItemSize = 2; // coord s,t
   Asset asset;
   Map<String, Texture> textureTable;
@@ -67,6 +73,7 @@ class TexModel extends Model {
       List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
     assert(!modelReady);
 
+    /*
     //log("TexModel._createBuffers model=$modelName");
 
     textureCoordBuffer = gl.createBuffer();
@@ -75,6 +82,27 @@ class TexModel extends Model {
         new Float32List.fromList(textCoord), RenderingContext.STATIC_DRAW);
 
     super._createBuffers(gl, indices, vertCoord, textCoord, normCoord);
+     */
+
+    List<double> buf = new List<double>();
+
+    for (int i = 0, j = 0; i < vertCoord.length; i += 3, j += 2) {
+      buf.add(vertCoord[i]);
+      buf.add(vertCoord[i + 1]);
+      buf.add(vertCoord[i + 2]);
+
+      buf.add(textCoord[j]);
+      buf.add(textCoord[j + 1]);
+    }
+
+    vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER,
+        new Float32List.fromList(buf), RenderingContext.STATIC_DRAW);
+
+    createIndexBuffer(gl, indices);
+
+    modelReady = true;
 
     assert(modelReady);
   }
@@ -194,15 +222,21 @@ class TexModel extends Model {
 
     RenderingContext gl = program.gl;
 
+    TexShaderProgram texProg = program as TexShaderProgram;
+
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexBuffer);
+
     // vertex coord
-    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
+    //gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
     gl.vertexAttribPointer(program.a_Position, vertexPositionBufferItemSize,
-        RenderingContext.FLOAT, false, 0, 0);
+        RenderingContext.FLOAT, false, texProg.stride,
+        texProg.a_Position_strideOffset);
 
     // texture coord
-    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
+    //gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
     gl.vertexAttribPointer((program as TexShaderProgram).a_TextureCoord,
-        textureCoordBufferItemSize, RenderingContext.FLOAT, false, 0, 0);
+        textureCoordBufferItemSize, RenderingContext.FLOAT, false,
+        texProg.stride, texProg.a_TextureCoord_strideOffset);
 
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 

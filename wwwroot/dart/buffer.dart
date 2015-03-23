@@ -198,6 +198,7 @@ class Model {
   Buffer vertexPositionBuffer;
   Buffer vertexIndexBuffer;
   final int vertexPositionBufferItemSize = 3; // coord x,y,z
+
   //final int vertexIndexBufferItemSize = 2; // size of Uint16Array
 
   int _indexElementType = RenderingContext.UNSIGNED_SHORT;
@@ -231,14 +232,7 @@ class Model {
 
   double boundingRadius;
 
-  void _createBuffers(RenderingContext gl, List<int> indices,
-      List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
-    vertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
-
-    gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER,
-        new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
-
+  void createIndexBuffer(RenderingContext gl, List<int> indices) {
     vertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 
@@ -251,8 +245,21 @@ class Model {
     }
 
     // clean-up
-    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, null);
+  }
+
+  void _createBuffers(RenderingContext gl, List<int> indices,
+      List<double> vertCoord, List<double> textCoord, List<double> normCoord) {
+    vertexPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
+
+    gl.bufferDataTyped(RenderingContext.ARRAY_BUFFER,
+        new Float32List.fromList(vertCoord), RenderingContext.STATIC_DRAW);
+
+    // clean-up
+    gl.bindBuffer(RenderingContext.ARRAY_BUFFER, null);
+
+    createIndexBuffer(gl, indices);
 
     modelReady = true;
   }
