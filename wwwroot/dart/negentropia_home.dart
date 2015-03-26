@@ -649,6 +649,13 @@ void resetZone(RenderingContext gl) {
   programList = new List<ShaderProgram>(); // drop existing programs
   shaderCache = new Map<String, Shader>(); // drop existing compile shader cache
   textureTable = new Map<String, Texture>(); // drop existing texture table
+
+  skybox =
+      null; // drop skybox shader (re-created only when new skybox is added to zone)
+  picker =
+      null; // drop picking shader (re-created only when any model instance is added)
+  solidShader =
+      null; // drop axis shader (re-created only when any model instance is added)
 }
 
 void updateCulling(RenderingContext gl) {
