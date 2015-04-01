@@ -1,0 +1,8 @@
+webgl transparency
+
+https://cesiumjs.org/2014/03/14/Weighted-Blended-Order-Independent-Transparency/
+
+https://www.udacity.com/course/viewer#!/c-cs291/l-91376562/m-103530767
+
+--
+
