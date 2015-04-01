@@ -4,10 +4,10 @@ class TexShaderProgram extends ShaderProgram {
   int a_TextureCoord;
   UniformLocation u_Sampler;
 
-  final int stride =
+  static final int stride =
       5 * 4; /* (x,y,z),(u,v) = five 4-byte floats floats =  24 bytes */
-  final int a_Position_strideOffset = 0;
-  final int a_TextureCoord_strideOffset = 3 * 4;
+  static final int a_Position_strideOffset = 0;
+  static final int a_TextureCoord_strideOffset = 3 * 4;
 
   TexShaderProgram(RenderingContext gl, String programName)
       : super(gl, programName);
@@ -222,21 +222,21 @@ class TexModel extends Model {
 
     RenderingContext gl = program.gl;
 
-    TexShaderProgram texProg = program as TexShaderProgram;
+    //TexShaderProgram texProg = program as TexShaderProgram;
 
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexBuffer);
 
     // vertex coord
     //gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
     gl.vertexAttribPointer(program.a_Position, vertexPositionBufferItemSize,
-        RenderingContext.FLOAT, false, texProg.stride,
-        texProg.a_Position_strideOffset);
+        RenderingContext.FLOAT, false, TexShaderProgram.stride,
+        TexShaderProgram.a_Position_strideOffset);
 
     // texture coord
     //gl.bindBuffer(RenderingContext.ARRAY_BUFFER, textureCoordBuffer);
     gl.vertexAttribPointer((program as TexShaderProgram).a_TextureCoord,
         textureCoordBufferItemSize, RenderingContext.FLOAT, false,
-        texProg.stride, texProg.a_TextureCoord_strideOffset);
+        TexShaderProgram.stride, TexShaderProgram.a_TextureCoord_strideOffset);
 
     gl.bindBuffer(RenderingContext.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer);
 
