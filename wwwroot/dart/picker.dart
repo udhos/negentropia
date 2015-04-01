@@ -61,27 +61,27 @@ class PickerInstance extends Instance {
     super.draw(gameLoop, prog, cam);
   }
    */
-  
+
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
     RenderingContext gl = prog.gl;
     gl.uniform4fv((prog as PickerShader).u_Color, pickColor);
-    
+
     if (model is! TexModel) {
       super.draw(gameLoop, prog, cam);
       return;
     }
-    
+
     //TexShaderProgram texProg = prog as TexShaderProgram;
     TexModel m = model as TexModel;
-    
-    uploadModelView(gl, prog.u_MV, cam, scale); // set up MV matrix   
+
+    uploadModelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
     // vertex coord
     //gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, m.vertexBuffer);
     gl.vertexAttribPointer(prog.a_Position, m.vertexPositionBufferItemSize,
         RenderingContext.FLOAT, false, TexShaderProgram.stride,
-        TexShaderProgram.a_Position_strideOffset);  
+        TexShaderProgram.a_Position_strideOffset);
 
     gl.bindBuffer(
         RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
@@ -91,10 +91,8 @@ class PickerInstance extends Instance {
           model.vertexIndexElementType,
           piece.vertexIndexOffset * model.vertexIndexElementSize);
     });
-
-    }
-    
-  }  
+  }
+}
 
 class PickerShader extends ShaderProgram {
   UniformLocation u_Color;
