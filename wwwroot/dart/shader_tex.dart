@@ -5,7 +5,7 @@ class TexShaderProgram extends ShaderProgram {
   UniformLocation u_Sampler;
 
   static final int stride =
-      5 * 4; /* (x,y,z),(u,v) = five 4-byte floats floats =  24 bytes */
+      5 * 4; /* (x,y,z),(u,v) = five 4-byte floats floats =  20 bytes */
   static final int a_Position_strideOffset = 0;
   static final int a_TextureCoord_strideOffset = 3 * 4;
 

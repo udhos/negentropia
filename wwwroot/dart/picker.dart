@@ -42,25 +42,16 @@ Float32List generatePickColor() {
   return new Float32List.fromList(_currentPickColor);
 }
 
-/*
-PickerInstance mouseClickHit(Iterable<Instance> list, Uint8List color) {  
-  return colorHit(list, color[0], color[1], color[2]);
-}
-*/
-
 class PickerInstance extends Instance {
   PickerInstance(Instance i)
       : super(i.id, i.model, i._center, i.scale, i.pickColor);
 
   // the whole purpose of this class is to redefine the draw() method
   // in order to send the pickColor as a uniform to the fragment shader
-  /*
-  void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
-    RenderingContext gl = prog.gl;
-    gl.uniform4fv((prog as PickerShader).u_Color, pickColor);
-    super.draw(gameLoop, prog, cam);
-  }
-   */
+
+  // however for picker instances of TexModel, we also need to use
+  // the interleaved buffer in vertexBuffer because the coord-only
+  // buffer in vertexPositionBuffer was not initialized
 
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
     RenderingContext gl = prog.gl;
@@ -71,26 +62,17 @@ class PickerInstance extends Instance {
       return;
     }
 
-    //TexShaderProgram texProg = prog as TexShaderProgram;
-    TexModel m = model as TexModel;
-
     uploadModelView(gl, prog.u_MV, cam, scale); // set up MV matrix
 
+    TexModel m = model as TexModel;
+
     // vertex coord
-    //gl.bindBuffer(RenderingContext.ARRAY_BUFFER, vertexPositionBuffer);
     gl.bindBuffer(RenderingContext.ARRAY_BUFFER, m.vertexBuffer);
     gl.vertexAttribPointer(prog.a_Position, m.vertexPositionBufferItemSize,
         RenderingContext.FLOAT, false, TexShaderProgram.stride,
         TexShaderProgram.a_Position_strideOffset);
 
-    gl.bindBuffer(
-        RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
-
-    model.pieceList.forEach((piece) {
-      gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
-          model.vertexIndexElementType,
-          piece.vertexIndexOffset * model.vertexIndexElementSize);
-    });
+    drawElements(gl);
   }
 }
 

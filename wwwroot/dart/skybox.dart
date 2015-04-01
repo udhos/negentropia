@@ -176,6 +176,7 @@ class SkyboxInstance extends Instance {
     gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize,
         RenderingContext.FLOAT, false, 0, 0);
 
+    /*
     gl.bindBuffer(
         RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
 
@@ -187,5 +188,8 @@ class SkyboxInstance extends Instance {
           model.vertexIndexElementType,
           piece.vertexIndexOffset * model.vertexIndexElementSize);
     });
+     */
+    
+    drawElements(gl);
   }
 }

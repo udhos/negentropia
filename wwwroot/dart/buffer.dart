@@ -165,6 +165,17 @@ class Instance {
     gl.uniformMatrix4fv(u_MV, false, MV.storage);
   }
 
+  void drawElements(RenderingContext gl) {
+    gl.bindBuffer(
+        RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
+
+    model.pieceList.forEach((piece) {
+      gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
+          model.vertexIndexElementType,
+          piece.vertexIndexOffset * model.vertexIndexElementSize);
+    });
+  }
+
   void draw(GameLoopHtml gameLoop, ShaderProgram prog, Camera cam) {
     RenderingContext gl = prog.gl;
 
@@ -174,14 +185,7 @@ class Instance {
     gl.vertexAttribPointer(prog.a_Position, model.vertexPositionBufferItemSize,
         RenderingContext.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(
-        RenderingContext.ELEMENT_ARRAY_BUFFER, model.vertexIndexBuffer);
-
-    model.pieceList.forEach((piece) {
-      gl.drawElements(RenderingContext.TRIANGLES, piece.vertexIndexLength,
-          model.vertexIndexElementType,
-          piece.vertexIndexOffset * model.vertexIndexElementSize);
-    });
+    drawElements(gl);
   }
 }
 
