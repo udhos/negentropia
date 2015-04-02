@@ -8,5 +8,7 @@ set GOPATH=%DEVEL%\negentropia\webserv
 @rem go install negentropia\world
 
 go get -u github.com/gopherjs/gopherjs
+go get -u github.com/gopherjs/webgl
+go get honnef.co/go/js/dom
 
 @rem eof

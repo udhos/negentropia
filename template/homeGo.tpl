@@ -3,7 +3,7 @@
 {{ define "script" }}
 
 {{if .Account}}
-    <script async src="/negoc/negoc.js"></script>
+    <script src="/negoc/negoc.js"></script>
 {{end}}
 	
 {{ end }}
