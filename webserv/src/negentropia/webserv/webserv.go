@@ -157,6 +157,7 @@ func main() {
 
 	http.HandleFunc(cfg.HomePath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.HomeDart) })
 	http.HandleFunc(cfg.HomeJSPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.HomeJS) })
+	http.HandleFunc(cfg.HomeGoPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.HomeGo) })
 	http.HandleFunc(cfg.LogoutPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Logout) })
 	http.HandleFunc(cfg.LoginPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.Login) })
 	http.HandleFunc(cfg.LoginAuthPath(), func(w http.ResponseWriter, r *http.Request) { trapHandle(w, r, handler.LoginAuth) })

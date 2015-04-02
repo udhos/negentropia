@@ -15,7 +15,7 @@ import (
 	"negentropia/webserv/store"
 )
 
-type HomeDartPage struct {
+type HomeGoPage struct {
 	HomePath   string
 	HomeJSPath string
 	HomeGoPath string
@@ -34,7 +34,7 @@ type HomeDartPage struct {
 	Websocket string
 }
 
-func sendHomeDart(w http.ResponseWriter, p HomeDartPage) error {
+func sendHomeGo(w http.ResponseWriter, p HomeGoPage) error {
 	p.HomePath = cfg.HomePath()
 	p.HomeJSPath = cfg.HomeJSPath()
 	p.HomeGoPath = cfg.HomeGoPath()
@@ -47,7 +47,7 @@ func sendHomeDart(w http.ResponseWriter, p HomeDartPage) error {
 	p.Websocket = store.Get(share.WORLD_WEBSOCKET)
 
 	// FIXME: we're loading template every time
-	t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("homeDart.tpl"))
+	t, err := template.ParseFiles(TemplatePath("base.tpl"), TemplatePath("homeGo.tpl"))
 	if err != nil {
 		return err
 	}
@@ -57,15 +57,15 @@ func sendHomeDart(w http.ResponseWriter, p HomeDartPage) error {
 	return nil
 }
 
-func HomeDart(w http.ResponseWriter, r *http.Request, s *session.Session) {
+func HomeGo(w http.ResponseWriter, r *http.Request, s *session.Session) {
 	path := r.URL.Path
 
-	log.Printf("handler.HomeDart url=%s", path)
+	log.Printf("handler.HomeGo url=%s", path)
 
 	account := accountLabel(s)
 
-	if err := sendHomeDart(w, HomeDartPage{Account: account, ShowNavAccount: true}); err != nil {
-		log.Printf("handler.HomeDart url=%s %s", path, err.Error())
+	if err := sendHomeGo(w, HomeGoPage{Account: account, ShowNavAccount: true}); err != nil {
+		log.Printf("handler.HomeGo url=%s %s", path, err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

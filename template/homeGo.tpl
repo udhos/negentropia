@@ -3,8 +3,7 @@
 {{ define "script" }}
 
 {{if .Account}}
-    <script async type="application/dart" src="/dart/negentropia_home.dart"></script>
-    <script async src="/dart/packages/browser/dart.js"></script>
+    <script async src="/negoc/negoc.js"></script>
 {{end}}
 	
 {{ end }}
@@ -15,7 +14,7 @@
 
 <div class="centerbox">
 <h1>Welcome to Negentropia</h1>
-<h3>This is the DART home location</h3>
+<h3>This is the GO home location</h3>
 <div id="ws_status"></div>
 </div>
 
@@ -24,8 +23,8 @@
 <div id="framerate"></div>
 <div id="control"></div>
 
+<div id="toggle">switch to <a href="{{.HomePath}}">dart</a></div>
 <div id="toggle">switch to <a href="{{.HomeJSPath}}">javascript</a></div>
-<div id="toggle">switch to <a href="{{.HomeGoPath}}">go</a></div>
 
 <div>mouse left click: select single item</div>
 <div>hold shift + mouse left click: add/remove item to/from group selection</div>

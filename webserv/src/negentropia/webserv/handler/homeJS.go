@@ -18,6 +18,7 @@ import (
 type HomePage struct {
 	HomePath   string
 	HomeJSPath string
+	HomeGoPath string
 	SignupPath string
 	LoginPath  string
 	LogoutPath string
@@ -36,6 +37,7 @@ type HomePage struct {
 func sendHome(w http.ResponseWriter, p HomePage) error {
 	p.HomePath = cfg.HomePath()
 	p.HomeJSPath = cfg.HomeJSPath()
+	p.HomeGoPath = cfg.HomeGoPath()
 	p.SignupPath = cfg.SignupPath()
 	p.LoginPath = cfg.LoginPath()
 	p.LogoutPath = cfg.LogoutPath()

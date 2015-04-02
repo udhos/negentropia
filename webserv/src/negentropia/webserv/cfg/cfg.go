@@ -7,6 +7,7 @@ import "log"
 var (
 	homePath                    string
 	homeJSPath                  string
+	homeGoPath                  string
 	logoutPath                  string
 	loginPath                   string
 	loginAuthPath               string
@@ -36,6 +37,7 @@ func SetBasePath(basePath string) {
 
 	homePath = basePath + "/"
 	homeJSPath = basePath + "/homeJS"
+	homeGoPath = basePath + "/homeGo"
 	logoutPath = basePath + "/logout"
 	loginPath = basePath + "/login"
 	loginAuthPath = basePath + "/loginAuth"
@@ -53,6 +55,7 @@ func SetBasePath(basePath string) {
 
 func HomePath() string                    { return homePath }
 func HomeJSPath() string                  { return homeJSPath }
+func HomeGoPath() string                  { return homeGoPath }
 func LogoutPath() string                  { return logoutPath }
 func LoginPath() string                   { return loginPath }
 func LoginAuthPath() string               { return loginAuthPath }
