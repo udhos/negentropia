@@ -189,7 +189,7 @@ class SkyboxInstance extends Instance {
           piece.vertexIndexOffset * model.vertexIndexElementSize);
     });
      */
-    
+
     drawElements(gl);
   }
 }

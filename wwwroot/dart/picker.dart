@@ -22,6 +22,10 @@ void _nextColor(List<double> color) {
 
 List<double> _currentPickColor = [0.0, 0.0, 0.0, 1.0];
 
+void resetPickColor() {
+  _currentPickColor = [0.0, 0.0, 0.0, 1.0];
+}
+
 Float32List generatePickColor() {
   _nextColor(_currentPickColor);
 

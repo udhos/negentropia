@@ -646,7 +646,7 @@ void addSolidShader(RenderingContext gl) {
 }
 
 void resetZone(RenderingContext gl) {
-  programList = new List<ShaderProgram>(); // drop existing programs
+  programList = new List<ShaderProgram>(); // drop existing shaders
   shaderCache = new Map<String, Shader>(); // drop existing compile shader cache
   textureTable = new Map<String, Texture>(); // drop existing texture table
 
@@ -656,6 +656,8 @@ void resetZone(RenderingContext gl) {
       null; // drop picking shader (re-created only when any model instance is added)
   solidShader =
       null; // drop axis shader (re-created only when any model instance is added)
+
+  resetPickColor();
 }
 
 void updateCulling(RenderingContext gl) {
