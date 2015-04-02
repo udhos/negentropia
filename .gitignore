@@ -38,6 +38,7 @@
 !template
 !webserv
 !webserv/src
+!webserv/src/negentropia/negoc
 !webserv/src/negentropia/samples
 !webserv/src/negentropia/webserv
 !webserv/src/negentropia/webserv/handler
