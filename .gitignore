@@ -54,6 +54,7 @@
 !webserv/src/negentropia/world/parser
 !webserv/src/negentropia/world/util
 !wwwroot
+!wwwroot/negoc
 !wwwroot/dart
 !wwwroot/dart/cookies
 !wwwroot/dart/test

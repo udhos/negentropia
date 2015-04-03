@@ -9,7 +9,7 @@ cd $DEVEL
 git clone https://github.com/udhos/negentropia
 
 go_get () {
-	local i=$1
+	local i=$*
 	echo go get $i
 	go get $i
 }
@@ -29,3 +29,9 @@ go_get github.com/udhos/vectormath
 #
 go_get code.google.com/p/go.net/websocket
 go_get code.google.com/p/goauth2/oauth
+
+# gopherjs
+go_get -u github.com/gopherjs/gopherjs
+go_get -u github.com/gopherjs/webgl
+go_get honnef.co/go/js/dom
+
