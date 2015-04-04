@@ -5,6 +5,7 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	"honnef.co/go/js/dom"
+	"time"
 )
 
 func log(msg string) {
@@ -12,7 +13,7 @@ func log(msg string) {
 	println(m)
 }
 
-func initGL() {
+func initGL() *webgl.Context {
 
 	document := js.Global.Get("document")
 	//body := document.Get("body")
@@ -31,13 +32,35 @@ func initGL() {
 	gl, err := webgl.NewContext(canvas, attrs)
 	if err != nil {
 		log(err.Error())
+		return nil
 	}
 
+	return gl
+}
+
+func draw(gl *webgl.Context, t time.Time) {
+	//log(fmt.Sprintf("draw: %v", t))
 	gl.ClearColor(0.8, 0.3, 0.01, 1)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 }
 
+func gameLoop(gl *webgl.Context) {
+	log("entering game loop")
+
+	ticker := time.NewTicker(time.Millisecond * 1000)
+	go func() {
+		for t := range ticker.C {
+			draw(gl, t)
+		}
+	}()
+}
+
 func main() {
-	log("negoc main: Hello world, console")
-	initGL()
+	log("main: Hello world, console")
+	gl := initGL()
+	if gl == nil {
+		log("main: no webgl context, exiting")
+		return
+	}
+	gameLoop(gl)
 }
