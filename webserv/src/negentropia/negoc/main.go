@@ -44,10 +44,15 @@ func draw(gl *webgl.Context, t time.Time) {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 }
 
+const FRAME_RATE = .5                    // frames per second
+const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
+
 func gameLoop(gl *webgl.Context) {
+	log(fmt.Sprintf("entering game loop frame_rate=%v frame_interval=%v", FRAME_RATE, FRAME_INTERVAL))
+
 	log("entering game loop")
 
-	ticker := time.NewTicker(time.Millisecond * 1000)
+	ticker := time.NewTicker(time.Millisecond * FRAME_INTERVAL)
 	go func() {
 		for t := range ticker.C {
 			draw(gl, t)
