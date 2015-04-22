@@ -60,9 +60,10 @@ func gameLoop(gl *webgl.Context) {
 
 const vertShaderSrc = `
 attribute vec3 a_Position;
+attribute vec3 a_Position_test; // eraseme
  
 void main(void) {
-	gl_Position = vec4(a_Position, 1.0);
+	gl_Position = vec4(a_Position + a_Position_test, 1.0);
 }
 `
 
@@ -127,7 +128,16 @@ func main() {
 		return
 	}
 
-	newShaderProgram(gl)
+	prog := newShaderProgram(gl)
+
+	attr := "a_Position"
+	a_Position := gl.GetAttribLocation(prog, attr)
+	if a_Position < 0 {
+		log(fmt.Sprintf("main: could not get attribute location: %s", attr))
+		return
+	}
+
+	log(fmt.Sprintf("main: attribute %s=%v", attr, a_Position))
 
 	gl.ClearColor(0.8, 0.3, 0.01, 1)
 
