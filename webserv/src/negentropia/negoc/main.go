@@ -60,10 +60,9 @@ func gameLoop(gl *webgl.Context) {
 
 const vertShaderSrc = `
 attribute vec3 a_Position;
-attribute vec3 a_Position_test; // eraseme
  
 void main(void) {
-	gl_Position = vec4(a_Position + a_Position_test, 1.0);
+	gl_Position = vec4(a_Position, 1.0);
 }
 `
 
