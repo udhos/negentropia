@@ -38,14 +38,26 @@ func initGL() *webgl.Context {
 	return gl
 }
 
-func draw(gl *webgl.Context, t time.Time) {
+func draw(gl *webgl.Context, t time.Time, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
+
+	gl.UseProgram(prog)
+	gl.EnableVertexAttribArray(a_Position)
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
+	gl.VertexAttribPointer(a_Position, VERTEX_POSITION_ITEM_SIZE, gl.FLOAT, false, 0, 0)
+
+	vertexIndexOffset := 0
+	vertexIndexElementSize := 2 // uint16
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer)
+	gl.DrawElements(gl.TRIANGLES, vertexIndexSize, gl.UNSIGNED_SHORT, vertexIndexOffset*vertexIndexElementSize)
 }
 
-const FRAME_RATE = .5                    // frames per second
+const FRAME_RATE = 1                     // frames per second
 const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
 
-func gameLoop(gl *webgl.Context) {
+func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
 	log(fmt.Sprintf("entering game loop frame_rate=%v frame_interval=%v", FRAME_RATE, FRAME_INTERVAL))
 
 	log("entering game loop")
@@ -53,7 +65,7 @@ func gameLoop(gl *webgl.Context) {
 	ticker := time.NewTicker(time.Millisecond * FRAME_INTERVAL)
 	go func() {
 		for t := range ticker.C {
-			draw(gl, t)
+			draw(gl, t, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
 		}
 	}()
 }
@@ -119,6 +131,8 @@ func newShaderProgram(gl *webgl.Context) *js.Object {
 	return program
 }
 
+const VERTEX_POSITION_ITEM_SIZE = 3 // x,y,z
+
 func main() {
 	log("main: Hello world, console")
 	gl := initGL()
@@ -138,7 +152,26 @@ func main() {
 
 	log(fmt.Sprintf("main: attribute %s=%v", attr, a_Position))
 
+	// create buffer
+	vertexIndexBuffer := gl.CreateBuffer()
+	vertexPositionBuffer := gl.CreateBuffer()
+
+	// fill buffer
+
+	indices := []uint16{0, 1, 2}
+	vertexIndexSize := len(indices)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW)
+
+	vertexPositionData := []float32{
+		.5, 0, 0,
+		0, .5, 0,
+		0, 0, 0,
+	}
+	gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
+	gl.BufferData(gl.ARRAY_BUFFER, vertexPositionData, gl.STATIC_DRAW)
+
 	gl.ClearColor(0.8, 0.3, 0.01, 1)
 
-	gameLoop(gl)
+	gameLoop(gl, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
 }
