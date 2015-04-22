@@ -39,8 +39,6 @@ func initGL() *webgl.Context {
 }
 
 func draw(gl *webgl.Context, t time.Time) {
-	//log(fmt.Sprintf("draw: %v", t))
-	gl.ClearColor(0.8, 0.3, 0.01, 1)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 }
 
@@ -60,6 +58,67 @@ func gameLoop(gl *webgl.Context) {
 	}()
 }
 
+const vertShaderSrc = `
+attribute vec3 a_Position;
+ 
+void main(void) {
+	gl_Position = vec4(a_Position, 1.0);
+}
+`
+
+const fragShaderSrc = `
+precision mediump float; // required
+
+void main(void) {
+	gl_FragColor = vec4(0.95, 0.95, .95, 1.0); // white opaque
+}
+`
+
+func compileShader(gl *webgl.Context, shaderSource string, shaderType int) *js.Object {
+	shader := gl.CreateShader(shaderType)
+
+	gl.ShaderSource(shader, shaderSource)
+	gl.CompileShader(shader)
+	parameter := gl.GetShaderParameterb(shader, gl.COMPILE_STATUS)
+	//log(fmt.Sprintf("shader parameter=%v", parameter))
+	if !parameter {
+		infoLog := gl.GetShaderInfoLog(shader)
+		log(fmt.Sprintf("compileShader error: infoLog=%v", infoLog))
+		return nil
+	}
+
+	return shader
+}
+
+func newShaderProgram(gl *webgl.Context) *js.Object {
+	vertShader := compileShader(gl, vertShaderSrc, gl.VERTEX_SHADER)
+	if vertShader == nil {
+		log("newShaderProgram: failure compiling vertex shader")
+		return nil
+	}
+	fragShader := compileShader(gl, fragShaderSrc, gl.FRAGMENT_SHADER)
+	if fragShader == nil {
+		log("newShaderProgram: failure compiling fragment shader")
+		return nil
+	}
+
+	program := gl.CreateProgram()
+	gl.AttachShader(program, vertShader)
+	gl.AttachShader(program, fragShader)
+	gl.LinkProgram(program)
+	progParameter := gl.GetProgramParameterb(program, gl.LINK_STATUS)
+	//log(fmt.Sprintf("program parameter=%v", progParameter))
+	if !progParameter {
+		infoLog := gl.GetProgramInfoLog(program)
+		log(fmt.Sprintf("newShaderProgram: infoLog=%v", infoLog))
+		return nil
+	}
+
+	log("newShaderProgram: done")
+
+	return program
+}
+
 func main() {
 	log("main: Hello world, console")
 	gl := initGL()
@@ -67,5 +126,10 @@ func main() {
 		log("main: no webgl context, exiting")
 		return
 	}
+
+	newShaderProgram(gl)
+
+	gl.ClearColor(0.8, 0.3, 0.01, 1)
+
 	gameLoop(gl)
 }
