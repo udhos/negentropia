@@ -1,0 +1,47 @@
+gopherjs amazing news 2015-04-23
+
+https://hn.cxhristian.com/comments/9286822/
+
+Most recent major GopherJS news:
+
+- 29 days ago, the support for blocking calls became default, without needing to mark with `//gopherjs:blocking`. This was the last "not-really-Go" thing you needed to do previously. [0]
+
+- There's a 1.0 milestone now, so Richard is getting closer to a 1.0 release. [1]
+
+- Also recently, added support to make GET, POST requests via "net/http" (in browser) by providing a `net.Transport` implemented on top of XMLHttpRequest. [2]
+
+- There's recent work on a "gopherjs serve" command to make development more convenient. [3]
+
+I'm using GopherJS a lot.
+
+Most recently, I ported google/gxui Go package to run in the browser [4]. You can try it here [5].
+
+I've done some 3D stuff that works both on desktop and in browser by leveraging GopherJS. Here's a mini demo of that [6]. Hold down left mouse button and drag mouse to look around.
+
+Here's a live markdown editor (and formatter) in browser, it uses existing Go packages. [7]
+
+I gave a talk about GopherJS at previous GoSF meetup [8], which included some of these demos, and described the most common questions/concerns (debugging, file size, performance, general experience, advantages and disadvantages).
+
+Previous discussion from 6 months ago [9].
+
+[0] https://github.com/gopherjs/gopherjs/issues/89#issuecomment-76564310
+
+[1] https://github.com/gopherjs/gopherjs/milestones/1.0
+
+[2] https://github.com/gopherjs/gopherjs/commit/fdbe407578d08ab76f9150277f68d01e45ee5f16
+
+[3] https://github.com/gopherjs/gopherjs/issues/121
+
+[4] https://twitter.com/shurcooL/status/579395628683259905
+
+[5] http://dmitri.shuralyov.com/projects/gxui-tree/
+
+[6] http://dmitri.shuralyov.com/projects/Terrain-Demo/
+
+[7] http://dmitri.shuralyov.com/projects/live-markdown/live-markdown.html
+
+[8] https://www.hakkalabs.co/articles/getting-started-gopherjs
+
+[9] https://news.ycombinator.com/item?id=8454604
+
+--end--
