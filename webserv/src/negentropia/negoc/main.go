@@ -126,15 +126,15 @@ func newShaderProgram(gl *webgl.Context) *js.Object {
 	if buf, err := httpFetch(vertShaderURL); err != nil {
 		log(fmt.Sprintf("newShaderProgram: fetch url=%v error: %v", vertShaderURL, err))
 	} else {
-		log(fmt.Sprintf("newShaderProgram: url=%v loaded", vertShaderURL))
 		vertShaderSrc = string(buf[:])
+		log(fmt.Sprintf("newShaderProgram: url=%v loaded: %d bytes", vertShaderURL, len(vertShaderSrc)))
 	}
 
 	if buf, err := httpFetch(fragShaderURL); err != nil {
 		log(fmt.Sprintf("newShaderProgram: fetch url=%v error: %v", fragShaderURL, err))
 	} else {
-		log(fmt.Sprintf("newShaderProgram: url=%v loaded", fragShaderURL))
 		fragShaderSrc = string(buf[:])
+		log(fmt.Sprintf("newShaderProgram: url=%v loaded: %d bytes", fragShaderURL, len(fragShaderSrc)))
 	}
 
 	vertShader := compileShader(gl, vertShaderSrc, gl.VERTEX_SHADER)
