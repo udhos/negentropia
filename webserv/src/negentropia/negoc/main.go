@@ -15,6 +15,29 @@ func log(msg string) {
 	println(m)
 }
 
+func setViewport(gl *webgl.Context, w, h int) float32 {
+	canvas := gl.Get("canvas")
+
+	canvas.Set("width", w)
+	canvas.Set("height", h)
+
+	style := canvas.Get("style")
+	style.Set("width", "${w}px")
+	style.Set("height", "${h}px")
+
+	drawingBufferWidth := gl.Object.Get("drawingBufferWidth").Int()
+	drawingBufferHeight := gl.Object.Get("drawingBufferHeight").Int()
+
+	gl.BindFramebuffer(gl.FRAMEBUFFER, nil) // on-screen framebuffer
+	gl.Viewport(0, 0, drawingBufferWidth, drawingBufferHeight)
+
+	canvasAspect := float32(drawingBufferWidth) / float32(drawingBufferHeight)
+
+	log(fmt.Sprintf("setViewport: %v x %v aspect=%v", drawingBufferWidth, drawingBufferHeight, canvasAspect))
+
+	return canvasAspect
+}
+
 func initGL() *webgl.Context {
 
 	document := js.Global.Get("document")
@@ -29,8 +52,7 @@ func initGL() *webgl.Context {
 	canvasbox.Call("appendChild", canvas)
 
 	attrs := webgl.DefaultAttributes()
-	attrs.Alpha = false
-
+	//attrs.Alpha = false
 	gl, err := webgl.NewContext(canvas, attrs)
 	if err != nil {
 		log(err.Error())
@@ -61,6 +83,8 @@ const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
 
 func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
 	log(fmt.Sprintf("entering game loop frame_rate=%v frame_interval=%v", FRAME_RATE, FRAME_INTERVAL))
+
+	setViewport(gl, 700, 400)
 
 	ticker := time.NewTicker(time.Millisecond * FRAME_INTERVAL)
 	go func() {
