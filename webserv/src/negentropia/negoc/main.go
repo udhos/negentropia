@@ -18,6 +18,12 @@ func log(msg string) {
 func setViewport(gl *webgl.Context, w, h int) float32 {
 	canvas := gl.Get("canvas")
 
+	/*
+	   canvas.width, canvas.height = size you requested the canvas's drawingBuffer to be
+	   gl.drawingBufferWidth, gl.drawingBufferHeight = size you actually got.
+	   canvas.clientWidth, canvas.clientHeight = size the browser is displaying your canvas.
+	*/
+
 	canvas.Set("width", w)
 	canvas.Set("height", h)
 
@@ -31,6 +37,7 @@ func setViewport(gl *webgl.Context, w, h int) float32 {
 	gl.BindFramebuffer(gl.FRAMEBUFFER, nil) // on-screen framebuffer
 	gl.Viewport(0, 0, drawingBufferWidth, drawingBufferHeight)
 
+	// canvasAspect: save aspect for render loop perspective matrix
 	canvasAspect := float32(drawingBufferWidth) / float32(drawingBufferHeight)
 
 	log(fmt.Sprintf("setViewport: %v x %v aspect=%v", drawingBufferWidth, drawingBufferHeight, canvasAspect))
