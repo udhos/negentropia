@@ -19,7 +19,7 @@ func initGL() *webgl.Context {
 	//body := document.Get("body")
 
 	el := dom.GetWindow().Document().QuerySelector("#canvasbox")
-	log(fmt.Sprintf("el=%v", el))
+	log(fmt.Sprintf("#canvasbox el=%v", el))
 	canvasbox := el.Underlying()
 
 	canvas := document.Call("createElement", "canvas")
@@ -60,8 +60,6 @@ const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
 func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
 	log(fmt.Sprintf("entering game loop frame_rate=%v frame_interval=%v", FRAME_RATE, FRAME_INTERVAL))
 
-	log("entering game loop")
-
 	ticker := time.NewTicker(time.Millisecond * FRAME_INTERVAL)
 	go func() {
 		for t := range ticker.C {
@@ -82,7 +80,7 @@ const fragShaderSrc = `
 precision mediump float; // required
 
 void main(void) {
-	gl_FragColor = vec4(0.95, 0.95, .95, 1.0); // white opaque
+	gl_FragColor = vec4(.2, .2, .8, 1.0); // blue
 }
 `
 
@@ -158,15 +156,16 @@ func main() {
 
 	// fill buffer
 
-	indices := []uint16{0, 1, 2}
+	indices := []uint16{0, 1, 2} // 3 vertices
 	vertexIndexSize := len(indices)
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer)
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW)
 
+	// triangle vertices
 	vertexPositionData := []float32{
-		.5, 0, 0,
-		0, .5, 0,
-		0, 0, 0,
+		.7, -.7, 0, // v0
+		0, .7, 0, // v1
+		-.7, -.7, 0, // v2
 	}
 	gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
 	gl.BufferData(gl.ARRAY_BUFFER, vertexPositionData, gl.STATIC_DRAW)
