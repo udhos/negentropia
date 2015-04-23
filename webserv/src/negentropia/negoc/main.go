@@ -5,6 +5,8 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	"honnef.co/go/js/dom"
+	"io/ioutil"
+	"net/http"
 	"time"
 )
 
@@ -68,7 +70,7 @@ func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPo
 	}()
 }
 
-const vertShaderSrc = `
+var vertShaderSrc = `
 attribute vec3 a_Position;
  
 void main(void) {
@@ -76,11 +78,11 @@ void main(void) {
 }
 `
 
-const fragShaderSrc = `
+var fragShaderSrc = `
 precision mediump float; // required
 
 void main(void) {
-	gl_FragColor = vec4(.2, .2, .8, 1.0); // blue
+	gl_FragColor = vec4(0.95, 0.95, .95, 1.0); // white opaque
 }
 `
 
@@ -100,7 +102,41 @@ func compileShader(gl *webgl.Context, shaderSource string, shaderType int) *js.O
 	return shader
 }
 
+func httpFetch(url string) ([]byte, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("httpFetch: get url=%v: %v", url, err)
+	}
+	defer resp.Body.Close()
+
+	var info []byte
+	info, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("httpFetch: read all: url=%v: %v", url, err)
+	}
+
+	return info, nil
+}
+
 func newShaderProgram(gl *webgl.Context) *js.Object {
+
+	vertShaderURL := "/shader/clip_vs.txt"
+	fragShaderURL := "/shader/clip_fs.txt"
+
+	if buf, err := httpFetch(vertShaderURL); err != nil {
+		log(fmt.Sprintf("newShaderProgram: fetch url=%v error: %v", vertShaderURL, err))
+	} else {
+		log(fmt.Sprintf("newShaderProgram: url=%v loaded", vertShaderURL))
+		vertShaderSrc = string(buf[:])
+	}
+
+	if buf, err := httpFetch(fragShaderURL); err != nil {
+		log(fmt.Sprintf("newShaderProgram: fetch url=%v error: %v", fragShaderURL, err))
+	} else {
+		log(fmt.Sprintf("newShaderProgram: url=%v loaded", fragShaderURL))
+		fragShaderSrc = string(buf[:])
+	}
+
 	vertShader := compileShader(gl, vertShaderSrc, gl.VERTEX_SHADER)
 	if vertShader == nil {
 		log("newShaderProgram: failure compiling vertex shader")
