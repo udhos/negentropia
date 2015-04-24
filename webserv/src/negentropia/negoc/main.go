@@ -51,7 +51,7 @@ func initGL() *webgl.Context {
 	//body := document.Get("body")
 
 	el := dom.GetWindow().Document().QuerySelector("#canvasbox")
-	log(fmt.Sprintf("#canvasbox el=%v", el))
+	log(fmt.Sprintf("initGL: #canvasbox el=%v", el))
 	canvasbox := el.Underlying()
 
 	canvas := document.Call("createElement", "canvas")
@@ -68,6 +68,8 @@ func initGL() *webgl.Context {
 
 	return gl
 }
+
+const VERTEX_POSITION_ITEM_SIZE = 3 // x,y,z
 
 func draw(gl *webgl.Context, t time.Time, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
@@ -196,13 +198,38 @@ func newShaderProgram(gl *webgl.Context) *js.Object {
 	return program
 }
 
-const VERTEX_POSITION_ITEM_SIZE = 3 // x,y,z
+func initWebSocket() bool {
+
+	query := "#wsUri"
+
+	el := dom.GetWindow().Document().QuerySelector(query)
+	if el == nil {
+		log(fmt.Sprintf("initWebSocket: could not find element: %s", query))
+		return true // error
+	}
+	//span := el.(dom.HTMLSpanElement)
+	log(fmt.Sprintf("initWebSocket: %s el=%v", query, el))
+	wsUri := el.TextContent()
+	if wsUri == "" {
+		log(fmt.Sprintf("initWebSocket: empty text for element: %s", query))
+		return true // error
+	}
+
+	log(fmt.Sprintf("initWebSocket: %s wsUri=%v", query, wsUri))
+
+	return false // ok
+}
 
 func main() {
 	log("main: Hello world, console")
 	gl := initGL()
 	if gl == nil {
 		log("main: no webgl context, exiting")
+		return
+	}
+
+	if initWebSocket() {
+		log("main: could not initalize web socket, exiting")
 		return
 	}
 
