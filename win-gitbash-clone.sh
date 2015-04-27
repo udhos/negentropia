@@ -27,7 +27,8 @@ go_get github.com/udhos/vectormath
 #
 # fetch from google code (could be under cmd prompt)
 #
-go_get code.google.com/p/go.net/websocket
+#go_get code.google.com/p/go.net/websocket
+go_get golang.org/x/net/websocket
 go_get code.google.com/p/goauth2/oauth
 
 # gopherjs

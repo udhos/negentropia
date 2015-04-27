@@ -2,14 +2,23 @@ package main
 
 import (
 	"fmt"
-	"github.com/gopherjs/websocket"
+	jsws "github.com/gopherjs/websocket"
+	//"golang.org/x/net/websocket"
 	"honnef.co/go/js/dom"
 	"time"
 )
 
+/*
+type ClientMsg struct {
+	Code int
+	Data string
+	Tab  map[string]string
+}
+*/
+
 type Websocket struct {
 	uri  string
-	conn *websocket.Conn
+	conn *jsws.Conn
 }
 
 func (ws *Websocket) open(uri string) {
@@ -17,7 +26,7 @@ func (ws *Websocket) open(uri string) {
 
 	log(fmt.Sprintf("websocket open: opening: %s", ws.uri))
 
-	c, err := websocket.Dial(ws.uri)
+	c, err := jsws.Dial(ws.uri)
 	if err != nil {
 		log(fmt.Sprintf("websocket open: could not connect: %s: error=%v", ws.uri, err))
 		return
@@ -30,22 +39,33 @@ func (ws *Websocket) open(uri string) {
 
 func handleWebsocket(wsUri string) {
 
-	ws := new(Websocket)
+	//ws := new(Websocket)
+	ws := &Websocket{}
 
 	ws.open(wsUri)
 
 	for {
 		if ws.conn == nil {
-			var delay time.Duration = 10
-			log(fmt.Sprintf("handleWebsocket: %s waiting: %d seconds", ws.uri, delay))
-			time.Sleep(time.Second * delay)
+			var connectDelay time.Duration = 10
+			log(fmt.Sprintf("handleWebsocket: reconnect: %s waiting: %d seconds", ws.uri, connectDelay))
+			time.Sleep(time.Second * connectDelay)
 			ws.open(wsUri)
 			continue
 		}
 
-		var delay time.Duration = 10
-		log(fmt.Sprintf("handleWebsocket: %s for loop: waiting %d seconds", ws.uri, delay))
-		time.Sleep(time.Second * delay)
+		/*
+			msg := &ClientMsg{} // new(server.ClientMsg)
+			if err := websocket.JSON.Receive(ws.conn, msg); err != nil {
+				log(fmt.Sprintf("handleWebsocket: Receive: %s", err))
+				break
+			}
+		*/
+
+		/*
+			var delay time.Duration = 10
+			log(fmt.Sprintf("handleWebsocket: %s for loop: waiting %d seconds", ws.uri, delay))
+			time.Sleep(time.Second * delay)
+		*/
 	}
 }
 

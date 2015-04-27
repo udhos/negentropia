@@ -8,7 +8,8 @@ import (
 	"log"
 	"net/http"
 
-	"code.google.com/p/go.net/websocket"
+	//"code.google.com/p/go.net/websocket"
+	"golang.org/x/net/websocket"
 
 	"negentropia/webserv/configflag"
 	"negentropia/webserv/session"

@@ -6,7 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"code.google.com/p/go.net/websocket"
+	//"code.google.com/p/go.net/websocket"
+	"golang.org/x/net/websocket"
 
 	"negentropia/webserv/store"
 )
