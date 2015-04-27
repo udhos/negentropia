@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gopherjs/websocket"
 	"honnef.co/go/js/dom"
+	"time"
 )
 
 type Websocket struct {
@@ -31,9 +32,21 @@ func handleWebsocket(wsUri string) {
 
 	ws := new(Websocket)
 
-	go ws.open(wsUri)
+	ws.open(wsUri)
 
-	log(fmt.Sprintf("handleWebsocket: spawned websocket handling: %s", ws.uri))
+	for {
+		if ws.conn == nil {
+			var delay time.Duration = 10
+			log(fmt.Sprintf("handleWebsocket: %s waiting: %d seconds", ws.uri, delay))
+			time.Sleep(time.Second * delay)
+			ws.open(wsUri)
+			continue
+		}
+
+		var delay time.Duration = 10
+		log(fmt.Sprintf("handleWebsocket: %s for loop: waiting %d seconds", ws.uri, delay))
+		time.Sleep(time.Second * delay)
+	}
 }
 
 func initWebSocket() bool {
@@ -56,6 +69,8 @@ func initWebSocket() bool {
 	log(fmt.Sprintf("initWebSocket: %s wsUri=%v", query, wsUri))
 
 	go handleWebsocket(wsUri)
+
+	log(fmt.Sprintf("initWebSocket: spawned websocket handling: %s", wsUri))
 
 	return false // ok
 }
