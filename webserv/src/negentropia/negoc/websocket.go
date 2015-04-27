@@ -83,11 +83,9 @@ func handleWebsocket(wsUri, sid string) {
 			}
 		*/
 
-		/*
-			var delay time.Duration = 10
-			log(fmt.Sprintf("handleWebsocket: %s for loop: waiting %d seconds", ws.uri, delay))
-			time.Sleep(time.Second * delay)
-		*/
+		var delay time.Duration = 10
+		log(fmt.Sprintf("handleWebsocket: %s for loop: waiting %d seconds", ws.uri, delay))
+		time.Sleep(time.Second * delay)
 	}
 }
 
