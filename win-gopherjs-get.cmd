@@ -10,6 +10,7 @@ set GOPATH=%DEVEL%\negentropia\webserv
 go get -u github.com/gopherjs/gopherjs
 go get -u github.com/gopherjs/webgl
 go get -u github.com/gopherjs/websocket
+go get -u github.com/udhos/cookie
 go get honnef.co/go/js/dom
 
 @rem eof

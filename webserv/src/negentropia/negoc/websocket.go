@@ -4,24 +4,42 @@ import (
 	"fmt"
 	jsws "github.com/gopherjs/websocket"
 	//"golang.org/x/net/websocket"
+	"github.com/udhos/cookie"
 	"honnef.co/go/js/dom"
 	"time"
 )
 
-/*
+// dup from world/server/server.go
+const (
+	CM_CODE_FATAL           = 0
+	CM_CODE_INFO            = 1
+	CM_CODE_AUTH            = 2  // client->server: let me in
+	CM_CODE_ECHO            = 3  // client->server: please echo this
+	CM_CODE_KILL            = 4  // server->client: do not attempt reconnect on same session
+	CM_CODE_REQZ            = 5  // client->server: please send current zone
+	CM_CODE_ZONE            = 6  // server->client: reset client zone info
+	CM_CODE_SKYBOX          = 7  // server->client: set full skybox
+	CM_CODE_PROGRAM         = 8  // server->client: set shader program
+	CM_CODE_INSTANCE        = 9  // server->client: set instance
+	CM_CODE_INSTANCE_UPDATE = 10 // server->client: update instance
+	CM_CODE_MESSAGE         = 11 // server->client: message for user
+	CM_CODE_MISSION_NEXT    = 12 // client->server: switch mission
+	CM_CODE_SWITCH_ZONE     = 13 // client->server: switch zone
+)
+
+// dup from world/server/server.go
 type ClientMsg struct {
 	Code int
 	Data string
 	Tab  map[string]string
 }
-*/
 
 type Websocket struct {
 	uri  string
 	conn *jsws.Conn
 }
 
-func (ws *Websocket) open(uri string) {
+func (ws *Websocket) open(uri, sid string) {
 	ws.uri = uri
 
 	log(fmt.Sprintf("websocket open: opening: %s", ws.uri))
@@ -35,21 +53,25 @@ func (ws *Websocket) open(uri string) {
 	ws.conn = c
 
 	log(fmt.Sprintf("websocket open: connected: %s", ws.uri))
+
+	msg := &ClientMsg{Code: CM_CODE_AUTH, Data: sid}
+
+	log(fmt.Sprintf("websocket open: FIXME WRITEME JSON-encode message: %v", msg))
 }
 
-func handleWebsocket(wsUri string) {
+func handleWebsocket(wsUri, sid string) {
 
 	//ws := new(Websocket)
 	ws := &Websocket{}
 
-	ws.open(wsUri)
+	ws.open(wsUri, sid)
 
 	for {
 		if ws.conn == nil {
 			var connectDelay time.Duration = 10
 			log(fmt.Sprintf("handleWebsocket: reconnect: %s waiting: %d seconds", ws.uri, connectDelay))
 			time.Sleep(time.Second * connectDelay)
-			ws.open(wsUri)
+			ws.open(wsUri, sid)
 			continue
 		}
 
@@ -71,6 +93,15 @@ func handleWebsocket(wsUri string) {
 
 func initWebSocket() bool {
 
+	sidCookie := "sid"
+	sid, ok := cookie.Get(sidCookie)
+	if !ok {
+		log(fmt.Sprintf("initWebSocket: could not find cookie: %s", sidCookie))
+		return true // error
+	}
+
+	log(fmt.Sprintf("initWebSocket: found cookie %s=%s", sidCookie, sid))
+
 	query := "#wsUri"
 
 	el := dom.GetWindow().Document().QuerySelector(query)
@@ -88,7 +119,7 @@ func initWebSocket() bool {
 
 	log(fmt.Sprintf("initWebSocket: %s wsUri=%v", query, wsUri))
 
-	go handleWebsocket(wsUri)
+	go handleWebsocket(wsUri, sid)
 
 	log(fmt.Sprintf("initWebSocket: spawned websocket handling: %s", wsUri))
 
