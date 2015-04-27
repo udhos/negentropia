@@ -6,21 +6,34 @@ import (
 	"honnef.co/go/js/dom"
 )
 
-func handleWebsocket(wsUri string) {
+type Websocket struct {
+	uri  string
+	conn *websocket.Conn
+}
 
-	log(fmt.Sprintf("handleWebSocket: opening: %s", wsUri))
+func (ws *Websocket) open(uri string) {
+	ws.uri = uri
 
-	c, err := websocket.Dial(wsUri)
+	log(fmt.Sprintf("websocket open: opening: %s", ws.uri))
+
+	c, err := websocket.Dial(ws.uri)
 	if err != nil {
-		log(fmt.Sprintf("handleWebSocket: could not connect: %s: error=%v", wsUri, err))
+		log(fmt.Sprintf("websocket open: could not connect: %s: error=%v", ws.uri, err))
 		return
 	}
 
-	log(fmt.Sprintf("handleWebSocket: connected: %s", wsUri))
+	ws.conn = c
 
-	defer c.Close()
+	log(fmt.Sprintf("websocket open: connected: %s", ws.uri))
+}
 
-	log(fmt.Sprintf("handleWebSocket: disconnecting: %s", wsUri))
+func handleWebsocket(wsUri string) {
+
+	ws := new(Websocket)
+
+	go ws.open(wsUri)
+
+	log(fmt.Sprintf("handleWebsocket: spawned websocket handling: %s", ws.uri))
 }
 
 func initWebSocket() bool {
