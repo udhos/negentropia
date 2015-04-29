@@ -4,6 +4,7 @@ import (
 	"fmt"
 	jsws "github.com/gopherjs/websocket"
 	//"golang.org/x/net/websocket"
+	"encoding/json"
 	"github.com/udhos/cookie"
 	"honnef.co/go/js/dom"
 	"time"
@@ -56,7 +57,17 @@ func (ws *Websocket) open(uri, sid string) {
 
 	msg := &ClientMsg{Code: CM_CODE_AUTH, Data: sid}
 
-	log(fmt.Sprintf("websocket open: FIXME WRITEME JSON-encode message: %v", msg))
+	encoder := json.NewEncoder(ws.conn)
+
+	encoder.Encode(&msg)
+
+	if err := encoder.Encode(&msg); err != nil {
+		log(fmt.Sprintf("websocket open: JSON encoding error: %s", err))
+		ws.conn = nil
+		return
+	}
+
+	log(fmt.Sprintf("websocket open: sent=[%v]", msg))
 }
 
 func handleWebsocket(wsUri, sid string) {
@@ -75,13 +86,26 @@ func handleWebsocket(wsUri, sid string) {
 			continue
 		}
 
+		msg := &ClientMsg{} // new(server.ClientMsg)
+
 		/*
-			msg := &ClientMsg{} // new(server.ClientMsg)
 			if err := websocket.JSON.Receive(ws.conn, msg); err != nil {
 				log(fmt.Sprintf("handleWebsocket: Receive: %s", err))
 				break
 			}
 		*/
+
+		for {
+			decoder := json.NewDecoder(ws.conn)
+
+			if err := decoder.Decode(&msg); err != nil {
+				log(fmt.Sprintf("handleWebsocket: JSON decoding error: %s", err))
+				ws.conn = nil
+				break
+			}
+
+			log(fmt.Sprintf("handleWebsocket: received=[%v]", msg))
+		}
 
 		var delay time.Duration = 10
 		log(fmt.Sprintf("handleWebsocket: %s for loop: waiting %d seconds", ws.uri, delay))
