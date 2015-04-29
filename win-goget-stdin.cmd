@@ -1,8 +1,7 @@
-@rem win-gopherjs-get.cmd
+@rem win-goget-stdin.cmd
 
 set DEVEL=c:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv
-set GOPHER_DEP=%DEVEL%\negentropia\gopherjs-deps.txt
 
 @rem gofmt -s -w %DEVEL%\negentropia\webserv\src\negentropia
 @rem go install negentropia\webserv
@@ -14,6 +13,17 @@ set GOPHER_DEP=%DEVEL%\negentropia\gopherjs-deps.txt
 @rem go get -u github.com/udhos/cookie
 @rem go get -u honnef.co/go/js/dom
 
-more %GOPHER_DEP% | %DEVEL%\negentropia\win-goget-stdin.cmd
+@echo off
+setlocal DisableDelayedExpansion
+
+for /F "tokens=*" %%a in ('findstr /n $') do (
+  set "line=%%a"
+  setlocal EnableDelayedExpansion
+  set "line=!line:*:=!"
+  @rem echo(!line!
+  echo go get !line!
+  go get !line!
+  endlocal
+)
 
 @rem eof

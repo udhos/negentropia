@@ -31,8 +31,7 @@ go_get github.com/udhos/vectormath
 go_get golang.org/x/net/websocket
 go_get code.google.com/p/goauth2/oauth
 
-# gopherjs
-go_get -u github.com/gopherjs/gopherjs
-go_get -u github.com/gopherjs/webgl
-go_get honnef.co/go/js/dom
-
+# gopherjs dependencies
+cat $DEVEL/negentropia/gopherjs-deps.txt | while read i; do
+	go_get $i
+done
