@@ -102,7 +102,8 @@ func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPo
 }
 
 func main() {
-	log("main: Hello world, console")
+	log("negoc main: begin")
+
 	gl := initGL()
 	if gl == nil {
 		log("main: no webgl context, exiting")
@@ -148,4 +149,6 @@ func main() {
 	gl.ClearColor(0.8, 0.3, 0.01, 1)
 
 	gameLoop(gl, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
+
+	log("negoc main: end")
 }
