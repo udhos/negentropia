@@ -2,11 +2,11 @@ package main
 
 import (
 	//"io"
-	"os"
-	//"fmt"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	//"code.google.com/p/go.net/websocket"
 	"golang.org/x/net/websocket"
@@ -51,12 +51,13 @@ func auth(ws *websocket.Conn) *server.Player {
 	}
 
 	sid := msg.Data
-	log.Printf("auth: sid=%s", sid)
+	//log.Printf("auth: sid=%s", sid)
 
 	session := session.Load(sid)
 	if session == nil {
-		log.Printf("Dispatch: Auth: sid=%s: invalid session id", sid)
-		websocket.JSON.Send(ws, server.ClientMsg{Code: server.CM_CODE_FATAL, Data: "bad auth"})
+		msg := fmt.Sprintf("auth: sid=%s: invalid session id", sid)
+		log.Printf(msg)
+		websocket.JSON.Send(ws, server.ClientMsg{Code: server.CM_CODE_FATAL, Data: fmt.Sprintf("bad auth: %s", msg)})
 		return nil
 	}
 

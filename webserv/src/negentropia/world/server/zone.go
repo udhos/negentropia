@@ -287,7 +287,7 @@ func updateAllZones(elapsed time.Duration) {
 
 		instanceList := store.QueryField(zid, "instanceList")
 		if instanceList == "" {
-			log.Printf("updateAllZones: zone=%s: no instanceList", zid)
+			//log.Printf("updateAllZones: zone=%s: no instanceList", zid)
 			continue
 		}
 

@@ -64,7 +64,7 @@ func newCookie(name, value string, maxAge int) *http.Cookie {
 
 func newSession(sid string, provider int, profId, profName, profEmail string) *Session {
 	s := &Session{sid, provider, profId, profName, profEmail}
-	//log.Printf("newSession sessionId=%s email=%s", s.SessionId, s.ProfileEmail)
+	log.Printf("newSession sessionId=%s email=%s", s.SessionId, s.ProfileEmail)
 	return s
 }
 
