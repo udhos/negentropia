@@ -266,7 +266,7 @@ func input(p *Player, m *ClientMsg) {
 		switchZone(p)
 	default:
 		log.Printf("server.input: unknown code=%d", m.Code)
-		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: fmt.Sprintf("unknown code=%d", m.Code)}
+		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: fmt.Sprintf("unknown code=%d data=%v tab=%v", m.Code, m.Data, m.Tab)}
 	}
 }
 

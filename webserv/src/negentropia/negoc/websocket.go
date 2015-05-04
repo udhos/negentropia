@@ -88,13 +88,6 @@ func handleWebsocket(wsUri, sid string) {
 
 		msg := &ClientMsg{} // new(server.ClientMsg)
 
-		/*
-			if err := websocket.JSON.Receive(ws.conn, msg); err != nil {
-				log(fmt.Sprintf("handleWebsocket: Receive: %s", err))
-				break
-			}
-		*/
-
 		for {
 			decoder := json.NewDecoder(ws.conn)
 
