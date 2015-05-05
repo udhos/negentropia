@@ -36,14 +36,20 @@ type ClientMsg struct {
 }
 
 type Websocket struct {
-	uri  string
-	conn *jsws.Conn
+	uri    string
+	conn   *jsws.Conn
+	status dom.Element
 }
 
-func (ws *Websocket) open(uri, sid string) {
+func (ws *Websocket) open(uri, sid string, status dom.Element) {
 	ws.uri = uri
+	ws.status = status
 
-	log(fmt.Sprintf("websocket open: opening: %s", ws.uri))
+	info := fmt.Sprintf("opening: %s", ws.uri)
+
+	log(fmt.Sprintf("websocket open: %s", info))
+
+	ws.status.SetTextContent(info)
 
 	c, err := jsws.Dial(ws.uri)
 	if err != nil {
@@ -59,8 +65,6 @@ func (ws *Websocket) open(uri, sid string) {
 
 	encoder := json.NewEncoder(ws.conn)
 
-	encoder.Encode(&msg)
-
 	if err := encoder.Encode(&msg); err != nil {
 		log(fmt.Sprintf("websocket open: JSON encoding error: %s", err))
 		ws.conn = nil
@@ -70,23 +74,22 @@ func (ws *Websocket) open(uri, sid string) {
 	log(fmt.Sprintf("websocket open: sent=[%v]", msg))
 }
 
-func handleWebsocket(wsUri, sid string) {
+func handleWebsocket(wsUri, sid string, status dom.Element) {
 
-	//ws := new(Websocket)
 	ws := &Websocket{}
 
-	ws.open(wsUri, sid)
+	ws.open(wsUri, sid, status)
 
 	for {
 		if ws.conn == nil {
 			var connectDelay time.Duration = 10
 			log(fmt.Sprintf("handleWebsocket: reconnect: %s waiting: %d seconds", ws.uri, connectDelay))
 			time.Sleep(time.Second * connectDelay)
-			ws.open(wsUri, sid)
+			ws.open(wsUri, sid, status)
 			continue
 		}
 
-		msg := &ClientMsg{} // new(server.ClientMsg)
+		msg := &ClientMsg{}
 
 		for {
 			decoder := json.NewDecoder(ws.conn)
@@ -117,9 +120,13 @@ func initWebSocket() bool {
 
 	log(fmt.Sprintf("initWebSocket: found cookie %s=%s", sidCookie, sid))
 
-	query := "#wsUri"
+	//
+	// websocket URI
+	//
 
-	el := dom.GetWindow().Document().QuerySelector(query)
+	query := "#wsUri"
+	//el := dom.GetWindow().Document().QuerySelector(query)
+	el := docQuery(query)
 	if el == nil {
 		log(fmt.Sprintf("initWebSocket: could not find element: %s", query))
 		return true // error
@@ -131,10 +138,20 @@ func initWebSocket() bool {
 		log(fmt.Sprintf("initWebSocket: empty text for element: %s", query))
 		return true // error
 	}
-
 	log(fmt.Sprintf("initWebSocket: %s wsUri=%v", query, wsUri))
 
-	go handleWebsocket(wsUri, sid)
+	//
+	// websocket status
+	//
+
+	statusQuery := "#ws_status"
+	statusEl := docQuery(statusQuery)
+	if statusEl == nil {
+		log(fmt.Sprintf("initWebSocket: could not find element: %s", statusQuery))
+		return true // error
+	}
+
+	go handleWebsocket(wsUri, sid, statusEl)
 
 	log(fmt.Sprintf("initWebSocket: spawned websocket handling: %s", wsUri))
 
