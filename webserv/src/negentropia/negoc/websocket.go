@@ -46,20 +46,22 @@ func (ws *Websocket) open(uri, sid string, status dom.Element) {
 	ws.status = status
 
 	info := fmt.Sprintf("opening: %s", ws.uri)
-
 	log(fmt.Sprintf("websocket open: %s", info))
-
 	ws.status.SetTextContent(info)
 
 	c, err := jsws.Dial(ws.uri)
 	if err != nil {
 		log(fmt.Sprintf("websocket open: could not connect: %s: error=%v", ws.uri, err))
+		ws.conn = nil
+		ws.status.SetTextContent("disconnected")
 		return
 	}
 
 	ws.conn = c
 
-	log(fmt.Sprintf("websocket open: connected: %s", ws.uri))
+	info = fmt.Sprintf("connected: %s", ws.uri)
+	log(fmt.Sprintf("websocket open: %s", info))
+	ws.status.SetTextContent(info)
 
 	msg := &ClientMsg{Code: CM_CODE_AUTH, Data: sid}
 
@@ -68,6 +70,7 @@ func (ws *Websocket) open(uri, sid string, status dom.Element) {
 	if err := encoder.Encode(&msg); err != nil {
 		log(fmt.Sprintf("websocket open: JSON encoding error: %s", err))
 		ws.conn = nil
+		ws.status.SetTextContent("disconnected")
 		return
 	}
 
@@ -97,15 +100,18 @@ func handleWebsocket(wsUri, sid string, status dom.Element) {
 			if err := decoder.Decode(&msg); err != nil {
 				log(fmt.Sprintf("handleWebsocket: JSON decoding error: %s", err))
 				ws.conn = nil
+				ws.status.SetTextContent("disconnected")
 				break
 			}
 
 			log(fmt.Sprintf("handleWebsocket: received=[%v]", msg))
 		}
 
-		var delay time.Duration = 10
-		log(fmt.Sprintf("handleWebsocket: %s for loop: waiting %d seconds", ws.uri, delay))
-		time.Sleep(time.Second * delay)
+		/*
+			var delay time.Duration = 10
+			log(fmt.Sprintf("handleWebsocket: %s for loop: waiting %d seconds", ws.uri, delay))
+			time.Sleep(time.Second * delay)
+		*/
 	}
 }
 
