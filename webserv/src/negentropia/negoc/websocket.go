@@ -83,10 +83,14 @@ func handleWebsocket(wsUri, sid string, status dom.Element) {
 
 	ws.open(wsUri, sid, status)
 
+	// reconnect loop
 	for {
 		if ws.conn == nil {
 			var connectDelay time.Duration = 10
+
 			log(fmt.Sprintf("handleWebsocket: reconnect: %s waiting: %d seconds", ws.uri, connectDelay))
+			ws.status.SetTextContent("waiting")
+
 			time.Sleep(time.Second * connectDelay)
 			ws.open(wsUri, sid, status)
 			continue
@@ -94,6 +98,7 @@ func handleWebsocket(wsUri, sid string, status dom.Element) {
 
 		msg := &ClientMsg{}
 
+		// read loop
 		for {
 			decoder := json.NewDecoder(ws.conn)
 
@@ -101,7 +106,7 @@ func handleWebsocket(wsUri, sid string, status dom.Element) {
 				log(fmt.Sprintf("handleWebsocket: JSON decoding error: %s", err))
 				ws.conn = nil
 				ws.status.SetTextContent("disconnected")
-				break
+				break // reconnect
 			}
 
 			log(fmt.Sprintf("handleWebsocket: received=[%v]", msg))
