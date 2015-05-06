@@ -77,6 +77,10 @@ func (ws *Websocket) open(uri, sid string, status dom.Element) {
 	log(fmt.Sprintf("websocket open: sent=[%v]", msg))
 }
 
+func dispatch(code int, data string, tab map[string]string) {
+	log(fmt.Sprintf("dispatch: code=%v data=%v tab=%v", code, data, tab))
+}
+
 func handleWebsocket(wsUri, sid string, status dom.Element) {
 
 	ws := &Websocket{}
@@ -110,6 +114,15 @@ func handleWebsocket(wsUri, sid string, status dom.Element) {
 			}
 
 			log(fmt.Sprintf("handleWebsocket: received=[%v]", msg))
+
+			if msg.Code == CM_CODE_KILL {
+				info := fmt.Sprintf("server killed our session: %s", msg.Data)
+				log(fmt.Sprintf("handleWebsocket: %s", info))
+				ws.status.SetTextContent(info)
+				return // stop
+			}
+
+			dispatch(msg.Code, msg.Data, msg.Tab)
 		}
 
 		/*
