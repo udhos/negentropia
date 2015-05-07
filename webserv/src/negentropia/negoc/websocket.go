@@ -83,6 +83,8 @@ func dispatch(code int, data string, tab map[string]string) {
 
 func handleWebsocket(wsUri, sid string, status dom.Element) {
 
+	log(fmt.Sprintf("handleWebsocket: entering read loop: %s", wsUri))
+
 	defer func() {
 		log("handleWebsocket: exiting (goroutine finishing)")
 	}()
