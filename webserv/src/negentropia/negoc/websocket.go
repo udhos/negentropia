@@ -83,6 +83,10 @@ func dispatch(code int, data string, tab map[string]string) {
 
 func handleWebsocket(wsUri, sid string, status dom.Element) {
 
+	defer func() {
+		log("handleWebsocket: exiting (goroutine finishing)")
+	}()
+
 	ws := &Websocket{}
 
 	ws.open(wsUri, sid, status)
@@ -175,9 +179,9 @@ func initWebSocket() bool {
 		return true // error
 	}
 
+	// spawn websocket handler
+	log(fmt.Sprintf("initWebSocket: spawning websocket handler: %s", wsUri))
 	go handleWebsocket(wsUri, sid, statusEl)
-
-	log(fmt.Sprintf("initWebSocket: spawned websocket handling: %s", wsUri))
 
 	return false // ok
 }

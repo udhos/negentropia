@@ -102,13 +102,15 @@ func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPo
 }
 
 func main() {
-	log("negoc main: begin")
+	log("main: begin")
 
 	gl := initGL()
 	if gl == nil {
 		log("main: no webgl context, exiting")
 		return
 	}
+
+	log("main: WebGL context initialized")
 
 	if initWebSocket() {
 		log("main: could not initalize web socket, exiting")
@@ -150,5 +152,5 @@ func main() {
 
 	gameLoop(gl, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
 
-	log("negoc main: end")
+	log("main: end")
 }
