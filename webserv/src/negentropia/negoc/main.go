@@ -101,6 +101,41 @@ func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPo
 	}()
 }
 
+func requestZone(sock *gameWebsocket) {
+	log("requestZone")
+
+	sock.write(&ClientMsg{Code: CM_CODE_REQZ})
+}
+
+func initContext(gameInfo *gameState) {
+	log("initContext: WRITEME")
+
+	/*
+	   enable_extensions(gl);
+
+	   clearColor(gl, 0.5, 0.5, 0.5, 1.0);
+	   gl.enable(RenderingContext.DEPTH_TEST); // enable depth testing
+	   gl.depthFunc(RenderingContext.LESS); // gl.LESS is default depth test
+	   gl.depthRange(0.0, 1.0); // default
+
+	   setViewport(gl, gl.canvas.width, gl.canvas.height);
+
+	   updateCulling(gl);
+
+	   // set default texture unit
+	   gl.activeTexture(RenderingContext.TEXTURE0 + defaultTextureUnit);
+	*/
+
+	requestZone(gameInfo.sock)
+}
+
+func setPerspective() {
+	// aspect = canvas.width / canvas.height
+	//setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, planeNear, planeFar)
+
+	log("setPerspective: WRITEME")
+}
+
 type gameState struct {
 	gl   *webgl.Context
 	sock *gameWebsocket
@@ -158,6 +193,10 @@ func main() {
 	gl.BufferData(gl.ARRAY_BUFFER, vertexPositionData, gl.STATIC_DRAW)
 
 	gl.ClearColor(0.8, 0.3, 0.01, 1)
+
+	initContext(gameInfo) // set aspectRatio
+
+	setPerspective() // requires aspectRatio
 
 	gameLoop(gl, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
 
