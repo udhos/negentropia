@@ -67,7 +67,7 @@ func (ws *gameWebsocket) open(uri, sid string, status dom.Element) {
 	ws.status = status
 
 	info := fmt.Sprintf("opening: %s", ws.uri)
-	log(fmt.Sprintf("gameSocket open: %s", info))
+	log(fmt.Sprintf("websocket open: %s", info))
 	ws.status.SetTextContent(info)
 
 	c, err := websocket.Dial(ws.uri)
