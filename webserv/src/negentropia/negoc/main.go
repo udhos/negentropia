@@ -101,6 +101,12 @@ func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPo
 	}()
 }
 
+type gameState struct {
+	gl *webgl.Context
+}
+
+var gameInfo *gameState = &gameState{}
+
 func main() {
 	log("main: begin")
 
@@ -110,9 +116,11 @@ func main() {
 		return
 	}
 
+	gameInfo.gl = gl
+
 	log("main: WebGL context initialized")
 
-	if initWebSocket() {
+	if initWebSocket(gameInfo) {
 		log("main: could not initalize web socket, exiting")
 		return
 	}

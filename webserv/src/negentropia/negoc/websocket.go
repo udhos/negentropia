@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	jsws "github.com/gopherjs/websocket"
+	"github.com/gopherjs/websocket"
 	//"golang.org/x/net/websocket"
 	"encoding/json"
 	"github.com/udhos/cookie"
@@ -35,21 +35,21 @@ type ClientMsg struct {
 	Tab  map[string]string
 }
 
-type Websocket struct {
+type gameWebsocket struct {
 	uri    string
-	conn   *jsws.Conn
+	conn   *websocket.Conn
 	status dom.Element
 }
 
-func (ws *Websocket) open(uri, sid string, status dom.Element) {
+func (ws *gameWebsocket) open(uri, sid string, status dom.Element) {
 	ws.uri = uri
 	ws.status = status
 
 	info := fmt.Sprintf("opening: %s", ws.uri)
-	log(fmt.Sprintf("websocket open: %s", info))
+	log(fmt.Sprintf("gameSocket open: %s", info))
 	ws.status.SetTextContent(info)
 
-	c, err := jsws.Dial(ws.uri)
+	c, err := websocket.Dial(ws.uri)
 	if err != nil {
 		log(fmt.Sprintf("websocket open: could not connect: %s: error=%v", ws.uri, err))
 		ws.conn = nil
@@ -77,11 +77,7 @@ func (ws *Websocket) open(uri, sid string, status dom.Element) {
 	log(fmt.Sprintf("websocket open: sent=[%v]", msg))
 }
 
-func dispatch(code int, data string, tab map[string]string) {
-	log(fmt.Sprintf("dispatch: code=%v data=%v tab=%v", code, data, tab))
-}
-
-func handleWebsocket(wsUri, sid string, status dom.Element) {
+func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element) {
 
 	log(fmt.Sprintf("handleWebsocket: entering read loop: %s", wsUri))
 
@@ -89,7 +85,7 @@ func handleWebsocket(wsUri, sid string, status dom.Element) {
 		log("handleWebsocket: exiting (goroutine finishing)")
 	}()
 
-	ws := &Websocket{}
+	ws := &gameWebsocket{}
 
 	ws.open(wsUri, sid, status)
 
@@ -128,7 +124,7 @@ func handleWebsocket(wsUri, sid string, status dom.Element) {
 				return // stop
 			}
 
-			dispatch(msg.Code, msg.Data, msg.Tab)
+			dispatch(gameInfo, msg.Code, msg.Data, msg.Tab)
 		}
 
 		/*
@@ -139,7 +135,7 @@ func handleWebsocket(wsUri, sid string, status dom.Element) {
 	}
 }
 
-func initWebSocket() bool {
+func initWebSocket(gameInfo *gameState) bool {
 
 	sidCookie := "sid"
 	sid, ok := cookie.Get(sidCookie)
@@ -183,7 +179,7 @@ func initWebSocket() bool {
 
 	// spawn websocket handler
 	log(fmt.Sprintf("initWebSocket: spawning websocket handler: %s", wsUri))
-	go handleWebsocket(wsUri, sid, statusEl)
+	go handleWebsocket(gameInfo, wsUri, sid, statusEl)
 
 	return false // ok
 }
