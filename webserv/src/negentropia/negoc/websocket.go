@@ -36,9 +36,30 @@ type ClientMsg struct {
 }
 
 type gameWebsocket struct {
-	uri    string
-	conn   *websocket.Conn
-	status dom.Element
+	uri     string
+	conn    *websocket.Conn
+	status  dom.Element
+	encoder *json.Encoder
+}
+
+func (ws *gameWebsocket) write(msg *ClientMsg) error {
+	log(fmt.Sprintf("websocket write: writing: %v", msg))
+
+	if ws.conn == nil {
+		info := "websocket write: write on broken connection"
+		log(info)
+		return fmt.Errorf(info)
+	}
+
+	if err := ws.encoder.Encode(&msg); err != nil {
+		log(fmt.Sprintf("websocket write: error: %s", err))
+		ws.conn.Close()
+		ws.conn = nil
+		ws.status.SetTextContent("disconnected")
+		return err
+	}
+
+	return nil
 }
 
 func (ws *gameWebsocket) open(uri, sid string, status dom.Element) {
@@ -58,6 +79,7 @@ func (ws *gameWebsocket) open(uri, sid string, status dom.Element) {
 	}
 
 	ws.conn = c
+	ws.encoder = json.NewEncoder(ws.conn)
 
 	info = fmt.Sprintf("connected: %s", ws.uri)
 	log(fmt.Sprintf("websocket open: %s", info))
@@ -65,12 +87,8 @@ func (ws *gameWebsocket) open(uri, sid string, status dom.Element) {
 
 	msg := &ClientMsg{Code: CM_CODE_AUTH, Data: sid}
 
-	encoder := json.NewEncoder(ws.conn)
-
-	if err := encoder.Encode(&msg); err != nil {
+	if err := ws.write(msg); err != nil {
 		log(fmt.Sprintf("websocket open: JSON encoding error: %s", err))
-		ws.conn = nil
-		ws.status.SetTextContent("disconnected")
 		return
 	}
 
@@ -85,20 +103,20 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 		log("handleWebsocket: exiting (goroutine finishing)")
 	}()
 
-	ws := &gameWebsocket{}
+	gameInfo.sock = &gameWebsocket{}
 
-	ws.open(wsUri, sid, status)
+	gameInfo.sock.open(wsUri, sid, status)
 
 	// reconnect loop
 	for {
-		if ws.conn == nil {
+		if gameInfo.sock.conn == nil {
 			var connectDelay time.Duration = 10
 
-			log(fmt.Sprintf("handleWebsocket: reconnect: %s waiting: %d seconds", ws.uri, connectDelay))
-			ws.status.SetTextContent("waiting")
+			log(fmt.Sprintf("handleWebsocket: reconnect: %s waiting: %d seconds", gameInfo.sock.uri, connectDelay))
+			gameInfo.sock.status.SetTextContent("waiting")
 
 			time.Sleep(time.Second * connectDelay)
-			ws.open(wsUri, sid, status)
+			gameInfo.sock.open(wsUri, sid, status)
 			continue
 		}
 
@@ -106,12 +124,12 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 
 		// read loop
 		for {
-			decoder := json.NewDecoder(ws.conn)
+			decoder := json.NewDecoder(gameInfo.sock.conn)
 
 			if err := decoder.Decode(&msg); err != nil {
 				log(fmt.Sprintf("handleWebsocket: JSON decoding error: %s", err))
-				ws.conn = nil
-				ws.status.SetTextContent("disconnected")
+				gameInfo.sock.conn = nil
+				gameInfo.sock.status.SetTextContent("disconnected")
 				break // reconnect
 			}
 
@@ -120,7 +138,7 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 			if msg.Code == CM_CODE_KILL {
 				info := fmt.Sprintf("server killed our session: %s", msg.Data)
 				log(fmt.Sprintf("handleWebsocket: %s", info))
-				ws.status.SetTextContent(info)
+				gameInfo.sock.status.SetTextContent(info)
 				return // stop
 			}
 

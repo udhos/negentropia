@@ -102,7 +102,8 @@ func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPo
 }
 
 type gameState struct {
-	gl *webgl.Context
+	gl   *webgl.Context
+	sock *gameWebsocket
 }
 
 var gameInfo *gameState = &gameState{}
