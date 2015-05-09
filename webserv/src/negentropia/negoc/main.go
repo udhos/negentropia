@@ -91,8 +91,6 @@ const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
 func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
 	log(fmt.Sprintf("entering game loop frame_rate=%v frame_interval=%v", FRAME_RATE, FRAME_INTERVAL))
 
-	setViewport(gl, 700, 400)
-
 	ticker := time.NewTicker(time.Millisecond * FRAME_INTERVAL)
 	go func() {
 		for t := range ticker.C {
@@ -102,9 +100,20 @@ func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPo
 }
 
 func requestZone(sock *gameWebsocket) {
-	log("requestZone")
-
 	sock.write(&ClientMsg{Code: CM_CODE_REQZ})
+}
+
+func updateCulling(gl *webgl.Context, backfaceCulling bool) {
+	if backfaceCulling {
+		log("backface culling: ON")
+		gl.FrontFace(gl.CCW)
+		gl.CullFace(gl.BACK)
+		gl.Enable(gl.CULL_FACE)
+		return
+	}
+
+	log("backface culling: OFF")
+	gl.Disable(gl.CULL_FACE)
 }
 
 func initContext(gameInfo *gameState) {
@@ -126,6 +135,21 @@ func initContext(gameInfo *gameState) {
 	   gl.activeTexture(RenderingContext.TEXTURE0 + defaultTextureUnit);
 	*/
 
+	gl := gameInfo.gl
+
+	gl.ClearColor(0.8, 0.3, 0.01, 1)
+
+	gl.Enable(gl.DEPTH_TEST) // enable depth testing
+	gl.DepthFunc(gl.LESS)    // gl.LESS is default depth test
+	gl.DepthRange(0.0, 1.0)  // default
+
+	setViewport(gl, 700, 400)
+
+	updateCulling(gl, gameInfo.backfaceCulling)
+
+	// set default texture unit
+	gl.ActiveTexture(gl.TEXTURE0 + gameInfo.defaultTextureUnit)
+
 	requestZone(gameInfo.sock)
 }
 
@@ -137,11 +161,13 @@ func setPerspective() {
 }
 
 type gameState struct {
-	gl   *webgl.Context
-	sock *gameWebsocket
+	gl                 *webgl.Context
+	sock               *gameWebsocket
+	backfaceCulling    bool
+	defaultTextureUnit int
 }
 
-var gameInfo *gameState = &gameState{}
+var gameInfo *gameState = &gameState{backfaceCulling: true, defaultTextureUnit: 0}
 
 func main() {
 	log("main: begin")
@@ -191,8 +217,6 @@ func main() {
 	}
 	gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
 	gl.BufferData(gl.ARRAY_BUFFER, vertexPositionData, gl.STATIC_DRAW)
-
-	gl.ClearColor(0.8, 0.3, 0.01, 1)
 
 	initContext(gameInfo) // set aspectRatio
 
