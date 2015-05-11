@@ -143,9 +143,9 @@ func initContext(gameInfo *gameState) {
 	gl.DepthFunc(gl.LESS)    // gl.LESS is default depth test
 	gl.DepthRange(0.0, 1.0)  // default
 
-	setViewport(gl, 700, 400)
+	setViewport(gl, 600, 400)
 
-	updateCulling(gl, gameInfo.backfaceCulling)
+	updateCulling(gl, false)
 
 	// set default texture unit
 	gl.ActiveTexture(gl.TEXTURE0 + gameInfo.defaultTextureUnit)
@@ -163,11 +163,10 @@ func setPerspective() {
 type gameState struct {
 	gl                 *webgl.Context
 	sock               *gameWebsocket
-	backfaceCulling    bool
 	defaultTextureUnit int
 }
 
-var gameInfo *gameState = &gameState{backfaceCulling: true, defaultTextureUnit: 0}
+var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
 
 func main() {
 	log("main: begin")
