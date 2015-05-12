@@ -41,3 +41,15 @@ func ParseFloatVectorFunc(text string, size int, f func(rune) bool) ([]float64, 
 func ParseFloatVectorSpace(text string, size int) ([]float64, error) {
 	return ParseFloatVectorFunc(text, size, unicode.IsSpace)
 }
+
+func ParseFloatVectorComma(text string, size int) ([]float64, error) {
+	isComma := func(c rune) bool {
+		return c == ','
+	}
+
+	return ParseFloatVectorFunc(text, size, isComma)
+}
+
+func ParseFloatVector3Comma(text string) ([]float64, error) {
+	return ParseFloatVectorComma(text, 3)
+}

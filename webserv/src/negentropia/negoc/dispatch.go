@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"negentropia/world/parser"
 	"strings"
 )
 
@@ -26,6 +27,10 @@ func resetZone() {
 	resetPickColor()
 }
 
+func cameraMoveTo(coord []float64) {
+	log(fmt.Sprintf("WRITEME cameraMoveTo: %v", coord))
+}
+
 func dispatch(gameInfo *gameState, code int, data string, tab map[string]string) {
 	//log(fmt.Sprintf("dispatch: code=%v data=%v tab=%v", code, data, tab))
 
@@ -46,6 +51,14 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			culling := stringIsTrue(backfaceCulling)
 			//log(fmt.Sprintf("dispatch: zone: backfaceCulling: recv=%s parsed=%v", backfaceCulling, culling))
 			updateCulling(gameInfo.gl, culling)
+		}
+
+		if camCoord, ok := tab["cameraCoord"]; ok {
+			if coord, err := parser.ParseFloatVector3Comma(camCoord); err != nil {
+				log(fmt.Sprintf("dispatch: error parsing Vector3(%s): %v", camCoord, err))
+			} else {
+				cameraMoveTo(coord)
+			}
 		}
 
 		resetZone()
