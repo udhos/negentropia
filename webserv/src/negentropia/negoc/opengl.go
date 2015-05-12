@@ -8,7 +8,25 @@ import (
 )
 
 type Matrix4 struct {
-	data [16]float64
+	data []float32
+}
+
+func setNullMatrix(perspectiveMatrix *Matrix4) {
+	perspectiveMatrix.data = []float32{
+		0, 0, 0, 0, // c0
+		0, 0, 0, 0, // c1
+		0, 0, 0, 0, // c2
+		0, 0, 0, 0, // c3
+	}
+}
+
+func setIdentityMatrix(perspectiveMatrix *Matrix4) {
+	perspectiveMatrix.data = []float32{
+		1, 0, 0, 0, // c0
+		0, 1, 0, 0, // c1
+		0, 0, 1, 0, // c2
+		0, 0, 0, 1, // c3
+	}
 }
 
 func setPerspectiveMatrix(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
@@ -23,10 +41,18 @@ func setFrustumMatrix(perspectiveMatrix *Matrix4, left, right, bottom, top, near
 	top_minus_bottom := top - bottom
 	far_minus_near := far - near
 
-	perspectiveMatrix.data = [16]float64{
-		two_near / right_minus_left, 0, 0, 0, // c0
-		0, two_near / top_minus_bottom, 0, 0, // c1
-		(right + left) / right_minus_left, (top + bottom) / top_minus_bottom, -(far + near) / far_minus_near, -1.0, // c2
-		0, 0, -(two_near * far) / far_minus_near, 0, // c3
+	r0c0 := float32(two_near / right_minus_left)
+	r1c1 := float32(two_near / top_minus_bottom)
+	r0c2 := float32((right + left) / right_minus_left)
+	r1c2 := float32((top + bottom) / top_minus_bottom)
+	r2c2 := float32(-(far + near) / far_minus_near)
+	r3c2 := float32(-1.0)
+	r2c3 := float32(-(two_near * far) / far_minus_near)
+
+	perspectiveMatrix.data = []float32{
+		r0c0, 0, 0, 0, // c0
+		0, r1c1, 0, 0, // c1
+		r0c2, r1c2, r2c2, r3c2, // c2
+		0, 0, r2c3, 0, // c3
 	}
 }

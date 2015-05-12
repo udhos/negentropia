@@ -68,16 +68,64 @@ func initGL() *webgl.Context {
 	return gl
 }
 
+func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *Matrix4) {
+	// send perspective projection matrix uniform
+	//gl.UniformMatrix4fv(u_P, false, P.data)
+	var tmp Matrix4
+	setIdentityMatrix(&tmp)
+	gl.UniformMatrix4fv(u_P, false, tmp.data)
+}
+
+func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
+
+	/*
+	   V = View (inverse of camera matrix -- translation and rotation)
+	   T = Translation
+	   R = Rotation
+	   U = Undo Model Local Rotation
+	   S = Scaling
+	*/
+	/*
+	   cam.loadViewMatrixInto(MV); // MV = V
+
+	   MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
+
+	   MV.multiply(_rotation); // MV = V*T*R*U
+
+	   MV.scale(rescale, rescale, rescale); // MV = V*T*R*U*S
+	*/
+
+	var MV Matrix4
+	setIdentityMatrix(&MV)
+	gl.UniformMatrix4fv(u_MV, false, MV.data)
+}
+
 const VERTEX_POSITION_ITEM_SIZE = 3 // x,y,z
 
-func draw(gl *webgl.Context, t time.Time, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
+func draw(gameInfo *gameState, t time.Time, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
+
+	gl := gameInfo.gl
+
 	gl.Clear(gl.COLOR_BUFFER_BIT)
+
+	u_P := gl.GetUniformLocation(prog, "u_P")
+	u_MV := gl.GetUniformLocation(prog, "u_MV")
+
+	// scan programs
 
 	gl.UseProgram(prog)
 	gl.EnableVertexAttribArray(a_Position)
 
+	uploadPerspective(gl, u_P, &gameInfo.pMatrix)
+
+	// scan models
+
 	gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
 	gl.VertexAttribPointer(a_Position, VERTEX_POSITION_ITEM_SIZE, gl.FLOAT, false, 0, 0)
+
+	// scan instances
+
+	uploadModelView(gl, u_MV)
 
 	vertexIndexOffset := 0
 	vertexIndexElementSize := 2 // uint16
@@ -89,13 +137,13 @@ func draw(gl *webgl.Context, t time.Time, a_Position, vertexIndexSize int, prog,
 const FRAME_RATE = 1                     // frames per second
 const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
 
-func gameLoop(gl *webgl.Context, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
-	log(fmt.Sprintf("entering game loop frame_rate=%v frame_interval=%v", FRAME_RATE, FRAME_INTERVAL))
+func gameLoop(gameInfo *gameState, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
+	log(fmt.Sprintf("gameLoop: frame_rate=%v fps frame_interval=%v msec", FRAME_RATE, FRAME_INTERVAL))
 
 	ticker := time.NewTicker(time.Millisecond * FRAME_INTERVAL)
 	go func() {
 		for t := range ticker.C {
-			draw(gl, t, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
+			draw(gameInfo, t, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
 		}
 	}()
 }
@@ -121,24 +169,12 @@ func updateViewport(gameInfo *gameState) {
 	gameInfo.canvasAspect = setViewport(gameInfo.gl, 600, 400)
 }
 
+func enableExtensions() {
+	log("enableExtensions: WRITEME detect and enable WebGL extensions")
+}
+
 func initContext(gameInfo *gameState) {
-	log("initContext: WRITEME")
-
-	/*
-	   enable_extensions(gl);
-
-	   clearColor(gl, 0.5, 0.5, 0.5, 1.0);
-	   gl.enable(RenderingContext.DEPTH_TEST); // enable depth testing
-	   gl.depthFunc(RenderingContext.LESS); // gl.LESS is default depth test
-	   gl.depthRange(0.0, 1.0); // default
-
-	   setViewport(gl, gl.canvas.width, gl.canvas.height);
-
-	   updateCulling(gl);
-
-	   // set default texture unit
-	   gl.activeTexture(RenderingContext.TEXTURE0 + defaultTextureUnit);
-	*/
+	enableExtensions()
 
 	gl := gameInfo.gl
 
@@ -230,7 +266,7 @@ func main() {
 
 	setPerspective(gameInfo) // requires aspectRatio
 
-	gameLoop(gl, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
+	gameLoop(gameInfo, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
 
 	log("main: end")
 }

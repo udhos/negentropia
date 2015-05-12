@@ -40,8 +40,8 @@ func compileShader(gl *webgl.Context, shaderSource string, shaderType int) *js.O
 
 func newShaderProgram(gl *webgl.Context) *js.Object {
 
-	vertShaderURL := "/shader/clip_vs.txt"
-	fragShaderURL := "/shader/clip_fs.txt"
+	vertShaderURL := "/shader/simple_vs.txt"
+	fragShaderURL := "/shader/simple_fs.txt"
 
 	if buf, err := httpFetch(vertShaderURL); err != nil {
 		log(fmt.Sprintf("newShaderProgram: fetch url=%v error: %v", vertShaderURL, err))
