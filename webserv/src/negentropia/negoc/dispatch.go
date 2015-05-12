@@ -44,7 +44,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 
 		if backfaceCulling, ok := tab["backfaceCulling"]; ok {
 			culling := stringIsTrue(backfaceCulling)
-			log(fmt.Sprintf("dispatch: zone: backfaceCulling: recv=%s parsed=%v", backfaceCulling, culling))
+			//log(fmt.Sprintf("dispatch: zone: backfaceCulling: recv=%s parsed=%v", backfaceCulling, culling))
 			updateCulling(gameInfo.gl, culling)
 		}
 
