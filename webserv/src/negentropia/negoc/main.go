@@ -5,6 +5,7 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	"honnef.co/go/js/dom"
+	"math"
 	"time"
 )
 
@@ -13,7 +14,7 @@ func log(msg string) {
 	println(m)
 }
 
-func setViewport(gl *webgl.Context, w, h int) float32 {
+func setViewport(gl *webgl.Context, w, h int) float64 {
 	canvas := gl.Get("canvas")
 
 	/*
@@ -36,7 +37,7 @@ func setViewport(gl *webgl.Context, w, h int) float32 {
 	gl.Viewport(0, 0, drawingBufferWidth, drawingBufferHeight)
 
 	// canvasAspect: save aspect for render loop perspective matrix
-	canvasAspect := float32(drawingBufferWidth) / float32(drawingBufferHeight)
+	canvasAspect := float64(drawingBufferWidth) / float64(drawingBufferHeight)
 
 	log(fmt.Sprintf("setViewport: %v x %v aspect=%v", drawingBufferWidth, drawingBufferHeight, canvasAspect))
 
@@ -116,6 +117,10 @@ func updateCulling(gl *webgl.Context, backfaceCulling bool) {
 	gl.Disable(gl.CULL_FACE)
 }
 
+func updateViewport(gameInfo *gameState) {
+	gameInfo.canvasAspect = setViewport(gameInfo.gl, 600, 400)
+}
+
 func initContext(gameInfo *gameState) {
 	log("initContext: WRITEME")
 
@@ -143,7 +148,7 @@ func initContext(gameInfo *gameState) {
 	gl.DepthFunc(gl.LESS)    // gl.LESS is default depth test
 	gl.DepthRange(0.0, 1.0)  // default
 
-	setViewport(gl, 600, 400)
+	updateViewport(gameInfo)
 
 	updateCulling(gl, false)
 
@@ -153,17 +158,21 @@ func initContext(gameInfo *gameState) {
 	requestZone(gameInfo.sock)
 }
 
-func setPerspective() {
-	// aspect = canvas.width / canvas.height
-	//setPerspectiveMatrix(pMatrix, fieldOfViewYRadians, canvasAspect, planeNear, planeFar)
+func setPerspective(gameInfo *gameState) {
 
-	log("setPerspective: WRITEME")
+	fieldOfViewYRadians := 45 * math.Pi / 180
+	planeNear := 2.0   // 2m
+	planeFar := 5000.0 // 5km
+
+	setPerspectiveMatrix(&gameInfo.pMatrix, fieldOfViewYRadians, gameInfo.canvasAspect, planeNear, planeFar)
 }
 
 type gameState struct {
 	gl                 *webgl.Context
 	sock               *gameWebsocket
 	defaultTextureUnit int
+	pMatrix            Matrix4 // perspective matrix
+	canvasAspect       float64
 }
 
 var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
@@ -219,7 +228,7 @@ func main() {
 
 	initContext(gameInfo) // set aspectRatio
 
-	setPerspective() // requires aspectRatio
+	setPerspective(gameInfo) // requires aspectRatio
 
 	gameLoop(gl, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
 
