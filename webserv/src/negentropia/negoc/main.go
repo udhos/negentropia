@@ -77,6 +77,7 @@ func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *Matrix4) {
 }
 
 var scale = 1.0
+var rad = 0.0
 
 func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
 
@@ -97,13 +98,31 @@ func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
 	   MV.scale(rescale, rescale, rescale, 1.0); // MV = V*T*R*U*S
 	*/
 
+	// cam.loadViewMatrixInto(MV); // MV = V
 	var MV Matrix4
 	setIdentityMatrix(&MV)
+
+	var rotation Matrix4
+
+	if rad += math.Pi / 10; rad > 2*math.Pi {
+		rad -= 2 * math.Pi
+	}
+	sin := math.Sin(rad)
+	cos := math.Cos(rad)
+	setRotationMatrix(&rotation, cos, sin, 0, sin, cos, 0)
+	//log(fmt.Sprintf("Rorig = %v", rotation))
+	setIdentityMatrix(&rotation)
+
+	//log(fmt.Sprintf("MV = %v", MV))
+	//log(fmt.Sprintf("R = %v", rotation))
+
+	MV.multiply(&rotation) // MV = V*T*R*U
+
+	//log(fmt.Sprintf("MV x R = %v", MV))
 
 	if scale -= .1; scale < 0 {
 		scale = 1.0
 	}
-
 	MV.scale(scale, scale, scale, 1.0) // MV = V*T*R*U*S
 
 	gl.UniformMatrix4fv(u_MV, false, MV.data)

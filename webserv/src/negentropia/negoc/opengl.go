@@ -38,6 +38,59 @@ func (m *Matrix4) scale(x, y, z, w float64) {
 	m.data[15] *= w1
 }
 
+func (m *Matrix4) multiply(n *Matrix4) {
+	m00 := m.data[0]
+	m01 := m.data[4]
+	m02 := m.data[8]
+	m03 := m.data[12]
+	m10 := m.data[1]
+	m11 := m.data[5]
+	m12 := m.data[9]
+	m13 := m.data[13]
+	m20 := m.data[2]
+	m21 := m.data[6]
+	m22 := m.data[10]
+	m23 := m.data[14]
+	m30 := m.data[3]
+	m31 := m.data[7]
+	m32 := m.data[11]
+	m33 := m.data[15]
+
+	n00 := n.data[0]
+	n01 := n.data[4]
+	n02 := n.data[8]
+	n03 := n.data[12]
+	n10 := n.data[1]
+	n11 := n.data[5]
+	n12 := n.data[9]
+	n13 := n.data[13]
+	n20 := n.data[2]
+	n21 := n.data[6]
+	n22 := n.data[10]
+	n23 := n.data[14]
+	n30 := n.data[3]
+	n31 := n.data[7]
+	n32 := n.data[11]
+	n33 := n.data[15]
+
+	m.data[0] = (m00 * n00) + (m01 * n10) + (m02 * n20) + (m03 * n30)
+	m.data[4] = (m00 * n01) + (m01 * n11) + (m02 * n21) + (m03 * n31)
+	m.data[8] = (m00 * n02) + (m01 * n12) + (m02 * n22) + (m03 * n32)
+	m.data[12] = (m00 * n03) + (m01 * n13) + (m02 * n23) + (m03 * n33)
+	m.data[1] = (m10 * n00) + (m11 * n10) + (m12 * n20) + (m13 * n30)
+	m.data[5] = (m10 * n01) + (m11 * n11) + (m12 * n21) + (m13 * n31)
+	m.data[9] = (m10 * n02) + (m11 * n12) + (m12 * n22) + (m13 * n32)
+	m.data[13] = (m10 * n03) + (m11 * n13) + (m12 * n23) + (m13 * n33)
+	m.data[2] = (m20 * n00) + (m21 * n10) + (m22 * n20) + (m23 * n30)
+	m.data[6] = (m20 * n01) + (m21 * n11) + (m22 * n21) + (m23 * n31)
+	m.data[10] = (m20 * n02) + (m21 * n12) + (m22 * n22) + (m23 * n32)
+	m.data[14] = (m20 * n03) + (m21 * n13) + (m22 * n23) + (m23 * n33)
+	m.data[3] = (m30 * n00) + (m31 * n10) + (m32 * n20) + (m33 * n30)
+	m.data[7] = (m30 * n01) + (m31 * n11) + (m32 * n21) + (m33 * n31)
+	m.data[11] = (m30 * n02) + (m31 * n12) + (m32 * n22) + (m33 * n32)
+	m.data[15] = (m30 * n03) + (m31 * n13) + (m32 * n23) + (m33 * n33)
+}
+
 func setNullMatrix(perspectiveMatrix *Matrix4) {
 	perspectiveMatrix.data = []float32{
 		0, 0, 0, 0, // c0
@@ -53,6 +106,58 @@ func setIdentityMatrix(perspectiveMatrix *Matrix4) {
 		0, 1, 0, 0, // c1
 		0, 0, 1, 0, // c2
 		0, 0, 0, 1, // c3
+	}
+}
+
+func cross3(x1, y1, z1, x2, y2, z2 float64) (float64, float64, float64) {
+	return y1*z2 - z1*y2, z1*x2 - x1*z2, x1*y2 - y1*x2
+}
+
+func lengthSquared3(x, y, z float64) float64 {
+	return x*x + y*y + z*z
+}
+
+func length3(x, y, z float64) float64 {
+	return math.Sqrt(lengthSquared3(x, y, z))
+}
+
+func normalize3(x, y, z float64) (float64, float64, float64) {
+	length := length3(x, y, z)
+	if length == 0 {
+		return x, y, z // ugh
+	}
+	return x / length, y / length, z / length
+}
+
+func setRotationMatrix(rotationMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
+	setModelMatrix(rotationMatrix, forwardX, forwardY, forwardZ, upX, upY, upZ, 0, 0, 0)
+}
+
+func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY, upZ, tX, tY, tZ float64) {
+	rightX, rightY, rightZ := cross3(forwardX, forwardY, forwardZ, upX, upY, upZ)
+	rightX, rightY, rightZ = normalize3(rightX, rightY, rightZ)
+
+	rX := float32(rightX)
+	rY := float32(rightY)
+	rZ := float32(rightZ)
+
+	uX := float32(upX)
+	uY := float32(upY)
+	uZ := float32(upZ)
+
+	bX := -float32(forwardX)
+	bY := -float32(forwardY)
+	bZ := -float32(forwardZ)
+
+	oX := float32(tX)
+	oY := float32(tY)
+	oZ := float32(tZ)
+
+	modelMatrix.data = []float32{
+		rX, rY, rZ, 0, // c0
+		uX, uY, uZ, 0, // c1
+		bX, bY, bZ, 0, // c2
+		oX, oY, oZ, 1, // c3
 	}
 }
 
