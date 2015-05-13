@@ -29,7 +29,8 @@ go_get github.com/udhos/vectormath
 #
 #go_get code.google.com/p/go.net/websocket
 go_get golang.org/x/net/websocket
-go_get code.google.com/p/goauth2/oauth
+#go_get code.google.com/p/goauth2/oauth
+go_get github.com/udhos/goauth2/oauth
 
 # gopherjs dependencies
 cat $DEVEL/negentropia/gopherjs-deps.txt | while read i; do

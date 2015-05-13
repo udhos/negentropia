@@ -12,7 +12,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"code.google.com/p/goauth2/oauth"
+	"github.com/udhos/goauth2/oauth"
+	//"code.google.com/p/goauth2/oauth"
 	//"github.com/robfig/goauth2/oauth" // google broken
 	//"code.google.com/r/jasonmcvetta-goauth2" // go get broken
 	//"github.com/HairyMezican/goauth2/oauth"
