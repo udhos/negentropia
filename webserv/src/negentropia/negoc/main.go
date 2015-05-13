@@ -261,6 +261,27 @@ type gameState struct {
 
 var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
 
+func testModelView() {
+	//func setViewMatrix(viewMatrix *Matrix4, posX, posY, posZ, focusX, focusY, focusZ, upX, upY, upZ float64) {
+	//func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY, upZ, tX, tY, tZ float64) {
+
+	pos := []float64{1, 1, 1}
+	focus := []float64{0, 0, -1}
+	up := []float64{0, 1, 0}
+	var V Matrix4
+	setViewMatrix(&V, pos[0], pos[1], pos[2], focus[0], focus[1], focus[2], up[0], up[1], up[2])
+
+	forward := []float64{focus[0] - pos[0], focus[1] - pos[1], focus[2] - pos[2]}
+	forward[0], forward[1], forward[2] = normalize3(forward[0], forward[1], forward[2])
+	rightX, rightY, rightZ := normalize3(cross3(forward[0], forward[1], forward[2], up[0], up[1], up[2]))
+	uX, uY, uZ := normalize3(cross3(rightX, rightY, rightZ, forward[0], forward[1], forward[2]))
+	var M Matrix4
+	setModelMatrix(&M, forward[0], forward[1], forward[2], uX, uY, uZ, pos[0], pos[1], pos[2])
+
+	V.multiply(&M)
+	log(fmt.Sprintf("testModelView: I = %v", V))
+}
+
 func main() {
 	log("main: begin")
 
@@ -317,4 +338,6 @@ func main() {
 	gameLoop(gameInfo, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
 
 	log("main: end")
+
+	testModelView()
 }
