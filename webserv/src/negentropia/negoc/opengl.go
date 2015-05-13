@@ -113,6 +113,10 @@ func cross3(x1, y1, z1, x2, y2, z2 float64) (float64, float64, float64) {
 	return y1*z2 - z1*y2, z1*x2 - x1*z2, x1*y2 - y1*x2
 }
 
+func dot3(x1, y1, z1, x2, y2, z2 float64) float64 {
+	return x1*x2 + y1*y2 + z1*z2
+}
+
 func lengthSquared3(x, y, z float64) float64 {
 	return x*x + y*y + z*z
 }
@@ -158,6 +162,43 @@ func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY
 		uX, uY, uZ, 0, // c1
 		bX, bY, bZ, 0, // c2
 		oX, oY, oZ, 1, // c3
+	}
+}
+
+func setViewMatrix(viewMatrix *Matrix4, posX, posY, posZ, focusX, focusY, focusZ, upX, upY, upZ float64) {
+	backX := posX - focusX
+	backY := posY - focusY
+	backZ := posZ - focusZ
+
+	rightX, rightY, rightZ := normalize3(cross3(upX, upY, upZ, backX, backY, backZ))
+
+	newUpX, newUpY, newUpZ := normalize3(cross3(backX, backY, backZ, rightX, rightY, rightZ))
+
+	rotatedEyeX := -dot3(rightX, rightY, rightZ, posX, posY, posZ)
+	rotatedEyeY := -dot3(newUpX, newUpY, newUpZ, posX, posY, posZ)
+	rotatedEyeZ := -dot3(backX, backY, backZ, posX, posY, posZ)
+
+	rX := float32(rightX)
+	rY := float32(rightY)
+	rZ := float32(rightZ)
+
+	uX := float32(newUpX)
+	uY := float32(newUpY)
+	uZ := float32(newUpZ)
+
+	bX := float32(backX)
+	bY := float32(backY)
+	bZ := float32(backZ)
+
+	eX := float32(rotatedEyeX)
+	eY := float32(rotatedEyeY)
+	eZ := float32(rotatedEyeZ)
+
+	viewMatrix.data = []float32{
+		rX, uX, bX, 0, // c0
+		rY, uY, bY, 0, // c1
+		rZ, uZ, bZ, 0, // c2
+		eX, eY, eZ, 1, // c3
 	}
 }
 

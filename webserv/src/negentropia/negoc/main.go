@@ -79,6 +79,26 @@ func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *Matrix4) {
 var scale = 1.0
 var rad = 0.0
 
+const pi2 = 2 * math.Pi
+
+func incRad(rad, delta float64) float64 {
+	rad += delta
+	if rad > pi2 {
+		rad -= pi2
+	}
+	return rad
+}
+
+var camX = 0.0
+
+func loadCameraViewMatrixInto(MV *Matrix4) {
+	//camX += .1
+	if camX > 1.0 {
+		camX = 0.0
+	}
+	setViewMatrix(MV, camX, 0, 1, 0, 0, 0, 0, 1, 0)
+}
+
 func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
 
 	/*
@@ -100,27 +120,27 @@ func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
 
 	// cam.loadViewMatrixInto(MV); // MV = V
 	var MV Matrix4
-	setIdentityMatrix(&MV)
+	loadCameraViewMatrixInto(&MV)
 
-	var rotation Matrix4
-
-	if rad += math.Pi / 10; rad > 2*math.Pi {
-		rad -= 2 * math.Pi
-	}
+	//delta := math.Pi / 5
+	delta := 0.0
+	rad := incRad(rad, delta)
 	sin := math.Sin(rad)
 	cos := math.Cos(rad)
-	setRotationMatrix(&rotation, cos, sin, 0, sin, cos, 0)
-	//log(fmt.Sprintf("Rorig = %v", rotation))
-	setIdentityMatrix(&rotation)
+	up := rad + math.Pi/2
+	sin2 := math.Sin(up)
+	cos2 := math.Cos(up)
 
-	//log(fmt.Sprintf("MV = %v", MV))
-	//log(fmt.Sprintf("R = %v", rotation))
+	var rotation Matrix4
+	setRotationMatrix(&rotation, cos, sin, 0, cos2, sin2, 0)
+	setIdentityMatrix(&rotation)
 
 	MV.multiply(&rotation) // MV = V*T*R*U
 
 	//log(fmt.Sprintf("MV x R = %v", MV))
 
-	if scale -= .1; scale < 0 {
+	//scale -= .1
+	if scale < 0 {
 		scale = 1.0
 	}
 	MV.scale(scale, scale, scale, 1.0) // MV = V*T*R*U*S
