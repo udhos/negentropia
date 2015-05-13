@@ -11,6 +11,33 @@ type Matrix4 struct {
 	data []float32
 }
 
+func (m *Matrix4) scale(x, y, z, w float64) {
+	x1 := float32(x)
+	y1 := float32(y)
+	z1 := float32(z)
+	w1 := float32(w)
+
+	m.data[0] *= x1
+	m.data[1] *= x1
+	m.data[2] *= x1
+	m.data[3] *= x1
+
+	m.data[4] *= y1
+	m.data[5] *= y1
+	m.data[6] *= y1
+	m.data[7] *= y1
+
+	m.data[8] *= z1
+	m.data[9] *= z1
+	m.data[10] *= z1
+	m.data[11] *= z1
+
+	m.data[12] *= w1
+	m.data[13] *= w1
+	m.data[14] *= w1
+	m.data[15] *= w1
+}
+
 func setNullMatrix(perspectiveMatrix *Matrix4) {
 	perspectiveMatrix.data = []float32{
 		0, 0, 0, 0, // c0
