@@ -133,6 +133,12 @@ func normalize3(x, y, z float64) (float64, float64, float64) {
 	return x / length, y / length, z / length
 }
 
+/*
+	null rotation:
+	forward = 0 0 -1 // looking towards -Z
+	up = 0 1 0       // up direction is +Y
+	setRotationMatrix(&rotation, 0, 0, -1, 0, 1, 0)
+*/
 func setRotationMatrix(rotationMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
 	setModelMatrix(rotationMatrix, forwardX, forwardY, forwardZ, upX, upY, upZ, 0, 0, 0)
 }

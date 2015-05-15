@@ -81,12 +81,11 @@ var rad = 0.0
 
 const pi2 = 2 * math.Pi
 
-func incRad(rad, delta float64) float64 {
+func incRad(delta float64) {
 	rad += delta
 	if rad > pi2 {
 		rad -= pi2
 	}
-	return rad
 }
 
 var camX = 0.0
@@ -122,18 +121,12 @@ func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
 	var MV Matrix4
 	loadCameraViewMatrixInto(&MV)
 
-	//delta := math.Pi / 5
-	delta := 0.0
-	rad := incRad(rad, delta)
-	sin := math.Sin(rad)
-	cos := math.Cos(rad)
-	up := rad + math.Pi/2
-	sin2 := math.Sin(up)
-	cos2 := math.Cos(up)
+	incRad(math.Pi / 5)
+	upX, upY, upZ := normalize3(math.Sin(rad), math.Cos(rad), 0)
 
 	var rotation Matrix4
-	setRotationMatrix(&rotation, cos, sin, 0, cos2, sin2, 0)
-	setIdentityMatrix(&rotation)
+	setRotationMatrix(&rotation, 0, 0, -1, upX, upY, upZ)
+	//setIdentityMatrix(&rotation)
 
 	MV.multiply(&rotation) // MV = V*T*R*U
 
@@ -284,6 +277,23 @@ func testModelView() {
 	log(fmt.Sprintf("testModelView: model x view = %v", V))
 }
 
+func testRotation() {
+	//rad := 0.0
+	//up := rad + math.Pi/2
+
+	fx := 0.0 //math.Sin(rad)
+	fy := 0.0 //math.Cos(rad)
+	fz := -1.0
+	ux := 0.0 //math.Sin(up)
+	uy := 1.0 //math.Cos(up)
+	uz := 0.0
+	log(fmt.Sprintf("forward=%v,%v,%v up=%v,%v,%v", fx, fy, fz, ux, uy, uz))
+
+	var rotation Matrix4
+	setRotationMatrix(&rotation, fx, fy, fz, ux, uy, uz)
+	log(fmt.Sprintf("rotation = %v", rotation))
+}
+
 func main() {
 	log("main: begin")
 
@@ -342,4 +352,5 @@ func main() {
 	log("main: end")
 
 	//testModelView()
+	//testRotation()
 }
