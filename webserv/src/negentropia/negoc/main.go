@@ -270,6 +270,7 @@ func testModelView() {
 	up := []float64{0, 1, 0}
 	var V Matrix4
 	setViewMatrix(&V, pos[0], pos[1], pos[2], focus[0], focus[1], focus[2], up[0], up[1], up[2])
+	log(fmt.Sprintf("testModelView: view = %v", V))
 
 	forward := []float64{focus[0] - pos[0], focus[1] - pos[1], focus[2] - pos[2]}
 	forward[0], forward[1], forward[2] = normalize3(forward[0], forward[1], forward[2])
@@ -277,9 +278,10 @@ func testModelView() {
 	uX, uY, uZ := normalize3(cross3(rightX, rightY, rightZ, forward[0], forward[1], forward[2]))
 	var M Matrix4
 	setModelMatrix(&M, forward[0], forward[1], forward[2], uX, uY, uZ, pos[0], pos[1], pos[2])
+	log(fmt.Sprintf("testModelView: model = %v", M))
 
 	V.multiply(&M)
-	log(fmt.Sprintf("testModelView: I = %v", V))
+	log(fmt.Sprintf("testModelView: model x view = %v", V))
 }
 
 func main() {
@@ -339,5 +341,5 @@ func main() {
 
 	log("main: end")
 
-	testModelView()
+	//testModelView()
 }

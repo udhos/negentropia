@@ -165,13 +165,28 @@ func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY
 	}
 }
 
+/*
+void setViewMatrix(Matrix4 viewMatrix, Vector3 cameraPosition,
+    Vector3 cameraFocusPosition, Vector3 upDirection) {
+  Vector3 z = cameraPosition - cameraFocusPosition;
+  z.normalize();
+  Vector3 x = upDirection.cross(z);
+  x.normalize();
+  Vector3 y = z.cross(x);
+  y.normalize();
+
+  double rotatedEyeX = -x.dot(cameraPosition);
+  double rotatedEyeY = -y.dot(cameraPosition);
+  double rotatedEyeZ = -z.dot(cameraPosition);
+
+  viewMatrix.setValues(x[0], y[0], z[0], 0.0, x[1], y[1], z[1], 0.0, x[2], y[2],
+      z[2], 0.0, rotatedEyeX, rotatedEyeY, rotatedEyeZ, 1.0);
+}
+*/
+
 func setViewMatrix(viewMatrix *Matrix4, posX, posY, posZ, focusX, focusY, focusZ, upX, upY, upZ float64) {
-	backX := posX - focusX
-	backY := posY - focusY
-	backZ := posZ - focusZ
-
+	backX, backY, backZ := normalize3(posX-focusX, posY-focusY, posZ-focusZ)
 	rightX, rightY, rightZ := normalize3(cross3(upX, upY, upZ, backX, backY, backZ))
-
 	newUpX, newUpY, newUpZ := normalize3(cross3(backX, backY, backZ, rightX, rightY, rightZ))
 
 	rotatedEyeX := -dot3(rightX, rightY, rightZ, posX, posY, posZ)
