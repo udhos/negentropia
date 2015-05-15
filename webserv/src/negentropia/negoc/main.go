@@ -78,24 +78,28 @@ func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *Matrix4) {
 
 var scale = 1.0
 var rad = 0.0
+var camUpRad = 0.0
+var tx = 0.0
 
 const pi2 = 2 * math.Pi
 
-func incRad(delta float64) {
-	rad += delta
-	if rad > pi2 {
-		rad -= pi2
+func incRad(r, delta float64) float64 {
+	r += delta
+	if r > pi2 {
+		r -= pi2
 	}
+	return r
 }
 
-var camX = 0.0
+func loadCameraViewMatrixInto(V *Matrix4) {
 
-func loadCameraViewMatrixInto(MV *Matrix4) {
-	//camX += .1
-	if camX > 1.0 {
-		camX = 0.0
-	}
-	setViewMatrix(MV, camX, 0, 1, 0, 0, 0, 0, 1, 0)
+	delta := 0.0 // math.Pi / 5
+	camUpRad = incRad(camUpRad, delta)
+	camUpX, camUpY, camUpZ := normalize3(math.Sin(camUpRad), math.Cos(camUpRad), 0)
+
+	setViewMatrix(V, 0, 0, 0, 0, 0, -1, camUpX, camUpY, camUpZ)
+
+	//log(fmt.Sprintf("angle=%v delta=%v up=%v,%v,%v view=%v", camUpRad*180/math.Pi, delta*180/math.Pi, camUpX, camUpY, camUpZ, V))
 }
 
 func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
@@ -121,16 +125,17 @@ func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
 	var MV Matrix4
 	loadCameraViewMatrixInto(&MV)
 
-	incRad(math.Pi / 5)
-	upX, upY, upZ := normalize3(math.Sin(rad), math.Cos(rad), 0)
+	tx += 0.01
+	if tx > .5 {
+		tx = 0
+	}
+	MV.translate(tx, 0, 0, 1.0) // MV = V*T
 
+	//rad = incRad(rad, math.Pi/5)
+	upX, upY, upZ := normalize3(math.Sin(rad), math.Cos(rad), 0)
 	var rotation Matrix4
 	setRotationMatrix(&rotation, 0, 0, -1, upX, upY, upZ)
-	//setIdentityMatrix(&rotation)
-
 	MV.multiply(&rotation) // MV = V*T*R*U
-
-	//log(fmt.Sprintf("MV x R = %v", MV))
 
 	//scale -= .1
 	if scale < 0 {
@@ -278,9 +283,6 @@ func testModelView() {
 }
 
 func testRotation() {
-	//rad := 0.0
-	//up := rad + math.Pi/2
-
 	fx := 0.0 //math.Sin(rad)
 	fy := 0.0 //math.Cos(rad)
 	fz := -1.0
@@ -292,6 +294,12 @@ func testRotation() {
 	var rotation Matrix4
 	setRotationMatrix(&rotation, fx, fy, fz, ux, uy, uz)
 	log(fmt.Sprintf("rotation = %v", rotation))
+}
+
+func testView() {
+	var V Matrix4
+	setViewMatrix(&V, 0, 0, 0, 0, 0, -1, 0, 1, 0)
+	log(fmt.Sprintf("testView: view = %v", V))
 }
 
 func main() {
@@ -353,4 +361,5 @@ func main() {
 
 	//testModelView()
 	//testRotation()
+	//testView()
 }
