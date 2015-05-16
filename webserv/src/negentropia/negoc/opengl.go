@@ -239,6 +239,7 @@ func setFrustumMatrix(perspectiveMatrix *Matrix4, left, right, bottom, top, near
 	top_minus_bottom := top - bottom
 	far_minus_near := far - near
 
+	// row x col in the representation below
 	r0c0 := float32(two_near / right_minus_left)
 	r1c1 := float32(two_near / top_minus_bottom)
 	r0c2 := float32((right + left) / right_minus_left)
@@ -247,9 +248,9 @@ func setFrustumMatrix(perspectiveMatrix *Matrix4, left, right, bottom, top, near
 	r2c3 := float32(-(two_near * far) / far_minus_near)
 
 	perspectiveMatrix.data = []float32{
-		r0c0, 0, 0, 0, // c0
-		0, r1c1, 0, 0, // c1
-		r0c2, r1c2, r2c2, -1, // c2
-		0, 0, r2c3, 0, // c3
+		r0c0, 0, r0c2, 0, // "r0"
+		0, r1c1, r1c2, 0, // "r1"
+		0, 0, r2c2, r2c3, // "r2"
+		0, 0, -1, 0, // "r3"
 	}
 }

@@ -69,11 +69,7 @@ func initGL() *webgl.Context {
 }
 
 func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *Matrix4) {
-	// send perspective projection matrix uniform
-	//gl.UniformMatrix4fv(u_P, false, P.data)
-	var tmp Matrix4
-	setIdentityMatrix(&tmp)
-	gl.UniformMatrix4fv(u_P, false, tmp.data)
+	gl.UniformMatrix4fv(u_P, false, P.data)
 }
 
 var scale = 1.0
@@ -110,15 +106,8 @@ func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
 	   R = Rotation
 	   U = Undo Model Local Rotation
 	   S = Scaling
-	*/
-	/*
-	   cam.loadViewMatrixInto(MV); // MV = V
 
-	   MV.translate(_center[0], _center[1], _center[2]); // MV = V*T
-
-	   MV.multiply(_rotation); // MV = V*T*R*U
-
-	   MV.scale(rescale, rescale, rescale, 1.0); // MV = V*T*R*U*S
+	   MV = V*T*R*U*S
 	*/
 
 	// cam.loadViewMatrixInto(MV); // MV = V
@@ -247,6 +236,8 @@ func setPerspective(gameInfo *gameState) {
 	planeFar := 5000.0 // 5km
 
 	setPerspectiveMatrix(&gameInfo.pMatrix, fieldOfViewYRadians, gameInfo.canvasAspect, planeNear, planeFar)
+
+	//log(fmt.Sprintf("perspective: %v", gameInfo.pMatrix))
 }
 
 type gameState struct {
@@ -344,9 +335,9 @@ func main() {
 
 	// triangle vertices
 	vertexPositionData := []float32{
-		.7, -.7, 0, // v0
-		0, .7, 0, // v1
-		-.7, -.7, 0, // v2
+		.9, -.9, -.9, // v0
+		0, .9, -.9, // v1
+		-.9, -.9, -.9, // v2
 	}
 	gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
 	gl.BufferData(gl.ARRAY_BUFFER, vertexPositionData, gl.STATIC_DRAW)
