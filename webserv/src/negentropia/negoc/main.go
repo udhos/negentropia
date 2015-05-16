@@ -125,7 +125,7 @@ func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
 	var MV Matrix4
 	loadCameraViewMatrixInto(&MV)
 
-	tx += 0.01
+	tx += 0.02
 	if tx > .5 {
 		tx = 0
 	}
@@ -180,7 +180,7 @@ func draw(gameInfo *gameState, t time.Time, a_Position, vertexIndexSize int, pro
 	gl.DrawElements(gl.TRIANGLES, vertexIndexSize, gl.UNSIGNED_SHORT, vertexIndexOffset*vertexIndexElementSize)
 }
 
-const FRAME_RATE = 1                     // frames per second
+const FRAME_RATE = 2                     // frames per second
 const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
 
 func gameLoop(gameInfo *gameState, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
