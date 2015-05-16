@@ -42,6 +42,10 @@ type gameWebsocket struct {
 	encoder *json.Encoder
 }
 
+func requestZone(sock *gameWebsocket) {
+	sock.write(&ClientMsg{Code: CM_CODE_REQZ})
+}
+
 func (ws *gameWebsocket) write(msg *ClientMsg) error {
 	log(fmt.Sprintf("websocket write: writing: %v", msg))
 
