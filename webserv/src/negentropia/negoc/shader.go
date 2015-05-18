@@ -22,6 +22,23 @@ void main(void) {
 }
 `
 
+func fetchShaderProgram(programName, vertShader, fragShader string) {
+
+	log(fmt.Sprintf("fetchShaderProgram: WRITEME prog=%v vert=%v frag=%v", programName, vertShader, fragShader))
+
+	/*
+	   String programName = tab['programName'];
+	   TexShaderProgram prog = findTexShader(programName);
+	   if (prog != null) {
+	     err("dispatcher: failure redefining program programName=$programName");
+	   } else {
+	     prog = new TexShaderProgram(gl, programName);
+	     programList.add(prog);
+	     prog.fetch(shaderCache, tab['vertexShader'], tab['fragmentShader']);
+	   }
+	*/
+}
+
 func compileShader(gl *webgl.Context, shaderSource string, shaderType int) *js.Object {
 	shader := gl.CreateShader(shaderType)
 

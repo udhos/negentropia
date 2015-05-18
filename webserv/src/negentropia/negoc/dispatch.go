@@ -67,6 +67,22 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			log("dispatch: missing skybox URL")
 		}
 
+	case CM_CODE_PROGRAM:
+
+		var nameOk, vertOk, fragOk bool
+		var programName, vertShader, fragShader string
+
+		if programName, nameOk = tab["programName"]; !nameOk {
+		}
+		if vertShader, vertOk = tab["vertexShader"]; !vertOk {
+		}
+		if fragShader, fragOk = tab["fragmentShader"]; !fragOk {
+		}
+
+		if nameOk && vertOk && fragOk {
+			fetchShaderProgram(programName, vertShader, fragShader)
+		}
+
 	default:
 		log(fmt.Sprintf("dispatch: unknown code=%v data=%v tab=%v", code, data, tab))
 	}
