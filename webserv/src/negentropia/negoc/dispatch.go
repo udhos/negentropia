@@ -80,7 +80,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 		}
 
 		if nameOk && vertOk && fragOk {
-			fetchShaderProgram(programName, vertShader, fragShader)
+			fetchShaderProgram(gameInfo, programName, vertShader, fragShader)
 		}
 
 	default:

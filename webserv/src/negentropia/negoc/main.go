@@ -126,6 +126,7 @@ type gameState struct {
 	pMatrix            Matrix4 // perspective matrix
 	canvasAspect       float64
 	cam                camera
+	shaderList         []Shader
 }
 
 var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
@@ -150,7 +151,9 @@ func main() {
 		return
 	}
 
-	prog := newShaderProgram(gl)
+	vertShaderURL := "/shader/simple_vs.txt"
+	fragShaderURL := "/shader/simple_fs.txt"
+	prog := newShaderProgram(gl, vertShaderURL, fragShaderURL)
 
 	attr := "a_Position"
 	a_Position := gl.GetAttribLocation(prog, attr)
