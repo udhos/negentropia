@@ -137,7 +137,7 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 				break // reconnect
 			}
 
-			log(fmt.Sprintf("handleWebsocket: received=[%v]", msg))
+			//log(fmt.Sprintf("handleWebsocket: received=[%v]", msg))
 
 			if msg.Code == CM_CODE_KILL {
 				info := fmt.Sprintf("server killed our session: %s", msg.Data)

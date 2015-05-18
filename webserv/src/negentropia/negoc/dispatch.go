@@ -59,6 +59,14 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 
 		resetZone()
 
+	case CM_CODE_SKYBOX:
+
+		if skyboxURL, ok := tab["skyboxURL"]; ok {
+			fetchSkybox(skyboxURL)
+		} else {
+			log("dispatch: missing skybox URL")
+		}
+
 	default:
 		log(fmt.Sprintf("dispatch: unknown code=%v data=%v tab=%v", code, data, tab))
 	}
