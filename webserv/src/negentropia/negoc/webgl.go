@@ -66,18 +66,7 @@ func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *Matrix4) {
 	gl.UniformMatrix4fv(u_P, false, P.data)
 }
 
-func loadCameraViewMatrixInto(V *Matrix4) {
-
-	delta := 0.0 // math.Pi / 5
-	camUpRad = incRad(camUpRad, delta)
-	camUpX, camUpY, camUpZ := normalize3(math.Sin(camUpRad), math.Cos(camUpRad), 0)
-
-	setViewMatrix(V, 0, 0, 0, 0, 0, -1, camUpX, camUpY, camUpZ)
-
-	//log(fmt.Sprintf("angle=%v delta=%v up=%v,%v,%v view=%v", camUpRad*180/math.Pi, delta*180/math.Pi, camUpX, camUpY, camUpZ, V))
-}
-
-func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
+func uploadModelView(gl *webgl.Context, u_MV *js.Object, cam *camera) {
 
 	/*
 	   V = View (inverse of camera matrix -- translation and rotation)
@@ -91,7 +80,7 @@ func uploadModelView(gl *webgl.Context, u_MV *js.Object) {
 
 	// cam.loadViewMatrixInto(MV); // MV = V
 	var MV Matrix4
-	loadCameraViewMatrixInto(&MV)
+	loadCameraViewMatrixInto(cam, &MV)
 
 	tx += 0.02
 	if tx > .5 {

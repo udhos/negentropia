@@ -53,7 +53,7 @@ func draw(gameInfo *gameState, t time.Time, a_Position, vertexIndexSize int, pro
 
 	// scan instances
 
-	uploadModelView(gl, u_MV)
+	uploadModelView(gl, u_MV, &gameInfo.cam)
 
 	vertexIndexOffset := 0
 	vertexIndexElementSize := 2 // uint16
@@ -125,6 +125,7 @@ type gameState struct {
 	defaultTextureUnit int
 	pMatrix            Matrix4 // perspective matrix
 	canvasAspect       float64
+	cam                camera
 }
 
 var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
@@ -141,6 +142,8 @@ func main() {
 	gl := gameInfo.gl // shortcut
 
 	log("main: WebGL context initialized")
+
+	resetCamera(&gameInfo.cam)
 
 	if initWebSocket(gameInfo) {
 		log("main: could not initalize web socket, exiting")

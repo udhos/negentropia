@@ -1,0 +1,48 @@
+package main
+
+import (
+	"fmt"
+	"math"
+	//"negentropia/world/parser"
+	//"strings"
+)
+
+type camera struct {
+	camPosX, camPosY, camPosZ       float64
+	camFocusX, camFocusY, camFocusZ float64
+	camUpX, camUpY, camUpZ          float64
+}
+
+/*
+func newCamera() *camera {
+	return &camera{
+		0, 0, 0,
+		0, 0, -1,
+		0, 1, 0,
+	}
+}
+*/
+
+func resetCamera(cam *camera) {
+	*cam = camera{
+		0, 0, 0,
+		0, 0, -1,
+		0, 1, 0,
+	}
+}
+
+func loadCameraViewMatrixInto(cam *camera, V *Matrix4) {
+
+	delta := 0.0 // math.Pi / 5
+	camUpRad = incRad(camUpRad, delta)
+
+	cam.camUpX, cam.camUpY, cam.camUpZ = normalize3(math.Sin(camUpRad), math.Cos(camUpRad), 0)
+
+	setViewMatrix(V, cam.camPosX, cam.camPosY, cam.camPosZ, cam.camFocusX, cam.camFocusY, cam.camFocusZ, cam.camUpX, cam.camUpY, cam.camUpZ)
+
+	//log(fmt.Sprintf("angle=%v delta=%v up=%v,%v,%v view=%v", camUpRad*180/math.Pi, delta*180/math.Pi, camUpX, camUpY, camUpZ, V))
+}
+
+func cameraMoveTo(cam *camera, coord []float64) {
+	log(fmt.Sprintf("WRITEME cameraMoveTo: %v", coord))
+}
