@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"math"
 	//"negentropia/world/parser"
 	//"strings"
@@ -44,5 +44,7 @@ func loadCameraViewMatrixInto(cam *camera, V *Matrix4) {
 }
 
 func cameraMoveTo(cam *camera, coord []float64) {
-	log(fmt.Sprintf("WRITEME cameraMoveTo: %v", coord))
+	cam.camPosX = coord[0]
+	cam.camPosY = coord[1]
+	cam.camPosZ = coord[2]
 }
