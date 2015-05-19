@@ -77,10 +77,13 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 		var programName, vertShader, fragShader string
 
 		if programName, nameOk = tab["programName"]; !nameOk {
+			log(fmt.Sprintf("dispatch: program: missing name"))
 		}
 		if vertShader, vertOk = tab["vertexShader"]; !vertOk {
+			log(fmt.Sprintf("dispatch: program: missing vertex shader URL"))
 		}
 		if fragShader, fragOk = tab["fragmentShader"]; !fragOk {
+			log(fmt.Sprintf("dispatch: program: missing fragment shader URL"))
 		}
 
 		if nameOk && vertOk && fragOk {
