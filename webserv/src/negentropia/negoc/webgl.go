@@ -118,7 +118,7 @@ func updateCulling(gl *webgl.Context, backfaceCulling bool) {
 
 func setPerspective(gameInfo *gameState) {
 
-	fieldOfViewYRadians := 45 * math.Pi / 180
+	fieldOfViewYRadians := 30 * math.Pi / 180
 	planeNear := 2.0   // 2m
 	planeFar := 5000.0 // 5km
 
