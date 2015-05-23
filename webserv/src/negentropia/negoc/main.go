@@ -41,6 +41,10 @@ func draw(gameInfo *gameState, t time.Time, a_Position, vertexIndexSize int, pro
 
 	// scan programs
 
+	for _, s := range gameInfo.shaderList {
+		s.draw(gameInfo)
+	}
+
 	gl.UseProgram(prog)
 	gl.EnableVertexAttribArray(a_Position)
 

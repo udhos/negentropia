@@ -24,15 +24,48 @@ void main(void) {
 
 type Shader interface {
 	ShaderName() string
+	init(gl *webgl.Context)
+	draw(gameInfo *gameState)
 }
 
 type simpleTexturizer struct {
-	program  *js.Object
-	progName string
+	program    *js.Object
+	progName   string
+	u_P        *js.Object
+	u_MV       *js.Object
+	a_Position int
 }
 
 func (s *simpleTexturizer) ShaderName() string {
 	return s.progName
+}
+
+func (s *simpleTexturizer) getUniform(gl *webgl.Context, uniform string) *js.Object {
+	u := gl.GetUniformLocation(s.program, uniform)
+	if u == nil {
+		log(fmt.Sprintf("simpleTexturizer.getUniform: could not get uniform location: %s", uniform))
+	}
+	return u
+}
+
+func (s *simpleTexturizer) init(gl *webgl.Context) {
+	attr := "a_Position"
+	s.a_Position = gl.GetAttribLocation(s.program, attr)
+	if s.a_Position < 0 {
+		log(fmt.Sprintf("simpleTexturizer.init: could not get attribute location: %s", attr))
+	}
+
+	s.u_P = s.getUniform(gl, "u_P")
+	s.u_MV = s.getUniform(gl, "u_MV")
+}
+
+func (s *simpleTexturizer) draw(gameInfo *gameState) {
+	gl := gameInfo.gl // shortcut
+
+	gl.UseProgram(s.program)
+	gl.EnableVertexAttribArray(s.a_Position)
+
+	// draw every model
 }
 
 func findShader(shaderList []Shader, name string) Shader {
@@ -61,7 +94,10 @@ func fetchShaderProgram(gameInfo *gameState, programName, vertShader, fragShader
 		log(fmt.Sprintf("fetchShaderProgram: failure creating shader: prog=%v vert=%v frag=%v", programName, vertShader, fragShader))
 		return
 	}
+
+	// create new shader
 	s = &simpleTexturizer{program: prog, progName: programName}
+	s.init(gameInfo.gl)
 	gameInfo.shaderList = append(gameInfo.shaderList, s)
 }
 
