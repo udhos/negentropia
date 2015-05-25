@@ -90,6 +90,16 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			fetchShaderProgram(gameInfo, programName, vertShader, fragShader)
 		}
 
+	case CM_CODE_INSTANCE:
+
+		createInstance(gameInfo, tab)
+
+	case CM_CODE_INSTANCE_UPDATE:
+		log(fmt.Sprintf("dispatch: instance update: WRITEME"))
+
+	case CM_CODE_MESSAGE:
+		log(fmt.Sprintf("dispatch: message: WRITEME"))
+
 	default:
 		log(fmt.Sprintf("dispatch: unknown code=%v data=%v tab=%v", code, data, tab))
 	}
