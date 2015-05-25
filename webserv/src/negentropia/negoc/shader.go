@@ -28,6 +28,38 @@ type shader interface {
 	name() string
 	init(gl *webgl.Context)
 	draw(gameInfo *gameState)
+	findModel(name string) *model
+}
+
+type instance struct {
+	instanceName string
+}
+
+func (i *instance) name() string {
+	return i.instanceName
+}
+
+type model struct {
+	modelName    string
+	instanceList []*instance
+}
+
+func newModel(s shader, modelName string) *model {
+	log(fmt.Sprintf("newModel: name=%s WRITEME", modelName))
+	return nil
+}
+
+func (m *model) name() string {
+	return m.modelName
+}
+
+func (m *model) findInstance(name string) *instance {
+	for _, i := range m.instanceList {
+		if name == i.name() {
+			return i
+		}
+	}
+	return nil
 }
 
 type simpleTexturizer struct {
@@ -36,6 +68,16 @@ type simpleTexturizer struct {
 	u_P        *js.Object
 	u_MV       *js.Object
 	a_Position int
+	modelList  []*model
+}
+
+func (s *simpleTexturizer) findModel(name string) *model {
+	for _, m := range s.modelList {
+		if name == m.name() {
+			return m
+		}
+	}
+	return nil
 }
 
 func (s *simpleTexturizer) name() string {

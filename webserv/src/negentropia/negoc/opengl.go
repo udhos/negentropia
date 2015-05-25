@@ -5,6 +5,7 @@ import (
 	//"fmt"
 	//"negentropia/world/parser"
 	//"strings"
+	"negentropia/world/util"
 )
 
 type Matrix4 struct {
@@ -124,6 +125,10 @@ func setIdentityMatrix(m *Matrix4) {
 		0, 0, 1, 0, // c2
 		0, 0, 0, 1, // c3
 	}
+}
+
+func ortho3(x1, y1, z1, x2, y2, z2 float64) bool {
+	return util.CloseToZero(dot3(x1, y1, z1, x2, y2, z2))
 }
 
 func cross3(x1, y1, z1, x2, y2, z2 float64) (float64, float64, float64) {

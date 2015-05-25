@@ -197,6 +197,7 @@ func sendZoneDynamic(p *Player, loc string) {
 
 			m := map[string]string{
 				"id":            inst,
+				"obj":           obj,
 				"programName":   program,
 				"modelFront":    front,
 				"modelUp":       up,

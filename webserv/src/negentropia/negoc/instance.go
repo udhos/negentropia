@@ -31,6 +31,66 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		return
 	}
 
-	log(fmt.Sprintf("createInstance: id=%s f=%v WRITEME", id, f))
+	var up string
 
+	if up, ok = tab["modelUp"]; !ok {
+		log(fmt.Sprintf("createInstance: id=%s missing modelUp", id))
+		return
+	}
+
+	var u []float64
+
+	if u, err = parseVector3(up); err != nil {
+		log(fmt.Sprintf("createInstance: id=%s bad modelUp=%v: error: %v", id, up, err))
+		return
+	}
+
+	if !ortho3(f[0], f[1], f[2], u[0], u[1], u[2]) {
+		log(fmt.Sprintf("createInstance: id=%s NOT ORTHOGONAL f=%v u=%v: dot=%f", id, f, u, dot3(f[0], f[1], f[2], u[0], u[1], u[2])))
+	}
+
+	var coord string
+
+	if coord, ok = tab["coord"]; !ok {
+		log(fmt.Sprintf("createInstance: id=%s missing coord", id))
+		return
+	}
+
+	var c []float64
+
+	if c, err = parseVector3(coord); err != nil {
+		log(fmt.Sprintf("createInstance: id=%s bad coord=%v: error: %v", id, coord, err))
+		return
+	}
+
+	var programName string
+
+	if programName, ok = tab["programName"]; !ok {
+		log(fmt.Sprintf("createInstance: id=%s missing program name", id))
+		return
+	}
+
+	shader := findShader(gameInfo.shaderList, programName)
+	if shader == nil {
+		log(fmt.Sprintf("createInstance: id=%s shader programName=%s not found", id, programName))
+		return
+	}
+
+	var modelName string
+
+	if modelName, ok = tab["obj"]; !ok {
+		log(fmt.Sprintf("createInstance: id=%s missing obj", id))
+		return
+	}
+
+	mod := shader.findModel(modelName)
+	if mod == nil {
+		log(fmt.Sprintf("createInstance: id=%s program=%s model=%s not found", id, programName, modelName))
+		if mod = newModel(shader, modelName); mod == nil {
+			log(fmt.Sprintf("createInstance: id=%s program=%s failure creating model=%s", id, programName, modelName))
+			return
+		}
+	}
+
+	log(fmt.Sprintf("createInstance: id=%s prog=%s coord=%v f=%v u=%v WRITEME", id, programName, c, f, u))
 }
