@@ -108,8 +108,8 @@ func (m *Matrix4) multiply(n *Matrix4) {
 	m.data[15] = (m30 * n03) + (m31 * n13) + (m32 * n23) + (m33 * n33)
 }
 
-func setNullMatrix(perspectiveMatrix *Matrix4) {
-	perspectiveMatrix.data = []float32{
+func setNullMatrix(m *Matrix4) {
+	m.data = []float32{
 		0, 0, 0, 0, // c0
 		0, 0, 0, 0, // c1
 		0, 0, 0, 0, // c2
@@ -117,8 +117,8 @@ func setNullMatrix(perspectiveMatrix *Matrix4) {
 	}
 }
 
-func setIdentityMatrix(perspectiveMatrix *Matrix4) {
-	perspectiveMatrix.data = []float32{
+func setIdentityMatrix(m *Matrix4) {
+	m.data = []float32{
 		1, 0, 0, 0, // c0
 		0, 1, 0, 0, // c1
 		0, 0, 1, 0, // c2
@@ -160,6 +160,13 @@ func setRotationMatrix(rotationMatrix *Matrix4, forwardX, forwardY, forwardZ, up
 	setModelMatrix(rotationMatrix, forwardX, forwardY, forwardZ, upX, upY, upZ, 0, 0, 0)
 }
 
+/*
+	null model:
+	forward = 0 0 -1    // looking towards -Z
+	up = 0 1 0          // up direction is +Y
+	translation = 0 0 0 // position at origin
+	setModelMatrix(&rotation, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+*/
 func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY, upZ, tX, tY, tZ float64) {
 	rightX, rightY, rightZ := normalize3(cross3(forwardX, forwardY, forwardZ, upX, upY, upZ))
 
