@@ -27,7 +27,7 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 	var f []float64
 
 	if f, err = parseVector3(front); err != nil {
-		log(fmt.Sprintf("createInstance: id=%s bad modelFront=%v", id, front))
+		log(fmt.Sprintf("createInstance: id=%s bad modelFront=%v: error: %v", id, front, err))
 		return
 	}
 
