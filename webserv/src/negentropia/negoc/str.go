@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"negentropia/world/parser"
 	"strconv"
 	"strings"
 )
@@ -23,4 +24,12 @@ func stringIsTrue(s string) bool {
 	}
 
 	return val
+}
+
+func parseVector3(s string) ([]float64, error) {
+	v, err := parser.ParseFloatVectorComma(s, 3)
+	if err != nil {
+		return v, fmt.Errorf("parseVector3: error: %v", err)
+	}
+	return v, nil
 }
