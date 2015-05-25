@@ -130,7 +130,7 @@ type gameState struct {
 	pMatrix            Matrix4 // perspective matrix
 	canvasAspect       float64
 	cam                camera
-	shaderList         []Shader
+	shaderList         []shader
 }
 
 var gameInfo *gameState = &gameState{defaultTextureUnit: 0}

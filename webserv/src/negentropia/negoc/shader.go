@@ -6,9 +6,10 @@ import (
 	"github.com/gopherjs/webgl"
 )
 
+/*
 var vertShaderSrc = `
 attribute vec3 a_Position;
- 
+
 void main(void) {
 	gl_Position = vec4(a_Position, 1.0);
 }
@@ -21,9 +22,10 @@ void main(void) {
 	gl_FragColor = vec4(0.95, 0.95, .95, 1.0); // white opaque
 }
 `
+*/
 
-type Shader interface {
-	ShaderName() string
+type shader interface {
+	name() string
 	init(gl *webgl.Context)
 	draw(gameInfo *gameState)
 }
@@ -36,7 +38,7 @@ type simpleTexturizer struct {
 	a_Position int
 }
 
-func (s *simpleTexturizer) ShaderName() string {
+func (s *simpleTexturizer) name() string {
 	return s.progName
 }
 
@@ -68,9 +70,9 @@ func (s *simpleTexturizer) draw(gameInfo *gameState) {
 	// draw every model
 }
 
-func findShader(shaderList []Shader, name string) Shader {
+func findShader(shaderList []shader, name string) shader {
 	for _, s := range shaderList {
-		if name == s.ShaderName() {
+		if name == s.name() {
 			return s
 		}
 	}
@@ -81,14 +83,13 @@ func fetchShaderProgram(gameInfo *gameState, programName, vertShader, fragShader
 
 	log(fmt.Sprintf("fetchShaderProgram: prog=%v vert=%v frag=%v", programName, vertShader, fragShader))
 
-	var s Shader
-	s = findShader(gameInfo.shaderList, programName)
+	s := findShader(gameInfo.shaderList, programName)
 	if s != nil {
-		log(fmt.Sprintf("fetchShaderProgram: shader FOUND: prog=%v vert=%v frag=%v", programName, vertShader, fragShader))
+		log(fmt.Sprintf("fetchShaderProgram: existing shader FOUND: prog=%v vert=%v frag=%v", programName, vertShader, fragShader))
 		return
 	}
 
-	log(fmt.Sprintf("fetchShaderProgram: shader NOT found: prog=%v vert=%v frag=%v", programName, vertShader, fragShader))
+	log(fmt.Sprintf("fetchShaderProgram: will create new shader: prog=%v vert=%v frag=%v", programName, vertShader, fragShader))
 	prog := newShaderProgram(gameInfo.gl, vertShader, fragShader)
 	if prog == nil {
 		log(fmt.Sprintf("fetchShaderProgram: failure creating shader: prog=%v vert=%v frag=%v", programName, vertShader, fragShader))
@@ -123,6 +124,8 @@ func newShaderProgram(gl *webgl.Context, vertShaderURL, fragShaderURL string) *j
 		vertShaderURL := "/shader/simple_vs.txt"
 		fragShaderURL := "/shader/simple_fs.txt"
 	*/
+
+	var vertShaderSrc, fragShaderSrc string
 
 	if buf, err := httpFetch(vertShaderURL); err != nil {
 		log(fmt.Sprintf("newShaderProgram: fetch url=%v error: %v", vertShaderURL, err))
