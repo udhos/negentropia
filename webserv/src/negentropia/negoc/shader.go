@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
+	"negentropia/world/obj"
 )
 
 /*
@@ -47,21 +48,38 @@ func (i *instance) draw(gameInfo *gameState) {
 type model struct {
 	modelName    string
 	instanceList []*instance
+	ready        bool // mesh and textures loaded
 }
 
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	front, up []float64, assetPath asset, textureTable map[string]texture, repeatTexture bool) *model {
 
 	// allocate new model
-	mod := &model{modelName: modelName}
+	mod := &model{modelName: modelName, ready: false}
+
+	// fetch model from objURL
+
+	var buf []byte
+	var err error
+
+	if buf, err = httpFetch(objURL); err != nil {
+		log(fmt.Sprintf("newModel: fetch model from objURL=%s error: %v", objURL, err))
+		return nil
+	}
+
+	var o *obj.Obj
+	if o, err = obj.NewObjFromBuf(buf); err != nil {
+		log(fmt.Sprintf("newModel: parse error objURL=%s error: %v", objURL, err))
+		return nil
+	}
+
+	log(fmt.Sprintf("newModel: objURL=%s coordinates: %d", objURL, len(o.Coord)))
 
 	// push new model into shader.modelList
 	s.addModel(mod)
 
-	// fetch model from objURL
-	log(fmt.Sprintf("newModel: name=%s WRITEME: fetchModel from objURL=%s", modelName, objURL))
-
 	// return new model
+	mod.ready = false // FIXME
 
 	return mod
 }
@@ -139,7 +157,9 @@ func (s *simpleTexturizer) draw(gameInfo *gameState) {
 
 	// draw every model
 	for _, m := range s.modelList {
-		m.draw(gameInfo)
+		if m.ready {
+			m.draw(gameInfo)
+		}
 	}
 }
 
