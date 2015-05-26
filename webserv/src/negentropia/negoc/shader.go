@@ -29,6 +29,7 @@ type shader interface {
 	init(gl *webgl.Context)
 	draw(gameInfo *gameState)
 	findModel(name string) *model
+	addModel(model *model)
 }
 
 type instance struct {
@@ -46,15 +47,19 @@ type model struct {
 
 // newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.textureTable, gameInfo.asset, repeat)
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string, f, u []float64, textureTable map[string]texture, assetPath asset, repeat bool) *model {
-	log(fmt.Sprintf("newModel: name=%s WRITEME", modelName))
 
-	// create new model
+	// allocate new model
+	mod := &model{modelName: modelName}
 
 	// push new model into shader.modelList
+	s.addModel(mod)
+
+	// fetch model from objURL
+	log(fmt.Sprintf("newModel: name=%s WRITEME: fetchModel from objURL=%s", modelName, objURL))
 
 	// return new model
 
-	return nil
+	return mod
 }
 
 func (m *model) name() string {
@@ -77,6 +82,10 @@ type simpleTexturizer struct {
 	u_MV       *js.Object
 	a_Position int
 	modelList  []*model
+}
+
+func (s *simpleTexturizer) addModel(m *model) {
+	s.modelList = append(s.modelList, m)
 }
 
 func (s *simpleTexturizer) findModel(name string) *model {
