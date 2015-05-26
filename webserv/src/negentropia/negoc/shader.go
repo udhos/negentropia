@@ -68,7 +68,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	}
 
 	var o *obj.Obj
-	if o, err = obj.NewObjFromBuf(buf); err != nil {
+	if o, err = obj.NewObjFromBuf(buf, func(msg string) { log(fmt.Sprintf("newModel: %s", msg)) }); err != nil {
 		log(fmt.Sprintf("newModel: parse error objURL=%s error: %v", objURL, err))
 		return nil
 	}
