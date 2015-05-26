@@ -40,13 +40,17 @@ func (i *instance) name() string {
 	return i.instanceName
 }
 
+func (i *instance) draw(gameInfo *gameState) {
+	// draw instance
+}
+
 type model struct {
 	modelName    string
 	instanceList []*instance
 }
 
-// newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.textureTable, gameInfo.asset, repeat)
-func newModel(s shader, modelName string, gl *webgl.Context, objURL string, f, u []float64, textureTable map[string]texture, assetPath asset, repeat bool) *model {
+func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
+	front, up []float64, assetPath asset, textureTable map[string]texture, repeatTexture bool) *model {
 
 	// allocate new model
 	mod := &model{modelName: modelName}
@@ -60,6 +64,13 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string, f, u
 	// return new model
 
 	return mod
+}
+
+func (m *model) draw(gameInfo *gameState) {
+	// draw every instance
+	for _, i := range m.instanceList {
+		i.draw(gameInfo)
+	}
 }
 
 func (m *model) name() string {
@@ -127,6 +138,9 @@ func (s *simpleTexturizer) draw(gameInfo *gameState) {
 	gl.EnableVertexAttribArray(s.a_Position)
 
 	// draw every model
+	for _, m := range s.modelList {
+		m.draw(gameInfo)
+	}
 }
 
 func findShader(shaderList []shader, name string) shader {
