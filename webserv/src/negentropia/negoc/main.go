@@ -131,6 +131,8 @@ type gameState struct {
 	canvasAspect       float64
 	cam                camera
 	shaderList         []shader
+	textureTable       map[string]texture
+	assetPath          asset
 }
 
 var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
@@ -149,6 +151,8 @@ func main() {
 	log("main: WebGL context initialized")
 
 	resetCamera(&gameInfo.cam)
+
+	gameInfo.assetPath.setRoot("/")
 
 	if initWebSocket(gameInfo) {
 		log("main: could not initalize web socket, exiting")

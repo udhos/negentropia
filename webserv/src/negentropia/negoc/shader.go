@@ -44,8 +44,16 @@ type model struct {
 	instanceList []*instance
 }
 
-func newModel(s shader, modelName string) *model {
+// newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.textureTable, gameInfo.asset, repeat)
+func newModel(s shader, modelName string, gl *webgl.Context, objURL string, f, u []float64, textureTable map[string]texture, assetPath asset, repeat bool) *model {
 	log(fmt.Sprintf("newModel: name=%s WRITEME", modelName))
+
+	// create new model
+
+	// push new model into shader.modelList
+
+	// return new model
+
 	return nil
 }
 

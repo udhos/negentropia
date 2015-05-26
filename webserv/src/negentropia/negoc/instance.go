@@ -83,14 +83,26 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		return
 	}
 
+	var objURL string
+
+	if objURL, ok = tab["objURL"]; !ok {
+		log(fmt.Sprintf("createInstance: id=%s missing objURL", id))
+		return
+	}
+
+	repeatTexture := tab["repeatTexture"]
+	repeat := stringIsTrue(repeatTexture)
+
 	mod := shader.findModel(modelName)
 	if mod == nil {
 		log(fmt.Sprintf("createInstance: id=%s program=%s model=%s not found", id, programName, modelName))
-		if mod = newModel(shader, modelName); mod == nil {
+		if mod = newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.textureTable, gameInfo.assetPath, repeat); mod == nil {
 			log(fmt.Sprintf("createInstance: id=%s program=%s failure creating model=%s", id, programName, modelName))
 			return
 		}
 	}
+
+	// WRITEME: create instance of model
 
 	log(fmt.Sprintf("createInstance: id=%s prog=%s coord=%v f=%v u=%v WRITEME", id, programName, c, f, u))
 }
