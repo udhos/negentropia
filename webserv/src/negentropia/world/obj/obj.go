@@ -18,7 +18,8 @@ const FATAL = true
 const NON_FATAL = false
 
 type Obj struct {
-	Coord []float64 // vertex coordinates
+	Indices []int     // indices
+	Coord   []float64 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
 }
 
 func (o *Obj) vertexCount() int {

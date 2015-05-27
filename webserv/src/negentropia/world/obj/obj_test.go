@@ -14,7 +14,7 @@ func expectInt(t *testing.T, label string, want, got int) {
 
 func TestCube(t *testing.T) {
 
-	o, err := NewObjFromBuf([]byte(cubeObj), func(msg string) { fmt.Printf("TestCube NewObjFromBuf: error: %s\n", msg) })
+	o, err := NewObjFromBuf([]byte(cubeObj), func(msg string) { fmt.Printf("TestCube NewObjFromBuf: log: %s\n", msg) })
 	if err != nil {
 		t.Errorf("TestCube: NewObjFromBuf: %v", err)
 		return
@@ -23,37 +23,54 @@ func TestCube(t *testing.T) {
 	//expectInt(t, "TestCube vertexCount", 23, o.vertexCount())
 	//expectInt(t, "TestCube indexCount", 36, o.indexCount())
 
+	if !reflect.DeepEqual(cubeIndices, o.Indices) {
+		t.Errorf("TestCube: indices: want=%v got=%v", cubeIndices, o.Indices)
+	}
+
 	if !reflect.DeepEqual(cubeCoord, o.Coord) {
 		t.Errorf("TestCube: coord: want=%v got=%v", cubeCoord, o.Coord)
 	}
 }
 
 func TestRelativeIndex(t *testing.T) {
-	o, err := NewObjFromBuf([]byte(relativeObj), func(msg string) { fmt.Printf("TestRelativeIndex NewObjFromBuf: error: %s\n", msg) })
+	o, err := NewObjFromBuf([]byte(relativeObj), func(msg string) { fmt.Printf("TestRelativeIndex NewObjFromBuf: log: %s\n", msg) })
 	if err != nil {
 		t.Errorf("TestRelativeIndex: NewObjFromBuf: %v", err)
 		return
 	}
 
-	if !reflect.DeepEqual(relativeCoord, o.Coord) {
-		t.Errorf("TestRelativeIndex: coord: want=%v got=%v", cubeCoord, o.Coord)
+	indices := o.Indices[:len(o.Indices):len(o.Indices)]
+	if !reflect.DeepEqual(relativeIndices, indices) {
+		t.Errorf("TestRelativeIndex: indices: want=%v (cap=%d) got=%v (cap=%d)", relativeIndices, cap(relativeIndices), indices, cap(indices))
+	}
+
+	coord := o.Coord[:len(o.Coord):len(o.Coord)]
+	if !reflect.DeepEqual(relativeCoord, coord) {
+		t.Errorf("TestRelativeIndex: coord: want=%v (cap=%d) got=%v (cap=%d)", relativeCoord, cap(relativeCoord), coord, cap(coord))
 	}
 }
 
 func TestForwardVertex(t *testing.T) {
-	o, err := NewObjFromBuf([]byte(forwardObj), func(msg string) { fmt.Printf("TestForwardVertex NewObjFromBuf: error: %s\n", msg) })
+	o, err := NewObjFromBuf([]byte(forwardObj), func(msg string) { fmt.Printf("TestForwardVertex NewObjFromBuf: log: %s\n", msg) })
 	if err != nil {
 		t.Errorf("TestForwardVertex: NewObjFromBuf: %v", err)
 		return
 	}
 
+	if !reflect.DeepEqual(forwardIndices, o.Indices) {
+		t.Errorf("TestForwardVertex: indices: want=%v got=%v", forwardIndices, o.Indices)
+	}
+
 	if !reflect.DeepEqual(forwardCoord, o.Coord) {
-		t.Errorf("TestForwardVertex: coord: want=%v got=%v", cubeCoord, o.Coord)
+		t.Errorf("TestForwardVertex: coord: want=%v got=%v", forwardCoord, o.Coord)
 	}
 }
 
 var cubeCoord = []float32{1.1}
-var relativeCoord = []float32{2.2}
+var cubeIndices = []int{1}
+var relativeIndices = []int{0, 1, 2, 0, 1, 2, 3, 4, 5, 3, 4, 5, 0, 1, 2, 0, 1, 2}
+var relativeCoord = []float32{1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 5.0, 5.0, 6.0, 6.0, 6.0}
+var forwardIndices = []int{1}
 var forwardCoord = []float32{3.3}
 
 var cubeObj = `
