@@ -14,6 +14,9 @@ import (
 	"negentropia/world/parser"
 )
 
+const FATAL = true
+const NON_FATAL = false
+
 type Obj struct {
 	Coord []float64 // vertex coordinates
 }
@@ -26,6 +29,13 @@ func (o *Obj) indexCount() int {
 	return -1
 }
 
+type objParser struct {
+	lineBuf   []string
+	lineCount int
+}
+
+//type lineParser func(p *objParser, o *Obj, rawLine string) (error, bool)
+
 func NewObjFromBuf(buf []byte, logger func(string)) (*Obj, error) {
 	return readObj(bytes.NewBuffer(buf), logger)
 }
@@ -34,12 +44,66 @@ func NewObjFromReader(rd *bufio.Reader, logger func(string)) (*Obj, error) {
 	return readObj(rd, logger)
 }
 
-const FATAL = true
-const NON_FATAL = false
+func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
+	p := &objParser{lineCount: 0}
+	o := &Obj{}
 
-func (o *Obj) parseLine(rawLine string, lineNumber int) (error, bool) {
+	// full parsing
+	//log.Printf("DEBUG readObj: full parsing\n")
+	if err, fatal := readLines(p, o, reader, logger); err != nil {
+		if fatal {
+			return o, err
+		}
+	}
+
+	if logger != nil {
+		logger(fmt.Sprintf("readObj: found %v lines", p.lineCount))
+	}
+
+	return o, nil
+}
+
+func readLines(p *objParser, o *Obj, reader lineReader, logger func(msg string)) (error, bool) {
+	for {
+		p.lineCount++
+		line, err := reader.ReadString('\n')
+		if err == io.EOF {
+			// parse last line
+			if e, fatal := parseLine(p, o, line); e != nil {
+				if logger != nil {
+					logger(fmt.Sprintf("readLines: %v", e))
+				}
+				return e, fatal
+			}
+			break // EOF
+		}
+
+		if err != nil {
+			// unexpected IO error
+			return errors.New(fmt.Sprintf("readLines: error: %v", err)), FATAL
+		}
+
+		//log.Printf("DEBUG scanLines %v: [%v]\n", p.lineCount, line)
+
+		if e, fatal := parseLine(p, o, line); e != nil {
+			if logger != nil {
+				logger(fmt.Sprintf("readLines: %v", e))
+			}
+			if fatal {
+				return e, fatal
+			}
+		}
+	}
+
+	return nil, NON_FATAL
+}
+
+func parseLine(p *objParser, o *Obj, rawLine string) (error, bool) {
 	line := strings.TrimSpace(rawLine)
-	//log.Printf("parseLine %v: [%v]\n", lineNumber, line)
+
+	p.lineBuf = append(p.lineBuf, line) // save line
+
+	//log.Printf("DEBUG parseLine %v: [%v]\n", p.lineCount, line)
 	switch {
 	case line == "" || line[0] == '#':
 	case strings.HasPrefix(line, "s "):
@@ -53,7 +117,7 @@ func (o *Obj) parseLine(rawLine string, lineNumber int) (error, bool) {
 	case strings.HasPrefix(line, "v "):
 		result, err := parser.ParseFloatSliceSpace(line[2:])
 		if err != nil {
-			return fmt.Errorf("parseLine %v: [%v]: error: %v", lineNumber, line, err), NON_FATAL
+			return fmt.Errorf("parseLine %v: [%v]: error: %v", p.lineCount, line, err), NON_FATAL
 		}
 		coordLen := len(result)
 		switch coordLen {
@@ -63,10 +127,10 @@ func (o *Obj) parseLine(rawLine string, lineNumber int) (error, bool) {
 			w := result[3]
 			o.Coord = append(o.Coord, result[0]/w, result[1]/w, result[2]/w)
 		default:
-			return fmt.Errorf("parseLine %v: [%v]: bad number of coords: %v", lineNumber, line, coordLen), NON_FATAL
+			return fmt.Errorf("parseLine %v: [%v]: bad number of coords: %v", p.lineCount, line, coordLen), NON_FATAL
 		}
 	default:
-		return fmt.Errorf("parseLine %v: [%v]: unexpected", lineNumber, line), NON_FATAL
+		return fmt.Errorf("parseLine %v: [%v]: unexpected", p.lineCount, line), NON_FATAL
 	}
 
 	return nil, NON_FATAL
@@ -74,42 +138,4 @@ func (o *Obj) parseLine(rawLine string, lineNumber int) (error, bool) {
 
 type lineReader interface {
 	ReadString(delim byte) (string, error)
-}
-
-func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
-	var o Obj
-	lineCount := 0
-	for {
-		lineCount++
-		var line string
-		var err error
-		line, err = reader.ReadString('\n')
-		if err == io.EOF {
-			// parse last line
-			if e, _ := o.parseLine(line, lineCount); e != nil {
-				if logger != nil {
-					logger(fmt.Sprintf("readObj: %v", e))
-				}
-			}
-			break
-		}
-		if err != nil {
-			return nil, errors.New(fmt.Sprintf("readObj: error: %v", err))
-		}
-
-		if e, fatal := o.parseLine(line, lineCount); e != nil {
-			if logger != nil {
-				logger(fmt.Sprintf("readObj: %v", e))
-			}
-			if fatal {
-				return &o, e
-			}
-		}
-	}
-
-	if logger != nil {
-		logger(fmt.Sprintf("readObj: %v lines", lineCount))
-	}
-
-	return &o, nil
 }
