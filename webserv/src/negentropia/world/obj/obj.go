@@ -50,8 +50,12 @@ func NewObjFromReader(rd *bufio.Reader, logger func(string)) (*Obj, error) {
 	return readObj(rd, logger)
 }
 
+type lineReader interface {
+	ReadString(delim byte) (string, error)
+}
+
 func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
-	p := &objParser{lineCount: 0}
+	p := &objParser{}
 	o := &Obj{}
 
 	// 1. vertex-only parsing
@@ -66,6 +70,11 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 	}
 
 	// 2. full parsing
+	if err, fatal := scanLines(p, o, reader, logger); err != nil {
+		if fatal {
+			return o, err
+		}
+	}
 
 	// 3. output buffers
 
@@ -78,12 +87,14 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 }
 
 func readLines(p *objParser, o *Obj, reader lineReader, logger func(msg string)) (error, bool) {
+	p.lineCount = 0
+
 	for {
 		p.lineCount++
 		line, err := reader.ReadString('\n')
 		if err == io.EOF {
 			// parse last line
-			if e, fatal := parseLine(p, o, line); e != nil {
+			if e, fatal := parseLineVertex(p, o, line); e != nil {
 				if logger != nil {
 					logger(fmt.Sprintf("readLines: %v", e))
 				}
@@ -97,9 +108,7 @@ func readLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 			return errors.New(fmt.Sprintf("readLines: error: %v", err)), FATAL
 		}
 
-		//log.Printf("DEBUG scanLines %v: [%v]\n", p.lineCount, line)
-
-		if e, fatal := parseLine(p, o, line); e != nil {
+		if e, fatal := parseLineVertex(p, o, line); e != nil {
 			if logger != nil {
 				logger(fmt.Sprintf("readLines: %v", e))
 			}
@@ -112,7 +121,7 @@ func readLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 	return nil, NON_FATAL
 }
 
-func parseLine(p *objParser, o *Obj, rawLine string) (error, bool) {
+func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 	line := strings.TrimSpace(rawLine)
 
 	p.lineBuf = append(p.lineBuf, line) // save line
@@ -151,6 +160,41 @@ func parseLine(p *objParser, o *Obj, rawLine string) (error, bool) {
 	return nil, NON_FATAL
 }
 
-type lineReader interface {
-	ReadString(delim byte) (string, error)
+func scanLines(p *objParser, o *Obj, reader lineReader, logger func(msg string)) (error, bool) {
+	p.lineCount = 0
+
+	for _, line := range p.lineBuf {
+		p.lineCount++
+
+		if e, fatal := parseLine(p, o, line); e != nil {
+			if logger != nil {
+				logger(fmt.Sprintf("scanLines: %v", e))
+			}
+			if fatal {
+				return e, fatal
+			}
+		}
+	}
+
+	return nil, NON_FATAL
+}
+
+func parseLine(p *objParser, o *Obj, line string) (error, bool) {
+
+	switch {
+	case line == "" || line[0] == '#':
+	case strings.HasPrefix(line, "s "):
+	case strings.HasPrefix(line, "o "):
+	case strings.HasPrefix(line, "g "):
+	case strings.HasPrefix(line, "usemtl "):
+	case strings.HasPrefix(line, "mtllib "):
+	case strings.HasPrefix(line, "vt "):
+	case strings.HasPrefix(line, "vn "):
+	case strings.HasPrefix(line, "f "):
+	case strings.HasPrefix(line, "v "):
+	default:
+		return fmt.Errorf("parseLine %v: [%v]: unexpected", p.lineCount, line), NON_FATAL
+	}
+
+	return nil, NON_FATAL
 }
