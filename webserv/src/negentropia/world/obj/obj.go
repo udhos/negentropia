@@ -12,6 +12,7 @@ import (
 	//"unicode"
 
 	"negentropia/world/parser"
+	"negentropia/world/util"
 )
 
 const FATAL = true
@@ -32,6 +33,14 @@ type Obj struct {
 	Groups  []Group
 }
 
+type objParser struct {
+	lineBuf   []string
+	lineCount int
+	vertCoord []float64
+	textCoord []float64
+	currGroup *Group
+}
+
 func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
 	gr := Group{Name: name, Usemtl: usemtl, indexBegin: begin, Smooth: smooth}
 	o.Groups = append(o.Groups, gr)
@@ -48,13 +57,6 @@ func (o *Obj) vertexCount() int {
 
 func (o *Obj) indexCount() int {
 	return -1
-}
-
-type objParser struct {
-	lineBuf   []string
-	lineCount int
-	vertCoord []float64
-	currGroup *Group
 }
 
 //type lineParser func(p *objParser, o *Obj, rawLine string) (error, bool)
@@ -231,6 +233,21 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		}
 		o.Mtllib = mtllib
 	case strings.HasPrefix(line, "vt "):
+		tex := line[3:]
+		t, err := parser.ParseFloatSliceSpace(tex)
+		if err != nil {
+			return fmt.Errorf("parseLine: line=%d bad vertex texture=[%s]: %v", p.lineCount, tex, err), NON_FATAL
+		}
+		size := len(t)
+		if size < 2 || size > 3 {
+			return fmt.Errorf("parseLine: line=%d bad vertex texture=[%s] size=%d", p.lineCount, tex, size), NON_FATAL
+		}
+		if size > 2 {
+			if w := t[2]; !util.CloseToZero(w) {
+				logger(fmt.Sprintf("parseLine: line=%d non-zero third texture coordinate w=%f", p.lineCount, w))
+			}
+		}
+		p.textCoord = append(p.textCoord, t[0], t[1])
 	case strings.HasPrefix(line, "vn "):
 	case strings.HasPrefix(line, "f "):
 	case strings.HasPrefix(line, "v "):
