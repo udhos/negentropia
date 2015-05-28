@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"io"
 	//"log"
-	//"strconv"
+	"strconv"
 	"strings"
 	//"unicode"
 
@@ -203,14 +203,24 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 	switch {
 	case line == "" || line[0] == '#':
 	case strings.HasPrefix(line, "s "):
-	case strings.HasPrefix(line, "o "):
-	case strings.HasPrefix(line, "g "):
+		smooth := line[2:]
+		if s, err := strconv.ParseBool(smooth); err == nil {
+			if p.currGroup.Smooth != s {
+				// create new group
+				p.currGroup = o.newGroup(p.currGroup.Name, p.currGroup.Usemtl, len(o.Indices), s)
+			}
+		} else {
+			return fmt.Errorf("parseLine: line=%d bad boolean smooth=[%s]: %v", p.lineCount, smooth, err), NON_FATAL
+		}
+	case strings.HasPrefix(line, "o ") || strings.HasPrefix(line, "g "):
+		name := line[2:]
+		p.currGroup = o.newGroup(name, p.currGroup.Usemtl, len(o.Indices), p.currGroup.Smooth)
 	case strings.HasPrefix(line, "usemtl "):
 		usemtl := line[7:]
 		if p.currGroup.Usemtl == "" {
 			// only set the missing material name for group
 			p.currGroup.Usemtl = usemtl
-		} else {
+		} else if p.currGroup.Usemtl != usemtl {
 			// create new group for material
 			p.currGroup = o.newGroup(p.currGroup.Name, usemtl, len(o.Indices), p.currGroup.Smooth)
 		}

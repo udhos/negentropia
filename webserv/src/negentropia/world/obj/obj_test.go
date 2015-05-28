@@ -101,6 +101,10 @@ mtllib lib2
 
 usemtl mtl1
 usemtl mtl2
+
+s t
+s 0
+s ugh
 `
 
 	o, _ := NewObjFromBuf([]byte(str), func(msg string) { fmt.Printf("TestMisc NewObjFromBuf: log: %s\n", msg) })
