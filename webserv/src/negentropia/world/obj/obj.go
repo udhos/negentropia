@@ -19,7 +19,11 @@ const NON_FATAL = false
 
 type Obj struct {
 	Indices []int     // indices
-	Coord   []float64 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
+	Coord   []float32 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
+}
+
+func (o *Obj) Coord64(i int) float64 {
+	return float64(o.Coord[i])
 }
 
 func (o *Obj) vertexCount() int {
@@ -120,13 +124,14 @@ func parseLine(p *objParser, o *Obj, rawLine string) (error, bool) {
 		if err != nil {
 			return fmt.Errorf("parseLine %v: [%v]: error: %v", p.lineCount, line, err), NON_FATAL
 		}
+		x, y, z := float32(result[0]), float32(result[1]), float32(result[2])
 		coordLen := len(result)
 		switch coordLen {
 		case 3:
-			o.Coord = append(o.Coord, result[0], result[1], result[2])
+			o.Coord = append(o.Coord, x, y, z)
 		case 4:
-			w := result[3]
-			o.Coord = append(o.Coord, result[0]/w, result[1]/w, result[2]/w)
+			w := float32(result[3])
+			o.Coord = append(o.Coord, x/w, y/w, z/w)
 		default:
 			return fmt.Errorf("parseLine %v: [%v]: bad number of coords: %v", p.lineCount, line, coordLen), NON_FATAL
 		}

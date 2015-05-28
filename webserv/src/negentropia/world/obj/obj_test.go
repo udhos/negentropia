@@ -2,7 +2,7 @@ package obj
 
 import (
 	"fmt"
-	"reflect" // for reflect.DeepEqual
+	//"reflect" // for reflect.DeepEqual
 	"testing"
 )
 
@@ -10,6 +10,34 @@ func expectInt(t *testing.T, label string, want, got int) {
 	if want != got {
 		t.Errorf("%s: want=%d got=%d", label, want, got)
 	}
+}
+
+func sliceEqualInt(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+func sliceEqualFloat(a, b []float32) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+
+	return true
 }
 
 func TestCube(t *testing.T) {
@@ -23,11 +51,11 @@ func TestCube(t *testing.T) {
 	//expectInt(t, "TestCube vertexCount", 23, o.vertexCount())
 	//expectInt(t, "TestCube indexCount", 36, o.indexCount())
 
-	if !reflect.DeepEqual(cubeIndices, o.Indices) {
+	if !sliceEqualInt(cubeIndices, o.Indices) {
 		t.Errorf("TestCube: indices: want=%v got=%v", cubeIndices, o.Indices)
 	}
 
-	if !reflect.DeepEqual(cubeCoord, o.Coord) {
+	if !sliceEqualFloat(cubeCoord, o.Coord) {
 		t.Errorf("TestCube: coord: want=%v got=%v", cubeCoord, o.Coord)
 	}
 }
@@ -39,14 +67,14 @@ func TestRelativeIndex(t *testing.T) {
 		return
 	}
 
-	indices := o.Indices[:len(o.Indices):len(o.Indices)]
-	if !reflect.DeepEqual(relativeIndices, indices) {
-		t.Errorf("TestRelativeIndex: indices: want=%v (cap=%d) got=%v (cap=%d)", relativeIndices, cap(relativeIndices), indices, cap(indices))
+	//indices := o.Indices[:len(o.Indices):len(o.Indices)]
+	if !sliceEqualInt(relativeIndices, o.Indices) {
+		t.Errorf("TestRelativeIndex: indices: want=%v got=%v", relativeIndices, o.Indices)
 	}
 
-	coord := o.Coord[:len(o.Coord):len(o.Coord)]
-	if !reflect.DeepEqual(relativeCoord, coord) {
-		t.Errorf("TestRelativeIndex: coord: want=%v (cap=%d) got=%v (cap=%d)", relativeCoord, cap(relativeCoord), coord, cap(coord))
+	//coord := o.Coord[:len(o.Coord):len(o.Coord)]
+	if !sliceEqualFloat(relativeCoord, o.Coord) {
+		t.Errorf("TestRelativeIndex: coord: want=%v got=%v", relativeCoord, o.Coord)
 	}
 }
 
@@ -57,11 +85,11 @@ func TestForwardVertex(t *testing.T) {
 		return
 	}
 
-	if !reflect.DeepEqual(forwardIndices, o.Indices) {
+	if !sliceEqualInt(forwardIndices, o.Indices) {
 		t.Errorf("TestForwardVertex: indices: want=%v got=%v", forwardIndices, o.Indices)
 	}
 
-	if !reflect.DeepEqual(forwardCoord, o.Coord) {
+	if !sliceEqualFloat(forwardCoord, o.Coord) {
 		t.Errorf("TestForwardVertex: coord: want=%v got=%v", forwardCoord, o.Coord)
 	}
 }

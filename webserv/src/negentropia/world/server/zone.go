@@ -224,10 +224,10 @@ func loadModelRadius(model, objURL string) float64 {
 		log.Printf("loadModelRadius: model=%v objURL=%v short vertex buffer size=%v", model, objURL, size)
 		return 1.0
 	}
-	minX, minY, minZ := o.Coord[0], o.Coord[1], o.Coord[2]
-	maxX, maxY, maxZ := o.Coord[0], o.Coord[1], o.Coord[2]
+	minX, minY, minZ := o.Coord64(0), o.Coord64(1), o.Coord64(2)
+	maxX, maxY, maxZ := minX, minY, minZ
 	for i := 3; i < size; i += 3 {
-		x, y, z := o.Coord[i], o.Coord[i+1], o.Coord[i+2]
+		x, y, z := o.Coord64(i), o.Coord64(i+1), o.Coord64(i+2)
 		if x < minX {
 			minX = x
 		}
