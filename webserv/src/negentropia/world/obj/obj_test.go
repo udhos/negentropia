@@ -96,8 +96,11 @@ func TestForwardVertex(t *testing.T) {
 
 func TestMisc(t *testing.T) {
 	str := `
-mtllib 1
-mtllib 2	
+mtllib lib1
+mtllib lib2	
+
+usemtl mtl1
+usemtl mtl2
 `
 
 	o, _ := NewObjFromBuf([]byte(str), func(msg string) { fmt.Printf("TestMisc NewObjFromBuf: log: %s\n", msg) })

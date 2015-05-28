@@ -17,10 +17,25 @@ import (
 const FATAL = true
 const NON_FATAL = false
 
+type Group struct {
+	Name       string
+	Smooth     bool
+	Usemtl     string
+	indexBegin int
+	indexCount int
+}
+
 type Obj struct {
 	Indices []int     // indices
 	Coord   []float32 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
-	mtllib  string
+	Mtllib  string
+	Groups  []Group
+}
+
+func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
+	gr := Group{Name: name, Usemtl: usemtl, indexBegin: begin, Smooth: smooth}
+	o.Groups = append(o.Groups, gr)
+	return &gr
 }
 
 func (o *Obj) Coord64(i int) float64 {
@@ -39,6 +54,7 @@ type objParser struct {
 	lineBuf   []string
 	lineCount int
 	vertCoord []float64
+	currGroup *Group
 }
 
 //type lineParser func(p *objParser, o *Obj, rawLine string) (error, bool)
@@ -161,6 +177,9 @@ func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 }
 
 func scanLines(p *objParser, o *Obj, reader lineReader, logger func(msg string)) (error, bool) {
+
+	p.currGroup = o.newGroup("", "", 0, false)
+
 	p.lineCount = 0
 
 	for _, line := range p.lineBuf {
@@ -187,12 +206,20 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 	case strings.HasPrefix(line, "o "):
 	case strings.HasPrefix(line, "g "):
 	case strings.HasPrefix(line, "usemtl "):
+		usemtl := line[7:]
+		if p.currGroup.Usemtl == "" {
+			// only set the missing material name for group
+			p.currGroup.Usemtl = usemtl
+		} else {
+			// create new group for material
+			p.currGroup = o.newGroup(p.currGroup.Name, usemtl, len(o.Indices), p.currGroup.Smooth)
+		}
 	case strings.HasPrefix(line, "mtllib "):
 		mtllib := line[7:]
-		if o.mtllib != "" && logger != nil {
-			logger(fmt.Sprintf("parseLine: line=%d mtllib redefinition old=%s new=%s", p.lineCount, o.mtllib, mtllib))
+		if o.Mtllib != "" && logger != nil {
+			logger(fmt.Sprintf("parseLine: line=%d mtllib redefinition old=%s new=%s", p.lineCount, o.Mtllib, mtllib))
 		}
-		o.mtllib = mtllib
+		o.Mtllib = mtllib
 	case strings.HasPrefix(line, "vt "):
 	case strings.HasPrefix(line, "vn "):
 	case strings.HasPrefix(line, "f "):
