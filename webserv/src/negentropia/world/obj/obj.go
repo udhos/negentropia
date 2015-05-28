@@ -37,6 +37,7 @@ func (o *Obj) indexCount() int {
 type objParser struct {
 	lineBuf   []string
 	lineCount int
+	vertCoord []float64
 }
 
 //type lineParser func(p *objParser, o *Obj, rawLine string) (error, bool)
@@ -53,8 +54,7 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 	p := &objParser{lineCount: 0}
 	o := &Obj{}
 
-	// full parsing
-	//log.Printf("DEBUG readObj: full parsing\n")
+	// 1. vertex-only parsing
 	if err, fatal := readLines(p, o, reader, logger); err != nil {
 		if fatal {
 			return o, err
@@ -63,6 +63,15 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 
 	if logger != nil {
 		logger(fmt.Sprintf("readObj: found %v lines", p.lineCount))
+	}
+
+	// 2. full parsing
+
+	// 3. output buffers
+
+	o.Coord = make([]float32, len(p.vertCoord), len(p.vertCoord))
+	for i, v := range p.vertCoord {
+		o.Coord[i] = float32(v)
 	}
 
 	return o, nil
@@ -124,14 +133,14 @@ func parseLine(p *objParser, o *Obj, rawLine string) (error, bool) {
 		if err != nil {
 			return fmt.Errorf("parseLine %v: [%v]: error: %v", p.lineCount, line, err), NON_FATAL
 		}
-		x, y, z := float32(result[0]), float32(result[1]), float32(result[2])
+		//x, y, z := float32(result[0]), float32(result[1]), float32(result[2])
 		coordLen := len(result)
 		switch coordLen {
 		case 3:
-			o.Coord = append(o.Coord, x, y, z)
+			p.vertCoord = append(p.vertCoord, result[0], result[1], result[2])
 		case 4:
-			w := float32(result[3])
-			o.Coord = append(o.Coord, x/w, y/w, z/w)
+			w := result[3]
+			p.vertCoord = append(p.vertCoord, result[0]/w, result[1]/w, result[2]/w)
 		default:
 			return fmt.Errorf("parseLine %v: [%v]: bad number of coords: %v", p.lineCount, line, coordLen), NON_FATAL
 		}
