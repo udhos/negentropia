@@ -20,6 +20,7 @@ const NON_FATAL = false
 type Obj struct {
 	Indices []int     // indices
 	Coord   []float32 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
+	mtllib  string
 }
 
 func (o *Obj) Coord64(i int) float64 {
@@ -121,12 +122,12 @@ func readLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 	return nil, NON_FATAL
 }
 
+// parse only vertex linux
 func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 	line := strings.TrimSpace(rawLine)
 
-	p.lineBuf = append(p.lineBuf, line) // save line
+	p.lineBuf = append(p.lineBuf, line) // save line for 2nd pass
 
-	//log.Printf("DEBUG parseLine %v: [%v]\n", p.lineCount, line)
 	switch {
 	case line == "" || line[0] == '#':
 	case strings.HasPrefix(line, "s "):
@@ -142,7 +143,6 @@ func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 		if err != nil {
 			return fmt.Errorf("parseLine %v: [%v]: error: %v", p.lineCount, line, err), NON_FATAL
 		}
-		//x, y, z := float32(result[0]), float32(result[1]), float32(result[2])
 		coordLen := len(result)
 		switch coordLen {
 		case 3:
@@ -166,7 +166,7 @@ func scanLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 	for _, line := range p.lineBuf {
 		p.lineCount++
 
-		if e, fatal := parseLine(p, o, line); e != nil {
+		if e, fatal := parseLine(p, o, line, logger); e != nil {
 			if logger != nil {
 				logger(fmt.Sprintf("scanLines: %v", e))
 			}
@@ -179,7 +179,7 @@ func scanLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 	return nil, NON_FATAL
 }
 
-func parseLine(p *objParser, o *Obj, line string) (error, bool) {
+func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (error, bool) {
 
 	switch {
 	case line == "" || line[0] == '#':
@@ -188,6 +188,11 @@ func parseLine(p *objParser, o *Obj, line string) (error, bool) {
 	case strings.HasPrefix(line, "g "):
 	case strings.HasPrefix(line, "usemtl "):
 	case strings.HasPrefix(line, "mtllib "):
+		mtllib := line[7:]
+		if o.mtllib != "" && logger != nil {
+			logger(fmt.Sprintf("parseLine: line=%d mtllib redefinition old=%s new=%s", p.lineCount, o.mtllib, mtllib))
+		}
+		o.mtllib = mtllib
 	case strings.HasPrefix(line, "vt "):
 	case strings.HasPrefix(line, "vn "):
 	case strings.HasPrefix(line, "f "):
