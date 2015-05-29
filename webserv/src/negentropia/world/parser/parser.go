@@ -50,6 +50,10 @@ func ParseFloatVectorComma(text string, size int) ([]float64, error) {
 	return ParseFloatVectorFunc(text, size, isComma)
 }
 
+func ParseFloatVector3Space(text string) ([]float64, error) {
+	return ParseFloatVectorSpace(text, 3)
+}
+
 func ParseFloatVector3Comma(text string) ([]float64, error) {
 	return ParseFloatVectorComma(text, 3)
 }

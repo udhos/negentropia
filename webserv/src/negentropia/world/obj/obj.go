@@ -38,6 +38,7 @@ type objParser struct {
 	lineCount int
 	vertCoord []float64
 	textCoord []float64
+	normCoord []float64
 	currGroup *Group
 }
 
@@ -200,6 +201,9 @@ func scanLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 	return nil, NON_FATAL
 }
 
+func (o *Obj) addVertex(p *objParser, vertex string) {
+}
+
 func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (error, bool) {
 
 	switch {
@@ -249,7 +253,33 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		}
 		p.textCoord = append(p.textCoord, t[0], t[1])
 	case strings.HasPrefix(line, "vn "):
+		norm := line[3:]
+		n, err := parser.ParseFloatVector3Space(norm)
+		if err != nil {
+			return fmt.Errorf("parseLine: line=%d bad vertex normal=[%s]: %v", p.lineCount, norm, err), NON_FATAL
+		}
+		p.normCoord = append(p.normCoord, n[0], n[1], n[2])
 	case strings.HasPrefix(line, "f "):
+		face := line[2:]
+		f := strings.Fields(face)
+		size := len(f)
+		if size < 3 || size > 4 {
+			return fmt.Errorf("parseLine: line=%d bad face=[%s] size=%d", p.lineCount, face, size), NON_FATAL
+		}
+		// triangle face: v0 v1 v2
+		// quad face:
+		// v0 v1 v2 v3 =>
+		// v0 v1 v2
+		// v2 v3 v0
+		o.addVertex(p, f[0])
+		o.addVertex(p, f[1])
+		o.addVertex(p, f[2])
+		if size > 3 {
+			// quad face
+			o.addVertex(p, f[2])
+			o.addVertex(p, f[3])
+			o.addVertex(p, f[0])
+		}
 	case strings.HasPrefix(line, "v "):
 	default:
 		return fmt.Errorf("parseLine %v: [%v]: unexpected", p.lineCount, line), NON_FATAL
