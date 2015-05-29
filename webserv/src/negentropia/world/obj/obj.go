@@ -269,7 +269,7 @@ func addVertex(p *objParser, o *Obj, index string) error {
 	absIndex := fmt.Sprintf("%d/%s/%s", vi, tIndex, nIndex)
 
 	// known unified index?
-	if i, ok := p.indexTable[absIndex]; !ok {
+	if i, ok := p.indexTable[absIndex]; ok {
 		pushIndex(p, o, i)
 		return nil
 	}
@@ -281,6 +281,7 @@ func addVertex(p *objParser, o *Obj, index string) error {
 
 	if tIndex != "" {
 		tOffset := ti * 2
+		fmt.Printf("ti=%d tOffset=%d textCoord=%v len=%d\n", ti, tOffset, p.textCoord, len(p.textCoord))
 		o.Coord = append(o.Coord, p.textCoord[tOffset+0]) // u
 		o.Coord = append(o.Coord, p.textCoord[tOffset+1]) // v
 	}
