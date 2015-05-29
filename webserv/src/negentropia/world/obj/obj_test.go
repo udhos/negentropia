@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+const LOG_STATS = false
+
 func expectInt(t *testing.T, label string, want, got int) {
 	if want != got {
 		t.Errorf("%s: want=%d got=%d", label, want, got)
@@ -42,7 +44,9 @@ func sliceEqualFloat(a, b []float32) bool {
 
 func TestCube(t *testing.T) {
 
-	o, err := NewObjFromBuf([]byte(cubeObj), func(msg string) { fmt.Printf("TestCube NewObjFromBuf: log: %s\n", msg) })
+	options := objParserOptions{logStats: LOG_STATS}
+
+	o, err := NewObjFromBuf([]byte(cubeObj), func(msg string) { fmt.Printf("TestCube NewObjFromBuf: log: %s\n", msg) }, &options)
 	if err != nil {
 		t.Errorf("TestCube: NewObjFromBuf: %v", err)
 		return
@@ -58,7 +62,10 @@ func TestCube(t *testing.T) {
 }
 
 func TestRelativeIndex(t *testing.T) {
-	o, err := NewObjFromBuf([]byte(relativeObj), func(msg string) { fmt.Printf("TestRelativeIndex NewObjFromBuf: log: %s\n", msg) })
+
+	options := objParserOptions{logStats: LOG_STATS}
+
+	o, err := NewObjFromBuf([]byte(relativeObj), func(msg string) { fmt.Printf("TestRelativeIndex NewObjFromBuf: log: %s\n", msg) }, &options)
 	if err != nil {
 		t.Errorf("TestRelativeIndex: NewObjFromBuf: %v", err)
 		return
@@ -76,7 +83,10 @@ func TestRelativeIndex(t *testing.T) {
 }
 
 func TestForwardVertex(t *testing.T) {
-	o, err := NewObjFromBuf([]byte(forwardObj), func(msg string) { fmt.Printf("TestForwardVertex NewObjFromBuf: log: %s\n", msg) })
+
+	options := objParserOptions{logStats: LOG_STATS}
+
+	o, err := NewObjFromBuf([]byte(forwardObj), func(msg string) { fmt.Printf("TestForwardVertex NewObjFromBuf: log: %s\n", msg) }, &options)
 	if err != nil {
 		t.Errorf("TestForwardVertex: NewObjFromBuf: %v", err)
 		return
@@ -104,9 +114,9 @@ s 0
 s ugh
 `
 
-	o, _ := NewObjFromBuf([]byte(str), func(msg string) { fmt.Printf("TestMisc NewObjFromBuf: log: %s\n", msg) })
+	options := objParserOptions{logStats: LOG_STATS}
 
-	t.Logf("TestMisc: %v", o)
+	NewObjFromBuf([]byte(str), func(msg string) { fmt.Printf("TestMisc NewObjFromBuf: log: %s\n", msg) }, &options)
 }
 
 var cubeIndices = []int{0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4, 8, 9, 10, 10, 11, 8, 12, 13, 14, 14, 15, 12, 16, 17, 18, 18, 19, 16, 20, 21, 16, 16, 22, 20}

@@ -58,6 +58,10 @@ type objParser struct {
 	triangles  int // stat-only
 }
 
+type objParserOptions struct {
+	logStats bool
+}
+
 func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
 	gr := Group{Name: name, Usemtl: usemtl, indexBegin: begin, Smooth: smooth}
 	o.Groups = append(o.Groups, gr)
@@ -70,19 +74,24 @@ func (o *Obj) Coord64(i int) float64 {
 
 //type lineParser func(p *objParser, o *Obj, rawLine string) (error, bool)
 
-func NewObjFromBuf(buf []byte, logger func(string)) (*Obj, error) {
-	return readObj(bytes.NewBuffer(buf), logger)
+func NewObjFromBuf(buf []byte, logger func(string), options *objParserOptions) (*Obj, error) {
+	return readObj(bytes.NewBuffer(buf), logger, options)
 }
 
-func NewObjFromReader(rd *bufio.Reader, logger func(string)) (*Obj, error) {
-	return readObj(rd, logger)
+func NewObjFromReader(rd *bufio.Reader, logger func(string), options *objParserOptions) (*Obj, error) {
+	return readObj(rd, logger, options)
 }
 
 type lineReader interface {
 	ReadString(delim byte) (string, error)
 }
 
-func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
+func readObj(reader lineReader, logger func(msg string), options *objParserOptions) (*Obj, error) {
+
+	if options == nil {
+		options = &objParserOptions{}
+	}
+
 	p := &objParser{indexTable: make(map[string]int)}
 	o := &Obj{}
 
@@ -117,7 +126,7 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 		o.StrideSize += 3 * 4 // add (nx,ny,nz) = 3 x 4-byte floats
 	}
 
-	if logger != nil {
+	if logger != nil && options.logStats {
 		logger(fmt.Sprintf("readObj: INPUT lines=%v vertLines=%v textLines=%v normLines=%v faceLines=%v triangles=%v",
 			p.lineCount, p.vertLines, p.textLines, p.normLines, p.faceLines, p.triangles))
 
