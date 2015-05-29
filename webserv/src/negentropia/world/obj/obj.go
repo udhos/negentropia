@@ -27,19 +27,25 @@ type Group struct {
 }
 
 type Obj struct {
-	Indices []int     // indices
-	Coord   []float32 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
-	Mtllib  string
-	Groups  []Group
+	Indices       []int     // indices
+	Coord         []float32 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
+	Mtllib        string
+	Groups        []Group
+	BigIndexFound bool
 }
 
 type objParser struct {
-	lineBuf   []string
-	lineCount int
-	vertCoord []float64
-	textCoord []float64
-	normCoord []float64
-	currGroup *Group
+	lineBuf    []string
+	lineCount  int
+	vertCoord  []float32
+	textCoord  []float32
+	normCoord  []float32
+	currGroup  *Group
+	indexTable map[string]int
+	indexCount int
+	vertLines  int
+	textLines  int
+	normLines  int
 }
 
 func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
@@ -165,10 +171,10 @@ func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 		coordLen := len(result)
 		switch coordLen {
 		case 3:
-			p.vertCoord = append(p.vertCoord, result[0], result[1], result[2])
+			p.vertCoord = append(p.vertCoord, float32(result[0]), float32(result[1]), float32(result[2]))
 		case 4:
 			w := result[3]
-			p.vertCoord = append(p.vertCoord, result[0]/w, result[1]/w, result[2]/w)
+			p.vertCoord = append(p.vertCoord, float32(result[0]/w), float32(result[1]/w), float32(result[2]/w))
 		default:
 			return fmt.Errorf("parseLine %v: [%v]: bad number of coords: %v", p.lineCount, line, coordLen), NON_FATAL
 		}
@@ -201,7 +207,97 @@ func scanLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 	return nil, NON_FATAL
 }
 
-func (o *Obj) addVertex(p *objParser, vertex string) {
+func solveRelativeIndex(index, size int) int {
+	if index > 0 {
+		return index - 1
+	}
+	return size + index
+}
+
+func splitSlash(s string) []string {
+	isSlash := func(c rune) bool {
+		return c == '/'
+	}
+
+	return strings.FieldsFunc(s, isSlash)
+
+}
+
+func pushIndex(p *objParser, o *Obj, i int) {
+	if i > 65535 {
+		o.BigIndexFound = true
+	}
+	o.Indices = append(o.Indices, i)
+	p.currGroup.indexCount++
+}
+
+func addVertex(p *objParser, o *Obj, index string) error {
+	ind := splitSlash(index)
+	size := len(ind)
+	if size < 1 || size > 3 {
+		return fmt.Errorf("addVertex: line=%d bad index=[%s] size=%d", p.lineCount, index, size)
+	}
+
+	v, err := strconv.ParseInt(ind[0], 10, 32)
+	if err != nil {
+		return fmt.Errorf("addVertex: line=%d bad integer 1st index=[%s]: %v", p.lineCount, ind[0], err)
+	}
+	vi := solveRelativeIndex(int(v), p.vertLines)
+
+	var ti int
+	var tIndex string
+	if size > 1 {
+		t, e := strconv.ParseInt(ind[1], 10, 32)
+		if e != nil {
+			return fmt.Errorf("addVertex: line=%d bad integer 2nd index=[%s]: %v", p.lineCount, ind[1], e)
+		}
+		ti = solveRelativeIndex(int(t), p.textLines)
+		tIndex = strconv.Itoa(ti)
+	}
+
+	var ni int
+	var nIndex string
+	if size > 2 {
+		n, e := strconv.ParseInt(ind[2], 10, 32)
+		if e != nil {
+			return fmt.Errorf("addVertex: line=%d bad integer 3rd index=[%s]: %v", p.lineCount, ind[2], e)
+		}
+		ni = solveRelativeIndex(int(n), p.normLines)
+		nIndex = strconv.Itoa(ni)
+	}
+
+	absIndex := fmt.Sprintf("%d/%s/%s", vi, tIndex, nIndex)
+
+	// known unified index?
+	if i, ok := p.indexTable[absIndex]; !ok {
+		pushIndex(p, o, i)
+		return nil
+	}
+
+	vOffset := vi * 3
+	o.Coord = append(o.Coord, p.vertCoord[vOffset+0]) // x
+	o.Coord = append(o.Coord, p.vertCoord[vOffset+1]) // y
+	o.Coord = append(o.Coord, p.vertCoord[vOffset+2]) // z
+
+	if tIndex != "" {
+		tOffset := ti * 2
+		o.Coord = append(o.Coord, p.textCoord[tOffset+0]) // u
+		o.Coord = append(o.Coord, p.textCoord[tOffset+1]) // v
+	}
+
+	if nIndex != "" {
+		nOffset := ni * 3
+		o.Coord = append(o.Coord, p.normCoord[nOffset+0]) // x
+		o.Coord = append(o.Coord, p.normCoord[nOffset+1]) // y
+		o.Coord = append(o.Coord, p.normCoord[nOffset+2]) // z
+	}
+
+	// add unified index
+	pushIndex(p, o, p.indexCount)
+	p.indexTable[absIndex] = p.indexCount
+	p.indexCount++
+
+	return nil
 }
 
 func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (error, bool) {
@@ -237,6 +333,8 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		}
 		o.Mtllib = mtllib
 	case strings.HasPrefix(line, "vt "):
+		p.vertLines++
+
 		tex := line[3:]
 		t, err := parser.ParseFloatSliceSpace(tex)
 		if err != nil {
@@ -251,14 +349,16 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 				logger(fmt.Sprintf("parseLine: line=%d non-zero third texture coordinate w=%f", p.lineCount, w))
 			}
 		}
-		p.textCoord = append(p.textCoord, t[0], t[1])
+		p.textCoord = append(p.textCoord, float32(t[0]), float32(t[1]))
 	case strings.HasPrefix(line, "vn "):
+		p.normLines++
+
 		norm := line[3:]
 		n, err := parser.ParseFloatVector3Space(norm)
 		if err != nil {
 			return fmt.Errorf("parseLine: line=%d bad vertex normal=[%s]: %v", p.lineCount, norm, err), NON_FATAL
 		}
-		p.normCoord = append(p.normCoord, n[0], n[1], n[2])
+		p.normCoord = append(p.normCoord, float32(n[0]), float32(n[1]), float32(n[2]))
 	case strings.HasPrefix(line, "f "):
 		face := line[2:]
 		f := strings.Fields(face)
@@ -271,16 +371,29 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		// v0 v1 v2 v3 =>
 		// v0 v1 v2
 		// v2 v3 v0
-		o.addVertex(p, f[0])
-		o.addVertex(p, f[1])
-		o.addVertex(p, f[2])
+		if err := addVertex(p, o, f[0]); err != nil {
+			return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v0=[%s]: %v", p.lineCount, face, f[0], err), NON_FATAL
+		}
+		if err := addVertex(p, o, f[1]); err != nil {
+			return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v1=[%s]: %v", p.lineCount, face, f[1], err), NON_FATAL
+		}
+		if err := addVertex(p, o, f[2]); err != nil {
+			return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v2=[%s]: %v", p.lineCount, face, f[2], err), NON_FATAL
+		}
 		if size > 3 {
 			// quad face
-			o.addVertex(p, f[2])
-			o.addVertex(p, f[3])
-			o.addVertex(p, f[0])
+			if err := addVertex(p, o, f[2]); err != nil {
+				return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v2=[%s]: %v", p.lineCount, face, f[2], err), NON_FATAL
+			}
+			if err := addVertex(p, o, f[3]); err != nil {
+				return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v3=[%s]: %v", p.lineCount, face, f[3], err), NON_FATAL
+			}
+			if err := addVertex(p, o, f[0]); err != nil {
+				return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v0=[%s]: %v", p.lineCount, face, f[0], err), NON_FATAL
+			}
 		}
 	case strings.HasPrefix(line, "v "):
+		p.vertLines++
 	default:
 		return fmt.Errorf("parseLine %v: [%v]: unexpected", p.lineCount, line), NON_FATAL
 	}
