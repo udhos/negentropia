@@ -112,7 +112,9 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 		logger(fmt.Sprintf("readObj: INPUT lines=%v vertLines=%v textLines=%v normLines=%v faceLines=%v triangles=%v",
 			p.lineCount, p.vertLines, p.textLines, p.normLines, p.faceLines, p.triangles))
 
-		logger(fmt.Sprintf("readObj: STATS numberOfIndices=%v indicesArraySize=%v", p.indexCount, len(o.Indices)))
+		logger(fmt.Sprintf("readObj: STATS numberOfElements=%v indicesArraySize=%v", p.indexCount, len(o.Indices)))
+
+		logger(fmt.Sprintf("readObj: STATS bigIndexFound=%v groups=%v", o.BigIndexFound, len(o.Groups)))
 	}
 
 	return o, nil
@@ -327,7 +329,13 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		}
 	case strings.HasPrefix(line, "o ") || strings.HasPrefix(line, "g "):
 		name := line[2:]
-		p.currGroup = o.newGroup(name, p.currGroup.Usemtl, len(o.Indices), p.currGroup.Smooth)
+		if p.currGroup.Name == "" {
+			// only set missing name for group
+			p.currGroup.Name = name
+		} else if p.currGroup.Name != name {
+			// create new group
+			p.currGroup = o.newGroup(name, p.currGroup.Usemtl, len(o.Indices), p.currGroup.Smooth)
+		}
 	case strings.HasPrefix(line, "usemtl "):
 		usemtl := line[7:]
 		if p.currGroup.Usemtl == "" {

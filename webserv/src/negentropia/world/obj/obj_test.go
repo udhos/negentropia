@@ -113,8 +113,7 @@ s ugh
 }
 
 var cubeIndices = []int{0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4, 8, 9, 10, 10, 11, 8, 12, 13, 14, 14, 15, 12, 16, 17, 18, 18, 19, 16, 20, 21, 16, 16, 22, 20}
-var cubeCoord = []float32{1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0}
-var cubeText = []float32{0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0}
+var cubeCoord = []float32{1, -1, 1, 0.5, 0, -1, -1, 1, 0.5, 0, -1, -1, -1, 0.5, 0, 1, -1, -1, 0.5, 0, 1, 1, -1, 0.5, 0, -1, 1, -1, 0.5, 0, -1, 1, 1, 0.5, 0, 1, 1, 1, 0.5, 0, 1, -1, -1, 0, 0, 1, 1, -1, 0, 0, 1, 1, 1, 0, 0, 1, -1, 1, 0, 0, -1, -1, 1, 0, 0, -1, 1, 1, 0, 0, -1, 1, -1, 0, 0, -1, -1, -1, 0, 0, 1, 1, -1, 1, 0, 1, 1, 1, 1, 0, -1, 1, 1, 1, 0, -1, -1, 1, 1, 0, -1, -1, -1, 1, 0, -1, 1, -1, 1, 0, 1, -1, -1, 1, 0}
 
 var relativeIndices = []int{0, 1, 2, 0, 1, 2, 3, 4, 5, 3, 4, 5, 0, 1, 2, 0, 1, 2}
 var relativeCoord = []float32{1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 3.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 5.0, 5.0, 6.0, 6.0, 6.0}
@@ -128,17 +127,6 @@ var cubeObj = `
 mtllib cube.mtl
 
 o cube
-
-## comment-begin ##
-
-# This is a multiline commented-out section.
-# Notice this section is enclosed between "## comment-begin ##" and "## comment-end ##". 
-# This section is fully ignored by this specific OBJ parser.
-This uncommented line should cause error on common OBJ parsers.
-
-## comment-end ##
-
-# This is a regular section, processed under usual OBJ specification.
 
 # square bottom
 v -1 -1 -1
@@ -188,13 +176,6 @@ f -3/-1 -7/-1 -1/-1
 # face back
 f -8/-1 -4/-1 -1/-1
 f -1/-1 -5/-1 -8/-1
-
-## end-of-file ##
-
-# This is an after-eof section.
-# Notice this section follows the marker "## end-of-file ##".
-# This section is fully ignored by this specific OBJ parser.
-This uncommented line should cause error on common OBJ parsers.
 `
 
 var relativeObj = `
