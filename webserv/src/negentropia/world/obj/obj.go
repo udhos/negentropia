@@ -81,7 +81,7 @@ type lineReader interface {
 }
 
 func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
-	p := &objParser{}
+	p := &objParser{indexTable: make(map[string]int)}
 	o := &Obj{}
 
 	// 1. vertex-only parsing
@@ -208,6 +208,7 @@ func scanLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 }
 
 func solveRelativeIndex(index, size int) int {
+	//fmt.Printf("index=%d size=%d\n", index, size)
 	if index > 0 {
 		return index - 1
 	}
@@ -281,7 +282,7 @@ func addVertex(p *objParser, o *Obj, index string) error {
 
 	if tIndex != "" {
 		tOffset := ti * 2
-		fmt.Printf("ti=%d tOffset=%d textCoord=%v len=%d\n", ti, tOffset, p.textCoord, len(p.textCoord))
+		//fmt.Printf("ti=%d tOffset=%d textCoord=%v len=%d\n", ti, tOffset, p.textCoord, len(p.textCoord))
 		o.Coord = append(o.Coord, p.textCoord[tOffset+0]) // u
 		o.Coord = append(o.Coord, p.textCoord[tOffset+1]) // v
 	}
@@ -295,6 +296,7 @@ func addVertex(p *objParser, o *Obj, index string) error {
 
 	// add unified index
 	pushIndex(p, o, p.indexCount)
+	//fmt.Printf("absIndex=%s indexCount=%d\n", absIndex, p.indexCount)
 	p.indexTable[absIndex] = p.indexCount
 	p.indexCount++
 
@@ -334,7 +336,7 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		}
 		o.Mtllib = mtllib
 	case strings.HasPrefix(line, "vt "):
-		p.vertLines++
+		p.textLines++
 
 		tex := line[3:]
 		t, err := parser.ParseFloatSliceSpace(tex)
