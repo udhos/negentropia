@@ -27,11 +27,19 @@ type Group struct {
 }
 
 type Obj struct {
-	Indices       []int     // indices
-	Coord         []float32 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
-	Mtllib        string
-	Groups        []Group
-	BigIndexFound bool
+	Indices []int     // indices
+	Coord   []float32 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
+	Mtllib  string
+	Groups  []Group
+
+	BigIndexFound  bool // index larger than 65535
+	TextCoordFound bool // texture coord
+	NormCoordFound bool // normal coord
+
+	StrideSize           int // (px,py,pz),(tu,tv),(nx,ny,nz) = 8 x 4-byte floats floats = 32 bytes max
+	StrideOffsetPosition int // 0
+	StrideOffsetTexture  int // 3 x 4-byte floats
+	StrideOffsetNormal   int // 5 x 4-byte floats
 }
 
 type objParser struct {
@@ -58,14 +66,6 @@ func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
 
 func (o *Obj) Coord64(i int) float64 {
 	return float64(o.Coord[i])
-}
-
-func (o *Obj) vertexCount() int {
-	return -1
-}
-
-func (o *Obj) indexCount() int {
-	return -1
 }
 
 //type lineParser func(p *objParser, o *Obj, rawLine string) (error, bool)
@@ -100,13 +100,22 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 		}
 	}
 
-	// 3. output buffers
-	/*
-		o.Coord = make([]float32, len(p.vertCoord), len(p.vertCoord))
-		for i, v := range p.vertCoord {
-			o.Coord[i] = float32(v)
-		}
-	*/
+	// 3. output
+
+	o.StrideSize = 3 * 4 // (px,py,pz) = 3 x 4-byte floats
+	o.StrideOffsetPosition = 0
+	o.StrideOffsetTexture = 0
+	o.StrideOffsetNormal = 0
+
+	if o.TextCoordFound {
+		o.StrideOffsetTexture = o.StrideSize
+		o.StrideSize += 2 * 4 // add (tu,tv) = 2 x 4-byte floats
+	}
+
+	if o.NormCoordFound {
+		o.StrideOffsetNormal = o.StrideSize
+		o.StrideSize += 3 * 4 // add (nx,ny,nz) = 3 x 4-byte floats
+	}
 
 	if logger != nil {
 		logger(fmt.Sprintf("readObj: INPUT lines=%v vertLines=%v textLines=%v normLines=%v faceLines=%v triangles=%v",
@@ -115,6 +124,10 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 		logger(fmt.Sprintf("readObj: STATS numberOfElements=%v indicesArraySize=%v", p.indexCount, len(o.Indices)))
 
 		logger(fmt.Sprintf("readObj: STATS bigIndexFound=%v groups=%v", o.BigIndexFound, len(o.Groups)))
+
+		logger(fmt.Sprintf("readObj: STATS textureCoordFound=%v normalCoordFound=%v", o.TextCoordFound, o.NormCoordFound))
+
+		logger(fmt.Sprintf("readObj: STATS stride=%v textureOffset=%v normalOffset=%v", o.StrideSize, o.StrideOffsetTexture, o.StrideOffsetNormal))
 	}
 
 	return o, nil
@@ -295,6 +308,7 @@ func addVertex(p *objParser, o *Obj, index string) error {
 		//fmt.Printf("ti=%d tOffset=%d textCoord=%v len=%d\n", ti, tOffset, p.textCoord, len(p.textCoord))
 		o.Coord = append(o.Coord, p.textCoord[tOffset+0]) // u
 		o.Coord = append(o.Coord, p.textCoord[tOffset+1]) // v
+		o.TextCoordFound = true
 	}
 
 	if nIndex != "" {
@@ -302,6 +316,7 @@ func addVertex(p *objParser, o *Obj, index string) error {
 		o.Coord = append(o.Coord, p.normCoord[nOffset+0]) // x
 		o.Coord = append(o.Coord, p.normCoord[nOffset+1]) // y
 		o.Coord = append(o.Coord, p.normCoord[nOffset+2]) // z
+		o.NormCoordFound = true
 	}
 
 	// add unified index

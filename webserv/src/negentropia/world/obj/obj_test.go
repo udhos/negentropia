@@ -48,9 +48,6 @@ func TestCube(t *testing.T) {
 		return
 	}
 
-	//expectInt(t, "TestCube vertexCount", 23, o.vertexCount())
-	//expectInt(t, "TestCube indexCount", 36, o.indexCount())
-
 	if !sliceEqualInt(cubeIndices, o.Indices) {
 		t.Errorf("TestCube: indices: want=%v got=%v", cubeIndices, o.Indices)
 	}
