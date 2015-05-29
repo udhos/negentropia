@@ -46,6 +46,8 @@ type objParser struct {
 	vertLines  int
 	textLines  int
 	normLines  int
+	faceLines  int // stat-only
+	triangles  int // stat-only
 }
 
 func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
@@ -91,10 +93,6 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 		}
 	}
 
-	if logger != nil {
-		logger(fmt.Sprintf("readObj: found %v lines", p.lineCount))
-	}
-
 	// 2. full parsing
 	if err, fatal := scanLines(p, o, reader, logger); err != nil {
 		if fatal {
@@ -103,10 +101,18 @@ func readObj(reader lineReader, logger func(msg string)) (*Obj, error) {
 	}
 
 	// 3. output buffers
+	/*
+		o.Coord = make([]float32, len(p.vertCoord), len(p.vertCoord))
+		for i, v := range p.vertCoord {
+			o.Coord[i] = float32(v)
+		}
+	*/
 
-	o.Coord = make([]float32, len(p.vertCoord), len(p.vertCoord))
-	for i, v := range p.vertCoord {
-		o.Coord[i] = float32(v)
+	if logger != nil {
+		logger(fmt.Sprintf("readObj: INPUT lines=%v vertLines=%v textLines=%v normLines=%v faceLines=%v triangles=%v",
+			p.lineCount, p.vertLines, p.textLines, p.normLines, p.faceLines, p.triangles))
+
+		logger(fmt.Sprintf("readObj: STATS numberOfIndices=%v indicesArraySize=%v", p.indexCount, len(o.Indices)))
 	}
 
 	return o, nil
@@ -164,6 +170,8 @@ func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 	case strings.HasPrefix(line, "vn "):
 	case strings.HasPrefix(line, "f "):
 	case strings.HasPrefix(line, "v "):
+		p.faceLines++
+
 		result, err := parser.ParseFloatSliceSpace(line[2:])
 		if err != nil {
 			return fmt.Errorf("parseLine %v: [%v]: error: %v", p.lineCount, line, err), NON_FATAL
@@ -374,6 +382,7 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		// v0 v1 v2 v3 =>
 		// v0 v1 v2
 		// v2 v3 v0
+		p.triangles++
 		if err := addVertex(p, o, f[0]); err != nil {
 			return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v0=[%s]: %v", p.lineCount, face, f[0], err), NON_FATAL
 		}
@@ -385,6 +394,7 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		}
 		if size > 3 {
 			// quad face
+			p.triangles++
 			if err := addVertex(p, o, f[2]); err != nil {
 				return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v2=[%s]: %v", p.lineCount, face, f[2], err), NON_FATAL
 			}
