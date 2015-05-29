@@ -72,6 +72,16 @@ func (o *Obj) Coord64(i int) float64 {
 	return float64(o.Coord[i])
 }
 
+func (o *Obj) NumberOfElements() int {
+	return 4 * len(o.Coord) / o.StrideSize
+}
+
+func (o *Obj) VertexCoordinates(stride int) (float32, float32, float32) {
+	floatsPerStride := o.StrideSize / 4
+	f := stride * floatsPerStride
+	return o.Coord[f], o.Coord[f+1], o.Coord[f+2]
+}
+
 //type lineParser func(p *objParser, o *Obj, rawLine string) (error, bool)
 
 func NewObjFromBuf(buf []byte, logger func(string), options *objParserOptions) (*Obj, error) {
@@ -337,19 +347,33 @@ func addVertex(p *objParser, o *Obj, index string) error {
 	return nil
 }
 
+func smoothIsTrue(s string) (bool, error) {
+	s = strings.ToLower(strings.TrimSpace(s))
+
+	if s == "on" {
+		return true, nil
+	}
+
+	if s == "off" {
+		return false, nil
+	}
+
+	return strconv.ParseBool(s)
+}
+
 func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (error, bool) {
 
 	switch {
 	case line == "" || line[0] == '#':
 	case strings.HasPrefix(line, "s "):
 		smooth := line[2:]
-		if s, err := strconv.ParseBool(smooth); err == nil {
+		if s, err := smoothIsTrue(smooth); err == nil {
 			if p.currGroup.Smooth != s {
 				// create new group
 				p.currGroup = o.newGroup(p.currGroup.Name, p.currGroup.Usemtl, len(o.Indices), s)
 			}
 		} else {
-			return fmt.Errorf("parseLine: line=%d bad boolean smooth=[%s]: %v", p.lineCount, smooth, err), NON_FATAL
+			return fmt.Errorf("parseLine: line=%d bad boolean smooth=[%s]: %v: line=[%v]", p.lineCount, smooth, err, line), NON_FATAL
 		}
 	case strings.HasPrefix(line, "o ") || strings.HasPrefix(line, "g "):
 		name := line[2:]

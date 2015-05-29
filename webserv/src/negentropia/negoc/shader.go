@@ -73,7 +73,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		return nil
 	}
 
-	log(fmt.Sprintf("newModel: objURL=%s coordinates: %d", objURL, len(o.Coord)))
+	log(fmt.Sprintf("newModel: objURL=%s elements=%d bigIndex=%v texCoord=%v normCoord=%v", objURL, o.NumberOfElements(), o.BigIndexFound, o.TextCoordFound, o.NormCoordFound))
 
 	// push new model into shader.modelList
 	s.addModel(mod)
