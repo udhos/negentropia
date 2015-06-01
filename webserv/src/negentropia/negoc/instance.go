@@ -96,7 +96,7 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 	mod := shader.findModel(modelName)
 	if mod == nil {
 		log(fmt.Sprintf("createInstance: id=%s program=%s model=%s not found", id, programName, modelName))
-		if mod = newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.assetPath, gameInfo.textureTable, repeat); mod == nil {
+		if mod = newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.assetPath, gameInfo.textureTable, repeat, gameInfo.materialLib); mod == nil {
 			log(fmt.Sprintf("createInstance: id=%s program=%s failure creating model=%s", id, programName, modelName))
 			return
 		}

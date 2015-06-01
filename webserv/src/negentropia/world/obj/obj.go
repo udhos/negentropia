@@ -18,12 +18,22 @@ import (
 const FATAL = true
 const NON_FATAL = false
 
+type Material struct {
+	Name   string
+	Map_Kd string
+	Kd     [3]float32
+}
+
+func ReadMaterialLib(buf []byte, materialLib map[string]Material) error {
+	return nil
+}
+
 type Group struct {
 	Name       string
 	Smooth     bool
 	Usemtl     string
-	indexBegin int
-	indexCount int
+	IndexBegin int
+	IndexCount int
 }
 
 type Obj struct {
@@ -63,7 +73,7 @@ type objParserOptions struct {
 }
 
 func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
-	gr := Group{Name: name, Usemtl: usemtl, indexBegin: begin, Smooth: smooth}
+	gr := Group{Name: name, Usemtl: usemtl, IndexBegin: begin, Smooth: smooth}
 	o.Groups = append(o.Groups, gr)
 	return &gr
 }
@@ -120,6 +130,12 @@ func readObj(reader lineReader, logger func(msg string), options *objParserOptio
 	}
 
 	// 3. output
+
+	for _, g := range o.Groups {
+		if g.IndexCount < 3 {
+			logger(fmt.Sprintf("readObj: WRONG GROUP SIZE group=%s size=%d < 3", g.Name, g.IndexCount))
+		}
+	}
 
 	o.StrideSize = 3 * 4 // (px,py,pz) = 3 x 4-byte floats
 	o.StrideOffsetPosition = 0
@@ -271,7 +287,7 @@ func pushIndex(p *objParser, o *Obj, i int) {
 		o.BigIndexFound = true
 	}
 	o.Indices = append(o.Indices, i)
-	p.currGroup.indexCount++
+	p.currGroup.IndexCount++
 }
 
 func addVertex(p *objParser, o *Obj, index string) error {

@@ -14,7 +14,8 @@ type model struct {
 }
 
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
-	front, up []float64, assetPath asset, textureTable map[string]texture, repeatTexture bool) *model {
+	front, up []float64, assetPath asset, textureTable map[string]texture,
+	repeatTexture bool, materialLib map[string]obj.Material) *model {
 
 	// allocate new model
 	mod := &model{modelName: modelName, ready: false}
@@ -39,6 +40,22 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	}
 
 	log(fmt.Sprintf("newModel: objURL=%s elements=%d bigIndex=%v texCoord=%v normCoord=%v", objURL, o.NumberOfElements(), o.BigIndexFound, o.TextCoordFound, o.NormCoordFound))
+
+	for _, g := range o.Groups {
+		log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s consider material=%s", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
+
+		var mat obj.Material
+		var matOk bool
+		if mat, matOk = materialLib[g.Usemtl]; !matOk {
+			log(fmt.Sprintf("newModel: objURL=%s group=%s load mtllib=%s", objURL, g.Name, o.Mtllib))
+
+			mat = obj.Material{Name: g.Usemtl, Map_Kd: "Material Map_Kd FIXME WRITEME"}
+		}
+
+		log(fmt.Sprintf("newModel: objURL=%s group=%s mtllib=%s usemtl=%s load texture=%s", objURL, g.Name, o.Mtllib, g.Usemtl, mat.Map_Kd))
+	}
+
+	err = obj.ReadMaterialLib(buf, materialLib)
 
 	log(fmt.Sprintf("newModel: objURL=%s FIXME load OBJ textures", objURL))
 

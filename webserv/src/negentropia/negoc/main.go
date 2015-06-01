@@ -5,6 +5,7 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	"math"
+	"negentropia/world/obj"
 	"time"
 )
 
@@ -133,6 +134,7 @@ type gameState struct {
 	shaderList         []shader
 	textureTable       map[string]texture
 	assetPath          asset
+	materialLib        map[string]obj.Material
 }
 
 var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
