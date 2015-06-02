@@ -40,7 +40,7 @@ type Obj struct {
 	Indices []int     // indices
 	Coord   []float32 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
 	Mtllib  string
-	Groups  []Group
+	Groups  []*Group
 
 	BigIndexFound  bool // index larger than 65535
 	TextCoordFound bool // texture coord
@@ -73,9 +73,9 @@ type objParserOptions struct {
 }
 
 func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
-	gr := Group{Name: name, Usemtl: usemtl, IndexBegin: begin, Smooth: smooth}
+	gr := &Group{Name: name, Usemtl: usemtl, IndexBegin: begin, Smooth: smooth}
 	o.Groups = append(o.Groups, gr)
-	return &gr
+	return gr
 }
 
 func (o *Obj) Coord64(i int) float64 {
@@ -130,12 +130,17 @@ func readObj(reader lineReader, logger func(msg string), options *objParserOptio
 	}
 
 	// 3. output
-
+	tmp := []*Group{}
 	for _, g := range o.Groups {
-		if g.IndexCount < 3 {
+		switch {
+		case g.IndexCount < 0:
+			continue // discard empty bogus group created internally by parser
+		case g.IndexCount < 3:
 			logger(fmt.Sprintf("readObj: WRONG GROUP SIZE group=%s size=%d < 3", g.Name, g.IndexCount))
 		}
+		tmp = append(tmp, g)
 	}
+	o.Groups = tmp
 
 	o.StrideSize = 3 * 4 // (px,py,pz) = 3 x 4-byte floats
 	o.StrideOffsetPosition = 0
@@ -406,6 +411,10 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 			// only set the missing material name for group
 			p.currGroup.Usemtl = usemtl
 		} else if p.currGroup.Usemtl != usemtl {
+			if p.currGroup.IndexCount == 0 {
+				// mark previous empty group as bogus
+				p.currGroup.IndexCount = -1
+			}
 			// create new group for material
 			p.currGroup = o.newGroup(p.currGroup.Name, usemtl, len(o.Indices), p.currGroup.Smooth)
 		}
