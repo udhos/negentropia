@@ -24,18 +24,59 @@ type Material struct {
 	Kd     [3]float32
 }
 
-func ReadMaterialLibFromBuf(buf []byte, materialLib map[string]Material, options *ObjParserOptions) error {
-	return readLib(bytes.NewBuffer(buf), materialLib, options)
+func ReadMaterialLibFromBuf(buf []byte, options *ObjParserOptions) (map[string]Material, error) {
+	return readLib(bytes.NewBuffer(buf), options)
 }
 
-func ReadMaterialLibFromReader(rd *bufio.Reader, materialLib map[string]Material, options *ObjParserOptions) error {
-	return readLib(rd, materialLib, options)
+func ReadMaterialLibFromReader(rd *bufio.Reader, options *ObjParserOptions) (map[string]Material, error) {
+	return readLib(rd, options)
 }
 
-func readLib(reader lineReader, materialLib map[string]Material, options *ObjParserOptions) error {
-	err := fmt.Errorf("readLib: FIXME WRITEME")
-	options.log(fmt.Sprintf("%v", err))
-	return err
+func readLib(reader lineReader, options *ObjParserOptions) (map[string]Material, error) {
+
+	lineCount := 0
+
+	lib := map[string]Material{}
+
+	for {
+		lineCount++
+		line, err := reader.ReadString('\n')
+		if err == io.EOF {
+			// parse last line
+			if e, _ := parseLibLine(lib, line, lineCount); e != nil {
+				options.log(fmt.Sprintf("readLib: %v", e))
+				return nil, e
+			}
+			break // EOF
+		}
+
+		if err != nil {
+			// unexpected IO error
+			return nil, fmt.Errorf("readLib: error: %v", err)
+		}
+
+		if e, fatal := parseLibLine(lib, line, lineCount); e != nil {
+			options.log(fmt.Sprintf("readLib: %v", e))
+			if fatal {
+				return nil, e
+			}
+		}
+	}
+
+	return lib, nil
+}
+
+func parseLibLine(tmpLib map[string]Material, rawLine string, lineCount int) (error, bool) {
+	line := strings.TrimSpace(rawLine)
+
+	switch {
+	case line == "" || line[0] == '#':
+	case strings.HasPrefix(line, "s "):
+	default:
+		return fmt.Errorf("parseLibLine %v: [%v]: unexpected", lineCount, line), NON_FATAL
+	}
+
+	return nil, NON_FATAL
 }
 
 type Group struct {

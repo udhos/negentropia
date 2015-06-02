@@ -13,6 +13,30 @@ type model struct {
 	ready        bool // mesh and textures loaded
 }
 
+func fetchMaterialLib(materialLib map[string]obj.Material, libURL string) error {
+	var buf []byte
+
+	log("fetchMaterialLib: FIXME WRITEME")
+
+	opt := &obj.ObjParserOptions{Logger: func(msg string) { log(fmt.Sprintf("fetchMaterialLib: %s", msg)) }}
+
+	var lib map[string]obj.Material
+	var err error
+	if lib, err = obj.ReadMaterialLibFromBuf(buf, opt); err != nil {
+		return err
+	}
+
+	// save new material into lib
+	for k, v := range lib {
+		if _, found := materialLib[k]; found {
+			log(fmt.Sprintf("fetchMaterialLib: mtllib=%s REWRITING material=%s", libURL, k))
+		}
+		materialLib[k] = v
+	}
+
+	return nil
+}
+
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	front, up []float64, assetPath asset, textureTable map[string]texture,
 	repeatTexture bool, materialLib map[string]obj.Material) *model {
@@ -48,15 +72,23 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		var mat obj.Material
 		var matOk bool
 		if mat, matOk = materialLib[g.Usemtl]; !matOk {
+			// material not found -- fetch lib
+
 			log(fmt.Sprintf("newModel: objURL=%s group=%s load mtllib=%s", objURL, g.Name, o.Mtllib))
 
-			mat = obj.Material{Name: g.Usemtl, Map_Kd: "Material Map_Kd FIXME WRITEME"}
+			if libErr := fetchMaterialLib(materialLib, o.Mtllib); libErr == nil {
+				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s LIB FAILURE: %v", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl, libErr))
+				continue // ugh
+			}
+
+			if mat, matOk = materialLib[g.Usemtl]; !matOk {
+				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s MISSING material=%s", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
+				continue // ugh
+			}
 		}
 
 		log(fmt.Sprintf("newModel: objURL=%s group=%s mtllib=%s usemtl=%s load texture=%s", objURL, g.Name, o.Mtllib, g.Usemtl, mat.Map_Kd))
 	}
-
-	err = obj.ReadMaterialLibFromBuf(buf, materialLib, opt)
 
 	log(fmt.Sprintf("newModel: objURL=%s FIXME load OBJ textures", objURL))
 
