@@ -44,9 +44,9 @@ func sliceEqualFloat(a, b []float32) bool {
 
 func TestCube(t *testing.T) {
 
-	options := objParserOptions{logStats: LOG_STATS}
+	options := ObjParserOptions{LogStats: LOG_STATS, Logger: func(msg string) { fmt.Printf("TestCube NewObjFromBuf: log: %s\n", msg) }}
 
-	o, err := NewObjFromBuf([]byte(cubeObj), func(msg string) { fmt.Printf("TestCube NewObjFromBuf: log: %s\n", msg) }, &options)
+	o, err := NewObjFromBuf([]byte(cubeObj), &options)
 	if err != nil {
 		t.Errorf("TestCube: NewObjFromBuf: %v", err)
 		return
@@ -63,9 +63,9 @@ func TestCube(t *testing.T) {
 
 func TestRelativeIndex(t *testing.T) {
 
-	options := objParserOptions{logStats: LOG_STATS}
+	options := ObjParserOptions{LogStats: LOG_STATS, Logger: func(msg string) { fmt.Printf("TestRelativeIndex NewObjFromBuf: log: %s\n", msg) }}
 
-	o, err := NewObjFromBuf([]byte(relativeObj), func(msg string) { fmt.Printf("TestRelativeIndex NewObjFromBuf: log: %s\n", msg) }, &options)
+	o, err := NewObjFromBuf([]byte(relativeObj), &options)
 	if err != nil {
 		t.Errorf("TestRelativeIndex: NewObjFromBuf: %v", err)
 		return
@@ -84,9 +84,9 @@ func TestRelativeIndex(t *testing.T) {
 
 func TestForwardVertex(t *testing.T) {
 
-	options := objParserOptions{logStats: LOG_STATS}
+	options := ObjParserOptions{LogStats: LOG_STATS, Logger: func(msg string) { fmt.Printf("TestForwardVertex NewObjFromBuf: log: %s\n", msg) }}
 
-	o, err := NewObjFromBuf([]byte(forwardObj), func(msg string) { fmt.Printf("TestForwardVertex NewObjFromBuf: log: %s\n", msg) }, &options)
+	o, err := NewObjFromBuf([]byte(forwardObj), &options)
 	if err != nil {
 		t.Errorf("TestForwardVertex: NewObjFromBuf: %v", err)
 		return
@@ -114,9 +114,9 @@ s 0
 s ugh
 `
 
-	options := objParserOptions{logStats: LOG_STATS}
+	options := ObjParserOptions{LogStats: LOG_STATS, Logger: func(msg string) { fmt.Printf("TestMisc NewObjFromBuf: log: %s\n", msg) }}
 
-	NewObjFromBuf([]byte(str), func(msg string) { fmt.Printf("TestMisc NewObjFromBuf: log: %s\n", msg) }, &options)
+	NewObjFromBuf([]byte(str), &options)
 }
 
 var cubeIndices = []int{0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4, 8, 9, 10, 10, 11, 8, 12, 13, 14, 14, 15, 12, 16, 17, 18, 18, 19, 16, 20, 21, 16, 16, 22, 20}

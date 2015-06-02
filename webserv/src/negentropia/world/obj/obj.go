@@ -24,8 +24,18 @@ type Material struct {
 	Kd     [3]float32
 }
 
-func ReadMaterialLib(buf []byte, materialLib map[string]Material) error {
-	return nil
+func ReadMaterialLibFromBuf(buf []byte, materialLib map[string]Material, options *ObjParserOptions) error {
+	return readLib(bytes.NewBuffer(buf), materialLib, options)
+}
+
+func ReadMaterialLibFromReader(rd *bufio.Reader, materialLib map[string]Material, options *ObjParserOptions) error {
+	return readLib(rd, materialLib, options)
+}
+
+func readLib(reader lineReader, materialLib map[string]Material, options *ObjParserOptions) error {
+	err := fmt.Errorf("readLib: FIXME WRITEME")
+	options.log(fmt.Sprintf("%v", err))
+	return err
 }
 
 type Group struct {
@@ -68,8 +78,16 @@ type objParser struct {
 	triangles  int // stat-only
 }
 
-type objParserOptions struct {
-	logStats bool
+type ObjParserOptions struct {
+	LogStats bool
+	Logger   func(string)
+}
+
+func (opt *ObjParserOptions) log(msg string) {
+	if opt.Logger == nil {
+		return
+	}
+	opt.Logger(msg)
 }
 
 func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
@@ -94,36 +112,36 @@ func (o *Obj) VertexCoordinates(stride int) (float32, float32, float32) {
 
 //type lineParser func(p *objParser, o *Obj, rawLine string) (error, bool)
 
-func NewObjFromBuf(buf []byte, logger func(string), options *objParserOptions) (*Obj, error) {
-	return readObj(bytes.NewBuffer(buf), logger, options)
+func NewObjFromBuf(buf []byte, options *ObjParserOptions) (*Obj, error) {
+	return readObj(bytes.NewBuffer(buf), options)
 }
 
-func NewObjFromReader(rd *bufio.Reader, logger func(string), options *objParserOptions) (*Obj, error) {
-	return readObj(rd, logger, options)
+func NewObjFromReader(rd *bufio.Reader, options *ObjParserOptions) (*Obj, error) {
+	return readObj(rd, options)
 }
 
 type lineReader interface {
 	ReadString(delim byte) (string, error)
 }
 
-func readObj(reader lineReader, logger func(msg string), options *objParserOptions) (*Obj, error) {
+func readObj(reader lineReader, options *ObjParserOptions) (*Obj, error) {
 
 	if options == nil {
-		options = &objParserOptions{}
+		options = &ObjParserOptions{LogStats: true, Logger: func(msg string) { fmt.Printf(msg) }}
 	}
 
 	p := &objParser{indexTable: make(map[string]int)}
 	o := &Obj{}
 
 	// 1. vertex-only parsing
-	if err, fatal := readLines(p, o, reader, logger); err != nil {
+	if err, fatal := readLines(p, o, reader, options); err != nil {
 		if fatal {
 			return o, err
 		}
 	}
 
 	// 2. full parsing
-	if err, fatal := scanLines(p, o, reader, logger); err != nil {
+	if err, fatal := scanLines(p, o, reader, options); err != nil {
 		if fatal {
 			return o, err
 		}
@@ -136,7 +154,7 @@ func readObj(reader lineReader, logger func(msg string), options *objParserOptio
 		case g.IndexCount < 0:
 			continue // discard empty bogus group created internally by parser
 		case g.IndexCount < 3:
-			logger(fmt.Sprintf("readObj: WRONG GROUP SIZE group=%s size=%d < 3", g.Name, g.IndexCount))
+			options.log(fmt.Sprintf("readObj: WRONG GROUP SIZE group=%s size=%d < 3", g.Name, g.IndexCount))
 		}
 		tmp = append(tmp, g)
 	}
@@ -157,23 +175,23 @@ func readObj(reader lineReader, logger func(msg string), options *objParserOptio
 		o.StrideSize += 3 * 4 // add (nx,ny,nz) = 3 x 4-byte floats
 	}
 
-	if logger != nil && options.logStats {
-		logger(fmt.Sprintf("readObj: INPUT lines=%v vertLines=%v textLines=%v normLines=%v faceLines=%v triangles=%v",
+	if options.LogStats {
+		options.log(fmt.Sprintf("readObj: INPUT lines=%v vertLines=%v textLines=%v normLines=%v faceLines=%v triangles=%v",
 			p.lineCount, p.vertLines, p.textLines, p.normLines, p.faceLines, p.triangles))
 
-		logger(fmt.Sprintf("readObj: STATS numberOfElements=%v indicesArraySize=%v", p.indexCount, len(o.Indices)))
+		options.log(fmt.Sprintf("readObj: STATS numberOfElements=%v indicesArraySize=%v", p.indexCount, len(o.Indices)))
 
-		logger(fmt.Sprintf("readObj: STATS bigIndexFound=%v groups=%v", o.BigIndexFound, len(o.Groups)))
+		options.log(fmt.Sprintf("readObj: STATS bigIndexFound=%v groups=%v", o.BigIndexFound, len(o.Groups)))
 
-		logger(fmt.Sprintf("readObj: STATS textureCoordFound=%v normalCoordFound=%v", o.TextCoordFound, o.NormCoordFound))
+		options.log(fmt.Sprintf("readObj: STATS textureCoordFound=%v normalCoordFound=%v", o.TextCoordFound, o.NormCoordFound))
 
-		logger(fmt.Sprintf("readObj: STATS stride=%v textureOffset=%v normalOffset=%v", o.StrideSize, o.StrideOffsetTexture, o.StrideOffsetNormal))
+		options.log(fmt.Sprintf("readObj: STATS stride=%v textureOffset=%v normalOffset=%v", o.StrideSize, o.StrideOffsetTexture, o.StrideOffsetNormal))
 	}
 
 	return o, nil
 }
 
-func readLines(p *objParser, o *Obj, reader lineReader, logger func(msg string)) (error, bool) {
+func readLines(p *objParser, o *Obj, reader lineReader, options *ObjParserOptions) (error, bool) {
 	p.lineCount = 0
 
 	for {
@@ -182,9 +200,7 @@ func readLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 		if err == io.EOF {
 			// parse last line
 			if e, fatal := parseLineVertex(p, o, line); e != nil {
-				if logger != nil {
-					logger(fmt.Sprintf("readLines: %v", e))
-				}
+				options.log(fmt.Sprintf("readLines: %v", e))
 				return e, fatal
 			}
 			break // EOF
@@ -196,9 +212,7 @@ func readLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 		}
 
 		if e, fatal := parseLineVertex(p, o, line); e != nil {
-			if logger != nil {
-				logger(fmt.Sprintf("readLines: %v", e))
-			}
+			options.log(fmt.Sprintf("readLines: %v", e))
 			if fatal {
 				return e, fatal
 			}
@@ -248,7 +262,7 @@ func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 	return nil, NON_FATAL
 }
 
-func scanLines(p *objParser, o *Obj, reader lineReader, logger func(msg string)) (error, bool) {
+func scanLines(p *objParser, o *Obj, reader lineReader, options *ObjParserOptions) (error, bool) {
 
 	p.currGroup = o.newGroup("", "", 0, false)
 
@@ -257,10 +271,8 @@ func scanLines(p *objParser, o *Obj, reader lineReader, logger func(msg string))
 	for _, line := range p.lineBuf {
 		p.lineCount++
 
-		if e, fatal := parseLine(p, o, line, logger); e != nil {
-			if logger != nil {
-				logger(fmt.Sprintf("scanLines: %v", e))
-			}
+		if e, fatal := parseLine(p, o, line, options); e != nil {
+			options.log(fmt.Sprintf("scanLines: %v", e))
 			if fatal {
 				return e, fatal
 			}
@@ -382,7 +394,7 @@ func smoothIsTrue(s string) (bool, error) {
 	return strconv.ParseBool(s)
 }
 
-func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (error, bool) {
+func parseLine(p *objParser, o *Obj, line string, options *ObjParserOptions) (error, bool) {
 
 	switch {
 	case line == "" || line[0] == '#':
@@ -420,8 +432,8 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		}
 	case strings.HasPrefix(line, "mtllib "):
 		mtllib := line[7:]
-		if o.Mtllib != "" && logger != nil {
-			logger(fmt.Sprintf("parseLine: line=%d mtllib redefinition old=%s new=%s", p.lineCount, o.Mtllib, mtllib))
+		if o.Mtllib != "" {
+			options.log(fmt.Sprintf("parseLine: line=%d mtllib redefinition old=%s new=%s", p.lineCount, o.Mtllib, mtllib))
 		}
 		o.Mtllib = mtllib
 	case strings.HasPrefix(line, "vt "):
@@ -438,7 +450,7 @@ func parseLine(p *objParser, o *Obj, line string, logger func(msg string)) (erro
 		}
 		if size > 2 {
 			if w := t[2]; !util.CloseToZero(w) {
-				logger(fmt.Sprintf("parseLine: line=%d non-zero third texture coordinate w=%f", p.lineCount, w))
+				options.log(fmt.Sprintf("parseLine: line=%d non-zero third texture coordinate w=%f", p.lineCount, w))
 			}
 		}
 		p.textCoord = append(p.textCoord, float32(t[0]), float32(t[1]))

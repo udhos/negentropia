@@ -33,8 +33,9 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		return nil
 	}
 
+	opt := &obj.ObjParserOptions{Logger: func(msg string) { log(fmt.Sprintf("newModel: %s", msg)) }}
 	var o *obj.Obj
-	if o, err = obj.NewObjFromBuf(buf, func(msg string) { log(fmt.Sprintf("newModel: %s", msg)) }, nil); err != nil {
+	if o, err = obj.NewObjFromBuf(buf, opt); err != nil {
 		log(fmt.Sprintf("newModel: parse error objURL=%s error: %v", objURL, err))
 		return nil
 	}
@@ -55,7 +56,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		log(fmt.Sprintf("newModel: objURL=%s group=%s mtllib=%s usemtl=%s load texture=%s", objURL, g.Name, o.Mtllib, g.Usemtl, mat.Map_Kd))
 	}
 
-	err = obj.ReadMaterialLib(buf, materialLib)
+	err = obj.ReadMaterialLibFromBuf(buf, materialLib, opt)
 
 	log(fmt.Sprintf("newModel: objURL=%s FIXME load OBJ textures", objURL))
 

@@ -214,8 +214,9 @@ func loadModelRadius(model, objURL string) float64 {
 		log.Printf("loadModelRadius: fetch model=%v objURL=%v error: %v", model, objURL, err)
 		return 1.0
 	}
+	opt := &obj.ObjParserOptions{Logger: func(msg string) { log.Printf("loadModelRadius: %s", msg) }, LogStats: true}
 	var o *obj.Obj
-	if o, err = obj.NewObjFromBuf(buf, func(msg string) { log.Printf("loadModelRadius: %s", msg) }, nil); err != nil {
+	if o, err = obj.NewObjFromBuf(buf, opt); err != nil {
 		log.Printf("loadModelRadius: parse model=%v objURL=%v error: %v", model, objURL, err)
 		return 1.0
 	}
