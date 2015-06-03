@@ -10,6 +10,7 @@ import (
 type model struct {
 	modelName    string
 	instanceList []*instance
+	mesh         *obj.Obj
 	ready        bool // mesh and textures loaded
 }
 
@@ -50,9 +51,6 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 	var buf []byte
 	var err error
-
-	// push new model into shader.modelList
-	s.addModel(mod)
 
 	if buf, err = httpFetch(objURL); err != nil {
 		log(fmt.Sprintf("newModel: fetch model from objURL=%s error: %v", objURL, err))
@@ -111,7 +109,11 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		log(fmt.Sprintf("newModel: objURL=%s group=%s mtllib=%s usemtl=%s load texture=%s", objURL, g.Name, o.Mtllib, g.Usemtl, mat.Map_Kd))
 	}
 
+	mod.mesh = o
 	mod.ready = false // FIXME when all model data is loaded (mesh, textures)
+
+	// push new model into shader.modelList
+	s.addModel(mod)
 
 	return mod
 }
