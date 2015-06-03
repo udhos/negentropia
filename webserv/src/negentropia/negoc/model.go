@@ -14,14 +14,16 @@ type model struct {
 }
 
 func fetchMaterialLib(materialLib map[string]obj.Material, libURL string) error {
-	var buf []byte
+	//var buf []byte
 
-	log("fetchMaterialLib: FIXME WRITEME")
+	buf, err := httpFetch(libURL)
+	if err != nil {
+		return fmt.Errorf("fetchMaterialLib: URL=%s failure: %v", libURL, err)
+	}
 
 	opt := &obj.ObjParserOptions{Logger: func(msg string) { log(fmt.Sprintf("fetchMaterialLib: %s", msg)) }}
 
 	var lib map[string]obj.Material
-	var err error
 	if lib, err = obj.ReadMaterialLibFromBuf(buf, opt); err != nil {
 		return err
 	}
@@ -66,6 +68,8 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 	log(fmt.Sprintf("newModel: objURL=%s elements=%d bigIndex=%v texCoord=%v normCoord=%v", objURL, o.NumberOfElements(), o.BigIndexFound, o.TextCoordFound, o.NormCoordFound))
 
+	libURL := fmt.Sprintf("%s/%s", assetPath.mtl, o.Mtllib)
+
 	for _, g := range o.Groups {
 		log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s consider material=%s", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
 
@@ -76,13 +80,13 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 			log(fmt.Sprintf("newModel: objURL=%s group=%s load mtllib=%s", objURL, g.Name, o.Mtllib))
 
-			if libErr := fetchMaterialLib(materialLib, o.Mtllib); libErr == nil {
-				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s LIB FAILURE: %v", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl, libErr))
+			if libErr := fetchMaterialLib(materialLib, libURL); libErr == nil {
+				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s LIB FAILURE: %v", objURL, g.Name, g.IndexCount, libURL, g.Usemtl, libErr))
 				continue // ugh
 			}
 
 			if mat, matOk = materialLib[g.Usemtl]; !matOk {
-				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s MISSING material=%s", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
+				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s MISSING material=%s", objURL, g.Name, g.IndexCount, libURL, g.Usemtl))
 				continue // ugh
 			}
 		}

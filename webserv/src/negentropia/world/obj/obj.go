@@ -32,10 +32,15 @@ func ReadMaterialLibFromReader(rd *bufio.Reader, options *ObjParserOptions) (map
 	return readLib(rd, options)
 }
 
+type libParser struct {
+	currMaterial *Material
+}
+
 func readLib(reader lineReader, options *ObjParserOptions) (map[string]Material, error) {
 
 	lineCount := 0
 
+	parser := &libParser{}
 	lib := map[string]Material{}
 
 	for {
@@ -43,7 +48,7 @@ func readLib(reader lineReader, options *ObjParserOptions) (map[string]Material,
 		line, err := reader.ReadString('\n')
 		if err == io.EOF {
 			// parse last line
-			if e, _ := parseLibLine(lib, line, lineCount); e != nil {
+			if e, _ := parseLibLine(parser, lib, line, lineCount); e != nil {
 				options.log(fmt.Sprintf("readLib: %v", e))
 				return nil, e
 			}
@@ -55,7 +60,7 @@ func readLib(reader lineReader, options *ObjParserOptions) (map[string]Material,
 			return nil, fmt.Errorf("readLib: error: %v", err)
 		}
 
-		if e, fatal := parseLibLine(lib, line, lineCount); e != nil {
+		if e, fatal := parseLibLine(parser, lib, line, lineCount); e != nil {
 			options.log(fmt.Sprintf("readLib: %v", e))
 			if fatal {
 				return nil, e
@@ -66,12 +71,57 @@ func readLib(reader lineReader, options *ObjParserOptions) (map[string]Material,
 	return lib, nil
 }
 
-func parseLibLine(tmpLib map[string]Material, rawLine string, lineCount int) (error, bool) {
+func parseLibLine(p *libParser, lib map[string]Material, rawLine string, lineCount int) (error, bool) {
 	line := strings.TrimSpace(rawLine)
 
 	switch {
 	case line == "" || line[0] == '#':
-	case strings.HasPrefix(line, "s "):
+	case strings.HasPrefix(line, "newmtl "):
+
+		newmtl := line[7:]
+		var mat Material
+		var ok bool
+		if mat, ok = lib[newmtl]; !ok {
+			// create new material
+			mat := Material{Name: newmtl}
+			lib[newmtl] = mat
+		}
+		p.currMaterial = &mat
+
+	case strings.HasPrefix(line, "Kd "):
+		Kd := line[3:]
+
+		if p.currMaterial == nil {
+			return fmt.Errorf("parseLibLine: %d undefined material for Kd=%s [%s]", lineCount, Kd, line), NON_FATAL
+		}
+
+		color, err := parser.ParseFloatVector3Space(Kd)
+		if err != nil {
+			return fmt.Errorf("parseLibLine: %d parsing error for Kd=%s [%s]: %v", lineCount, Kd, line, err), NON_FATAL
+		}
+
+		p.currMaterial.Kd[0] = float32(color[0])
+		p.currMaterial.Kd[1] = float32(color[1])
+		p.currMaterial.Kd[2] = float32(color[2])
+
+	case strings.HasPrefix(line, "map_Kd "):
+		map_Kd := line[7:]
+
+		if p.currMaterial == nil {
+			return fmt.Errorf("parseLibLine: %d undefined material for map_Kd=%s [%s]", lineCount, map_Kd, line), NON_FATAL
+		}
+
+		p.currMaterial.Map_Kd = map_Kd
+
+	case strings.HasPrefix(line, "map_Ka "):
+	case strings.HasPrefix(line, "map_d "):
+	case strings.HasPrefix(line, "map_Bump "):
+	case strings.HasPrefix(line, "Ns "):
+	case strings.HasPrefix(line, "Ka "):
+	case strings.HasPrefix(line, "Ks "):
+	case strings.HasPrefix(line, "Ni "):
+	case strings.HasPrefix(line, "d "):
+	case strings.HasPrefix(line, "illum "):
 	default:
 		return fmt.Errorf("parseLibLine %v: [%v]: unexpected", lineCount, line), NON_FATAL
 	}

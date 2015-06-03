@@ -161,6 +161,8 @@ func main() {
 		return
 	}
 
+	gameInfo.materialLib = map[string]obj.Material{}
+
 	vertShaderURL := "/shader/simple_vs.txt"
 	fragShaderURL := "/shader/simple_fs.txt"
 	prog := newShaderProgram(gl, vertShaderURL, fragShaderURL)
