@@ -24,24 +24,32 @@ type Material struct {
 	Kd     [3]float32
 }
 
-func ReadMaterialLibFromBuf(buf []byte, options *ObjParserOptions) (map[string]Material, error) {
+type MaterialLib struct {
+	Lib map[string]*Material
+}
+
+func ReadMaterialLibFromBuf(buf []byte, options *ObjParserOptions) (MaterialLib, error) {
 	return readLib(bytes.NewBuffer(buf), options)
 }
 
-func ReadMaterialLibFromReader(rd *bufio.Reader, options *ObjParserOptions) (map[string]Material, error) {
+func ReadMaterialLibFromReader(rd *bufio.Reader, options *ObjParserOptions) (MaterialLib, error) {
 	return readLib(rd, options)
+}
+
+func NewMaterialLib() MaterialLib {
+	return MaterialLib{Lib: map[string]*Material{}}
 }
 
 type libParser struct {
 	currMaterial *Material
 }
 
-func readLib(reader lineReader, options *ObjParserOptions) (map[string]Material, error) {
+func readLib(reader lineReader, options *ObjParserOptions) (MaterialLib, error) {
 
 	lineCount := 0
 
 	parser := &libParser{}
-	lib := map[string]Material{}
+	lib := NewMaterialLib()
 
 	for {
 		lineCount++
@@ -50,20 +58,20 @@ func readLib(reader lineReader, options *ObjParserOptions) (map[string]Material,
 			// parse last line
 			if e, _ := parseLibLine(parser, lib, line, lineCount); e != nil {
 				options.log(fmt.Sprintf("readLib: %v", e))
-				return nil, e
+				return MaterialLib{}, e
 			}
 			break // EOF
 		}
 
 		if err != nil {
 			// unexpected IO error
-			return nil, fmt.Errorf("readLib: error: %v", err)
+			return MaterialLib{}, fmt.Errorf("readLib: error: %v", err)
 		}
 
 		if e, fatal := parseLibLine(parser, lib, line, lineCount); e != nil {
 			options.log(fmt.Sprintf("readLib: %v", e))
 			if fatal {
-				return nil, e
+				return MaterialLib{}, e
 			}
 		}
 	}
@@ -71,7 +79,7 @@ func readLib(reader lineReader, options *ObjParserOptions) (map[string]Material,
 	return lib, nil
 }
 
-func parseLibLine(p *libParser, lib map[string]Material, rawLine string, lineCount int) (error, bool) {
+func parseLibLine(p *libParser, lib MaterialLib, rawLine string, lineCount int) (error, bool) {
 	line := strings.TrimSpace(rawLine)
 
 	switch {
@@ -79,14 +87,14 @@ func parseLibLine(p *libParser, lib map[string]Material, rawLine string, lineCou
 	case strings.HasPrefix(line, "newmtl "):
 
 		newmtl := line[7:]
-		var mat Material
+		var mat *Material
 		var ok bool
-		if mat, ok = lib[newmtl]; !ok {
+		if mat, ok = lib.Lib[newmtl]; !ok {
 			// create new material
-			mat := Material{Name: newmtl}
-			lib[newmtl] = mat
+			mat = &Material{Name: newmtl}
+			lib.Lib[newmtl] = mat
 		}
-		p.currMaterial = &mat
+		p.currMaterial = mat
 
 	case strings.HasPrefix(line, "Kd "):
 		Kd := line[3:]

@@ -134,7 +134,7 @@ type gameState struct {
 	shaderList         []shader
 	textureTable       map[string]texture
 	assetPath          asset
-	materialLib        map[string]obj.Material
+	materialLib        obj.MaterialLib
 }
 
 var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
@@ -161,7 +161,7 @@ func main() {
 		return
 	}
 
-	gameInfo.materialLib = map[string]obj.Material{}
+	gameInfo.materialLib = obj.NewMaterialLib()
 
 	vertShaderURL := "/shader/simple_vs.txt"
 	fragShaderURL := "/shader/simple_fs.txt"

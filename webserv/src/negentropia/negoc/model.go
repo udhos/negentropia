@@ -13,7 +13,7 @@ type model struct {
 	ready        bool // mesh and textures loaded
 }
 
-func fetchMaterialLib(materialLib map[string]obj.Material, libURL string) error {
+func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
 	//var buf []byte
 
 	buf, err := httpFetch(libURL)
@@ -23,17 +23,17 @@ func fetchMaterialLib(materialLib map[string]obj.Material, libURL string) error 
 
 	opt := &obj.ObjParserOptions{Logger: func(msg string) { log(fmt.Sprintf("fetchMaterialLib: %s", msg)) }}
 
-	var lib map[string]obj.Material
+	var lib obj.MaterialLib
 	if lib, err = obj.ReadMaterialLibFromBuf(buf, opt); err != nil {
 		return err
 	}
 
 	// save new material into lib
-	for k, v := range lib {
-		if _, found := materialLib[k]; found {
+	for k, v := range lib.Lib {
+		if _, found := materialLib.Lib[k]; found {
 			log(fmt.Sprintf("fetchMaterialLib: mtllib=%s REWRITING material=%s", libURL, k))
 		}
-		materialLib[k] = v
+		materialLib.Lib[k] = v
 	}
 
 	return nil
@@ -41,7 +41,7 @@ func fetchMaterialLib(materialLib map[string]obj.Material, libURL string) error 
 
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	front, up []float64, assetPath asset, textureTable map[string]texture,
-	repeatTexture bool, materialLib map[string]obj.Material) *model {
+	repeatTexture bool, materialLib obj.MaterialLib) *model {
 
 	// allocate new model
 	mod := &model{modelName: modelName, ready: false}
@@ -84,9 +84,9 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 			continue // skip group missing material name
 		}
 
-		var mat obj.Material
+		var mat *obj.Material
 		var matOk bool
-		if mat, matOk = materialLib[g.Usemtl]; !matOk {
+		if mat, matOk = materialLib.Lib[g.Usemtl]; !matOk {
 			// material not found -- fetch lib
 
 			//log(fmt.Sprintf("newModel: objURL=%s group=%s load mtllib=%s", objURL, g.Name, o.Mtllib))
@@ -98,7 +98,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s LIB LOADED for material=%s", objURL, g.Name, g.IndexCount, libURL, g.Usemtl))
 
-			if mat, matOk = materialLib[g.Usemtl]; !matOk {
+			if mat, matOk = materialLib.Lib[g.Usemtl]; !matOk {
 				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s MISSING material=%s", objURL, g.Name, g.IndexCount, libURL, g.Usemtl))
 				continue // ugh
 			}
