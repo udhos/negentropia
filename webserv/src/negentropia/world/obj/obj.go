@@ -245,7 +245,7 @@ func readObj(reader lineReader, options *ObjParserOptions) (*Obj, error) {
 		case g.IndexCount < 0:
 			continue // discard empty bogus group created internally by parser
 		case g.IndexCount < 3:
-			options.log(fmt.Sprintf("readObj: WRONG GROUP SIZE group=%s size=%d < 3", g.Name, g.IndexCount))
+			options.log(fmt.Sprintf("readObj: BAD GROUP SIZE group=%s size=%d < 3", g.Name, g.IndexCount))
 		}
 		tmp = append(tmp, g)
 	}

@@ -70,31 +70,46 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 	libURL := fmt.Sprintf("%s/%s", assetPath.mtl, o.Mtllib)
 
+	// Load textures for groups
 	for _, g := range o.Groups {
-		log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s consider material=%s", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
+		//log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s consider material=%s", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
+
+		if g.IndexCount < 3 {
+			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s bad index list size", objURL, g.Name, g.IndexCount, o.Mtllib))
+			continue // skip group missing index list
+		}
+
+		if g.Usemtl == "" {
+			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s missing material name", objURL, g.Name, g.IndexCount, o.Mtllib))
+			continue // skip group missing material name
+		}
 
 		var mat obj.Material
 		var matOk bool
 		if mat, matOk = materialLib[g.Usemtl]; !matOk {
 			// material not found -- fetch lib
 
-			log(fmt.Sprintf("newModel: objURL=%s group=%s load mtllib=%s", objURL, g.Name, o.Mtllib))
+			//log(fmt.Sprintf("newModel: objURL=%s group=%s load mtllib=%s", objURL, g.Name, o.Mtllib))
 
-			if libErr := fetchMaterialLib(materialLib, libURL); libErr == nil {
+			if libErr := fetchMaterialLib(materialLib, libURL); libErr != nil {
 				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s LIB FAILURE: %v", objURL, g.Name, g.IndexCount, libURL, g.Usemtl, libErr))
 				continue // ugh
 			}
+
+			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s LIB LOADED for material=%s", objURL, g.Name, g.IndexCount, libURL, g.Usemtl))
 
 			if mat, matOk = materialLib[g.Usemtl]; !matOk {
 				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s MISSING material=%s", objURL, g.Name, g.IndexCount, libURL, g.Usemtl))
 				continue // ugh
 			}
+
+			//log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s MATERIAL LOADED", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
 		}
+
+		//log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s MATERIAL OK", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
 
 		log(fmt.Sprintf("newModel: objURL=%s group=%s mtllib=%s usemtl=%s load texture=%s", objURL, g.Name, o.Mtllib, g.Usemtl, mat.Map_Kd))
 	}
-
-	log(fmt.Sprintf("newModel: objURL=%s FIXME load OBJ textures", objURL))
 
 	mod.ready = false // FIXME when all model data is loaded (mesh, textures)
 
