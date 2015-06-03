@@ -11,6 +11,7 @@ type model struct {
 	modelName    string
 	instanceList []*instance
 	mesh         *obj.Obj
+	textures     []*texture
 	ready        bool // mesh and textures loaded
 }
 
@@ -40,8 +41,35 @@ func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
 	return nil
 }
 
+func addGroupTexture(mod *model, textureTable map[string]*texture, groupListSize, i int, textureName, textureURL string) error {
+
+	log(fmt.Sprintf("addGroupTexture: index=%d texture=%s", i, textureURL))
+
+	texSize := len(mod.textures)
+	if i != texSize {
+		err := fmt.Errorf("addGroupTexture: model=%s index=%d texture=%s currentTextureListSize=%d not last texture index", mod.modelName, i, textureURL, texSize)
+		log(fmt.Sprintf("%s", err))
+		return err
+	}
+
+	if i >= groupListSize {
+		err := fmt.Errorf("addGroupTexture: model=%s index=%d texture=%s currentGroupListSize=%d texture index beyond last group", mod.modelName, i, textureURL, groupListSize)
+		log(fmt.Sprintf("%s", err))
+		return err
+	}
+
+	var t *texture
+	if textureName != "" {
+		// load texture
+		t = &texture{}
+	}
+	mod.textures = append(mod.textures, t)
+
+	return nil
+}
+
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
-	front, up []float64, assetPath asset, textureTable map[string]texture,
+	front, up []float64, assetPath asset, textureTable map[string]*texture,
 	repeatTexture bool, materialLib obj.MaterialLib) *model {
 
 	// allocate new model
@@ -68,17 +96,25 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 	libURL := fmt.Sprintf("%s/%s", assetPath.mtl, o.Mtllib)
 
+	groupListSize := len(o.Groups)
+
 	// Load textures for groups
-	for _, g := range o.Groups {
+	for i, g := range o.Groups {
 		//log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s consider material=%s", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
 
 		if g.IndexCount < 3 {
 			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s bad index list size", objURL, g.Name, g.IndexCount, o.Mtllib))
+			if addGroupTexture(mod, textureTable, groupListSize, i, "", "") != nil {
+				return nil
+			}
 			continue // skip group missing index list
 		}
 
 		if g.Usemtl == "" {
 			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s missing material name", objURL, g.Name, g.IndexCount, o.Mtllib))
+			if addGroupTexture(mod, textureTable, groupListSize, i, "", "") != nil {
+				return nil
+			}
 			continue // skip group missing material name
 		}
 
@@ -91,6 +127,9 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 			if libErr := fetchMaterialLib(materialLib, libURL); libErr != nil {
 				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s LIB FAILURE: %v", objURL, g.Name, g.IndexCount, libURL, g.Usemtl, libErr))
+				if addGroupTexture(mod, textureTable, groupListSize, i, "", "") != nil {
+					return nil
+				}
 				continue // ugh
 			}
 
@@ -98,6 +137,9 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 			if mat, matOk = materialLib.Lib[g.Usemtl]; !matOk {
 				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s MISSING material=%s", objURL, g.Name, g.IndexCount, libURL, g.Usemtl))
+				if addGroupTexture(mod, textureTable, groupListSize, i, "", "") != nil {
+					return nil
+				}
 				continue // ugh
 			}
 
@@ -106,7 +148,18 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 		//log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s MATERIAL OK", objURL, g.Name, g.IndexCount, o.Mtllib, g.Usemtl))
 
-		log(fmt.Sprintf("newModel: objURL=%s group=%s mtllib=%s usemtl=%s load texture=%s", objURL, g.Name, o.Mtllib, g.Usemtl, mat.Map_Kd))
+		//log(fmt.Sprintf("newModel: objURL=%s group=%s mtllib=%s usemtl=%s load texture=%s", objURL, g.Name, o.Mtllib, g.Usemtl, mat.Map_Kd))
+
+		textureURL := fmt.Sprintf("%s/%s", assetPath.texture, mat.Map_Kd)
+
+		if addGroupTexture(mod, textureTable, groupListSize, i, mat.Map_Kd, textureURL) != nil {
+			return nil
+		}
+	}
+
+	if len(o.Groups) != len(mod.textures) {
+		log(fmt.Sprintf("newModel: objURL=%s BAD group/texture count: groups=%d textures=%d", objURL, len(o.Groups), len(mod.textures)))
+		return nil
 	}
 
 	mod.mesh = o

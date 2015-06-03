@@ -132,7 +132,7 @@ type gameState struct {
 	canvasAspect       float64
 	cam                camera
 	shaderList         []shader
-	textureTable       map[string]texture
+	textureTable       map[string]*texture
 	assetPath          asset
 	materialLib        obj.MaterialLib
 }
@@ -161,6 +161,7 @@ func main() {
 		return
 	}
 
+	gameInfo.textureTable = map[string]*texture{}
 	gameInfo.materialLib = obj.NewMaterialLib()
 
 	vertShaderURL := "/shader/simple_vs.txt"
