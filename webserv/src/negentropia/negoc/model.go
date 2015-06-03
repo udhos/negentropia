@@ -60,8 +60,15 @@ func addGroupTexture(mod *model, textureTable map[string]*texture, groupListSize
 
 	var t *texture
 	if textureName != "" {
-		// load texture
-		t = &texture{}
+		var ok bool
+		if t, ok = textureTable[textureURL]; !ok {
+			// texture not found - load it
+			var err error
+			if t, err = fetchTexture(textureURL); err != nil {
+				log(fmt.Sprintf("addGroupTexture: %s", err)) // warning only
+			}
+			textureTable[textureURL] = t
+		}
 	}
 	mod.textures = append(mod.textures, t)
 
