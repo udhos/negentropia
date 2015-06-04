@@ -41,8 +41,21 @@ func (i *instance) name() string {
 	return i.instanceName
 }
 
-func (i *instance) draw(gameInfo *gameState) {
-	// draw instance
+func (i *instance) draw(gameInfo *gameState, mod *model) {
+	// scan model groups
+	for i, g := range mod.mesh.Groups {
+		t := mod.textures[i]
+		if t.texture == nil {
+			continue // texture not ready
+		}
+
+		// draw group here
+
+		if g.IndexBegin > g.IndexCount {
+			// bogus usage of g to make go compiler happy
+		}
+	}
+
 }
 
 type simpleTexturizer struct {
@@ -98,9 +111,7 @@ func (s *simpleTexturizer) draw(gameInfo *gameState) {
 
 	// draw every model
 	for _, m := range s.modelList {
-		if m.ready {
-			m.draw(gameInfo)
-		}
+		m.draw(gameInfo)
 	}
 }
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
-	"honnef.co/go/js/dom"
+	//"honnef.co/go/js/dom"
 	"math"
 )
 
@@ -13,8 +13,10 @@ func initGL() *webgl.Context {
 	document := js.Global.Get("document")
 	//body := document.Get("body")
 
-	el := dom.GetWindow().Document().QuerySelector("#canvasbox")
-	log(fmt.Sprintf("initGL: #canvasbox el=%v", el))
+	//el := dom.GetWindow().Document().QuerySelector("#canvasbox")
+	canvasid := "#canvasbox"
+	el := docQuery(canvasid)
+	log(fmt.Sprintf("initGL: %s el=%v", canvasid, el))
 	canvasbox := el.Underlying()
 
 	canvas := document.Call("createElement", "canvas")
