@@ -5,6 +5,7 @@ import (
 	//"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	"negentropia/world/obj"
+	"sort"
 )
 
 type model struct {
@@ -72,6 +73,40 @@ func addGroupTexture(mod *model, gl *webgl.Context, textureTable map[string]*tex
 	mod.textures = append(mod.textures, t)
 
 	return nil
+}
+
+type GroupByTextureName struct {
+	m *model
+}
+
+func textureNameLess(t1, t2 *texture) bool {
+	if t1 == nil {
+		return t2 != nil
+	}
+	if t2 == nil {
+		return false
+	}
+	return t1.URL < t2.URL
+}
+
+func (m GroupByTextureName) Len() int { return len(m.m.textures) }
+func (m GroupByTextureName) Swap(i, j int) {
+	g := m.m.mesh.Groups
+	t := m.m.textures
+	g[i], g[j], t[i], t[j] = g[j], g[i], t[j], t[i]
+}
+func (m GroupByTextureName) Less(i, j int) bool {
+	return textureNameLess(m.m.textures[i], m.m.textures[j])
+}
+
+func showGroups(m *model) {
+	for i, g := range m.mesh.Groups {
+		var textureURL string
+		if m.textures[i] != nil {
+			textureURL = m.textures[i].URL
+		}
+		log(fmt.Sprintf("showGroups: %d group=%s texture=%s", i, g.Name, textureURL))
+	}
 }
 
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
@@ -169,6 +204,10 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	}
 
 	mod.mesh = o
+
+	//showGroups(mod)
+	sort.Sort(GroupByTextureName(GroupByTextureName{mod}))
+	//showGroups(mod)
 
 	// push new model into shader.modelList
 	s.addModel(mod)

@@ -9,6 +9,7 @@ import (
 )
 
 type texture struct {
+	URL     string
 	texture *js.Object
 }
 
@@ -29,7 +30,7 @@ func fetchTexture(gl *webgl.Context, textureURL string) (*texture, error) {
 
 	image := newImage()
 
-	t := &texture{}
+	t := &texture{URL: textureURL}
 
 	image.Set("onload", func() {
 		go onLoad(gl, t, textureURL)
