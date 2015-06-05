@@ -142,7 +142,7 @@ func parseLibLine(p *libParser, lib MaterialLib, rawLine string, lineCount int) 
 
 type Group struct {
 	Name       string
-	Smooth     bool
+	Smooth     int
 	Usemtl     string
 	IndexBegin int
 	IndexCount int
@@ -192,7 +192,7 @@ func (opt *ObjParserOptions) log(msg string) {
 	opt.Logger(msg)
 }
 
-func (o *Obj) newGroup(name, usemtl string, begin int, smooth bool) *Group {
+func (o *Obj) newGroup(name, usemtl string, begin int, smooth int) *Group {
 	gr := &Group{Name: name, Usemtl: usemtl, IndexBegin: begin, Smooth: smooth}
 	o.Groups = append(o.Groups, gr)
 	return gr
@@ -366,7 +366,7 @@ func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 
 func scanLines(p *objParser, o *Obj, reader lineReader, options *ObjParserOptions) (error, bool) {
 
-	p.currGroup = o.newGroup("", "", 0, false)
+	p.currGroup = o.newGroup("", "", 0, 0)
 
 	p.lineCount = 0
 
@@ -482,18 +482,22 @@ func addVertex(p *objParser, o *Obj, index string) error {
 	return nil
 }
 
-func smoothIsTrue(s string) (bool, error) {
+func smoothGroup(s string) (int, error) {
 	s = strings.ToLower(strings.TrimSpace(s))
 
-	if s == "on" {
-		return true, nil
-	}
+	/*
+		if s == "on" {
+			return true, nil
+		}
+	*/
 
 	if s == "off" {
-		return false, nil
+		return 0, nil
 	}
 
-	return strconv.ParseBool(s)
+	i, err := strconv.ParseInt(s, 0, 32)
+
+	return int(i), err
 }
 
 func parseLine(p *objParser, o *Obj, line string, options *ObjParserOptions) (error, bool) {
@@ -502,7 +506,7 @@ func parseLine(p *objParser, o *Obj, line string, options *ObjParserOptions) (er
 	case line == "" || line[0] == '#':
 	case strings.HasPrefix(line, "s "):
 		smooth := line[2:]
-		if s, err := smoothIsTrue(smooth); err == nil {
+		if s, err := smoothGroup(smooth); err == nil {
 			if p.currGroup.Smooth != s {
 				// create new group
 				p.currGroup = o.newGroup(p.currGroup.Name, p.currGroup.Usemtl, len(o.Indices), s)
