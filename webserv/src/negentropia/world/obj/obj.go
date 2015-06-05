@@ -126,10 +126,13 @@ func parseLibLine(p *libParser, lib MaterialLib, rawLine string, lineCount int) 
 	case strings.HasPrefix(line, "map_Bump "):
 	case strings.HasPrefix(line, "Ns "):
 	case strings.HasPrefix(line, "Ka "):
+	case strings.HasPrefix(line, "Ke "):
 	case strings.HasPrefix(line, "Ks "):
 	case strings.HasPrefix(line, "Ni "):
 	case strings.HasPrefix(line, "d "):
 	case strings.HasPrefix(line, "illum "):
+	case strings.HasPrefix(line, "Tf "):
+	case strings.HasPrefix(line, "Tr "):
 	default:
 		return fmt.Errorf("parseLibLine %v: [%v]: unexpected", lineCount, line), NON_FATAL
 	}
@@ -155,7 +158,7 @@ type Obj struct {
 	TextCoordFound bool // texture coord
 	NormCoordFound bool // normal coord
 
-	StrideSize           int // (px,py,pz),(tu,tv),(nx,ny,nz) = 8 x 4-byte floats floats = 32 bytes max
+	StrideSize           int // (px,py,pz),(tu,tv),(nx,ny,nz) = 8 x 4-byte floats = 32 bytes max
 	StrideOffsetPosition int // 0
 	StrideOffsetTexture  int // 3 x 4-byte floats
 	StrideOffsetNormal   int // 5 x 4-byte floats
