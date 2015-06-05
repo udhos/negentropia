@@ -31,6 +31,17 @@ func resetCamera(cam *camera) {
 	}
 }
 
+var camUpRad = 0.0
+
+func incRad(r, delta float64) float64 {
+	const pi2 = 2 * math.Pi
+	r += delta
+	if r > pi2 {
+		r -= pi2
+	}
+	return r
+}
+
 func loadCameraViewMatrixInto(cam *camera, V *Matrix4) {
 
 	delta := 0.0 // math.Pi / 5

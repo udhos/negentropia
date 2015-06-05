@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
-	"math"
+	//"math"
 	"negentropia/world/obj"
 	"time"
 )
@@ -14,6 +14,7 @@ func log(msg string) {
 	println(m)
 }
 
+/*
 var scale = 1.0
 var rad = 0.0
 var camUpRad = 0.0
@@ -28,6 +29,7 @@ func incRad(r, delta float64) float64 {
 	}
 	return r
 }
+*/
 
 const VERTEX_POSITION_ITEM_SIZE = 3 // x,y,z
 
