@@ -33,31 +33,6 @@ type shader interface {
 	addModel(model *model)
 }
 
-type instance struct {
-	instanceName string
-}
-
-func (i *instance) name() string {
-	return i.instanceName
-}
-
-func (i *instance) draw(gameInfo *gameState, mod *model) {
-	// scan model groups
-	for i, g := range mod.mesh.Groups {
-		t := mod.textures[i]
-		if t.texture == nil {
-			continue // texture not ready
-		}
-
-		// draw group here
-
-		if g.IndexBegin > g.IndexCount {
-			// bogus usage of g to make go compiler happy
-		}
-	}
-
-}
-
 type simpleTexturizer struct {
 	program    *js.Object
 	progName   string

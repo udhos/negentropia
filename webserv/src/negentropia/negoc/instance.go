@@ -2,9 +2,95 @@ package main
 
 import (
 	"fmt"
+	//"math"
 	//"negentropia/world/parser"
 	//"strings"
+	"github.com/gopherjs/gopherjs/js"
+	"github.com/gopherjs/webgl"
 )
+
+type instance struct {
+	instanceName                 string
+	posX, posY, posZ             float64
+	forwardX, forwardY, forwardZ float64
+	upX, upY, upZ                float64
+	scale                        float64
+	undoModelRotation            Matrix4 // U
+	rotation                     Matrix4 // R * U
+}
+
+func (i *instance) undoModelRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
+	setViewMatrix(&i.undoModelRotation, 0, 0, 0, forwardX, forwardY, forwardZ, upX, upY, upZ)
+}
+
+func (i *instance) setRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
+	setRotationMatrix(&i.rotation, forwardX, forwardY, forwardZ, upX, upY, upZ) // rotation = R
+	i.rotation.multiply(&i.undoModelRotation)                                   // rotation = R * U
+}
+
+func (i *instance) name() string {
+	return i.instanceName
+}
+
+func (i *instance) draw(gameInfo *gameState, mod *model) {
+	// scan model groups
+	for i, g := range mod.mesh.Groups {
+		t := mod.textures[i]
+		if t.texture == nil {
+			continue // texture not ready
+		}
+
+		// draw group here
+
+		if g.IndexBegin > g.IndexCount {
+			// bogus usage of g to make go compiler happy
+		}
+	}
+}
+
+func (i *instance) uploadModelView(gl *webgl.Context, u_MV *js.Object, cam *camera) {
+
+	/*
+	   V = View (inverse of camera matrix -- translation and rotation)
+	   T = Translation
+	   R = Rotation
+	   U = Undo Model Local Rotation
+	   S = Scaling
+
+	   MV = V*T*R*U*S
+	*/
+
+	// cam.loadViewMatrixInto(MV); // MV = V
+	var MV Matrix4
+	loadCameraViewMatrixInto(cam, &MV)
+
+	/*
+		tx += 0.02
+		if tx > .5 {
+			tx = 0
+		}
+	*/
+	MV.translate(i.posX, i.posY, i.posZ, 1) // MV = V*T
+
+	//rad = incRad(rad, math.Pi/5)
+	/*
+		upX, upY, upZ := normalize3(math.Sin(rad), math.Cos(rad), 0)
+		var rotation Matrix4
+		setRotationMatrix(&rotation, 0, 0, -1, upX, upY, upZ)
+		MV.multiply(&rotation) // MV = V*T*R*U
+	*/
+	MV.multiply(&i.rotation) // MV = V*T*R*U
+
+	/*
+		//scale -= .1
+		if scale < 0 {
+			scale = 1.0
+		}
+	*/
+	MV.scale(i.scale, i.scale, i.scale, 1.0) // MV = V*T*R*U*S
+
+	gl.UniformMatrix4fv(u_MV, false, MV.data)
+}
 
 func createInstance(gameInfo *gameState, tab map[string]string) {
 

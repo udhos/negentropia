@@ -68,43 +68,6 @@ func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *Matrix4) {
 	gl.UniformMatrix4fv(u_P, false, P.data)
 }
 
-func uploadModelView(gl *webgl.Context, u_MV *js.Object, cam *camera) {
-
-	/*
-	   V = View (inverse of camera matrix -- translation and rotation)
-	   T = Translation
-	   R = Rotation
-	   U = Undo Model Local Rotation
-	   S = Scaling
-
-	   MV = V*T*R*U*S
-	*/
-
-	// cam.loadViewMatrixInto(MV); // MV = V
-	var MV Matrix4
-	loadCameraViewMatrixInto(cam, &MV)
-
-	tx += 0.02
-	if tx > .5 {
-		tx = 0
-	}
-	MV.translate(tx, 0, 0, 1.0) // MV = V*T
-
-	//rad = incRad(rad, math.Pi/5)
-	upX, upY, upZ := normalize3(math.Sin(rad), math.Cos(rad), 0)
-	var rotation Matrix4
-	setRotationMatrix(&rotation, 0, 0, -1, upX, upY, upZ)
-	MV.multiply(&rotation) // MV = V*T*R*U
-
-	//scale -= .1
-	if scale < 0 {
-		scale = 1.0
-	}
-	MV.scale(scale, scale, scale, 1.0) // MV = V*T*R*U*S
-
-	gl.UniformMatrix4fv(u_MV, false, MV.data)
-}
-
 func updateCulling(gl *webgl.Context, backfaceCulling bool) {
 	if backfaceCulling {
 		log("backface culling: ON")

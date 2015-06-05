@@ -53,10 +53,12 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			if coord, err := parser.ParseFloatVector3Comma(camCoord); err != nil {
 				log(fmt.Sprintf("dispatch: error parsing Vector3(%s): %v", camCoord, err))
 			} else {
-				if coord[2] > 5.0 {
-					coord[2] = 5.0
-				}
-				log(fmt.Sprintf("dispatch: FIXME forcing zone camera position=%v", coord))
+				/*
+					if coord[2] > 5.0 {
+						coord[2] = 5.0
+					}
+					log(fmt.Sprintf("dispatch: FIXME forcing zone camera position=%v", coord))
+				*/
 				cameraMoveTo(&gameInfo.cam, coord)
 			}
 		}
