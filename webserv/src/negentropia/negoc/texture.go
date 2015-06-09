@@ -20,7 +20,8 @@ func onLoad(gl *webgl.Context, t *texture, textureURL string) {
 }
 
 func newImage() *js.Object {
-	return js.Global.Call("eval", "(new Image())")
+	//return js.Global.Call("eval", "(new Image())")
+	return js.Global.Get("Image").New()
 }
 
 func loadSolidColor(gl *webgl.Context, texture *js.Object, rgba []byte) {
