@@ -10,7 +10,7 @@ import (
 )
 
 type instance struct {
-	instanceName                 string
+	id                           string
 	posX, posY, posZ             float64
 	forwardX, forwardY, forwardZ float64
 	upX, upY, upZ                float64
@@ -26,10 +26,6 @@ func (i *instance) undoModelRotationFrom(forwardX, forwardY, forwardZ, upX, upY,
 func (i *instance) setRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
 	setRotationMatrix(&i.rotation, forwardX, forwardY, forwardZ, upX, upY, upZ) // rotation = R
 	i.rotation.multiply(&i.undoModelRotation)                                   // rotation = R * U
-}
-
-func (i *instance) name() string {
-	return i.instanceName
 }
 
 func (i *instance) draw(gameInfo *gameState, mod *model) {
@@ -188,7 +184,14 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		}
 	}
 
+	inst := mod.findInstance(id)
+	if inst != nil {
+		log(fmt.Sprintf("createInstance: id=%s model=%s prog=%s ignoring instance redefinition", id, modelName, programName))
+		return
+	}
+
 	// WRITEME: create instance of model
 
 	log(fmt.Sprintf("createInstance: id=%s prog=%s coord=%v f=%v u=%v WRITEME", id, programName, c, f, u))
+
 }

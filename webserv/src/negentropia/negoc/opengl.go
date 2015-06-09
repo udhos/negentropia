@@ -166,6 +166,11 @@ func setRotationMatrix(rotationMatrix *Matrix4, forwardX, forwardY, forwardZ, up
 }
 
 /*
+	setModelMatrix builds the model matrix.
+	Model transformation is also known as "camera" transformation.
+	Model transformation is the inverse of the view transformation.
+	Common use is to compute object location/orientation into full transformation matrix.
+
 	null model:
 	forward = 0 0 -1    // looking towards -Z
 	up = 0 1 0          // up direction is +Y
@@ -200,6 +205,10 @@ func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY
 }
 
 /*
+	setViewMatrix builds the view matrix.
+	View transformation is the inverse of the model transformation.
+	Common use is to compute camera location/orientation into full transformation matrix.
+
 	null view matrix:
 	pos   = 0 0 0
 	focus = 0 0 -1

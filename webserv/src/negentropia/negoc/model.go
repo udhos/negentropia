@@ -234,9 +234,9 @@ func (m *model) name() string {
 	return m.modelName
 }
 
-func (m *model) findInstance(name string) *instance {
+func (m *model) findInstance(id string) *instance {
 	for _, i := range m.instanceList {
-		if name == i.name() {
+		if id == i.id {
 			return i
 		}
 	}
