@@ -61,15 +61,17 @@ func draw(gameInfo *gameState, t time.Time, a_Position, vertexIndexSize int, pro
 	// scan instances
 
 	// put triangle at pos[0 0 1] front[0 0 -1] up[0 1 0]
-	//uploadModelView(gl, u_MV, &gameInfo.cam)
-	i := instance{
-		posZ:     1,
-		forwardZ: -1,
-		upY:      1,
-		scale:    10,
-	}
-	setIdentityMatrix(&i.undoModelRotation)
-	setIdentityMatrix(&i.rotation)
+	/*
+		i := instance{
+			posZ:     1,
+			forwardZ: -1,
+			upY:      1,
+			scale:    10,
+		}
+		setIdentityMatrix(&i.undoModelRotation)
+		setIdentityMatrix(&i.rotation)
+	*/
+	i := newInstance("builtin", 0, 0, -1, 0, 1, 0, 0, 0, 1, 10)
 	i.uploadModelView(gl, u_MV, &gameInfo.cam)
 
 	vertexIndexOffset := 0

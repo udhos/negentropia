@@ -36,6 +36,8 @@ func newInstance(id string, modelForwardX, modelForwardY, modelForwardZ, modelUp
 
 // called only when instance is initialized
 func (i *instance) undoModelRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
+	// focus = translation + forward
+	// in object-space coordinates: translation = 0, focus = forward
 	setViewMatrix(&i.undoModelRotation, forwardX, forwardY, forwardZ, upX, upY, upZ, 0, 0, 0)
 }
 
@@ -80,7 +82,7 @@ func (i *instance) draw(gameInfo *gameState, mod *model) {
 func (i *instance) uploadModelView(gl *webgl.Context, u_MV *js.Object, cam *camera) {
 
 	/*
-	   V = View (inverse of camera matrix -- translation and rotation)
+	   V = View (inverse of camera matrix)
 	   T = Translation
 	   R = Rotation
 	   U = Undo Model Local Rotation
@@ -89,33 +91,13 @@ func (i *instance) uploadModelView(gl *webgl.Context, u_MV *js.Object, cam *came
 	   MV = V*T*R*U*S
 	*/
 
-	// cam.loadViewMatrixInto(MV); // MV = V
 	var MV Matrix4
-	loadCameraViewMatrixInto(cam, &MV)
+	loadCameraViewMatrixInto(cam, &MV) // MV = V
 
-	/*
-		tx += 0.02
-		if tx > .5 {
-			tx = 0
-		}
-	*/
-	MV.translate(i.posX, i.posY, i.posZ, 1) // MV = V*T
+	//MV.translate(i.posX, i.posY, i.posZ, 1) // MV = V*T
 
-	//rad = incRad(rad, math.Pi/5)
-	/*
-		upX, upY, upZ := normalize3(math.Sin(rad), math.Cos(rad), 0)
-		var rotation Matrix4
-		setRotationMatrix(&rotation, 0, 0, -1, upX, upY, upZ)
-		MV.multiply(&rotation) // MV = V*T*R*U
-	*/
-	MV.multiply(&i.rotation) // MV = V*T*R*U
+	MV.multiply(&i.rotation) // MV = V*T*R*U (rotation = T*R*U)
 
-	/*
-		//scale -= .1
-		if scale < 0 {
-			scale = 1.0
-		}
-	*/
 	MV.scale(i.scale, i.scale, i.scale, 1.0) // MV = V*T*R*U*S
 
 	gl.UniformMatrix4fv(u_MV, false, MV.data)
