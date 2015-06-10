@@ -171,6 +171,14 @@ func setRotationMatrix(rotationMatrix *Matrix4, forwardX, forwardY, forwardZ, up
 	Model transformation is the inverse of the view transformation.
 	Common use is to compute object location/orientation into full transformation matrix.
 
+	V*T*R*U*S = full transformation
+	V = View (inverse of camera) built by setViewMatrix
+	T*R = model transformation built by setModelMatrix
+	T = Translation
+	R = Rotation
+	U = Undo Model Local Rotation
+	S = Scaling
+
 	null model:
 	forward = 0 0 -1    // looking towards -Z
 	up = 0 1 0          // up direction is +Y
@@ -206,8 +214,17 @@ func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY
 
 /*
 	setViewMatrix builds the view matrix.
+	View transformation is also known as "lookAt" transformation.
 	View transformation is the inverse of the model transformation.
 	Common use is to compute camera location/orientation into full transformation matrix.
+
+	V*T*R*U*S = full transformation
+	V = View (inverse of camera) built by setViewMatrix
+	T*R = model transformation built by setModelMatrix
+	T = Translation
+	R = Rotation
+	U = Undo Model Local Rotation
+	S = Scaling
 
 	null view matrix:
 	pos   = 0 0 0

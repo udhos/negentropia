@@ -136,6 +136,45 @@ func testView() {
 	log(fmt.Sprintf("testView: view = %v", V))
 }
 
+func testModelTRU() {
+	ufx := 0.0
+	ufy := 0.0
+	ufz := -1.0
+	uux := 0.0
+	uuy := 1.0
+	uuz := 0.0
+
+	fx := 1.0
+	fy := 0.0
+	fz := 0.0
+	ux := 0.0
+	uy := 0.0
+	uz := -1.0
+	tx := 1.1
+	ty := 2.2
+	tz := 3.3
+
+	i1 := instance{}
+	i1.undoModelRotationFrom(ufx, ufy, ufz, uux, uuy, uuz) // rotation = U
+	i1.setRotationFrom(fx, fy, fz, ux, uy, uz)             // rotation = R*U
+	var M1 Matrix4
+	setIdentityMatrix(&M1)
+	M1.translate(tx, ty, tz, 1) // M1 = T
+	M1.multiply(&i1.rotation)   // M1 = T*R*U
+
+	log(fmt.Sprintf("testModelTRU: M1 = %v", M1))
+
+	i2 := instance{}
+	i2.undoModelRotationFrom(ufx, ufy, ufz, uux, uuy, uuz) // rotation = U
+	i2.setRotation(fx, fy, fz, ux, uy, uz)                 // rotation = T*R*U
+	i2.setTranslation(tx, ty, tz)                          // rotation = T*R*U
+	var M2 Matrix4
+	setIdentityMatrix(&M2)
+	M2.multiply(&i2.rotation) // M2 = T*R*U
+
+	log(fmt.Sprintf("testModelTRU: M2 = %v", M2))
+}
+
 type gameState struct {
 	gl                 *webgl.Context
 	sock               *gameWebsocket
@@ -220,4 +259,5 @@ func main() {
 	//testModelView()
 	//testRotation()
 	//testView()
+	testModelTRU()
 }

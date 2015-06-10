@@ -19,6 +19,7 @@ type instance struct {
 	rotation                     Matrix4 // R * U
 }
 
+// used only when instance is initialized
 func (i *instance) undoModelRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
 	setViewMatrix(&i.undoModelRotation, 0, 0, 0, forwardX, forwardY, forwardZ, upX, upY, upZ)
 }
@@ -26,6 +27,22 @@ func (i *instance) undoModelRotationFrom(forwardX, forwardY, forwardZ, upX, upY,
 func (i *instance) setRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
 	setRotationMatrix(&i.rotation, forwardX, forwardY, forwardZ, upX, upY, upZ) // rotation = R
 	i.rotation.multiply(&i.undoModelRotation)                                   // rotation = R * U
+}
+
+// update T*R*U
+func (i *instance) updateModelMatrix() {
+	setModelMatrix(&i.rotation, i.forwardX, i.forwardY, i.forwardZ, i.upX, i.upY, i.upZ, i.posX, i.posY, i.posZ) // rotation = T*R
+	i.rotation.multiply(&i.undoModelRotation)                                                                    // rotation = T*R*U
+}
+
+func (i *instance) setRotation(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
+	i.forwardX, i.forwardY, i.forwardZ, i.upX, i.upY, i.upZ = forwardX, forwardY, forwardZ, upX, upY, upZ
+	i.updateModelMatrix() // rotation = T*R*U
+}
+
+func (i *instance) setTranslation(x, y, z float64) {
+	i.posX, i.posY, i.posZ = x, y, z
+	i.updateModelMatrix() // rotation = T*R*U
 }
 
 func (i *instance) draw(gameInfo *gameState, mod *model) {
