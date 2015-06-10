@@ -227,12 +227,12 @@ func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY
 	S = Scaling
 
 	null view matrix:
-	pos   = 0 0 0
 	focus = 0 0 -1
 	up    = 0 1 0
-	setViewMatrix(&V, 0, 0, 0, 0, 0, -1, 0, 1, 0)
+	pos   = 0 0 0
+	setViewMatrix(&V, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 */
-func setViewMatrix(viewMatrix *Matrix4, posX, posY, posZ, focusX, focusY, focusZ, upX, upY, upZ float64) {
+func setViewMatrix(viewMatrix *Matrix4, focusX, focusY, focusZ, upX, upY, upZ, posX, posY, posZ float64) {
 	backX, backY, backZ := normalize3(posX-focusX, posY-focusY, posZ-focusZ)
 	rightX, rightY, rightZ := normalize3(cross3(upX, upY, upZ, backX, backY, backZ))
 	newUpX, newUpY, newUpZ := normalize3(cross3(backX, backY, backZ, rightX, rightY, rightZ))

@@ -242,3 +242,7 @@ func (m *model) findInstance(id string) *instance {
 	}
 	return nil
 }
+
+func (m *model) addInstance(inst *instance) {
+	m.instanceList = append(m.instanceList, inst)
+}

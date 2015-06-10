@@ -94,14 +94,12 @@ func gameLoop(gameInfo *gameState, a_Position, vertexIndexSize int, prog, vertex
 }
 
 func testModelView() {
-	//func setViewMatrix(viewMatrix *Matrix4, posX, posY, posZ, focusX, focusY, focusZ, upX, upY, upZ float64) {
-	//func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY, upZ, tX, tY, tZ float64) {
 
 	pos := []float64{1, 1, 1}
 	focus := []float64{0, 0, -1}
 	up := []float64{0, 1, 0}
 	var V Matrix4
-	setViewMatrix(&V, pos[0], pos[1], pos[2], focus[0], focus[1], focus[2], up[0], up[1], up[2])
+	setViewMatrix(&V, focus[0], focus[1], focus[2], up[0], up[1], up[2], pos[0], pos[1], pos[2])
 	log(fmt.Sprintf("testModelView: view = %v", V))
 
 	forward := []float64{focus[0] - pos[0], focus[1] - pos[1], focus[2] - pos[2]}
@@ -132,7 +130,7 @@ func testRotation() {
 
 func testView() {
 	var V Matrix4
-	setViewMatrix(&V, 0, 0, 0, 0, 0, -1, 0, 1, 0)
+	setViewMatrix(&V, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 	log(fmt.Sprintf("testView: view = %v", V))
 }
 

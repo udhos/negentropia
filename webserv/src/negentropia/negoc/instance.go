@@ -7,6 +7,7 @@ import (
 	//"strings"
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
+	"strconv"
 )
 
 type instance struct {
@@ -19,9 +20,23 @@ type instance struct {
 	rotation                     Matrix4 // R * U
 }
 
-// used only when instance is initialized
+func newInstance(id string, modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ, scale float64) *instance {
+	i := &instance{id: id, scale: scale}
+
+	i.forwardX, i.forwardY, i.forwardZ, i.upX, i.upY, i.upZ, i.posX, i.posY, i.posZ = modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ
+
+	// U: undo model implicit rotation
+	// R: apply instance-specific rotation
+	// Initially, before R is modified by instance specific rotation, U=inverse(R), R*U=I
+	i.undoModelRotationFrom(modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ) // setup U
+	i.updateModelMatrix()                                                                              // rotation = T*R*U
+
+	return i
+}
+
+// called only when instance is initialized
 func (i *instance) undoModelRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
-	setViewMatrix(&i.undoModelRotation, 0, 0, 0, forwardX, forwardY, forwardZ, upX, upY, upZ)
+	setViewMatrix(&i.undoModelRotation, forwardX, forwardY, forwardZ, upX, upY, upZ, 0, 0, 0)
 }
 
 func (i *instance) setRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
@@ -155,6 +170,18 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		return
 	}
 
+	s := 1.0
+
+	if scale, scaleFound := tab["scale"]; scaleFound {
+		if v, parseFloatErr := strconv.ParseFloat(scale, 64); parseFloatErr != nil {
+			s = v
+		} else {
+			log(fmt.Sprintf("createInstance: id=%s bad parse float scale=%s: %v", id, scale, parseFloatErr))
+		}
+	} else {
+		log(fmt.Sprintf("createInstance: id=%s missing scale", id))
+	}
+
 	var c []float64
 
 	if c, err = parseVector3(coord); err != nil {
@@ -207,8 +234,9 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		return
 	}
 
-	// WRITEME: create instance of model
-
 	log(fmt.Sprintf("createInstance: id=%s prog=%s coord=%v f=%v u=%v WRITEME", id, programName, c, f, u))
 
+	inst = newInstance(id, f[0], f[1], f[2], u[0], u[1], u[2], c[0], c[1], c[2], s)
+
+	mod.addInstance(inst)
 }

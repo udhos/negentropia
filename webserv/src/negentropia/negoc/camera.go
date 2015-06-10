@@ -49,7 +49,7 @@ func loadCameraViewMatrixInto(cam *camera, V *Matrix4) {
 
 	cam.camUpX, cam.camUpY, cam.camUpZ = normalize3(math.Sin(camUpRad), math.Cos(camUpRad), 0)
 
-	setViewMatrix(V, cam.camPosX, cam.camPosY, cam.camPosZ, cam.camFocusX, cam.camFocusY, cam.camFocusZ, cam.camUpX, cam.camUpY, cam.camUpZ)
+	setViewMatrix(V, cam.camFocusX, cam.camFocusY, cam.camFocusZ, cam.camUpX, cam.camUpY, cam.camUpZ, cam.camPosX, cam.camPosY, cam.camPosZ)
 
 	//log(fmt.Sprintf("angle=%v delta=%v up=%v,%v,%v view=%v", camUpRad*180/math.Pi, delta*180/math.Pi, camUpX, camUpY, camUpZ, V))
 }
