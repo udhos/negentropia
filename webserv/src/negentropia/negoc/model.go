@@ -225,8 +225,8 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 }
 
 func (m *model) draw(gameInfo *gameState) {
-	for _, i := range m.instanceList {
-		i.draw(gameInfo, m)
+	for _, inst := range m.instanceList {
+		inst.draw(gameInfo, m)
 	}
 }
 
@@ -245,4 +245,5 @@ func (m *model) findInstance(id string) *instance {
 
 func (m *model) addInstance(inst *instance) {
 	m.instanceList = append(m.instanceList, inst)
+	//log(fmt.Sprintf("model.addInstance: model=%s newInstance=%s instances=%d instanceList=%v", m.modelName, inst.id, len(m.instanceList), m.instanceList))
 }

@@ -61,11 +61,12 @@ func (i *instance) setTranslation(x, y, z float64) {
 }
 
 func (i *instance) draw(gameInfo *gameState, mod *model) {
+
 	// scan model groups
 	for i, g := range mod.mesh.Groups {
 		t := mod.textures[i]
-		if t.texture == nil {
-			continue // texture not ready
+		if t == nil {
+			continue // skip group because texture is not ready
 		}
 
 		// draw group here
@@ -173,7 +174,7 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 	s := 1.0
 
 	if scale, scaleFound := tab["scale"]; scaleFound {
-		if v, parseFloatErr := strconv.ParseFloat(scale, 64); parseFloatErr != nil {
+		if v, parseFloatErr := strconv.ParseFloat(scale, 64); parseFloatErr == nil {
 			s = v
 		} else {
 			log(fmt.Sprintf("createInstance: id=%s bad parse float scale=%s: %v", id, scale, parseFloatErr))
@@ -234,9 +235,9 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		return
 	}
 
-	log(fmt.Sprintf("createInstance: id=%s prog=%s coord=%v f=%v u=%v WRITEME", id, programName, c, f, u))
-
 	inst = newInstance(id, f[0], f[1], f[2], u[0], u[1], u[2], c[0], c[1], c[2], s)
+
+	log(fmt.Sprintf("createInstance: id=%s prog=%s coord=%v f=%v u=%v scale=%f inst=%v", id, programName, c, f, u, s, inst))
 
 	mod.addInstance(inst)
 }
