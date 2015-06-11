@@ -270,8 +270,10 @@ func (m *model) draw(gameInfo *gameState, prog shader) {
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.vertexIndexBuffer)
 
+	u_MV := prog.unif_MV()
+
 	for _, inst := range m.instanceList {
-		inst.draw(gameInfo, m, prog.unif_MV())
+		inst.draw(gameInfo, m, u_MV)
 	}
 }
 
