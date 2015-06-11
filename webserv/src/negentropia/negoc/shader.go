@@ -32,6 +32,7 @@ type shader interface {
 	findModel(name string) *model
 	addModel(model *model)
 	unif_MV() *js.Object
+	unif_Sampler() *js.Object
 	attrLoc_Position() int
 	attrLoc_TextureCoord() int
 }
@@ -41,6 +42,7 @@ type simpleTexturizer struct {
 	progName       string
 	u_P            *js.Object
 	u_MV           *js.Object
+	u_Sampler      *js.Object
 	a_Position     int
 	a_TextureCoord int
 	modelList      []*model
@@ -48,6 +50,10 @@ type simpleTexturizer struct {
 
 func (s *simpleTexturizer) unif_MV() *js.Object {
 	return s.u_MV
+}
+
+func (s *simpleTexturizer) unif_Sampler() *js.Object {
+	return s.u_Sampler
 }
 
 func (s *simpleTexturizer) attrLoc_Position() int {
@@ -83,21 +89,21 @@ func (s *simpleTexturizer) getUniform(gl *webgl.Context, uniform string) *js.Obj
 	return u
 }
 
-func (s *simpleTexturizer) init(gl *webgl.Context) {
-	attr := "a_Position"
-	s.a_Position = gl.GetAttribLocation(s.program, attr)
-	if s.a_Position < 0 {
-		log(fmt.Sprintf("simpleTexturizer.init: could not get attribute location: %s", attr))
+func (s *simpleTexturizer) getAttrib(gl *webgl.Context, attr string) int {
+	a := gl.GetAttribLocation(s.program, attr)
+	if a < 0 {
+		log(fmt.Sprintf("simpleTexturizer.getAttrib: could not get attrib location: %s", attr))
 	}
+	return a
+}
 
-	attr = "a_TextureCoord"
-	s.a_TextureCoord = gl.GetAttribLocation(s.program, attr)
-	if s.a_TextureCoord < 0 {
-		log(fmt.Sprintf("simpleTexturizer.init: could not get attribute location: %s", attr))
-	}
+func (s *simpleTexturizer) init(gl *webgl.Context) {
+	s.a_Position = s.getAttrib(gl, "a_Position")
+	s.a_TextureCoord = s.getAttrib(gl, "a_TextureCoord")
 
 	s.u_P = s.getUniform(gl, "u_P")
 	s.u_MV = s.getUniform(gl, "u_MV")
+	s.u_Sampler = s.getUniform(gl, "u_Sampler")
 }
 
 func (s *simpleTexturizer) draw(gameInfo *gameState) {

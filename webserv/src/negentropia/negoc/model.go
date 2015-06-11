@@ -9,12 +9,14 @@ import (
 )
 
 type model struct {
-	modelName         string
-	instanceList      []*instance
-	mesh              *obj.Obj
-	textures          []*texture
-	vertexBuffer      *js.Object
-	vertexIndexBuffer *js.Object
+	modelName              string
+	instanceList           []*instance
+	mesh                   *obj.Obj
+	textures               []*texture
+	vertexBuffer           *js.Object
+	vertexIndexBuffer      *js.Object
+	vertexIndexElementType int
+	vertexIndexElementSize int
 }
 
 func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
@@ -229,17 +231,23 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	mod.vertexIndexBuffer = gl.CreateBuffer()
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, mod.vertexIndexBuffer)
 	if o.BigIndexFound {
+		log(fmt.Sprintf("newModel: objURL=%s BigIndexFound FIXME: check WebGL extension for big index", objURL))
+
 		list := make([]uint32, len(o.Indices))
 		for i, v := range o.Indices {
 			list[i] = uint32(v)
 		}
 		gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, list, gl.STATIC_DRAW)
+		mod.vertexIndexElementType = gl.UNSIGNED_INT
+		mod.vertexIndexElementSize = 4
 	} else {
 		list := make([]uint16, len(o.Indices))
 		for i, v := range o.Indices {
 			list[i] = uint16(v)
 		}
 		gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, list, gl.STATIC_DRAW)
+		mod.vertexIndexElementType = gl.UNSIGNED_SHORT
+		mod.vertexIndexElementSize = 2
 	}
 
 	// push new model into shader.modelList
@@ -271,9 +279,10 @@ func (m *model) draw(gameInfo *gameState, prog shader) {
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.vertexIndexBuffer)
 
 	u_MV := prog.unif_MV()
+	u_Sampler := prog.unif_Sampler()
 
 	for _, inst := range m.instanceList {
-		inst.draw(gameInfo, m, u_MV)
+		inst.draw(gameInfo, m, u_MV, u_Sampler)
 	}
 }
 

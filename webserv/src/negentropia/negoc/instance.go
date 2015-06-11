@@ -62,7 +62,7 @@ func (i *instance) setTranslation(x, y, z float64) {
 	i.updateModelMatrix() // rotation = T*R*U
 }
 
-func (i *instance) draw(gameInfo *gameState, mod *model, u_MV *js.Object) {
+func (i *instance) draw(gameInfo *gameState, mod *model, u_MV, u_Sampler *js.Object) {
 
 	gl := gameInfo.gl
 
@@ -80,6 +80,15 @@ func (i *instance) draw(gameInfo *gameState, mod *model, u_MV *js.Object) {
 		if g.IndexBegin > g.IndexCount {
 			// bogus usage of g to make go compiler happy
 		}
+
+		gl.BindTexture(gl.TEXTURE_2D, t.texture)
+
+		// set sampler to use texture assigned to unit
+		gl.Uniform1i(u_Sampler, gameInfo.defaultTextureUnit)
+
+		gl.DrawElements(gl.TRIANGLES, g.IndexCount,
+			mod.vertexIndexElementType,
+			g.IndexBegin*mod.vertexIndexElementSize)
 	}
 }
 
