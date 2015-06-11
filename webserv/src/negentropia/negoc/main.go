@@ -37,7 +37,8 @@ func draw(gameInfo *gameState, t time.Time, a_Position, vertexIndexSize int, pro
 
 	gl := gameInfo.gl
 
-	gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.BindFramebuffer(gl.FRAMEBUFFER, nil) // select default framebuffer attached to on-screen canvas
+	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
 	u_P := gl.GetUniformLocation(prog, "u_P")
 	u_MV := gl.GetUniformLocation(prog, "u_MV")
