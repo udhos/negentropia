@@ -62,7 +62,11 @@ func (i *instance) setTranslation(x, y, z float64) {
 	i.updateModelMatrix() // rotation = T*R*U
 }
 
-func (i *instance) draw(gameInfo *gameState, mod *model) {
+func (i *instance) draw(gameInfo *gameState, mod *model, u_MV *js.Object) {
+
+	gl := gameInfo.gl
+
+	i.uploadModelView(gl, u_MV, &gameInfo.cam)
 
 	// scan model groups
 	for i, g := range mod.mesh.Groups {

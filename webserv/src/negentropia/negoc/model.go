@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
-	//"github.com/gopherjs/gopherjs/js"
+	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	"negentropia/world/obj"
 	"sort"
 )
 
 type model struct {
-	modelName    string
-	instanceList []*instance
-	mesh         *obj.Obj
-	textures     []*texture
+	modelName         string
+	instanceList      []*instance
+	mesh              *obj.Obj
+	textures          []*texture
+	vertexBuffer      *js.Object
+	vertexIndexBuffer *js.Object
 }
 
 func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
@@ -218,15 +220,58 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	sort.Sort(GroupByTextureName(GroupByTextureName{mod}))
 	//showGroups(mod)
 
+	// buffer for vertex data
+	mod.vertexBuffer = gl.CreateBuffer()
+	gl.BindBuffer(gl.ARRAY_BUFFER, mod.vertexBuffer)
+	gl.BufferData(gl.ARRAY_BUFFER, o.Coord, gl.STATIC_DRAW)
+
+	// buffer for indices
+	mod.vertexIndexBuffer = gl.CreateBuffer()
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, mod.vertexIndexBuffer)
+	if o.BigIndexFound {
+		list := make([]uint32, len(o.Indices))
+		for i, v := range o.Indices {
+			list[i] = uint32(v)
+		}
+		gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, list, gl.STATIC_DRAW)
+	} else {
+		list := make([]uint16, len(o.Indices))
+		for i, v := range o.Indices {
+			list[i] = uint16(v)
+		}
+		gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, list, gl.STATIC_DRAW)
+	}
+
 	// push new model into shader.modelList
 	s.addModel(mod)
 
 	return mod
 }
 
-func (m *model) draw(gameInfo *gameState) {
+const vertexPositionBufferItemSize = 3 // coord x,y,z
+const textureCoordBufferItemSize = 2   // coord s,t
+
+func (m *model) draw(gameInfo *gameState, prog shader) {
+	gl := gameInfo.gl // shortcut
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, m.vertexBuffer)
+
+	// vertex coord x,y,z
+	gl.VertexAttribPointer(prog.attrLoc_Position(),
+		vertexPositionBufferItemSize,
+		gl.FLOAT, false, m.mesh.StrideSize,
+		m.mesh.StrideOffsetPosition)
+
+	// texture coord s,t
+	gl.VertexAttribPointer(prog.attrLoc_TextureCoord(),
+		textureCoordBufferItemSize,
+		gl.FLOAT, false, m.mesh.StrideSize,
+		m.mesh.StrideOffsetTexture)
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.vertexIndexBuffer)
+
 	for _, inst := range m.instanceList {
-		inst.draw(gameInfo, m)
+		inst.draw(gameInfo, m, prog.unif_MV())
 	}
 }
 

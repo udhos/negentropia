@@ -149,7 +149,7 @@ type Group struct {
 }
 
 type Obj struct {
-	Indices []int     // indices
+	Indices []int
 	Coord   []float32 // vertex data pos=(x,y,z) tex=(tx,ty) norm=(nx,ny,nz)
 	Mtllib  string
 	Groups  []*Group

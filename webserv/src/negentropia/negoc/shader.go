@@ -31,15 +31,31 @@ type shader interface {
 	draw(gameInfo *gameState)
 	findModel(name string) *model
 	addModel(model *model)
+	unif_MV() *js.Object
+	attrLoc_Position() int
+	attrLoc_TextureCoord() int
 }
 
 type simpleTexturizer struct {
-	program    *js.Object
-	progName   string
-	u_P        *js.Object
-	u_MV       *js.Object
-	a_Position int
-	modelList  []*model
+	program        *js.Object
+	progName       string
+	u_P            *js.Object
+	u_MV           *js.Object
+	a_Position     int
+	a_TextureCoord int
+	modelList      []*model
+}
+
+func (s *simpleTexturizer) unif_MV() *js.Object {
+	return s.u_MV
+}
+
+func (s *simpleTexturizer) attrLoc_Position() int {
+	return s.a_Position
+}
+
+func (s *simpleTexturizer) attrLoc_TextureCoord() int {
+	return s.a_TextureCoord
 }
 
 func (s *simpleTexturizer) addModel(m *model) {
@@ -74,6 +90,12 @@ func (s *simpleTexturizer) init(gl *webgl.Context) {
 		log(fmt.Sprintf("simpleTexturizer.init: could not get attribute location: %s", attr))
 	}
 
+	attr = "a_TextureCoord"
+	s.a_TextureCoord = gl.GetAttribLocation(s.program, attr)
+	if s.a_TextureCoord < 0 {
+		log(fmt.Sprintf("simpleTexturizer.init: could not get attribute location: %s", attr))
+	}
+
 	s.u_P = s.getUniform(gl, "u_P")
 	s.u_MV = s.getUniform(gl, "u_MV")
 }
@@ -83,10 +105,13 @@ func (s *simpleTexturizer) draw(gameInfo *gameState) {
 
 	gl.UseProgram(s.program)
 	gl.EnableVertexAttribArray(s.a_Position)
+	gl.EnableVertexAttribArray(s.a_TextureCoord)
+
+	uploadPerspective(gl, s.u_P, &gameInfo.pMatrix)
 
 	// draw every model
 	for _, m := range s.modelList {
-		m.draw(gameInfo)
+		m.draw(gameInfo, s)
 	}
 }
 
