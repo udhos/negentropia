@@ -250,6 +250,8 @@ func readObj(reader lineReader, options *ObjParserOptions) (*Obj, error) {
 	}
 
 	// 3. output
+
+	// drop empty groups
 	tmp := []*Group{}
 	for _, g := range o.Groups {
 		switch {
@@ -262,6 +264,7 @@ func readObj(reader lineReader, options *ObjParserOptions) (*Obj, error) {
 	}
 	o.Groups = tmp
 
+	// setup stride size
 	o.StrideSize = 3 * 4 // (px,py,pz) = 3 x 4-byte floats
 	o.StrideOffsetPosition = 0
 	o.StrideOffsetTexture = 0

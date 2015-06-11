@@ -143,6 +143,11 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 	log(fmt.Sprintf("newModel: objURL=%s elements=%d bigIndex=%v texCoord=%v normCoord=%v", objURL, o.NumberOfElements(), o.BigIndexFound, o.TextCoordFound, o.NormCoordFound))
 
+	if !o.TextCoordFound {
+		log(fmt.Sprintf("newModel: objURL=%s FIXME texture coordinates required", objURL))
+		return nil
+	}
+
 	libURL := fmt.Sprintf("%s/%s", assetPath.mtl, o.Mtllib)
 
 	groupListSize := len(o.Groups)

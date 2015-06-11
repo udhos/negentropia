@@ -75,12 +75,6 @@ func (i *instance) draw(gameInfo *gameState, mod *model, u_MV, u_Sampler *js.Obj
 			continue // skip group because texture is not ready
 		}
 
-		// draw group here
-
-		if g.IndexBegin > g.IndexCount {
-			// bogus usage of g to make go compiler happy
-		}
-
 		gl.BindTexture(gl.TEXTURE_2D, t.texture)
 
 		// set sampler to use texture assigned to unit
