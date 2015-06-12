@@ -1,0 +1,54 @@
+# texture_cube.obj
+
+mtllib texture_cube.mtl
+
+o cube
+
+# square bottom
+v -1 -1 -1
+v -1 -1 1
+v 1 -1 1
+v 1 -1 -1
+
+# square top
+v -1 1 -1
+v -1 1 1
+v 1 1 1
+v 1 1 -1
+
+# uv coord
+
+# red
+vt 0 0
+
+# green
+vt .5 0
+
+# blue
+vt 1 0
+
+usemtl 3-pixel-rgb
+
+# face down
+f -6/-2 -7/-2 -8/-2
+f -8/-2 -5/-2 -6/-2
+
+# face up
+f -1/-2 -4/-2 -3/-2
+f -3/-2 -2/-2 -1/-2 
+
+# face right
+f -5/-3 -1/-3 -2/-3
+f -2/-3 -6/-3 -5/-3
+
+# face left
+f -7/-3 -3/-3 -4/-3
+f -4/-3 -8/-3 -7/-3
+
+# face front
+f -1/-1 -2/-1 -3/-1
+f -3/-1 -7/-1 -1/-1
+
+# face back
+f -8/-1 -4/-1 -1/-1
+f -1/-1 -5/-1 -8/-1

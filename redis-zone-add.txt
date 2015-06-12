@@ -2,7 +2,8 @@
 # assign zone to user
 # this puts the user camera into a specific zone
 hset everton.marques@gmail.com location z:0
-# hset everton.marques@gmail.com location z:zero_mine0
+hset everton.marques@gmail.com location z:zero_mine0
+hset everton.marques@gmail.com location z:simple_zone
 hset udhos0@gmail.com          location z:1
 
 # add shader program
@@ -10,6 +11,24 @@ hset p:simpleTexturizer vertexShader /shader/simpleTex_vs.txt
 hset p:simpleTexturizer fragmentShader /shader/simpleTex_fs.txt
 
 # add zone ------------------------------------------------------------
+
+hset z:simple_zone programName p:simpleTexturizer
+hset z:simple_zone cameraCoord 0,0,10
+
+# add instance list to zone
+hset z:simple_zone instanceList l:simple_zone_instances
+del l:simple_zone_instances
+sadd l:simple_zone_instances m:cube1
+
+hset o:cube_model objURL /obj/texture_cube.obj
+hset o:cube_model programName p:simpleTexturizer
+hset o:cube_model modelFront 0,0,-1
+hset o:cube_model modelUp 0,1,0
+
+hset m:cube1 obj o:cube_model
+hset m:cube1 coord 0,0,0
+
+# ---
 
 hset z:0 backfaceCulling true
 # hset z:0 skyboxURL /skybox/skybox_galaxy.json
