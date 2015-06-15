@@ -171,7 +171,6 @@ func testModelTRU() {
 type gameState struct {
 	gl                 *webgl.Context
 	sock               *gameWebsocket
-	sockWaitReady      chan int
 	defaultTextureUnit int
 	pMatrix            Matrix4 // perspective matrix
 	canvasAspect       float64
@@ -219,11 +218,4 @@ func main() {
 	//testRotation()
 	//testView()
 	//testModelTRU()
-
-	/*
-		var eraseme *js.Object = nil
-		if eraseme == nil {
-			// y u do dis spoderman?
-		}
-	*/
 }
