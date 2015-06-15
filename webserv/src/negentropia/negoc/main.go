@@ -14,23 +14,6 @@ func log(msg string) {
 	println(m)
 }
 
-/*
-var scale = 1.0
-var rad = 0.0
-var camUpRad = 0.0
-var tx = 0.0
-
-const pi2 = 2 * math.Pi
-
-func incRad(r, delta float64) float64 {
-	r += delta
-	if r > pi2 {
-		r -= pi2
-	}
-	return r
-}
-*/
-
 const VERTEX_POSITION_ITEM_SIZE = 3 // x,y,z
 
 func draw(gameInfo *gameState, t time.Time) {
@@ -45,33 +28,6 @@ func draw(gameInfo *gameState, t time.Time) {
 	for _, s := range gameInfo.shaderList {
 		s.draw(gameInfo)
 	}
-
-	/*
-		gl.UseProgram(prog)
-		gl.EnableVertexAttribArray(a_Position)
-
-		u_P := gl.GetUniformLocation(prog, "u_P")
-		u_MV := gl.GetUniformLocation(prog, "u_MV")
-
-		uploadPerspective(gl, u_P, &gameInfo.pMatrix)
-
-		// scan models
-
-		gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
-		gl.VertexAttribPointer(a_Position, VERTEX_POSITION_ITEM_SIZE, gl.FLOAT, false, 0, 0)
-
-		// scan instances
-
-		// put triangle at pos[0 0 1] front[0 0 -1] up[0 1 0]
-		i := newInstance("builtin", 0, 0, -1, 0, 1, 0, 0, 0, 1, 10)
-		i.uploadModelView(gl, u_MV, &gameInfo.cam)
-
-		vertexIndexOffset := 0
-		vertexIndexElementSize := 2 // uint16
-
-		gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer)
-		gl.DrawElements(gl.TRIANGLES, vertexIndexSize, gl.UNSIGNED_SHORT, vertexIndexOffset*vertexIndexElementSize)
-	*/
 }
 
 const FRAME_RATE = 2                     // frames per second
