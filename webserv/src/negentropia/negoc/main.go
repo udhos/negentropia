@@ -33,7 +33,7 @@ func incRad(r, delta float64) float64 {
 
 const VERTEX_POSITION_ITEM_SIZE = 3 // x,y,z
 
-func draw(gameInfo *gameState, t time.Time, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
+func draw(gameInfo *gameState, t time.Time) {
 
 	gl := gameInfo.gl
 
@@ -77,13 +77,13 @@ func draw(gameInfo *gameState, t time.Time, a_Position, vertexIndexSize int, pro
 const FRAME_RATE = 2                     // frames per second
 const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
 
-func gameLoop(gameInfo *gameState, a_Position, vertexIndexSize int, prog, vertexPositionBuffer, vertexIndexBuffer *js.Object) {
+func gameLoop(gameInfo *gameState) {
 	log(fmt.Sprintf("gameLoop: frame_rate=%v fps frame_interval=%v msec", FRAME_RATE, FRAME_INTERVAL))
 
 	ticker := time.NewTicker(time.Millisecond * FRAME_INTERVAL)
 	go func() {
 		for t := range ticker.C {
-			draw(gameInfo, t, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
+			draw(gameInfo, t)
 		}
 	}()
 }
@@ -192,8 +192,6 @@ func main() {
 		return
 	}
 
-	gl := gameInfo.gl // shortcut
-
 	log("main: WebGL context initialized")
 
 	resetCamera(&gameInfo.cam)
@@ -208,44 +206,24 @@ func main() {
 	gameInfo.textureTable = map[string]*texture{}
 	gameInfo.materialLib = obj.NewMaterialLib()
 
+	// BEGIN: useless code
+	gl := gameInfo.gl // shortcut
+	if gl == nil {
+		// keep compiler happy
+	}
+
 	vertShaderURL := "/shader/simple_vs.txt"
 	fragShaderURL := "/shader/simple_fs.txt"
 	prog := newShaderProgram(gl, vertShaderURL, fragShaderURL)
-
-	attr := "a_Position"
-	a_Position := gl.GetAttribLocation(prog, attr)
-	if a_Position < 0 {
-		log(fmt.Sprintf("main: could not get attribute location: %s", attr))
-		return
+	if prog == nil {
 	}
-
-	log(fmt.Sprintf("main: attribute %s=%v", attr, a_Position))
-
-	// create buffer
-	vertexIndexBuffer := gl.CreateBuffer()
-	vertexPositionBuffer := gl.CreateBuffer()
-
-	// fill buffer
-
-	indices := []uint16{0, 1, 2} // 3 vertices
-	vertexIndexSize := len(indices)
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW)
-
-	// triangle vertices
-	vertexPositionData := []float32{
-		.9, -.9, -.9, // v0
-		0, .9, -.9, // v1
-		-.9, -.9, -.9, // v2
-	}
-	gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
-	gl.BufferData(gl.ARRAY_BUFFER, vertexPositionData, gl.STATIC_DRAW)
+	// END: useless code
 
 	initContext(gameInfo) // set aspectRatio
 
 	setPerspective(gameInfo) // requires aspectRatio
 
-	gameLoop(gameInfo, a_Position, vertexIndexSize, prog, vertexPositionBuffer, vertexIndexBuffer)
+	gameLoop(gameInfo)
 
 	log("main: end")
 
@@ -253,4 +231,9 @@ func main() {
 	//testRotation()
 	//testView()
 	//testModelTRU()
+
+	var eraseme *js.Object = nil
+	if eraseme == nil {
+		// y u do dis spoderman?
+	}
 }
