@@ -40,46 +40,38 @@ func draw(gameInfo *gameState, t time.Time, a_Position, vertexIndexSize int, pro
 	gl.BindFramebuffer(gl.FRAMEBUFFER, nil) // select default framebuffer attached to on-screen canvas
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-	u_P := gl.GetUniformLocation(prog, "u_P")
-	u_MV := gl.GetUniformLocation(prog, "u_MV")
-
 	// scan programs
 
 	for _, s := range gameInfo.shaderList {
 		s.draw(gameInfo)
 	}
 
-	gl.UseProgram(prog)
-	gl.EnableVertexAttribArray(a_Position)
-
-	uploadPerspective(gl, u_P, &gameInfo.pMatrix)
-
-	// scan models
-
-	gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
-	gl.VertexAttribPointer(a_Position, VERTEX_POSITION_ITEM_SIZE, gl.FLOAT, false, 0, 0)
-
-	// scan instances
-
-	// put triangle at pos[0 0 1] front[0 0 -1] up[0 1 0]
 	/*
-		i := instance{
-			posZ:     1,
-			forwardZ: -1,
-			upY:      1,
-			scale:    10,
-		}
-		setIdentityMatrix(&i.undoModelRotation)
-		setIdentityMatrix(&i.rotation)
+		gl.UseProgram(prog)
+		gl.EnableVertexAttribArray(a_Position)
+
+		u_P := gl.GetUniformLocation(prog, "u_P")
+		u_MV := gl.GetUniformLocation(prog, "u_MV")
+
+		uploadPerspective(gl, u_P, &gameInfo.pMatrix)
+
+		// scan models
+
+		gl.BindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer)
+		gl.VertexAttribPointer(a_Position, VERTEX_POSITION_ITEM_SIZE, gl.FLOAT, false, 0, 0)
+
+		// scan instances
+
+		// put triangle at pos[0 0 1] front[0 0 -1] up[0 1 0]
+		i := newInstance("builtin", 0, 0, -1, 0, 1, 0, 0, 0, 1, 10)
+		i.uploadModelView(gl, u_MV, &gameInfo.cam)
+
+		vertexIndexOffset := 0
+		vertexIndexElementSize := 2 // uint16
+
+		gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer)
+		gl.DrawElements(gl.TRIANGLES, vertexIndexSize, gl.UNSIGNED_SHORT, vertexIndexOffset*vertexIndexElementSize)
 	*/
-	i := newInstance("builtin", 0, 0, -1, 0, 1, 0, 0, 0, 1, 10)
-	i.uploadModelView(gl, u_MV, &gameInfo.cam)
-
-	vertexIndexOffset := 0
-	vertexIndexElementSize := 2 // uint16
-
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexIndexBuffer)
-	gl.DrawElements(gl.TRIANGLES, vertexIndexSize, gl.UNSIGNED_SHORT, vertexIndexOffset*vertexIndexElementSize)
 }
 
 const FRAME_RATE = 2                     // frames per second
@@ -260,5 +252,5 @@ func main() {
 	//testModelView()
 	//testRotation()
 	//testView()
-	testModelTRU()
+	//testModelTRU()
 }
