@@ -7,24 +7,6 @@ import (
 	//"negentropia/world/obj"
 )
 
-/*
-var vertShaderSrc = `
-attribute vec3 a_Position;
-
-void main(void) {
-	gl_Position = vec4(a_Position, 1.0);
-}
-`
-
-var fragShaderSrc = `
-precision mediump float; // required
-
-void main(void) {
-	gl_FragColor = vec4(0.95, 0.95, .95, 1.0); // white opaque
-}
-`
-*/
-
 type shader interface {
 	name() string
 	init(gl *webgl.Context)
@@ -171,11 +153,6 @@ func compileShader(gl *webgl.Context, shaderSource string, shaderType int) *js.O
 
 func newShaderProgram(gl *webgl.Context, vertShaderURL, fragShaderURL string) *js.Object {
 
-	/*
-		vertShaderURL := "/shader/simple_vs.txt"
-		fragShaderURL := "/shader/simple_fs.txt"
-	*/
-
 	var vertShaderSrc, fragShaderSrc string
 
 	if buf, err := httpFetch(vertShaderURL); err != nil {
@@ -208,7 +185,6 @@ func newShaderProgram(gl *webgl.Context, vertShaderURL, fragShaderURL string) *j
 	gl.AttachShader(program, fragShader)
 	gl.LinkProgram(program)
 	progParameter := gl.GetProgramParameterb(program, gl.LINK_STATUS)
-	//log(fmt.Sprintf("program parameter=%v", progParameter))
 	if !progParameter {
 		infoLog := gl.GetProgramInfoLog(program)
 		log(fmt.Sprintf("newShaderProgram: infoLog=%v", infoLog))
