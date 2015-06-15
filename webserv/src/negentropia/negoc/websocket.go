@@ -108,7 +108,6 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 	}()
 
 	gameInfo.sock = &gameWebsocket{}
-
 	gameInfo.sock.open(wsUri, sid, status)
 
 	// reconnect loop

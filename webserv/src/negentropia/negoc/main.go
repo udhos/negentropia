@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/gopherjs/gopherjs/js"
+	//"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	//"math"
 	"negentropia/world/obj"
@@ -171,6 +171,7 @@ func testModelTRU() {
 type gameState struct {
 	gl                 *webgl.Context
 	sock               *gameWebsocket
+	sockWaitReady      chan int
 	defaultTextureUnit int
 	pMatrix            Matrix4 // perspective matrix
 	canvasAspect       float64
@@ -206,10 +207,6 @@ func main() {
 	gameInfo.textureTable = map[string]*texture{}
 	gameInfo.materialLib = obj.NewMaterialLib()
 
-	// BEGIN: useless code
-	eraseme(gameInfo.gl, "/shader/simple_vs.txt", "/shader/simple_fs.txt")
-	// END: useless code
-
 	initContext(gameInfo) // set aspectRatio
 
 	setPerspective(gameInfo) // requires aspectRatio
@@ -223,53 +220,10 @@ func main() {
 	//testView()
 	//testModelTRU()
 
-	var eraseme *js.Object = nil
-	if eraseme == nil {
-		// y u do dis spoderman?
-	}
-}
-
-func eraseme(gl *webgl.Context, vertShaderURL, fragShaderURL string) *js.Object {
-
-	var vertShaderSrc, fragShaderSrc string
-
-	if buf, err := httpFetch(vertShaderURL); err != nil {
-		log(fmt.Sprintf("newShaderProgram: fetch url=%v error: %v", vertShaderURL, err))
-	} else {
-		vertShaderSrc = string(buf[:])
-		log(fmt.Sprintf("newShaderProgram: url=%v loaded: %d bytes", vertShaderURL, len(vertShaderSrc)))
-	}
-
-	if buf, err := httpFetch(fragShaderURL); err != nil {
-		log(fmt.Sprintf("newShaderProgram: fetch url=%v error: %v", fragShaderURL, err))
-	} else {
-		fragShaderSrc = string(buf[:])
-		log(fmt.Sprintf("newShaderProgram: url=%v loaded: %d bytes", fragShaderURL, len(fragShaderSrc)))
-	}
-
-	vertShader := compileShader(gl, vertShaderSrc, gl.VERTEX_SHADER)
-	if vertShader == nil {
-		log("newShaderProgram: failure compiling vertex shader")
-		return nil
-	}
-	fragShader := compileShader(gl, fragShaderSrc, gl.FRAGMENT_SHADER)
-	if fragShader == nil {
-		log("newShaderProgram: failure compiling fragment shader")
-		return nil
-	}
-
-	program := gl.CreateProgram()
-	gl.AttachShader(program, vertShader)
-	gl.AttachShader(program, fragShader)
-	gl.LinkProgram(program)
-	progParameter := gl.GetProgramParameterb(program, gl.LINK_STATUS)
-	if !progParameter {
-		infoLog := gl.GetProgramInfoLog(program)
-		log(fmt.Sprintf("newShaderProgram: infoLog=%v", infoLog))
-		return nil
-	}
-
-	log("newShaderProgram: done")
-
-	return program
+	/*
+		var eraseme *js.Object = nil
+		if eraseme == nil {
+			// y u do dis spoderman?
+		}
+	*/
 }

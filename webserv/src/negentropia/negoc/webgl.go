@@ -6,6 +6,7 @@ import (
 	"github.com/gopherjs/webgl"
 	//"honnef.co/go/js/dom"
 	"math"
+	"time"
 )
 
 func initGL() *webgl.Context {
@@ -118,5 +119,12 @@ func initContext(gameInfo *gameState) {
 	// set default texture unit
 	gl.ActiveTexture(gl.TEXTURE0 + gameInfo.defaultTextureUnit)
 
-	requestZone(gameInfo.sock)
+	for {
+		if gameInfo.sock != nil {
+			requestZone(gameInfo.sock)
+			break
+		}
+		log("initContext: websocket is not ready")
+		time.Sleep(time.Second * 1)
+	}
 }
