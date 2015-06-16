@@ -127,6 +127,10 @@ func setIdentityMatrix(m *Matrix4) {
 	}
 }
 
+func distance3(x1, y1, z1, x2, y2, z2 float64) float64 {
+	return length3(x2-x1, y2-y1, z2-z1)
+}
+
 func ortho3(x1, y1, z1, x2, y2, z2 float64) bool {
 	return util.CloseToZero(dot3(x1, y1, z1, x2, y2, z2))
 }

@@ -1,4 +1,4 @@
 # texture_cube.mtl
 newmtl 3-pixel-rgb
-Kd 0 0 .5
+Kd .2 .2 .7
 map_Kd 3-pixel-rgb-png.png
