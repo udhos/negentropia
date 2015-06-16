@@ -14,8 +14,6 @@ func log(msg string) {
 	println(m)
 }
 
-const VERTEX_POSITION_ITEM_SIZE = 3 // x,y,z
-
 func draw(gameInfo *gameState, t time.Time) {
 
 	gl := gameInfo.gl
