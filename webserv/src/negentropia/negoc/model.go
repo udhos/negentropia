@@ -45,7 +45,7 @@ func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
 	return nil
 }
 
-func addGroupTexture(mod *model, gl *webgl.Context, textureTable map[string]*texture, groupListSize, i int, textureName, textureURL string, tempColor []byte) error {
+func addGroupTexture(mod *model, gl *webgl.Context, textureTable map[string]*texture, groupListSize, i int, textureName, textureURL string, tempColor []byte, wrap int) error {
 
 	//log(fmt.Sprintf("addGroupTexture: index=%d texture=%s", i, textureURL))
 
@@ -68,7 +68,7 @@ func addGroupTexture(mod *model, gl *webgl.Context, textureTable map[string]*tex
 		if t, ok = textureTable[textureURL]; !ok {
 			// texture not found - load it
 			var err error
-			if t, err = fetchTexture(gl, textureURL, tempColor); err != nil {
+			if t, err = fetchTexture(gl, textureURL, tempColor, wrap); err != nil {
 				log(fmt.Sprintf("addGroupTexture: %s", err)) // warning only
 			}
 			textureTable[textureURL] = t
@@ -79,8 +79,8 @@ func addGroupTexture(mod *model, gl *webgl.Context, textureTable map[string]*tex
 	return nil
 }
 
-func addGroupTextureNull(mod *model, groupListSize, i int) error {
-	return addGroupTexture(mod, nil, nil, groupListSize, i, "", "", []byte{})
+func addGroupTextureNull(mod *model, gl *webgl.Context, groupListSize, i int) error {
+	return addGroupTexture(mod, nil, nil, groupListSize, i, "", "", []byte{}, gl.CLAMP_TO_EDGE)
 }
 
 type GroupByTextureName struct {
@@ -158,7 +158,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 		if g.IndexCount < 3 {
 			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s bad index list size", objURL, g.Name, g.IndexCount, o.Mtllib))
-			if addGroupTextureNull(mod, groupListSize, i) != nil {
+			if addGroupTextureNull(mod, gl, groupListSize, i) != nil {
 				return nil
 			}
 			continue // skip group missing index list
@@ -166,7 +166,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 		if g.Usemtl == "" {
 			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s missing material name", objURL, g.Name, g.IndexCount, o.Mtllib))
-			if addGroupTextureNull(mod, groupListSize, i) != nil {
+			if addGroupTextureNull(mod, gl, groupListSize, i) != nil {
 				return nil
 			}
 			continue // skip group missing material name
@@ -181,7 +181,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 			if libErr := fetchMaterialLib(materialLib, libURL); libErr != nil {
 				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s LIB FAILURE: %v", objURL, g.Name, g.IndexCount, libURL, g.Usemtl, libErr))
-				if addGroupTextureNull(mod, groupListSize, i) != nil {
+				if addGroupTextureNull(mod, gl, groupListSize, i) != nil {
 					return nil
 				}
 				continue // ugh
@@ -191,7 +191,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 			if mat, matOk = materialLib.Lib[g.Usemtl]; !matOk {
 				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s MISSING material=%s", objURL, g.Name, g.IndexCount, libURL, g.Usemtl))
-				if addGroupTextureNull(mod, groupListSize, i) != nil {
+				if addGroupTextureNull(mod, gl, groupListSize, i) != nil {
 					return nil
 				}
 				continue // ugh
@@ -211,7 +211,14 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		b := byte(mat.Kd[2] * 255.0)
 		tempColor := []byte{r, g, b, 255}
 
-		if addGroupTexture(mod, gl, textureTable, groupListSize, i, mat.Map_Kd, textureURL, tempColor) != nil {
+		var wrap int
+		if repeatTexture {
+			wrap = gl.REPEAT
+		} else {
+			wrap = gl.CLAMP_TO_EDGE
+		}
+
+		if addGroupTexture(mod, gl, textureTable, groupListSize, i, mat.Map_Kd, textureURL, tempColor, wrap) != nil {
 			return nil
 		}
 	}

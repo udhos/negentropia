@@ -11,12 +11,45 @@ import (
 type texture struct {
 	URL     string
 	texture *js.Object
+	image   *js.Object
+	wrap    int
+}
+
+func isPowerOfTwo(v int) bool {
+	return v != 0 && (v&(v-1)) == 0
 }
 
 func onLoad(gl *webgl.Context, t *texture, textureURL string) {
 	log(fmt.Sprintf("onLoad: texture=%s image LOADED", textureURL))
 
-	log(fmt.Sprintf("onLoad: texture=%s FIXME WRITEME upload texture to GPU", textureURL))
+	gl.BindTexture(gl.TEXTURE_2D, t.texture)
+
+	gl.PixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1)
+
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, t.image)
+
+	// undo flip Y otherwise it could affect other texImage calls
+	gl.PixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0)
+
+	mipmap := isPowerOfTwo(t.image.Get("width").Int()) && isPowerOfTwo(t.image.Get("height").Int())
+
+	if mipmap {
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST)
+		gl.GenerateMipmap(gl.TEXTURE_2D)
+	} else {
+		log(fmt.Sprintf("onLoad: texture=%s can't enable MIPMAP for NPOT texture", textureURL))
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+	}
+
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, t.wrap)
+	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, t.wrap)
+
+	//int anisotropy = anisotropic_filtering_enable(gl, textureName)
+	log(fmt.Sprintf("onLoad: texture=%s FIXEME WRITEME enable anisotropic filtering", textureURL))
+
+	gl.BindTexture(gl.TEXTURE_2D, nil)
 }
 
 func newImage() *js.Object {
@@ -41,21 +74,23 @@ func loadSolidColor(gl *webgl.Context, texture *js.Object, rgba []byte) {
 	gl.BindTexture(gl.TEXTURE_2D, nil)
 }
 
-func fetchTexture(gl *webgl.Context, textureURL string, tempColor []byte) (*texture, error) {
+func fetchTexture(gl *webgl.Context, textureURL string, tempColor []byte, wrap int) (*texture, error) {
 	log(fmt.Sprintf("fetchTexture: texture=%s", textureURL))
 
 	tex := gl.CreateTexture()
 	loadSolidColor(gl, tex, tempColor)
-	t := &texture{URL: textureURL}
-	t.texture = tex // on return this will mark model.mesh.group.texture as done
+	t := &texture{URL: textureURL,
+		wrap:    wrap,
+		texture: tex, // on return this will mark model.mesh.group.texture as done
+	}
 
-	image := newImage()
+	t.image = newImage()
 
-	image.Set("onload", func() {
+	t.image.Set("onload", func() {
 		go onLoad(gl, t, textureURL)
 	})
 
-	image.Set("src", textureURL)
+	t.image.Set("src", textureURL)
 
 	return t, nil
 }
