@@ -164,7 +164,7 @@ func main() {
 
 	setPerspective(gameInfo) // requires aspectRatio
 
-	trapKeyboard()
+	trapKeyboard(gameInfo)
 
 	gameLoop(gameInfo)
 

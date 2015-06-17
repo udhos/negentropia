@@ -5,17 +5,20 @@ import (
 	"honnef.co/go/js/dom"
 )
 
-func handleKeyDown(ev dom.Event) {
-	kbev := ev.(*dom.KeyboardEvent)
+func trapKeyboard(gameInfo *gameState) {
 
-	switch kbev.KeyCode {
-	case 90:
-		log("handleKeyDown: Z key hit")
-	default:
-		log(fmt.Sprintf("handleKeyDown: keyCode=%d", kbev.KeyCode))
+	keyHandler := func(ev dom.Event) {
+		kbev := ev.(*dom.KeyboardEvent)
+
+		switch kbev.KeyCode {
+		case 90:
+			log("handleKeyDown: Z key hit: requesting zone switch")
+			switchZone(gameInfo.sock)
+		default:
+			log(fmt.Sprintf("handleKeyDown: keyCode=%d", kbev.KeyCode))
+		}
+
 	}
-}
 
-func trapKeyboard() {
-	docAddEventListener("keydown", false, handleKeyDown)
+	docAddEventListener("keydown", false, keyHandler)
 }

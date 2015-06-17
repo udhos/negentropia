@@ -10,7 +10,7 @@ func resetPickColor() {
 	log("resetPickColor: WRITEME")
 }
 
-func resetZone() {
+func resetZone(gameInfo *gameState) {
 	/*
 	   programList = new List<ShaderProgram>(); // drop existing shaders
 	   shaderCache = new Map<String, Shader>(); // drop existing compile shader cache
@@ -23,6 +23,9 @@ func resetZone() {
 	   solidShader =
 	       null; // drop axis shader (re-created only when any model instance is added)
 	*/
+
+	gameInfo.shaderList = []shader{}              // drop existing shaders
+	gameInfo.textureTable = map[string]*texture{} // drop existing texture table
 
 	resetPickColor()
 }
@@ -63,7 +66,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			}
 		}
 
-		resetZone()
+		resetZone(gameInfo)
 
 	case CM_CODE_SKYBOX:
 

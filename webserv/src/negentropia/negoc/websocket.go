@@ -42,6 +42,10 @@ type gameWebsocket struct {
 	encoder *json.Encoder
 }
 
+func switchZone(sock *gameWebsocket) {
+	sock.write(&ClientMsg{Code: CM_CODE_SWITCH_ZONE})
+}
+
 func requestZone(sock *gameWebsocket) {
 	sock.write(&ClientMsg{Code: CM_CODE_REQZ})
 }
