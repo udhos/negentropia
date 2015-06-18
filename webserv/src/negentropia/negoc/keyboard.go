@@ -1,24 +1,51 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"honnef.co/go/js/dom"
 )
 
+type keyboard struct {
+	keyDownZ bool
+}
+
+func keyPressedZ(gameInfo *gameState) {
+	log("keyPressedZ: requesting zone switch")
+	switchZone(gameInfo.sock)
+}
+
 func trapKeyboard(gameInfo *gameState) {
 
-	keyHandler := func(ev dom.Event) {
+	keyDownHandler := func(ev dom.Event) {
 		kbev := ev.(*dom.KeyboardEvent)
 
 		switch kbev.KeyCode {
 		case 90:
-			log("handleKeyDown: Z key hit: requesting zone switch")
-			switchZone(gameInfo.sock)
+			if !gameInfo.kb.keyDownZ {
+				gameInfo.kb.keyDownZ = true
+				keyPressedZ(gameInfo)
+			}
 		default:
-			log(fmt.Sprintf("handleKeyDown: keyCode=%d", kbev.KeyCode))
+			//log(fmt.Sprintf("keyDownHandler: keyCode=%d", kbev.KeyCode))
 		}
 
 	}
 
-	docAddEventListener("keydown", false, keyHandler)
+	keyUpHandler := func(ev dom.Event) {
+		kbev := ev.(*dom.KeyboardEvent)
+
+		switch kbev.KeyCode {
+		case 90:
+			if gameInfo.kb.keyDownZ {
+				gameInfo.kb.keyDownZ = false
+				//keyReleasedZ(gameInfo)
+			}
+		default:
+			//log(fmt.Sprintf("keyUpHandler: keyCode=%d", kbev.KeyCode))
+		}
+
+	}
+
+	docAddEventListener("keydown", false, keyDownHandler)
+	docAddEventListener("keyup", false, keyUpHandler)
 }

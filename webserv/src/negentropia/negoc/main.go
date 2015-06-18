@@ -133,6 +133,7 @@ type gameState struct {
 	textureTable       map[string]*texture
 	assetPath          asset
 	materialLib        obj.MaterialLib
+	kb                 keyboard
 }
 
 var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
