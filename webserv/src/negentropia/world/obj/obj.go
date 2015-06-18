@@ -242,6 +242,11 @@ func readObj(reader lineReader, options *ObjParserOptions) (*Obj, error) {
 		}
 	}
 
+	p.faceLines = 0
+	p.vertLines = 0
+	p.textLines = 0
+	p.normLines = 0
+
 	// 2. full parsing
 	if err, fatal := scanLines(p, o, reader, options); err != nil {
 		if fatal {
@@ -304,7 +309,7 @@ func readLines(p *objParser, o *Obj, reader lineReader, options *ObjParserOption
 		line, err := reader.ReadString('\n')
 		if err == io.EOF {
 			// parse last line
-			if e, fatal := parseLineVertex(p, o, line); e != nil {
+			if e, fatal := parseLineVertex(p, o, line, options); e != nil {
 				options.log(fmt.Sprintf("readLines: %v", e))
 				return e, fatal
 			}
@@ -316,7 +321,7 @@ func readLines(p *objParser, o *Obj, reader lineReader, options *ObjParserOption
 			return errors.New(fmt.Sprintf("readLines: error: %v", err)), FATAL
 		}
 
-		if e, fatal := parseLineVertex(p, o, line); e != nil {
+		if e, fatal := parseLineVertex(p, o, line, options); e != nil {
 			options.log(fmt.Sprintf("readLines: %v", e))
 			if fatal {
 				return e, fatal
@@ -328,7 +333,7 @@ func readLines(p *objParser, o *Obj, reader lineReader, options *ObjParserOption
 }
 
 // parse only vertex linux
-func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
+func parseLineVertex(p *objParser, o *Obj, rawLine string, options *ObjParserOptions) (error, bool) {
 	line := strings.TrimSpace(rawLine)
 
 	p.lineBuf = append(p.lineBuf, line) // save line for 2nd pass
@@ -340,11 +345,35 @@ func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 	case strings.HasPrefix(line, "g "):
 	case strings.HasPrefix(line, "usemtl "):
 	case strings.HasPrefix(line, "mtllib "):
-	case strings.HasPrefix(line, "vt "):
-	case strings.HasPrefix(line, "vn "):
 	case strings.HasPrefix(line, "f "):
+	case strings.HasPrefix(line, "vt "):
+
+		tex := line[3:]
+		t, err := parser.ParseFloatSliceSpace(tex)
+		if err != nil {
+			return fmt.Errorf("parseLine: line=%d bad vertex texture=[%s]: %v", p.lineCount, tex, err), NON_FATAL
+		}
+		size := len(t)
+		if size < 2 || size > 3 {
+			return fmt.Errorf("parseLine: line=%d bad vertex texture=[%s] size=%d", p.lineCount, tex, size), NON_FATAL
+		}
+		if size > 2 {
+			if w := t[2]; !util.CloseToZero(w) {
+				options.log(fmt.Sprintf("parseLine: line=%d non-zero third texture coordinate w=%f", p.lineCount, w))
+			}
+		}
+		p.textCoord = append(p.textCoord, float32(t[0]), float32(t[1]))
+
+	case strings.HasPrefix(line, "vn "):
+
+		norm := line[3:]
+		n, err := parser.ParseFloatVector3Space(norm)
+		if err != nil {
+			return fmt.Errorf("parseLine: line=%d bad vertex normal=[%s]: %v", p.lineCount, norm, err), NON_FATAL
+		}
+		p.normCoord = append(p.normCoord, float32(n[0]), float32(n[1]), float32(n[2]))
+
 	case strings.HasPrefix(line, "v "):
-		p.faceLines++
 
 		result, err := parser.ParseFloatSliceSpace(line[2:])
 		if err != nil {
@@ -360,6 +389,7 @@ func parseLineVertex(p *objParser, o *Obj, rawLine string) (error, bool) {
 		default:
 			return fmt.Errorf("parseLine %v: [%v]: bad number of coords: %v", p.lineCount, line, coordLen), NON_FATAL
 		}
+
 	default:
 		return fmt.Errorf("parseLine %v: [%v]: unexpected", p.lineCount, line), NON_FATAL
 	}
@@ -470,9 +500,17 @@ func addVertex(p *objParser, o *Obj, index string) error {
 
 	if nIndex != "" {
 		nOffset := ni * 3
+
+		//n, _ := strconv.ParseInt(ind[2], 10, 32)
+		//fmt.Printf("addVertex: n=%d ni=%d noffset=%d NORM=%v\n", n, ni, nOffset, p.normCoord)
+		//fmt.Printf("addVertex: COORD 1=%v\n", o.Coord)
+
 		o.Coord = append(o.Coord, p.normCoord[nOffset+0]) // x
 		o.Coord = append(o.Coord, p.normCoord[nOffset+1]) // y
 		o.Coord = append(o.Coord, p.normCoord[nOffset+2]) // z
+
+		//fmt.Printf("addVertex: COORD 2=%v\n", o.Coord)
+
 		o.NormCoordFound = true
 	}
 
@@ -545,34 +583,9 @@ func parseLine(p *objParser, o *Obj, line string, options *ObjParserOptions) (er
 			options.log(fmt.Sprintf("parseLine: line=%d mtllib redefinition old=%s new=%s", p.lineCount, o.Mtllib, mtllib))
 		}
 		o.Mtllib = mtllib
-	case strings.HasPrefix(line, "vt "):
-		p.textLines++
-
-		tex := line[3:]
-		t, err := parser.ParseFloatSliceSpace(tex)
-		if err != nil {
-			return fmt.Errorf("parseLine: line=%d bad vertex texture=[%s]: %v", p.lineCount, tex, err), NON_FATAL
-		}
-		size := len(t)
-		if size < 2 || size > 3 {
-			return fmt.Errorf("parseLine: line=%d bad vertex texture=[%s] size=%d", p.lineCount, tex, size), NON_FATAL
-		}
-		if size > 2 {
-			if w := t[2]; !util.CloseToZero(w) {
-				options.log(fmt.Sprintf("parseLine: line=%d non-zero third texture coordinate w=%f", p.lineCount, w))
-			}
-		}
-		p.textCoord = append(p.textCoord, float32(t[0]), float32(t[1]))
-	case strings.HasPrefix(line, "vn "):
-		p.normLines++
-
-		norm := line[3:]
-		n, err := parser.ParseFloatVector3Space(norm)
-		if err != nil {
-			return fmt.Errorf("parseLine: line=%d bad vertex normal=[%s]: %v", p.lineCount, norm, err), NON_FATAL
-		}
-		p.normCoord = append(p.normCoord, float32(n[0]), float32(n[1]), float32(n[2]))
 	case strings.HasPrefix(line, "f "):
+		p.faceLines++
+
 		face := line[2:]
 		f := strings.Fields(face)
 		size := len(f)
@@ -609,6 +622,37 @@ func parseLine(p *objParser, o *Obj, line string, options *ObjParserOptions) (er
 		}
 	case strings.HasPrefix(line, "v "):
 		p.vertLines++
+	case strings.HasPrefix(line, "vt "):
+		p.textLines++
+
+		/*
+			tex := line[3:]
+			t, err := parser.ParseFloatSliceSpace(tex)
+			if err != nil {
+				return fmt.Errorf("parseLine: line=%d bad vertex texture=[%s]: %v", p.lineCount, tex, err), NON_FATAL
+			}
+			size := len(t)
+			if size < 2 || size > 3 {
+				return fmt.Errorf("parseLine: line=%d bad vertex texture=[%s] size=%d", p.lineCount, tex, size), NON_FATAL
+			}
+			if size > 2 {
+				if w := t[2]; !util.CloseToZero(w) {
+					options.log(fmt.Sprintf("parseLine: line=%d non-zero third texture coordinate w=%f", p.lineCount, w))
+				}
+			}
+			p.textCoord = append(p.textCoord, float32(t[0]), float32(t[1]))
+		*/
+	case strings.HasPrefix(line, "vn "):
+		p.normLines++
+
+		/*
+			norm := line[3:]
+			n, err := parser.ParseFloatVector3Space(norm)
+			if err != nil {
+				return fmt.Errorf("parseLine: line=%d bad vertex normal=[%s]: %v", p.lineCount, norm, err), NON_FATAL
+			}
+			p.normCoord = append(p.normCoord, float32(n[0]), float32(n[1]), float32(n[2]))
+		*/
 	default:
 		return fmt.Errorf("parseLine %v: [%v]: unexpected", p.lineCount, line), NON_FATAL
 	}

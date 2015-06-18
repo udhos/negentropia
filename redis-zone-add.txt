@@ -13,12 +13,11 @@ hset p:simpleTexturizer fragmentShader /shader/simpleTex_fs.txt
 # add zone ------------------------------------------------------------
 
 hset z:simple_zone programName p:simpleTexturizer
-hset z:simple_zone cameraCoord 0,0,10
+hset z:simple_zone cameraCoord 0,0,30
 
-# add instance list to zone
 hset z:simple_zone instanceList l:simple_zone_instances
 del l:simple_zone_instances
-sadd l:simple_zone_instances m:cube1
+sadd l:simple_zone_instances m:cube1 m:must1
 
 hset o:cube_model objURL /obj/texture_cube.obj
 hset o:cube_model programName p:simpleTexturizer
@@ -27,6 +26,15 @@ hset o:cube_model modelUp 0,1,0
 
 hset m:cube1 obj o:cube_model
 hset m:cube1 coord 0,0,0
+hset m:cube1 scale 5
+
+hset o:car_mustang objURL /obj/mustang_impala.obj
+hset o:car_mustang programName p:simpleTexturizer
+hset o:car_mustang modelFront 0.0,0.0,-40.0
+hset o:car_mustang modelUp 0.0,40.0,0.0
+
+hset m:must1 obj o:car_mustang
+hset m:must1 coord 0,0,-10
 
 # ---
 
