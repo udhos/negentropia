@@ -17,7 +17,8 @@ hset z:simple_zone cameraCoord 0,0,30
 
 hset z:simple_zone instanceList l:simple_zone_instances
 del l:simple_zone_instances
-sadd l:simple_zone_instances m:cube1 m:must1
+#sadd l:simple_zone_instances m:cube1 m:must1
+sadd l:simple_zone_instances m:cube1
 
 hset o:cube_model objURL /obj/texture_cube.obj
 hset o:cube_model programName p:simpleTexturizer
