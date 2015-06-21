@@ -23,7 +23,9 @@ type instance struct {
 func newInstance(id string, modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ, scale float64) *instance {
 	i := &instance{id: id, scale: scale}
 
-	i.forwardX, i.forwardY, i.forwardZ, i.upX, i.upY, i.upZ, i.posX, i.posY, i.posZ = modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ
+	i.forwardX, i.forwardY, i.forwardZ = normalize3(modelForwardX, modelForwardY, modelForwardZ)
+	i.upX, i.upY, i.upZ = normalize3(modelUpX, modelUpY, modelUpZ)
+	i.posX, i.posY, i.posZ = posX, posY, posZ
 
 	// U: undo model implicit rotation
 	// R: apply instance-specific rotation

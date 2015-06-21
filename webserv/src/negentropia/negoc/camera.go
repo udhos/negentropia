@@ -41,16 +41,18 @@ var camRad = 0.0
 func incRad(r, delta float64) float64 {
 	const pi2 = 2 * math.Pi
 	r += delta
-	if r > pi2 {
-		r -= pi2
+	if r > .999*pi2 {
+		r = 0
 	}
 	return r
 }
 
 func loadCameraViewMatrixInto(cam *camera, V *Matrix4) {
 
-	delta := math.Pi / 10
+	delta := math.Pi / 20
 	camRad = incRad(camRad, delta)
+
+	//log(fmt.Sprintf("camera: angle=%v delta=%v", camRad*180/math.Pi, delta*180/math.Pi))
 
 	cos := math.Cos(camRad)
 	sin := math.Sin(camRad)

@@ -181,8 +181,9 @@ type objParser struct {
 }
 
 type ObjParserOptions struct {
-	LogStats bool
-	Logger   func(string)
+	LogStats      bool
+	Logger        func(string)
+	IgnoreNormals bool
 }
 
 func (opt *ObjParserOptions) log(msg string) {
@@ -442,7 +443,7 @@ func pushIndex(p *objParser, o *Obj, i int) {
 	p.currGroup.IndexCount++
 }
 
-func addVertex(p *objParser, o *Obj, index string) error {
+func addVertex(p *objParser, o *Obj, index string, options *ObjParserOptions) error {
 	ind := splitSlash(index)
 	size := len(ind)
 	if size < 1 || size > 3 {
@@ -498,7 +499,7 @@ func addVertex(p *objParser, o *Obj, index string) error {
 		o.TextCoordFound = true
 	}
 
-	if nIndex != "" {
+	if !options.IgnoreNormals && nIndex != "" {
 		nOffset := ni * 3
 
 		//n, _ := strconv.ParseInt(ind[2], 10, 32)
@@ -598,25 +599,25 @@ func parseLine(p *objParser, o *Obj, line string, options *ObjParserOptions) (er
 		// v0 v1 v2
 		// v2 v3 v0
 		p.triangles++
-		if err := addVertex(p, o, f[0]); err != nil {
+		if err := addVertex(p, o, f[0], options); err != nil {
 			return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v0=[%s]: %v", p.lineCount, face, f[0], err), NON_FATAL
 		}
-		if err := addVertex(p, o, f[1]); err != nil {
+		if err := addVertex(p, o, f[1], options); err != nil {
 			return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v1=[%s]: %v", p.lineCount, face, f[1], err), NON_FATAL
 		}
-		if err := addVertex(p, o, f[2]); err != nil {
+		if err := addVertex(p, o, f[2], options); err != nil {
 			return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v2=[%s]: %v", p.lineCount, face, f[2], err), NON_FATAL
 		}
 		if size > 3 {
 			// quad face
 			p.triangles++
-			if err := addVertex(p, o, f[2]); err != nil {
+			if err := addVertex(p, o, f[2], options); err != nil {
 				return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v2=[%s]: %v", p.lineCount, face, f[2], err), NON_FATAL
 			}
-			if err := addVertex(p, o, f[3]); err != nil {
+			if err := addVertex(p, o, f[3], options); err != nil {
 				return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v3=[%s]: %v", p.lineCount, face, f[3], err), NON_FATAL
 			}
-			if err := addVertex(p, o, f[0]); err != nil {
+			if err := addVertex(p, o, f[0], options); err != nil {
 				return fmt.Errorf("parseLine: line=%d bad face=[%s] index_v0=[%s]: %v", p.lineCount, face, f[0], err), NON_FATAL
 			}
 		}
