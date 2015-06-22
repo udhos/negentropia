@@ -11,6 +11,7 @@ import (
 
 	"github.com/udhos/vectormath"
 
+	"negentropia/ipc"
 	"negentropia/webserv/store"
 	"negentropia/world/obj"
 )
@@ -120,8 +121,8 @@ func sendUnitUpdate(unit *Unit, zid string) {
 		*/
 
 		// send unit update to player
-		p.SendToPlayer <- &ClientMsg{
-			Code: CM_CODE_INSTANCE_UPDATE,
+		p.SendToPlayer <- &ipc.ClientMsg{
+			Code: ipc.CM_CODE_INSTANCE_UPDATE,
 			Tab: map[string]string{
 				"id":      unit.uid,
 				"front":   vector3String(unit.front),

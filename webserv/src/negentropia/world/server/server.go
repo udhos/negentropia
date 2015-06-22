@@ -9,43 +9,21 @@ import (
 	//"code.google.com/p/go.net/websocket"
 	"golang.org/x/net/websocket"
 
+	"negentropia/ipc"
 	"negentropia/webserv/store"
 )
-
-const (
-	CM_CODE_FATAL           = 0
-	CM_CODE_INFO            = 1
-	CM_CODE_AUTH            = 2  // client->server: let me in
-	CM_CODE_ECHO            = 3  // client->server: please echo this
-	CM_CODE_KILL            = 4  // server->client: do not attempt reconnect on same session
-	CM_CODE_REQZ            = 5  // client->server: please send current zone
-	CM_CODE_ZONE            = 6  // server->client: reset client zone info
-	CM_CODE_SKYBOX          = 7  // server->client: set full skybox
-	CM_CODE_PROGRAM         = 8  // server->client: set shader program
-	CM_CODE_INSTANCE        = 9  // server->client: set instance
-	CM_CODE_INSTANCE_UPDATE = 10 // server->client: update instance
-	CM_CODE_MESSAGE         = 11 // server->client: message for user
-	CM_CODE_MISSION_NEXT    = 12 // client->server: switch mission
-	CM_CODE_SWITCH_ZONE     = 13 // client->server: switch zone
-)
-
-type ClientMsg struct {
-	Code int
-	Data string
-	Tab  map[string]string
-}
 
 type Player struct {
 	Sid          string
 	Email        string
 	Websocket    *websocket.Conn
-	SendToPlayer chan *ClientMsg
+	SendToPlayer chan *ipc.ClientMsg
 	Quit         chan int
 }
 
 type PlayerMsg struct {
 	Player *Player
-	Msg    *ClientMsg
+	Msg    *ipc.ClientMsg
 }
 
 var (
@@ -88,20 +66,20 @@ func serve() {
 }
 
 func sendZoneStatic(p *Player) {
-	p.SendToPlayer <- &ClientMsg{
-		Code: CM_CODE_ZONE,
+	p.SendToPlayer <- &ipc.ClientMsg{
+		Code: ipc.CM_CODE_ZONE,
 		Tab: map[string]string{
 			"backfaceCulling": "true",
 		},
 	}
-	p.SendToPlayer <- &ClientMsg{
-		Code: CM_CODE_SKYBOX,
+	p.SendToPlayer <- &ipc.ClientMsg{
+		Code: ipc.CM_CODE_SKYBOX,
 		Tab: map[string]string{
 			"skyboxURL": "/skybox/skybox_galaxy.json",
 		},
 	}
-	p.SendToPlayer <- &ClientMsg{
-		Code: CM_CODE_PROGRAM,
+	p.SendToPlayer <- &ipc.ClientMsg{
+		Code: ipc.CM_CODE_PROGRAM,
 		Tab: map[string]string{
 			"programName":    "simpleTexturizer",
 			"vertexShader":   "/shader/simpleTex_vs.txt",
@@ -119,8 +97,8 @@ func sendZoneStatic(p *Player) {
 	coordStr := fmt.Sprintf("%f,%f,%f", coord[0], coord[1], coord[2])
 	scaleStr := fmt.Sprintf("%f", scale)
 
-	p.SendToPlayer <- &ClientMsg{
-		Code: CM_CODE_INSTANCE,
+	p.SendToPlayer <- &ipc.ClientMsg{
+		Code: ipc.CM_CODE_INSTANCE,
 		Tab: map[string]string{
 			"objURL":         "/obj/airship.obj",
 			"programName":    "simpleTexturizer",
@@ -135,8 +113,8 @@ func sendZoneStatic(p *Player) {
 
 func sendZoneDynamic(p *Player, loc string) {
 
-	zoneMsg := ClientMsg{
-		Code: CM_CODE_ZONE,
+	zoneMsg := ipc.ClientMsg{
+		Code: ipc.CM_CODE_ZONE,
 		Tab:  map[string]string{},
 	}
 
@@ -153,8 +131,8 @@ func sendZoneDynamic(p *Player, loc string) {
 	}
 
 	if skybox := store.QueryField(loc, "skyboxURL"); skybox != "" {
-		p.SendToPlayer <- &ClientMsg{
-			Code: CM_CODE_SKYBOX,
+		p.SendToPlayer <- &ipc.ClientMsg{
+			Code: ipc.CM_CODE_SKYBOX,
 			Tab: map[string]string{
 				"skyboxURL": skybox,
 			},
@@ -165,8 +143,8 @@ func sendZoneDynamic(p *Player, loc string) {
 		vertex := store.QueryField(program, "vertexShader")
 		fragment := store.QueryField(program, "fragmentShader")
 
-		p.SendToPlayer <- &ClientMsg{
-			Code: CM_CODE_PROGRAM,
+		p.SendToPlayer <- &ipc.ClientMsg{
+			Code: ipc.CM_CODE_PROGRAM,
 			Tab: map[string]string{
 				"programName":    program,
 				"vertexShader":   vertex,
@@ -214,8 +192,8 @@ func sendZoneDynamic(p *Player, loc string) {
 				m["globeTextureURL"] = globeTextureURL
 			}
 
-			p.SendToPlayer <- &ClientMsg{
-				Code: CM_CODE_INSTANCE,
+			p.SendToPlayer <- &ipc.ClientMsg{
+				Code: ipc.CM_CODE_INSTANCE,
 				Tab:  m,
 			}
 
@@ -229,7 +207,7 @@ func sendZoneDynamic(p *Player, loc string) {
 }
 
 func msgPlayer(p *Player, msg string) {
-	p.SendToPlayer <- &ClientMsg{Code: CM_CODE_MESSAGE, Data: msg}
+	p.SendToPlayer <- &ipc.ClientMsg{Code: ipc.CM_CODE_MESSAGE, Data: msg}
 }
 
 func sendZone(p *Player, loc string) {
@@ -241,13 +219,13 @@ func sendZone(p *Player, loc string) {
 	sendZoneStatic(p)
 }
 
-func input(p *Player, m *ClientMsg) {
+func input(p *Player, m *ipc.ClientMsg) {
 	log.Printf("server.input: %s: %q", p.Email, m)
 
 	switch m.Code {
-	case CM_CODE_ECHO:
-		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: "echo: " + m.Data}
-	case CM_CODE_REQZ:
+	case ipc.CM_CODE_ECHO:
+		p.SendToPlayer <- &ipc.ClientMsg{Code: ipc.CM_CODE_INFO, Data: "echo: " + m.Data}
+	case ipc.CM_CODE_REQZ:
 		/*
 			location:
 				""    --> send "demo"       --> client will load hard-coded demo zone
@@ -255,19 +233,19 @@ func input(p *Player, m *ClientMsg) {
 				"*"   --> send static zone (hard-coded at server)
 		*/
 		if loc := store.QueryField(p.Email, "location"); loc == "" {
-			p.SendToPlayer <- &ClientMsg{Code: CM_CODE_ZONE, Data: "demo"}
+			p.SendToPlayer <- &ipc.ClientMsg{Code: ipc.CM_CODE_ZONE, Data: "demo"}
 		} else {
 			sendZone(p, loc)
 		}
-	case CM_CODE_MISSION_NEXT:
+	case ipc.CM_CODE_MISSION_NEXT:
 		for id := range m.Tab {
 			missionNext(p, id)
 		}
-	case CM_CODE_SWITCH_ZONE:
+	case ipc.CM_CODE_SWITCH_ZONE:
 		switchZone(p)
 	default:
 		log.Printf("server.input: unknown code=%d", m.Code)
-		p.SendToPlayer <- &ClientMsg{Code: CM_CODE_INFO, Data: fmt.Sprintf("unknown code=%d data=%v tab=%v", m.Code, m.Data, m.Tab)}
+		p.SendToPlayer <- &ipc.ClientMsg{Code: ipc.CM_CODE_INFO, Data: fmt.Sprintf("unknown code=%d data=%v tab=%v", m.Code, m.Data, m.Tab)}
 	}
 }
 

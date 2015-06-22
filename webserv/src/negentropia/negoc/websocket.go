@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/gopherjs/websocket"
 	//"golang.org/x/net/websocket"
 	"encoding/json"
 	"github.com/udhos/cookie"
 	"honnef.co/go/js/dom"
-	"negentropia/world/server"
-	"time"
+
+	"negentropia/ipc"
+	//"negentropia/world/server"
 )
 
 type gameWebsocket struct {
@@ -19,14 +22,14 @@ type gameWebsocket struct {
 }
 
 func switchZone(sock *gameWebsocket) {
-	sock.write(&server.ClientMsg{Code: server.CM_CODE_SWITCH_ZONE})
+	sock.write(&ipc.ClientMsg{Code: ipc.CM_CODE_SWITCH_ZONE})
 }
 
 func requestZone(sock *gameWebsocket) {
-	sock.write(&server.ClientMsg{Code: server.CM_CODE_REQZ})
+	sock.write(&ipc.ClientMsg{Code: ipc.CM_CODE_REQZ})
 }
 
-func (ws *gameWebsocket) write(msg *server.ClientMsg) error {
+func (ws *gameWebsocket) write(msg *ipc.ClientMsg) error {
 	log(fmt.Sprintf("websocket write: writing: %v", msg))
 
 	if ws.conn == nil {
@@ -69,7 +72,7 @@ func (ws *gameWebsocket) open(uri, sid string, status dom.Element) {
 	log(fmt.Sprintf("websocket open: %s", info))
 	ws.status.SetTextContent(info)
 
-	msg := &server.ClientMsg{Code: server.CM_CODE_AUTH, Data: sid}
+	msg := &ipc.ClientMsg{Code: ipc.CM_CODE_AUTH, Data: sid}
 
 	if err := ws.write(msg); err != nil {
 		log(fmt.Sprintf("websocket open: JSON encoding error: %s", err))
@@ -103,7 +106,7 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 			continue
 		}
 
-		msg := &server.ClientMsg{}
+		msg := &ipc.ClientMsg{}
 
 		// read loop
 		for {
@@ -118,7 +121,7 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 
 			//log(fmt.Sprintf("handleWebsocket: received=[%v]", msg))
 
-			if msg.Code == server.CM_CODE_KILL {
+			if msg.Code == ipc.CM_CODE_KILL {
 				info := fmt.Sprintf("server killed our session: %s", msg.Data)
 				log(fmt.Sprintf("handleWebsocket: %s", info))
 				gameInfo.sock.status.SetTextContent(info)

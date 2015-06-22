@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"negentropia/world/parser"
-	"negentropia/world/server"
 	"strings"
+
+	"negentropia/ipc"
+	"negentropia/world/parser"
 )
 
 func resetPickColor() {
@@ -20,17 +21,17 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 	//log(fmt.Sprintf("dispatch: code=%v data=%v tab=%v", code, data, tab))
 
 	switch code {
-	case server.CM_CODE_INFO:
+	case ipc.CM_CODE_INFO:
 
 		log(fmt.Sprintf("dispatch: server sent info: %s", data))
 
 		if strings.HasPrefix(data, "welcome") {
 			// test echo loop thru server
-			msg := &server.ClientMsg{Code: server.CM_CODE_ECHO, Data: "hi, please echo back this test"}
+			msg := &ipc.ClientMsg{Code: ipc.CM_CODE_ECHO, Data: "hi, please echo back this test"}
 			gameInfo.sock.write(msg)
 		}
 
-	case server.CM_CODE_ZONE:
+	case ipc.CM_CODE_ZONE:
 
 		if backfaceCulling, ok := tab["backfaceCulling"]; ok {
 			culling := stringIsTrue(backfaceCulling)
@@ -48,7 +49,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 
 		resetZone(gameInfo)
 
-	case server.CM_CODE_SKYBOX:
+	case ipc.CM_CODE_SKYBOX:
 
 		if skyboxURL, ok := tab["skyboxURL"]; ok {
 			fetchSkybox(skyboxURL)
@@ -56,7 +57,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			log("dispatch: missing skybox URL")
 		}
 
-	case server.CM_CODE_PROGRAM:
+	case ipc.CM_CODE_PROGRAM:
 
 		var nameOk, vertOk, fragOk bool
 		var programName, vertShader, fragShader string
@@ -75,14 +76,14 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			fetchShaderProgram(gameInfo, programName, vertShader, fragShader)
 		}
 
-	case server.CM_CODE_INSTANCE:
+	case ipc.CM_CODE_INSTANCE:
 
 		createInstance(gameInfo, tab)
 
-	case server.CM_CODE_INSTANCE_UPDATE:
+	case ipc.CM_CODE_INSTANCE_UPDATE:
 		log(fmt.Sprintf("dispatch: instance update: WRITEME"))
 
-	case server.CM_CODE_MESSAGE:
+	case ipc.CM_CODE_MESSAGE:
 		log(fmt.Sprintf("dispatch: message: WRITEME"))
 
 	default:
