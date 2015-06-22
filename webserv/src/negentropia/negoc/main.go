@@ -136,10 +136,18 @@ type gameState struct {
 	kb                 keyboard
 }
 
-var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
+//var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
+
+func resetGame(gameInfo *gameState) {
+	gameInfo.materialLib = obj.NewMaterialLib()
+	gameInfo.shaderList = []shader{}              // drop existing shaders
+	gameInfo.textureTable = map[string]*texture{} // drop existing texture table
+}
 
 func main() {
 	log("main: begin")
+
+	gameInfo := &gameState{defaultTextureUnit: 0}
 
 	gameInfo.gl = initGL()
 	if gameInfo.gl == nil {
@@ -158,8 +166,7 @@ func main() {
 		return
 	}
 
-	gameInfo.textureTable = map[string]*texture{}
-	gameInfo.materialLib = obj.NewMaterialLib()
+	resetGame(gameInfo)
 
 	initContext(gameInfo) // set aspectRatio
 

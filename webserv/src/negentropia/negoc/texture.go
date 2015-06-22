@@ -59,7 +59,7 @@ func newImage() *js.Object {
 
 func loadSolidColor(gl *webgl.Context, texture *js.Object, rgba []byte) {
 
-	log(fmt.Sprintf("loadSolidColor: %v", rgba))
+	//log(fmt.Sprintf("loadSolidColor: %v", rgba))
 
 	gl.BindTexture(gl.TEXTURE_2D, texture)
 

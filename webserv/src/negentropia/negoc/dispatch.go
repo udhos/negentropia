@@ -12,22 +12,7 @@ func resetPickColor() {
 }
 
 func resetZone(gameInfo *gameState) {
-	/*
-	   programList = new List<ShaderProgram>(); // drop existing shaders
-	   shaderCache = new Map<String, Shader>(); // drop existing compile shader cache
-	   textureTable = new Map<String, Texture>(); // drop existing texture table
-
-	   skybox =
-	       null; // drop skybox shader (re-created only when new skybox is added to zone)
-	   picker =
-	       null; // drop picking shader (re-created only when any model instance is added)
-	   solidShader =
-	       null; // drop axis shader (re-created only when any model instance is added)
-	*/
-
-	gameInfo.shaderList = []shader{}              // drop existing shaders
-	gameInfo.textureTable = map[string]*texture{} // drop existing texture table
-
+	resetGame(gameInfo)
 	resetPickColor()
 }
 
@@ -57,12 +42,6 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			if coord, err := parser.ParseFloatVector3Comma(camCoord); err != nil {
 				log(fmt.Sprintf("dispatch: error parsing Vector3(%s): %v", camCoord, err))
 			} else {
-				/*
-					if coord[2] > 5.0 {
-						coord[2] = 5.0
-					}
-					log(fmt.Sprintf("dispatch: FIXME forcing zone camera position=%v", coord))
-				*/
 				cameraMoveTo(&gameInfo.cam, coord)
 			}
 		}
