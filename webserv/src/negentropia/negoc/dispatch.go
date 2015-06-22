@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"negentropia/world/parser"
+	"negentropia/world/server"
 	"strings"
 )
 
@@ -34,17 +35,17 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 	//log(fmt.Sprintf("dispatch: code=%v data=%v tab=%v", code, data, tab))
 
 	switch code {
-	case CM_CODE_INFO:
+	case server.CM_CODE_INFO:
 
 		log(fmt.Sprintf("dispatch: server sent info: %s", data))
 
 		if strings.HasPrefix(data, "welcome") {
 			// test echo loop thru server
-			msg := &ClientMsg{Code: CM_CODE_ECHO, Data: "hi, please echo back this test"}
+			msg := &server.ClientMsg{Code: server.CM_CODE_ECHO, Data: "hi, please echo back this test"}
 			gameInfo.sock.write(msg)
 		}
 
-	case CM_CODE_ZONE:
+	case server.CM_CODE_ZONE:
 
 		if backfaceCulling, ok := tab["backfaceCulling"]; ok {
 			culling := stringIsTrue(backfaceCulling)
@@ -68,7 +69,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 
 		resetZone(gameInfo)
 
-	case CM_CODE_SKYBOX:
+	case server.CM_CODE_SKYBOX:
 
 		if skyboxURL, ok := tab["skyboxURL"]; ok {
 			fetchSkybox(skyboxURL)
@@ -76,7 +77,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			log("dispatch: missing skybox URL")
 		}
 
-	case CM_CODE_PROGRAM:
+	case server.CM_CODE_PROGRAM:
 
 		var nameOk, vertOk, fragOk bool
 		var programName, vertShader, fragShader string
@@ -95,14 +96,14 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			fetchShaderProgram(gameInfo, programName, vertShader, fragShader)
 		}
 
-	case CM_CODE_INSTANCE:
+	case server.CM_CODE_INSTANCE:
 
 		createInstance(gameInfo, tab)
 
-	case CM_CODE_INSTANCE_UPDATE:
+	case server.CM_CODE_INSTANCE_UPDATE:
 		log(fmt.Sprintf("dispatch: instance update: WRITEME"))
 
-	case CM_CODE_MESSAGE:
+	case server.CM_CODE_MESSAGE:
 		log(fmt.Sprintf("dispatch: message: WRITEME"))
 
 	default:

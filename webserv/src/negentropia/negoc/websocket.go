@@ -7,33 +7,9 @@ import (
 	"encoding/json"
 	"github.com/udhos/cookie"
 	"honnef.co/go/js/dom"
+	"negentropia/world/server"
 	"time"
 )
-
-// dup from world/server/server.go
-const (
-	CM_CODE_FATAL           = 0
-	CM_CODE_INFO            = 1
-	CM_CODE_AUTH            = 2  // client->server: let me in
-	CM_CODE_ECHO            = 3  // client->server: please echo this
-	CM_CODE_KILL            = 4  // server->client: do not attempt reconnect on same session
-	CM_CODE_REQZ            = 5  // client->server: please send current zone
-	CM_CODE_ZONE            = 6  // server->client: reset client zone info
-	CM_CODE_SKYBOX          = 7  // server->client: set full skybox
-	CM_CODE_PROGRAM         = 8  // server->client: set shader program
-	CM_CODE_INSTANCE        = 9  // server->client: set instance
-	CM_CODE_INSTANCE_UPDATE = 10 // server->client: update instance
-	CM_CODE_MESSAGE         = 11 // server->client: message for user
-	CM_CODE_MISSION_NEXT    = 12 // client->server: switch mission
-	CM_CODE_SWITCH_ZONE     = 13 // client->server: switch zone
-)
-
-// dup from world/server/server.go
-type ClientMsg struct {
-	Code int
-	Data string
-	Tab  map[string]string
-}
 
 type gameWebsocket struct {
 	uri     string
@@ -43,14 +19,14 @@ type gameWebsocket struct {
 }
 
 func switchZone(sock *gameWebsocket) {
-	sock.write(&ClientMsg{Code: CM_CODE_SWITCH_ZONE})
+	sock.write(&server.ClientMsg{Code: server.CM_CODE_SWITCH_ZONE})
 }
 
 func requestZone(sock *gameWebsocket) {
-	sock.write(&ClientMsg{Code: CM_CODE_REQZ})
+	sock.write(&server.ClientMsg{Code: server.CM_CODE_REQZ})
 }
 
-func (ws *gameWebsocket) write(msg *ClientMsg) error {
+func (ws *gameWebsocket) write(msg *server.ClientMsg) error {
 	log(fmt.Sprintf("websocket write: writing: %v", msg))
 
 	if ws.conn == nil {
@@ -93,7 +69,7 @@ func (ws *gameWebsocket) open(uri, sid string, status dom.Element) {
 	log(fmt.Sprintf("websocket open: %s", info))
 	ws.status.SetTextContent(info)
 
-	msg := &ClientMsg{Code: CM_CODE_AUTH, Data: sid}
+	msg := &server.ClientMsg{Code: server.CM_CODE_AUTH, Data: sid}
 
 	if err := ws.write(msg); err != nil {
 		log(fmt.Sprintf("websocket open: JSON encoding error: %s", err))
@@ -127,7 +103,7 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 			continue
 		}
 
-		msg := &ClientMsg{}
+		msg := &server.ClientMsg{}
 
 		// read loop
 		for {
@@ -142,7 +118,7 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 
 			//log(fmt.Sprintf("handleWebsocket: received=[%v]", msg))
 
-			if msg.Code == CM_CODE_KILL {
+			if msg.Code == server.CM_CODE_KILL {
 				info := fmt.Sprintf("server killed our session: %s", msg.Data)
 				log(fmt.Sprintf("handleWebsocket: %s", info))
 				gameInfo.sock.status.SetTextContent(info)
