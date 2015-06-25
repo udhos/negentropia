@@ -93,8 +93,15 @@ func setPerspective(gameInfo *gameState) {
 	//log(fmt.Sprintf("perspective: %v", gameInfo.pMatrix))
 }
 
-func enableExtensions() {
-	log("enableExtensions: WRITEME detect and enable WebGL extensions")
+func enableExtensionUintIndex(gameInfo *gameState) {
+	extName := "OES_element_index_uint"
+	ext := gameInfo.gl.GetExtension(extName)
+	gameInfo.extensionUintIndexEnabled = ext != nil
+	log(fmt.Sprintf("enableExtensionUintIndex: support for extension [%s] is [%v]", extName, gameInfo.extensionUintIndexEnabled))
+}
+
+func enableExtensions(gameInfo *gameState) {
+	enableExtensionUintIndex(gameInfo)
 }
 
 func updateViewport(gameInfo *gameState) {
@@ -102,7 +109,7 @@ func updateViewport(gameInfo *gameState) {
 }
 
 func initContext(gameInfo *gameState) {
-	enableExtensions()
+	enableExtensions(gameInfo)
 
 	gl := gameInfo.gl
 

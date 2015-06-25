@@ -33,6 +33,8 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 
 	case ipc.CM_CODE_ZONE:
 
+		log("dispatch: server sending NEW ZONE")
+
 		if backfaceCulling, ok := tab["backfaceCulling"]; ok {
 			culling := stringIsTrue(backfaceCulling)
 			//log(fmt.Sprintf("dispatch: zone: backfaceCulling: recv=%s parsed=%v", backfaceCulling, culling))
@@ -79,6 +81,8 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 	case ipc.CM_CODE_INSTANCE:
 
 		createInstance(gameInfo, tab)
+
+		countInstances(gameInfo)
 
 	case ipc.CM_CODE_INSTANCE_UPDATE:
 		log(fmt.Sprintf("dispatch: instance update: WRITEME"))

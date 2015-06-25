@@ -123,17 +123,18 @@ func testModelTRU() {
 }
 
 type gameState struct {
-	gl                 *webgl.Context
-	sock               *gameWebsocket
-	defaultTextureUnit int
-	pMatrix            Matrix4 // perspective matrix
-	canvasAspect       float64
-	cam                camera
-	shaderList         []shader
-	textureTable       map[string]*texture
-	assetPath          asset
-	materialLib        obj.MaterialLib
-	kb                 keyboard
+	gl                        *webgl.Context
+	sock                      *gameWebsocket
+	defaultTextureUnit        int
+	pMatrix                   Matrix4 // perspective matrix
+	canvasAspect              float64
+	cam                       camera
+	shaderList                []shader
+	textureTable              map[string]*texture
+	assetPath                 asset
+	materialLib               obj.MaterialLib
+	kb                        keyboard
+	extensionUintIndexEnabled bool
 }
 
 //var gameInfo *gameState = &gameState{defaultTextureUnit: 0}

@@ -119,7 +119,7 @@ func showGroups(m *model) {
 
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	front, up []float64, assetPath asset, textureTable map[string]*texture,
-	repeatTexture bool, materialLib obj.MaterialLib) *model {
+	repeatTexture bool, materialLib obj.MaterialLib, extensionUintIndexEnabled bool) *model {
 
 	// allocate new model
 	mod := &model{modelName: modelName}
@@ -242,8 +242,8 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	// buffer for indices
 	mod.vertexIndexBuffer = gl.CreateBuffer()
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, mod.vertexIndexBuffer)
-	if o.BigIndexFound {
-		log(fmt.Sprintf("newModel: objURL=%s BigIndexFound FIXME: check WebGL extension for big index", objURL))
+	if o.BigIndexFound && extensionUintIndexEnabled {
+		//log(fmt.Sprintf("newModel: objURL=%s BigIndexFound FIXME: check WebGL extension for big index", objURL))
 
 		list := make([]uint32, len(o.Indices))
 		for i, v := range o.Indices {
@@ -253,6 +253,10 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		mod.vertexIndexElementType = gl.UNSIGNED_INT
 		mod.vertexIndexElementSize = 4
 	} else {
+		if o.BigIndexFound && extensionUintIndexEnabled {
+			log(fmt.Sprintf("newModel: objURL=%s BigIndexFound BUT WebGL extension missing", objURL))
+		}
+
 		list := make([]uint16, len(o.Indices))
 		for i, v := range o.Indices {
 			list[i] = uint16(v)
@@ -261,6 +265,9 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		mod.vertexIndexElementType = gl.UNSIGNED_SHORT
 		mod.vertexIndexElementSize = 2
 	}
+
+	log(fmt.Sprintf("newModel: objURL=%s bigIndexFound=%v uintIndexEnabled=%v elemType=%d elemSize=%d",
+		objURL, o.BigIndexFound, extensionUintIndexEnabled, mod.vertexIndexElementType, mod.vertexIndexElementSize))
 
 	// push new model into shader.modelList
 	s.addModel(mod)

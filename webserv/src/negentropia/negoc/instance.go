@@ -214,7 +214,7 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 	mod := shader.findModel(modelName)
 	if mod == nil {
 		log(fmt.Sprintf("createInstance: id=%s program=%s model=%s not found", id, programName, modelName))
-		if mod = newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.assetPath, gameInfo.textureTable, repeat, gameInfo.materialLib); mod == nil {
+		if mod = newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.assetPath, gameInfo.textureTable, repeat, gameInfo.materialLib, gameInfo.extensionUintIndexEnabled); mod == nil {
 			log(fmt.Sprintf("createInstance: id=%s program=%s failure creating model=%s", id, programName, modelName))
 			return
 		}
@@ -231,4 +231,18 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 	log(fmt.Sprintf("createInstance: id=%s prog=%s coord=%v f=%v u=%v scale=%f inst=%v", id, programName, c, f, u, s, inst))
 
 	mod.addInstance(inst)
+}
+
+func countInstances(gameInfo *gameState) {
+	log(fmt.Sprintf("countInstances: shaderList=%v size=%d", &gameInfo.shaderList, len(gameInfo.shaderList)))
+
+	for _, s := range gameInfo.shaderList {
+		t := s.(*simpleTexturizer)
+
+		log(fmt.Sprintf("countInstances: shader=%v models=%d", t.name(), len(t.modelList)))
+
+		for _, m := range t.modelList {
+			log(fmt.Sprintf("countInstances: shader=%v model=%s instances=%d", t.name(), m.modelName, len(m.instanceList)))
+		}
+	}
 }
