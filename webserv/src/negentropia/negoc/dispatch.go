@@ -54,7 +54,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 	case ipc.CM_CODE_SKYBOX:
 
 		if skyboxURL, ok := tab["skyboxURL"]; ok {
-			fetchSkybox(skyboxURL)
+			fetchSkybox(gameInfo, skyboxURL)
 		} else {
 			log("dispatch: missing skybox URL")
 		}
