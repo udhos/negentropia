@@ -232,17 +232,3 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 
 	mod.addInstance(inst)
 }
-
-func countInstances(gameInfo *gameState) {
-	log(fmt.Sprintf("countInstances: shaderList=%v size=%d", &gameInfo.shaderList, len(gameInfo.shaderList)))
-
-	for _, s := range gameInfo.shaderList {
-		t := s.(*simpleTexturizer)
-
-		log(fmt.Sprintf("countInstances: shader=%v models=%d", t.name(), len(t.modelList)))
-
-		for _, m := range t.modelList {
-			log(fmt.Sprintf("countInstances: shader=%v model=%s instances=%d", t.name(), m.modelName, len(m.instanceList)))
-		}
-	}
-}

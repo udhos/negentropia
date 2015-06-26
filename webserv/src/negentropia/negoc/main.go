@@ -137,8 +137,6 @@ type gameState struct {
 	extensionUintIndexEnabled bool
 }
 
-//var gameInfo *gameState = &gameState{defaultTextureUnit: 0}
-
 func resetGame(gameInfo *gameState) {
 	gameInfo.materialLib = obj.NewMaterialLib()
 	gameInfo.shaderList = []shader{}              // drop existing shaders

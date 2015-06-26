@@ -82,7 +82,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 
 		createInstance(gameInfo, tab)
 
-		countInstances(gameInfo)
+		//countInstances(gameInfo)
 
 	case ipc.CM_CODE_INSTANCE_UPDATE:
 		log(fmt.Sprintf("dispatch: instance update: WRITEME"))
@@ -92,5 +92,19 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 
 	default:
 		log(fmt.Sprintf("dispatch: unknown code=%v data=%v tab=%v", code, data, tab))
+	}
+}
+
+func countInstances(gameInfo *gameState) {
+	log(fmt.Sprintf("countInstances: shaderList=%v size=%d", &gameInfo.shaderList, len(gameInfo.shaderList)))
+
+	for _, s := range gameInfo.shaderList {
+		t := s.(*simpleTexturizer)
+
+		log(fmt.Sprintf("countInstances: shader=%v models=%d", t.name(), len(t.modelList)))
+
+		for _, m := range t.modelList {
+			log(fmt.Sprintf("countInstances: shader=%v model=%s instances=%d", t.name(), m.modelName, len(m.instanceList)))
+		}
 	}
 }
