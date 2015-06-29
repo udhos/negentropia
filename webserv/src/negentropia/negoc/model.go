@@ -289,20 +289,28 @@ func (m *model) draw(gameInfo *gameState, prog shader) {
 		gl.FLOAT, false, m.mesh.StrideSize,
 		m.mesh.StrideOffsetPosition)
 
+	texturizer, isTexturizer := prog.(*simpleTexturizer)
+
 	// texture coord s,t
-	gl.VertexAttribPointer(prog.attrLoc_TextureCoord(),
-		textureCoordBufferItemSize,
-		gl.FLOAT, false, m.mesh.StrideSize,
-		m.mesh.StrideOffsetTexture)
+	if isTexturizer {
+		gl.VertexAttribPointer(texturizer.attrLoc_TextureCoord(),
+			textureCoordBufferItemSize,
+			gl.FLOAT, false, m.mesh.StrideSize,
+			m.mesh.StrideOffsetTexture)
+	}
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.vertexIndexBuffer)
 
 	u_MV := prog.unif_MV()
-	u_Sampler := prog.unif_Sampler()
 
-	for _, inst := range m.instanceList {
-		inst.draw(gameInfo, m, u_MV, u_Sampler)
+	if isTexturizer {
+		u_Sampler := texturizer.unif_Sampler()
+		for _, inst := range m.instanceList {
+			inst.draw(gameInfo, m, u_MV, u_Sampler)
+		}
 	}
+
+	// FIXME: Unable to draw non-texturized models
 }
 
 func (m *model) name() string {

@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	//"math"
+	"time"
+
 	//"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
-	//"math"
+
 	"negentropia/world/obj"
-	"time"
 )
 
 func log(msg string) {
@@ -25,6 +27,11 @@ func draw(gameInfo *gameState, t time.Time) {
 
 	for _, s := range gameInfo.shaderList {
 		s.draw(gameInfo)
+	}
+
+	skybox := gameInfo.skybox
+	if skybox != nil {
+		skybox.draw(gameInfo)
 	}
 }
 
@@ -135,6 +142,7 @@ type gameState struct {
 	materialLib               obj.MaterialLib
 	kb                        keyboard
 	extensionUintIndexEnabled bool
+	skybox                    *skyboxShader
 }
 
 func resetGame(gameInfo *gameState) {

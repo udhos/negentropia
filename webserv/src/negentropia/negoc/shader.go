@@ -9,28 +9,32 @@ import (
 
 type shader interface {
 	name() string
-	init(gl *webgl.Context)
+	//init(gl *webgl.Context)
 	draw(gameInfo *gameState)
 	findModel(name string) *model
 	addModel(model *model)
 	unif_MV() *js.Object
-	unif_Sampler() *js.Object
+	//unif_Sampler() *js.Object
 	attrLoc_Position() int
-	attrLoc_TextureCoord() int
+	//attrLoc_TextureCoord() int
+}
+
+type simpleShader struct {
+	program    *js.Object
+	progName   string
+	u_P        *js.Object
+	u_MV       *js.Object
+	a_Position int
+	modelList  []*model
 }
 
 type simpleTexturizer struct {
-	program        *js.Object
-	progName       string
-	u_P            *js.Object
-	u_MV           *js.Object
+	simpleShader
 	u_Sampler      *js.Object
-	a_Position     int
 	a_TextureCoord int
-	modelList      []*model
 }
 
-func (s *simpleTexturizer) unif_MV() *js.Object {
+func (s *simpleShader) unif_MV() *js.Object {
 	return s.u_MV
 }
 
@@ -38,7 +42,7 @@ func (s *simpleTexturizer) unif_Sampler() *js.Object {
 	return s.u_Sampler
 }
 
-func (s *simpleTexturizer) attrLoc_Position() int {
+func (s *simpleShader) attrLoc_Position() int {
 	return s.a_Position
 }
 
@@ -46,11 +50,11 @@ func (s *simpleTexturizer) attrLoc_TextureCoord() int {
 	return s.a_TextureCoord
 }
 
-func (s *simpleTexturizer) addModel(m *model) {
+func (s *simpleShader) addModel(m *model) {
 	s.modelList = append(s.modelList, m)
 }
 
-func (s *simpleTexturizer) findModel(name string) *model {
+func (s *simpleShader) findModel(name string) *model {
 	for _, m := range s.modelList {
 		if name == m.name() {
 			return m
@@ -59,11 +63,11 @@ func (s *simpleTexturizer) findModel(name string) *model {
 	return nil
 }
 
-func (s *simpleTexturizer) name() string {
+func (s *simpleShader) name() string {
 	return s.progName
 }
 
-func (s *simpleTexturizer) getUniform(gl *webgl.Context, uniform string) *js.Object {
+func (s *simpleShader) getUniform(gl *webgl.Context, uniform string) *js.Object {
 	u := gl.GetUniformLocation(s.program, uniform)
 	if u == nil {
 		log(fmt.Sprintf("simpleTexturizer.getUniform: could not get uniform location: %s", uniform))
@@ -71,7 +75,7 @@ func (s *simpleTexturizer) getUniform(gl *webgl.Context, uniform string) *js.Obj
 	return u
 }
 
-func (s *simpleTexturizer) getAttrib(gl *webgl.Context, attr string) int {
+func (s *simpleShader) getAttrib(gl *webgl.Context, attr string) int {
 	a := gl.GetAttribLocation(s.program, attr)
 	if a < 0 {
 		log(fmt.Sprintf("simpleTexturizer.getAttrib: could not get attrib location: %s", attr))
@@ -130,9 +134,9 @@ func fetchShaderProgram(gameInfo *gameState, programName, vertShader, fragShader
 	}
 
 	// create new shader
-	s = &simpleTexturizer{program: prog, progName: programName}
-	s.init(gameInfo.gl)
-	gameInfo.shaderList = append(gameInfo.shaderList, s)
+	t := &simpleTexturizer{simpleShader: simpleShader{program: prog, progName: programName}}
+	t.init(gameInfo.gl)
+	gameInfo.shaderList = append(gameInfo.shaderList, t)
 }
 
 func compileShader(gl *webgl.Context, shaderSource string, shaderType int) *js.Object {
