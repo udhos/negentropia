@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/gopherjs/gopherjs/js"
+
+	"negentropia/world/obj"
 )
 
 // skybox struct for decoding json
@@ -23,7 +25,7 @@ type skybox struct {
 type cube struct {
 	VertCoord []float32
 	TexCoord  []float32
-	VertInd   []uint16
+	VertInd   []int
 }
 
 type skyboxShader struct {
@@ -70,14 +72,18 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 
 	skybox := &skyboxShader{simpleShader: simpleShader{program: prog, progName: "skybox"}}
 
-	log(fmt.Sprintf("fetchSkybox: skyboxURL=%s JSON=%v skybox=%v FIXME WRITEME", skyboxURL, string(buf), box))
-
 	// create model from mesh
+	var o *obj.Obj
+	o, err = obj.NewObjFromVertex(cube.VertCoord, cube.VertInd)
+
+	log(fmt.Sprintf("fetchSkybox: skyboxURL=%s JSON=%v skybox=%v mesh=%v FIXME WRITEME", skyboxURL, string(buf), box, o))
+
 	// add cubemap faces to model
 	// add instance to model
 	// add model to shader
 
 	gameInfo.skybox = skybox
+
 	gameInfo.skybox = nil // FIXME ERASEME this line
 }
 

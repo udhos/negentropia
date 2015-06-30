@@ -215,6 +215,23 @@ func (o *Obj) VertexCoordinates(stride int) (float32, float32, float32) {
 
 //type lineParser func(p *objParser, o *Obj, rawLine string) (error, bool)
 
+func NewObjFromVertex(coord []float32, indices []int) (*Obj, error) {
+	o := &Obj{}
+
+	group := o.newGroup("", "", 0, 0)
+
+	for _, c := range coord {
+		o.Coord = append(o.Coord, c)
+	}
+	for _, ind := range indices {
+		pushIndex(group, o, ind)
+	}
+
+	setupStride(o)
+
+	return o, nil
+}
+
 func NewObjFromBuf(buf []byte, options *ObjParserOptions) (*Obj, error) {
 	return readObj(bytes.NewBuffer(buf), options)
 }
@@ -225,6 +242,23 @@ func NewObjFromReader(rd *bufio.Reader, options *ObjParserOptions) (*Obj, error)
 
 type lineReader interface {
 	ReadString(delim byte) (string, error)
+}
+
+func setupStride(o *Obj) {
+	o.StrideSize = 3 * 4 // (px,py,pz) = 3 x 4-byte floats
+	o.StrideOffsetPosition = 0
+	o.StrideOffsetTexture = 0
+	o.StrideOffsetNormal = 0
+
+	if o.TextCoordFound {
+		o.StrideOffsetTexture = o.StrideSize
+		o.StrideSize += 2 * 4 // add (tu,tv) = 2 x 4-byte floats
+	}
+
+	if o.NormCoordFound {
+		o.StrideOffsetNormal = o.StrideSize
+		o.StrideSize += 3 * 4 // add (nx,ny,nz) = 3 x 4-byte floats
+	}
 }
 
 func readObj(reader lineReader, options *ObjParserOptions) (*Obj, error) {
@@ -270,32 +304,15 @@ func readObj(reader lineReader, options *ObjParserOptions) (*Obj, error) {
 	}
 	o.Groups = tmp
 
-	// setup stride size
-	o.StrideSize = 3 * 4 // (px,py,pz) = 3 x 4-byte floats
-	o.StrideOffsetPosition = 0
-	o.StrideOffsetTexture = 0
-	o.StrideOffsetNormal = 0
-
-	if o.TextCoordFound {
-		o.StrideOffsetTexture = o.StrideSize
-		o.StrideSize += 2 * 4 // add (tu,tv) = 2 x 4-byte floats
-	}
-
-	if o.NormCoordFound {
-		o.StrideOffsetNormal = o.StrideSize
-		o.StrideSize += 3 * 4 // add (nx,ny,nz) = 3 x 4-byte floats
-	}
+	setupStride(o) // setup stride size
 
 	if options.LogStats {
 		options.log(fmt.Sprintf("readObj: INPUT lines=%v vertLines=%v textLines=%v normLines=%v faceLines=%v triangles=%v",
 			p.lineCount, p.vertLines, p.textLines, p.normLines, p.faceLines, p.triangles))
 
 		options.log(fmt.Sprintf("readObj: STATS numberOfElements=%v indicesArraySize=%v", p.indexCount, len(o.Indices)))
-
 		options.log(fmt.Sprintf("readObj: STATS bigIndexFound=%v groups=%v", o.BigIndexFound, len(o.Groups)))
-
 		options.log(fmt.Sprintf("readObj: STATS textureCoordFound=%v normalCoordFound=%v", o.TextCoordFound, o.NormCoordFound))
-
 		options.log(fmt.Sprintf("readObj: STATS stride=%v textureOffset=%v normalOffset=%v", o.StrideSize, o.StrideOffsetTexture, o.StrideOffsetNormal))
 	}
 
@@ -435,12 +452,12 @@ func splitSlash(s string) []string {
 
 }
 
-func pushIndex(p *objParser, o *Obj, i int) {
+func pushIndex(currGroup *Group, o *Obj, i int) {
 	if i > 65535 {
 		o.BigIndexFound = true
 	}
 	o.Indices = append(o.Indices, i)
-	p.currGroup.IndexCount++
+	currGroup.IndexCount++
 }
 
 func addVertex(p *objParser, o *Obj, index string, options *ObjParserOptions) error {
@@ -482,7 +499,7 @@ func addVertex(p *objParser, o *Obj, index string, options *ObjParserOptions) er
 
 	// known unified index?
 	if i, ok := p.indexTable[absIndex]; ok {
-		pushIndex(p, o, i)
+		pushIndex(p.currGroup, o, i)
 		return nil
 	}
 
@@ -516,7 +533,7 @@ func addVertex(p *objParser, o *Obj, index string, options *ObjParserOptions) er
 	}
 
 	// add unified index
-	pushIndex(p, o, p.indexCount)
+	pushIndex(p.currGroup, o, p.indexCount)
 	//fmt.Printf("absIndex=%s indexCount=%d\n", absIndex, p.indexCount)
 	p.indexTable[absIndex] = p.indexCount
 	p.indexCount++

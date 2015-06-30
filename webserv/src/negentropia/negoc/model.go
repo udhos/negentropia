@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"sort"
+
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
+
 	"negentropia/world/obj"
-	"sort"
 )
 
 type model struct {
