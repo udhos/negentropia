@@ -72,7 +72,7 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 
 	log(fmt.Sprintf("fetchSkybox: skyboxURL=%s JSON=%v skybox=%v FIXME WRITEME", skyboxURL, string(buf), box))
 
-	// create model
+	// create model from mesh
 	// add cubemap faces to model
 	// add instance to model
 	// add model to shader

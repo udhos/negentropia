@@ -2,13 +2,15 @@ package main
 
 import (
 	//"fmt"
+
 	"honnef.co/go/js/dom"
 )
 
 type keyboard struct {
-	keyDownZ bool
+	keyDownZ bool // Z key state is down
 }
 
+// keyPressedZ is called only once when key state changes from UP to DOWN
 func keyPressedZ(gameInfo *gameState) {
 	log("keyPressedZ: requesting zone switch")
 	switchZone(gameInfo.sock)
