@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gopherjs/gopherjs/js"
+	"github.com/gopherjs/webgl"
 
 	"negentropia/world/obj"
 )
@@ -16,6 +17,7 @@ type skybox struct {
 	FragmentShader string
 	FaceRight      string
 	FaceLeft       string
+	FaceUp         string
 	FaceDown       string
 	FaceFront      string
 	FaceBack       string
@@ -31,6 +33,39 @@ type cube struct {
 type skyboxShader struct {
 	simpleShader
 	u_Skybox *js.Object
+}
+
+type skyboxModel struct {
+	model
+	cubemapTexture *js.Object
+}
+
+func onCubemapFaceLoad(gl *webgl.Context, s *skyboxModel, image *js.Object, face int, faceURL string) {
+
+	log(fmt.Sprintf("onCubemapFaceLoad: faceURL=%s", faceURL))
+
+	gl.BindTexture(gl.TEXTURE_CUBE_MAP, s.cubemapTexture)
+
+	gl.TexParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+	gl.TexParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+
+	gl.TexImage2D(face, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
+
+	gl.TexParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+	gl.TexParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+	gl.BindTexture(gl.TEXTURE_CUBE_MAP, nil)
+}
+
+func (s *skyboxModel) addCubemapFace(gl *webgl.Context, face int, faceURL string) {
+
+	image := newImage()
+
+	image.Set("onload", func() {
+		go onCubemapFaceLoad(gl, s, image, face, faceURL)
+	})
+
+	image.Set("src", faceURL)
 }
 
 func fetchSkybox(gameInfo *gameState, skyboxURL string) {
@@ -76,9 +111,21 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	var o *obj.Obj
 	o, err = obj.NewObjFromVertex(cube.VertCoord, cube.VertInd)
 
+	gl := gameInfo.gl // shortcut
+
+	m := &skyboxModel{cubemapTexture: gl.CreateTexture()}
+
 	log(fmt.Sprintf("fetchSkybox: skyboxURL=%s JSON=%v skybox=%v mesh=%v FIXME WRITEME", skyboxURL, string(buf), box, o))
 
 	// add cubemap faces to model
+
+	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_X, box.FaceRight)
+	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_X, box.FaceLeft)
+	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Y, box.FaceUp)
+	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, box.FaceDown)
+	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, box.FaceFront)
+	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, box.FaceBack)
+
 	// add instance to model
 	// add model to shader
 

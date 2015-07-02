@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	//"negentropia/world/parser"
 	//"strings"
+
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
+
+	//"negentropia/world/parser"
 )
 
 type texture struct {
@@ -31,14 +33,17 @@ func onLoad(gl *webgl.Context, t *texture, textureURL string) {
 	// undo flip Y otherwise it could affect other texImage calls
 	gl.PixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 0)
 
-	mipmap := isPowerOfTwo(t.image.Get("width").Int()) && isPowerOfTwo(t.image.Get("height").Int())
+	width := t.image.Get("width").Int()
+	height := t.image.Get("height").Int()
+
+	mipmap := isPowerOfTwo(width) && isPowerOfTwo(height)
 
 	if mipmap {
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST)
 		gl.GenerateMipmap(gl.TEXTURE_2D)
 	} else {
-		log(fmt.Sprintf("onLoad: texture=%s can't enable MIPMAP for NPOT texture", textureURL))
+		log(fmt.Sprintf("onLoad: texture=%s w=%d x h=%d can't enable MIPMAP for NPOT texture", textureURL, width, height))
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 		gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	}
