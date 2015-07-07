@@ -11,8 +11,8 @@ type shader interface {
 	name() string
 	//init(gl *webgl.Context)
 	draw(gameInfo *gameState)
-	findModel(name string) *model
-	addModel(model *model)
+	findModel(name string) model
+	addModel(mod model)
 	unif_MV() *js.Object
 	//unif_Sampler() *js.Object
 	attrLoc_Position() int
@@ -25,7 +25,7 @@ type simpleShader struct {
 	u_P        *js.Object
 	u_MV       *js.Object
 	a_Position int
-	modelList  []*model
+	modelList  []model
 }
 
 type simpleTexturizer struct {
@@ -50,11 +50,11 @@ func (s *simpleTexturizer) attrLoc_TextureCoord() int {
 	return s.a_TextureCoord
 }
 
-func (s *simpleShader) addModel(m *model) {
+func (s *simpleShader) addModel(m model) {
 	s.modelList = append(s.modelList, m)
 }
 
-func (s *simpleShader) findModel(name string) *model {
+func (s *simpleShader) findModel(name string) model {
 	for _, m := range s.modelList {
 		if name == m.name() {
 			return m

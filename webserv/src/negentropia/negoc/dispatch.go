@@ -80,7 +80,11 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 
 	case ipc.CM_CODE_INSTANCE:
 
-		createInstance(gameInfo, tab)
+		if tab == nil {
+			log(fmt.Sprintf("dispatch: code=%v data=%v tab=%v: unable to create instance with null parameter table", code, data, tab))
+		} else {
+			createInstance(gameInfo, tab)
+		}
 
 		//countInstances(gameInfo)
 
@@ -95,6 +99,7 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 	}
 }
 
+/*
 func countInstances(gameInfo *gameState) {
 	log(fmt.Sprintf("countInstances: shaderList=%v size=%d", &gameInfo.shaderList, len(gameInfo.shaderList)))
 
@@ -108,3 +113,4 @@ func countInstances(gameInfo *gameState) {
 		}
 	}
 }
+*/

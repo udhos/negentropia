@@ -10,15 +10,26 @@ import (
 	"negentropia/world/obj"
 )
 
-type model struct {
+type model interface {
+	name() string
+	findInstance(id string) *instance
+	addInstance(inst *instance)
+	draw(gameInfo *gameState, prog shader)
+}
+
+type simpleModel struct {
 	modelName              string
 	instanceList           []*instance
 	mesh                   *obj.Obj
-	textures               []*texture
 	vertexBuffer           *js.Object
 	vertexIndexBuffer      *js.Object
 	vertexIndexElementType int
 	vertexIndexElementSize int
+}
+
+type texturizedModel struct {
+	simpleModel
+	textures []*texture
 }
 
 func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
@@ -47,19 +58,19 @@ func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
 	return nil
 }
 
-func addGroupTexture(mod *model, gl *webgl.Context, textureTable map[string]*texture, groupListSize, i int, textureName, textureURL string, tempColor []byte, wrap int) error {
+func addGroupTexture(mod *texturizedModel, gl *webgl.Context, textureTable map[string]*texture, groupListSize, i int, textureName, textureURL string, tempColor []byte, wrap int) error {
 
 	//log(fmt.Sprintf("addGroupTexture: index=%d texture=%s", i, textureURL))
 
 	texSize := len(mod.textures)
 	if i != texSize {
-		err := fmt.Errorf("addGroupTexture: model=%s index=%d texture=%s currentTextureListSize=%d not last texture index", mod.modelName, i, textureURL, texSize)
+		err := fmt.Errorf("addGroupTexture: model=%s index=%d texture=%s currentTextureListSize=%d not last texture index", mod.name(), i, textureURL, texSize)
 		log(fmt.Sprintf("%s", err))
 		return err
 	}
 
 	if i >= groupListSize {
-		err := fmt.Errorf("addGroupTexture: model=%s index=%d texture=%s currentGroupListSize=%d texture index beyond last group", mod.modelName, i, textureURL, groupListSize)
+		err := fmt.Errorf("addGroupTexture: model=%s index=%d texture=%s currentGroupListSize=%d texture index beyond last group", mod.name(), i, textureURL, groupListSize)
 		log(fmt.Sprintf("%s", err))
 		return err
 	}
@@ -81,12 +92,12 @@ func addGroupTexture(mod *model, gl *webgl.Context, textureTable map[string]*tex
 	return nil
 }
 
-func addGroupTextureNull(mod *model, gl *webgl.Context, groupListSize, i int) error {
+func addGroupTextureNull(mod *texturizedModel, gl *webgl.Context, groupListSize, i int) error {
 	return addGroupTexture(mod, nil, nil, groupListSize, i, "", "", []byte{}, gl.CLAMP_TO_EDGE)
 }
 
 type GroupByTextureName struct {
-	m *model
+	m *texturizedModel
 }
 
 func textureNameLess(t1, t2 *texture) bool {
@@ -109,7 +120,7 @@ func (m GroupByTextureName) Less(i, j int) bool {
 	return textureNameLess(m.m.textures[i], m.m.textures[j])
 }
 
-func showGroups(m *model) {
+func showGroups(m *texturizedModel) {
 	for i, g := range m.mesh.Groups {
 		var textureURL string
 		if m.textures[i] != nil {
@@ -121,10 +132,10 @@ func showGroups(m *model) {
 
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	front, up []float64, assetPath asset, textureTable map[string]*texture,
-	repeatTexture bool, materialLib obj.MaterialLib, extensionUintIndexEnabled bool) *model {
+	repeatTexture bool, materialLib obj.MaterialLib, extensionUintIndexEnabled bool) *texturizedModel {
 
 	// allocate new model
-	mod := &model{modelName: modelName}
+	mod := &texturizedModel{simpleModel: simpleModel{modelName: modelName}}
 
 	// fetch model from objURL
 
@@ -280,7 +291,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 const vertexPositionBufferItemSize = 3 // coord x,y,z
 const textureCoordBufferItemSize = 2   // coord s,t
 
-func (m *model) drawGroups(gameInfo *gameState, u_Sampler *js.Object) {
+func (m *texturizedModel) drawGroups(gameInfo *gameState, u_Sampler *js.Object) {
 	gl := gameInfo.gl
 
 	// scan model groups
@@ -301,7 +312,11 @@ func (m *model) drawGroups(gameInfo *gameState, u_Sampler *js.Object) {
 	}
 }
 
-func (m *model) draw(gameInfo *gameState, prog shader) {
+func (m *simpleModel) draw(gameInfo *gameState, prog shader) {
+	// abstract -- FIXME: Draw non-texturized models ???
+}
+
+func (m *texturizedModel) draw(gameInfo *gameState, prog shader) {
 	gl := gameInfo.gl // shortcut
 
 	gl.BindBuffer(gl.ARRAY_BUFFER, m.vertexBuffer)
@@ -334,15 +349,13 @@ func (m *model) draw(gameInfo *gameState, prog shader) {
 			m.drawGroups(gameInfo, u_Sampler)
 		}
 	}
-
-	// FIXME: Unable to draw non-texturized models
 }
 
-func (m *model) name() string {
+func (m *simpleModel) name() string {
 	return m.modelName
 }
 
-func (m *model) findInstance(id string) *instance {
+func (m *simpleModel) findInstance(id string) *instance {
 	for _, i := range m.instanceList {
 		if id == i.id {
 			return i
@@ -351,7 +364,7 @@ func (m *model) findInstance(id string) *instance {
 	return nil
 }
 
-func (m *model) addInstance(inst *instance) {
+func (m *simpleModel) addInstance(inst *instance) {
 	m.instanceList = append(m.instanceList, inst)
-	//log(fmt.Sprintf("model.addInstance: model=%s newInstance=%s instances=%d instanceList=%v", m.modelName, inst.id, len(m.instanceList), m.instanceList))
+	//log(fmt.Sprintf("model.addInstance: model=%s newInstance=%s instances=%d instanceList=%v", m.name(), inst.id, len(m.instanceList), m.instanceList))
 }

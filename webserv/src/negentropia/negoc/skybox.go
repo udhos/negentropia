@@ -36,7 +36,7 @@ type skyboxShader struct {
 }
 
 type skyboxModel struct {
-	model
+	simpleModel
 	cubemapTexture *js.Object
 }
 
@@ -127,7 +127,8 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, box.FaceBack)
 
 	// add instance to model
-	// add model to shader
+
+	skybox.addModel(m) // add model to shader
 
 	gameInfo.skybox = skybox
 
