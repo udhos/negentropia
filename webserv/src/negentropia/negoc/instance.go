@@ -64,6 +64,7 @@ func (i *instance) setTranslation(x, y, z float64) {
 	i.updateModelMatrix() // rotation = T*R*U
 }
 
+/*
 func (i *instance) draw(gameInfo *gameState, mod *model, u_MV, u_Sampler *js.Object) {
 
 	gl := gameInfo.gl
@@ -87,6 +88,7 @@ func (i *instance) draw(gameInfo *gameState, mod *model, u_MV, u_Sampler *js.Obj
 			g.IndexBegin*mod.vertexIndexElementSize)
 	}
 }
+*/
 
 func (i *instance) uploadModelView(gl *webgl.Context, u_MV *js.Object, cam *camera) {
 

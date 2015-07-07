@@ -280,6 +280,27 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 const vertexPositionBufferItemSize = 3 // coord x,y,z
 const textureCoordBufferItemSize = 2   // coord s,t
 
+func (m *model) drawGroups(gameInfo *gameState, u_Sampler *js.Object) {
+	gl := gameInfo.gl
+
+	// scan model groups
+	for i, g := range m.mesh.Groups {
+		t := m.textures[i]
+		if t == nil {
+			continue // skip group because texture is not ready
+		}
+
+		gl.BindTexture(gl.TEXTURE_2D, t.texture)
+
+		// set sampler to use texture assigned to unit
+		gl.Uniform1i(u_Sampler, gameInfo.defaultTextureUnit)
+
+		gl.DrawElements(gl.TRIANGLES, g.IndexCount,
+			m.vertexIndexElementType,
+			g.IndexBegin*m.vertexIndexElementSize)
+	}
+}
+
 func (m *model) draw(gameInfo *gameState, prog shader) {
 	gl := gameInfo.gl // shortcut
 
@@ -308,7 +329,9 @@ func (m *model) draw(gameInfo *gameState, prog shader) {
 	if isTexturizer {
 		u_Sampler := texturizer.unif_Sampler()
 		for _, inst := range m.instanceList {
-			inst.draw(gameInfo, m, u_MV, u_Sampler)
+			//inst.draw(gameInfo, m, u_MV, u_Sampler)
+			inst.uploadModelView(gl, u_MV, &gameInfo.cam)
+			m.drawGroups(gameInfo, u_Sampler)
 		}
 	}
 
