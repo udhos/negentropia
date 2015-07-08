@@ -130,6 +130,44 @@ func showGroups(m *texturizedModel) {
 	}
 }
 
+func (m *simpleModel) createBuffers(objURL string, gl *webgl.Context, extensionUintIndexEnabled bool) {
+	o := m.mesh
+
+	// buffer for vertex data
+	m.vertexBuffer = gl.CreateBuffer()
+	gl.BindBuffer(gl.ARRAY_BUFFER, m.vertexBuffer)
+	gl.BufferData(gl.ARRAY_BUFFER, o.Coord, gl.STATIC_DRAW)
+
+	// buffer for indices
+	m.vertexIndexBuffer = gl.CreateBuffer()
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.vertexIndexBuffer)
+	if o.BigIndexFound && extensionUintIndexEnabled {
+
+		list := make([]uint32, len(o.Indices))
+		for i, v := range o.Indices {
+			list[i] = uint32(v)
+		}
+		gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, list, gl.STATIC_DRAW)
+		m.vertexIndexElementType = gl.UNSIGNED_INT
+		m.vertexIndexElementSize = 4
+	} else {
+		if o.BigIndexFound && extensionUintIndexEnabled {
+			log(fmt.Sprintf("createBuffers: objURL=%s BigIndexFound BUT WebGL extension missing", objURL))
+		}
+
+		list := make([]uint16, len(o.Indices))
+		for i, v := range o.Indices {
+			list[i] = uint16(v)
+		}
+		gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, list, gl.STATIC_DRAW)
+		m.vertexIndexElementType = gl.UNSIGNED_SHORT
+		m.vertexIndexElementSize = 2
+	}
+
+	log(fmt.Sprintf("createBuffers: objURL=%s bigIndexFound=%v uintIndexEnabled=%v elemType=%d elemSize=%d",
+		objURL, o.BigIndexFound, extensionUintIndexEnabled, m.vertexIndexElementType, m.vertexIndexElementSize))
+}
+
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	front, up []float64, assetPath asset, textureTable map[string]*texture,
 	repeatTexture bool, materialLib obj.MaterialLib, extensionUintIndexEnabled bool) *texturizedModel {
@@ -247,40 +285,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	sort.Sort(GroupByTextureName(GroupByTextureName{mod}))
 	//showGroups(mod)
 
-	// buffer for vertex data
-	mod.vertexBuffer = gl.CreateBuffer()
-	gl.BindBuffer(gl.ARRAY_BUFFER, mod.vertexBuffer)
-	gl.BufferData(gl.ARRAY_BUFFER, o.Coord, gl.STATIC_DRAW)
-
-	// buffer for indices
-	mod.vertexIndexBuffer = gl.CreateBuffer()
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, mod.vertexIndexBuffer)
-	if o.BigIndexFound && extensionUintIndexEnabled {
-		//log(fmt.Sprintf("newModel: objURL=%s BigIndexFound FIXME: check WebGL extension for big index", objURL))
-
-		list := make([]uint32, len(o.Indices))
-		for i, v := range o.Indices {
-			list[i] = uint32(v)
-		}
-		gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, list, gl.STATIC_DRAW)
-		mod.vertexIndexElementType = gl.UNSIGNED_INT
-		mod.vertexIndexElementSize = 4
-	} else {
-		if o.BigIndexFound && extensionUintIndexEnabled {
-			log(fmt.Sprintf("newModel: objURL=%s BigIndexFound BUT WebGL extension missing", objURL))
-		}
-
-		list := make([]uint16, len(o.Indices))
-		for i, v := range o.Indices {
-			list[i] = uint16(v)
-		}
-		gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, list, gl.STATIC_DRAW)
-		mod.vertexIndexElementType = gl.UNSIGNED_SHORT
-		mod.vertexIndexElementSize = 2
-	}
-
-	log(fmt.Sprintf("newModel: objURL=%s bigIndexFound=%v uintIndexEnabled=%v elemType=%d elemSize=%d",
-		objURL, o.BigIndexFound, extensionUintIndexEnabled, mod.vertexIndexElementType, mod.vertexIndexElementSize))
+	mod.createBuffers(objURL, gl, extensionUintIndexEnabled)
 
 	// push new model into shader.modelList
 	s.addModel(mod)
@@ -344,7 +349,6 @@ func (m *texturizedModel) draw(gameInfo *gameState, prog shader) {
 	if isTexturizer {
 		u_Sampler := texturizer.unif_Sampler()
 		for _, inst := range m.instanceList {
-			//inst.draw(gameInfo, m, u_MV, u_Sampler)
 			inst.uploadModelView(gl, u_MV, &gameInfo.cam)
 			m.drawGroups(gameInfo, u_Sampler)
 		}

@@ -113,9 +113,11 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 
 	gl := gameInfo.gl // shortcut
 
-	m := &skyboxModel{cubemapTexture: gl.CreateTexture()}
+	m := &skyboxModel{cubemapTexture: gl.CreateTexture(), simpleModel: simpleModel{modelName: "skybox-model", mesh: o}}
 
 	log(fmt.Sprintf("fetchSkybox: skyboxURL=%s JSON=%v skybox=%v mesh=%v FIXME WRITEME", skyboxURL, string(buf), box, o))
+
+	m.createBuffers(cubeURL, gl, gameInfo.extensionUintIndexEnabled)
 
 	// add cubemap faces to model
 
@@ -126,13 +128,14 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, box.FaceFront)
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, box.FaceBack)
 
-	// add instance to model
+	i := newInstance("skybox-instance", 0, 0, -1, 0, 1, 0, 0, 0, 0, 1)
+
+	m.addInstance(i) // add instance to model
 
 	skybox.addModel(m) // add model to shader
 
 	gameInfo.skybox = skybox
-
-	gameInfo.skybox = nil // FIXME ERASEME this line
+	gameInfo.skybox = nil
 }
 
 func (s *skyboxShader) draw(gameInfo *gameState) {
@@ -151,4 +154,44 @@ func (s *skyboxShader) draw(gameInfo *gameState) {
 	}
 
 	gl.DepthRange(0.0, 1.0) // restore default
+}
+
+func (m *skyboxModel) draw(gameInfo *gameState, prog shader) {
+
+	skyboxSh, isSkybox := prog.(*skyboxShader)
+
+	if !isSkybox {
+		return
+	}
+
+	gl := gameInfo.gl // shortcut
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, m.vertexBuffer)
+
+	// vertex coord x,y,z
+	gl.VertexAttribPointer(prog.attrLoc_Position(),
+		vertexPositionBufferItemSize,
+		gl.FLOAT, false, m.mesh.StrideSize,
+		m.mesh.StrideOffsetPosition)
+
+	gl.BindTexture(gl.TEXTURE_CUBE_MAP, m.cubemapTexture)
+
+	gl.Uniform1i(skyboxSh.u_Skybox, gameInfo.defaultTextureUnit)
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.vertexIndexBuffer)
+
+	u_MV := prog.unif_MV()
+
+	for _, inst := range m.instanceList {
+		inst.uploadModelView(gl, u_MV, &gameInfo.cam)
+
+		for _, grp := range m.mesh.Groups {
+			gl.DrawElements(gl.TRIANGLES, grp.IndexCount,
+				m.vertexIndexElementType,
+				grp.IndexBegin*m.vertexIndexElementSize)
+		}
+	}
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, nil)
+	gl.BindTexture(gl.TEXTURE_CUBE_MAP, nil)
 }
