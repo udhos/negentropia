@@ -107,11 +107,13 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 
 	skybox := &skyboxShader{simpleShader: simpleShader{program: prog, progName: "skybox"}}
 
+	gl := gameInfo.gl // shortcut
+
+	skybox.init(gl)
+
 	// create model from mesh
 	var o *obj.Obj
 	o, err = obj.NewObjFromVertex(cube.VertCoord, cube.VertInd)
-
-	gl := gameInfo.gl // shortcut
 
 	m := &skyboxModel{cubemapTexture: gl.CreateTexture(), simpleModel: simpleModel{modelName: "skybox-model", mesh: o}}
 
@@ -135,7 +137,15 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	skybox.addModel(m) // add model to shader
 
 	gameInfo.skybox = skybox
-	gameInfo.skybox = nil
+	//gameInfo.skybox = nil
+}
+
+func (s *skyboxShader) init(gl *webgl.Context) {
+	s.a_Position = s.getAttrib(gl, "a_Position")
+
+	s.u_P = s.getUniform(gl, "u_P")
+	s.u_MV = s.getUniform(gl, "u_MV")
+	s.u_Skybox = s.getUniform(gl, "u_Skybox")
 }
 
 func (s *skyboxShader) draw(gameInfo *gameState) {
@@ -194,4 +204,5 @@ func (m *skyboxModel) draw(gameInfo *gameState, prog shader) {
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, nil)
 	gl.BindTexture(gl.TEXTURE_CUBE_MAP, nil)
+	gl.BindBuffer(gl.ARRAY_BUFFER, nil)
 }
