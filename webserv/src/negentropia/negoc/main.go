@@ -29,9 +29,12 @@ func draw(gameInfo *gameState, t time.Time) {
 		s.draw(gameInfo)
 	}
 
-	skybox := gameInfo.skybox
-	if skybox != nil {
+	if skybox := gameInfo.skybox; skybox != nil {
 		skybox.draw(gameInfo)
+	}
+
+	if box := gameInfo.box; box != nil {
+		box.draw(gameInfo)
 	}
 }
 
@@ -143,6 +146,7 @@ type gameState struct {
 	kb                        keyboard
 	extensionUintIndexEnabled bool
 	skybox                    *skyboxShader
+	box                       *boxdemo
 }
 
 func resetGame(gameInfo *gameState) {
@@ -182,6 +186,8 @@ func main() {
 	trapKeyboard(gameInfo)
 
 	gameLoop(gameInfo)
+
+	gameInfo.box = newBoxdemo(gameInfo)
 
 	log("main: end")
 

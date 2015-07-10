@@ -139,7 +139,7 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, box.FaceFront)
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, box.FaceBack)
 
-	skyboxScale := 1000.0 // skyboxScale should not matter when it is centered on camera
+	skyboxScale := 10.0 // skyboxScale should not matter when it is centered on camera
 	i := newInstance("skybox-instance", 0, 0, -1, 0, 1, 0, 0, 0, 0, skyboxScale)
 
 	m.addInstance(i) // add instance to model
