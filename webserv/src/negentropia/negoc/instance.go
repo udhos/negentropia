@@ -20,6 +20,10 @@ type instance struct {
 	rotation                     Matrix4 // R * U
 }
 
+func newInstanceNull(id string) *instance {
+	return newInstance(id, 0, 0, -1, 0, 1, 0, 0, 0, 0, 1)
+}
+
 func newInstance(id string, modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ, scale float64) *instance {
 	i := &instance{id: id, scale: scale}
 

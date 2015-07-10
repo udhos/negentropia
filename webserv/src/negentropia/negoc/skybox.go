@@ -40,11 +40,10 @@ type skyboxModel struct {
 	cubemapTexture *js.Object
 }
 
-func onCubemapFaceLoad(gl *webgl.Context, s *skyboxModel, image *js.Object, face int, faceURL string) {
+func setCubemapFace(gl *webgl.Context, image, texture *js.Object, face int, faceURL string) {
+	log(fmt.Sprintf("setCubemapFace: faceURL=%s", faceURL))
 
-	log(fmt.Sprintf("onCubemapFaceLoad: faceURL=%s", faceURL))
-
-	gl.BindTexture(gl.TEXTURE_CUBE_MAP, s.cubemapTexture)
+	gl.BindTexture(gl.TEXTURE_CUBE_MAP, texture)
 
 	gl.TexParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 	gl.TexParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
@@ -55,6 +54,11 @@ func onCubemapFaceLoad(gl *webgl.Context, s *skyboxModel, image *js.Object, face
 	gl.TexParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
 	gl.BindTexture(gl.TEXTURE_CUBE_MAP, nil)
+}
+
+func onCubemapFaceLoad(gl *webgl.Context, s *skyboxModel, image *js.Object, face int, faceURL string) {
+	//log(fmt.Sprintf("onCubemapFaceLoad: faceURL=%s", faceURL))
+	setCubemapFace(gl, image, s.cubemapTexture, face, faceURL)
 }
 
 func (s *skyboxModel) addCubemapFace(gl *webgl.Context, face int, faceURL string) {
@@ -140,7 +144,9 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, box.FaceBack)
 
 	skyboxScale := 10.0 // skyboxScale should not matter when it is centered on camera
-	i := newInstance("skybox-instance", 0, 0, -1, 0, 1, 0, 0, 0, 0, skyboxScale)
+	//i := newInstance("skybox-instance", 0, 0, -1, 0, 1, 0, 0, 0, 0, skyboxScale)
+	i := newInstanceNull("skybox-instance")
+	i.scale = skyboxScale
 
 	m.addInstance(i) // add instance to model
 
@@ -189,10 +195,7 @@ func (m *skyboxModel) draw(gameInfo *gameState, prog shader) {
 	gl.BindBuffer(gl.ARRAY_BUFFER, m.vertexBuffer)
 
 	// vertex coord x,y,z
-	gl.VertexAttribPointer(prog.attrLoc_Position(),
-		vertexPositionBufferItemSize,
-		gl.FLOAT, false, m.mesh.StrideSize,
-		m.mesh.StrideOffsetPosition)
+	gl.VertexAttribPointer(prog.attrLoc_Position(), vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0)
 
 	gl.BindTexture(gl.TEXTURE_CUBE_MAP, m.cubemapTexture)
 
