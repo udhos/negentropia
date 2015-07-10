@@ -70,6 +70,10 @@ func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *Matrix4) {
 }
 
 func updateCulling(gl *webgl.Context, backfaceCulling bool) {
+
+	log("updateCulling: FIXME disabling backface culling")
+	backfaceCulling = false
+
 	if backfaceCulling {
 		log("backface culling: ON")
 		gl.FrontFace(gl.CCW)

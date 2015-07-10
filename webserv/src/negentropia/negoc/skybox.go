@@ -68,6 +68,12 @@ func (s *skyboxModel) addCubemapFace(gl *webgl.Context, face int, faceURL string
 	image.Set("src", faceURL)
 }
 
+func reverse(list []int) {
+	for i, j := 0, len(list)-1; i < j; i, j = i+1, j-1 {
+		list[i], list[j] = list[j], list[i]
+	}
+}
+
 func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 
 	buf, err := httpFetch(skyboxURL)
@@ -115,6 +121,9 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	var o *obj.Obj
 	o, err = obj.NewObjFromVertex(cube.VertCoord, cube.VertInd)
 
+	log(fmt.Sprintf("fetchSkybox: skyboxURL=%s reversing cube indices", skyboxURL))
+	reverse(o.Indices)
+
 	m := &skyboxModel{cubemapTexture: gl.CreateTexture(), simpleModel: simpleModel{modelName: "skybox-model", mesh: o}}
 
 	log(fmt.Sprintf("fetchSkybox: skyboxURL=%s JSON=%v skybox=%v mesh=%v FIXME WRITEME", skyboxURL, string(buf), box, o))
@@ -130,7 +139,8 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, box.FaceFront)
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, box.FaceBack)
 
-	i := newInstance("skybox-instance", 0, 0, -1, 0, 1, 0, 0, 0, 0, 1)
+	skyboxScale := 1000.0 // skyboxScale should not matter when it is centered on camera
+	i := newInstance("skybox-instance", 0, 0, -1, 0, 1, 0, 0, 0, 0, skyboxScale)
 
 	m.addInstance(i) // add instance to model
 
