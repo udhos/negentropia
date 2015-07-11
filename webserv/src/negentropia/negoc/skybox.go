@@ -143,7 +143,7 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, box.FaceFront)
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, box.FaceBack)
 
-	skyboxScale := 10.0 // skyboxScale should not matter when it is centered on camera
+	skyboxScale := 30.0 // skyboxScale should not matter when it is centered on camera
 	//i := newInstance("skybox-instance", 0, 0, -1, 0, 1, 0, 0, 0, 0, skyboxScale)
 	i := newInstanceNull("skybox-instance")
 	i.scale = skyboxScale
@@ -206,7 +206,7 @@ func (m *skyboxModel) draw(gameInfo *gameState, prog shader) {
 	u_MV := prog.unif_MV()
 
 	for _, inst := range m.instanceList {
-		inst.uploadModelView(gl, u_MV, &gameInfo.cam)
+		inst.uploadModelView(gameInfo, gl, u_MV, &gameInfo.cam)
 
 		for _, grp := range m.mesh.Groups {
 			gl.DrawElements(gl.TRIANGLES, grp.IndexCount,

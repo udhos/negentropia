@@ -45,7 +45,8 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 			if coord, err := parser.ParseFloatVector3Comma(camCoord); err != nil {
 				log(fmt.Sprintf("dispatch: error parsing Vector3(%s): %v", camCoord, err))
 			} else {
-				cameraMoveTo(&gameInfo.cam, coord)
+				//cameraMoveTo(&gameInfo.cam, coord)
+				cameraControlMoveTo(gameInfo, coord)
 			}
 		}
 

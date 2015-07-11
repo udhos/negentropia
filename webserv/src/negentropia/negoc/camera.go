@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"math"
 	//"negentropia/world/parser"
 	//"strings"
@@ -47,7 +47,7 @@ func incRad(r, delta float64) float64 {
 	return r
 }
 
-func loadCameraViewMatrixInto(cam *camera, V *Matrix4) {
+func loadCameraViewMatrixInto(gameInfo *gameState, cam *camera, V *Matrix4) {
 
 	delta := math.Pi / 20
 	camRad = incRad(camRad, delta)
@@ -57,7 +57,8 @@ func loadCameraViewMatrixInto(cam *camera, V *Matrix4) {
 	cos := math.Cos(camRad)
 	sin := math.Sin(camRad)
 
-	cam.camPosX, cam.camPosY, cam.camPosZ = cam.orbitRadius*sin, 0, cam.orbitRadius*cos
+	camPosX, camPosY, camPosZ := cam.orbitRadius*sin, 0.0, cam.orbitRadius*cos
+	cameraControlMoveTo(gameInfo, []float64{camPosX, camPosY, camPosZ})
 
 	setViewMatrix(V, cam.camFocusX, cam.camFocusY, cam.camFocusZ, cam.camUpX, cam.camUpY, cam.camUpZ, cam.camPosX, cam.camPosY, cam.camPosZ)
 
@@ -71,5 +72,31 @@ func cameraMoveTo(cam *camera, coord []float64) {
 
 	cam.orbitRadius = distance3(cam.camPosX, cam.camPosY, cam.camPosZ, cam.camFocusX, cam.camFocusY, cam.camFocusZ)
 
-	log(fmt.Sprintf("cameraMoveTo: orbitRadius=%v", cam.orbitRadius))
+	//log(fmt.Sprintf("cameraMoveTo: orbitRadius=%v", cam.orbitRadius))
+}
+
+func cameraControlMoveTo(gameInfo *gameState, coord []float64) {
+	cameraMoveTo(&gameInfo.cam, coord)
+	skyboxFollowCamera(gameInfo)
+}
+
+func skyboxFollowCamera(gameInfo *gameState) {
+	skyboxMoveTo(gameInfo, []float64{gameInfo.cam.camPosX, gameInfo.cam.camPosY, gameInfo.cam.camPosZ})
+}
+
+func skyboxMoveTo(gameInfo *gameState, coord []float64) {
+	if gameInfo.skybox == nil {
+		return
+	}
+	if len(gameInfo.skybox.modelList) < 1 {
+		return
+	}
+	m, ok := gameInfo.skybox.modelList[0].(*skyboxModel)
+	if !ok {
+		return
+	}
+	if len(m.instanceList) < 1 {
+		return
+	}
+	m.instanceList[0].setTranslation(coord[0], coord[1], coord[2])
 }

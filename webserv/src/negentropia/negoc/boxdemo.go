@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 
+	"strconv"
+	"strings"
+
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 )
@@ -27,11 +30,30 @@ func newBoxdemo(gameInfo *gameState) *boxdemo {
 
 	box := &boxdemo{cubemapTexture: gl.CreateTexture(), vertexBuffer: gl.CreateBuffer(), vertexIndexBuffer: gl.CreateBuffer()}
 
+	box.cubeIndices = []uint16{}
+	indices := "22 23 20 21 22 20 19 18 16 18 17 16 15 14 12 14 13 12 11 10 8 10 9 8 6 7 4 5 6 4 3 2 0 2 1 0"
+	list := strings.Fields(indices)
+	for _, s := range list {
+		v, _ := strconv.Atoi(s)
+		box.cubeIndices = append(box.cubeIndices, uint16(v))
+	}
+	log(fmt.Sprintf("newBoxdemo: indices = (%d) %v", len(box.cubeIndices), box.cubeIndices))
+
+	box.cubeCoord = []float32{}
+	coord := "1 1 1 -1 1 1 -1 -1 1 1 -1 1 1 1 -1 -1 1 -1 -1 -1 -1 1 -1 -1 -1 1 1 -1 1 -1 -1 -1 -1 -1 -1 1 1 1 1 1 -1 1 1 -1 -1 1 1 -1 1 1 1 1 1 -1 -1 1 -1 -1 1 1 1 -1 1 1 -1 -1 -1 -1 -1 -1 -1 1"
+	list = strings.Fields(coord)
+	for _, s := range list {
+		v, _ := strconv.ParseFloat(s, 32)
+		box.cubeCoord = append(box.cubeCoord, float32(v))
+	}
+
+	log(fmt.Sprintf("newBoxdemo: coord = (%d) %v", len(box.cubeCoord), box.cubeCoord))
+
 	gl.BindBuffer(gl.ARRAY_BUFFER, box.vertexBuffer)
 	gl.BufferData(gl.ARRAY_BUFFER, box.cubeCoord, gl.STATIC_DRAW)
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, box.vertexIndexBuffer)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, box.cubeCoord, gl.STATIC_DRAW)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, box.cubeIndices, gl.STATIC_DRAW)
 
 	box.inst = newInstanceNull("boxdemo-instance")
 	box.inst.scale = 10
@@ -55,8 +77,6 @@ func newBoxdemo(gameInfo *gameState) *boxdemo {
 	box.fetchCubemapFace(gl, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, "/texture/space_fr.jpg")
 	box.fetchCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, "/texture/space_bk.jpg")
 
-	log(fmt.Sprintf("newBoxdemo: FIXME WRITEME"))
-	box = nil
 	return box
 }
 
@@ -83,7 +103,6 @@ func (b *boxdemo) draw(gameInfo *gameState) {
 
 	uploadPerspective(gl, b.u_P, &gameInfo.pMatrix)
 
-	// draw every model
 	gl.BindBuffer(gl.ARRAY_BUFFER, b.vertexBuffer)
 
 	// vertex coord x,y,z
@@ -95,7 +114,7 @@ func (b *boxdemo) draw(gameInfo *gameState) {
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, b.vertexIndexBuffer)
 
-	b.inst.uploadModelView(gl, b.u_MV, &gameInfo.cam)
+	b.inst.uploadModelView(gameInfo, gl, b.u_MV, &gameInfo.cam)
 
 	gl.DrawElements(gl.TRIANGLES, len(b.cubeIndices), gl.UNSIGNED_SHORT, 0)
 

@@ -187,7 +187,7 @@ func main() {
 
 	gameLoop(gameInfo)
 
-	gameInfo.box = newBoxdemo(gameInfo)
+	//gameInfo.box = newBoxdemo(gameInfo)
 
 	log("main: end")
 

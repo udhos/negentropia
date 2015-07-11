@@ -349,7 +349,7 @@ func (m *texturizedModel) draw(gameInfo *gameState, prog shader) {
 	if isTexturizer {
 		u_Sampler := texturizer.unif_Sampler()
 		for _, inst := range m.instanceList {
-			inst.uploadModelView(gl, u_MV, &gameInfo.cam)
+			inst.uploadModelView(gameInfo, gl, u_MV, &gameInfo.cam)
 			m.drawGroups(gameInfo, u_Sampler)
 		}
 	}

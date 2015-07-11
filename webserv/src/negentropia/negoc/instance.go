@@ -94,7 +94,7 @@ func (i *instance) draw(gameInfo *gameState, mod *model, u_MV, u_Sampler *js.Obj
 }
 */
 
-func (i *instance) uploadModelView(gl *webgl.Context, u_MV *js.Object, cam *camera) {
+func (i *instance) uploadModelView(gameInfo *gameState, gl *webgl.Context, u_MV *js.Object, cam *camera) {
 
 	/*
 	   V = View (inverse of camera matrix)
@@ -107,7 +107,7 @@ func (i *instance) uploadModelView(gl *webgl.Context, u_MV *js.Object, cam *came
 	*/
 
 	var MV Matrix4
-	loadCameraViewMatrixInto(cam, &MV) // MV = V
+	loadCameraViewMatrixInto(gameInfo, cam, &MV) // MV = V
 
 	//MV.translate(i.posX, i.posY, i.posZ, 1) // MV = V*T
 
