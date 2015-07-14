@@ -85,6 +85,9 @@ func skyboxFollowCamera(gameInfo *gameState) {
 }
 
 func skyboxMoveTo(gameInfo *gameState, coord []float64) {
+	if gameInfo.debugDraw {
+		log("skyboxMoveTo: begin")
+	}
 	if gameInfo.skybox == nil {
 		return
 	}
@@ -99,4 +102,7 @@ func skyboxMoveTo(gameInfo *gameState, coord []float64) {
 		return
 	}
 	m.instanceList[0].setTranslation(coord[0], coord[1], coord[2])
+	if gameInfo.debugDraw {
+		log("skyboxMoveTo: end")
+	}
 }

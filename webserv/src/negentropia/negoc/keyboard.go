@@ -1,13 +1,26 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
+	"time"
 
 	"honnef.co/go/js/dom"
 )
 
 type keyboard struct {
+	keyDownD bool // D key state is down
 	keyDownZ bool // Z key state is down
+}
+
+// keyPressedD is called only once when key state changes from UP to DOWN
+func keyPressedD(gameInfo *gameState) {
+	if gameInfo.debugDraw {
+		log("keyPressedD: drawing once")
+		draw(gameInfo, time.Time{})
+	} else {
+		log("keyPressedD: disabling draw loop -- hit again to draw")
+		gameInfo.debugDraw = true
+	}
 }
 
 // keyPressedZ is called only once when key state changes from UP to DOWN
@@ -22,13 +35,18 @@ func trapKeyboard(gameInfo *gameState) {
 		kbev := ev.(*dom.KeyboardEvent)
 
 		switch kbev.KeyCode {
+		case 68:
+			if !gameInfo.kb.keyDownD {
+				gameInfo.kb.keyDownD = true
+				keyPressedD(gameInfo)
+			}
 		case 90:
 			if !gameInfo.kb.keyDownZ {
 				gameInfo.kb.keyDownZ = true
 				keyPressedZ(gameInfo)
 			}
 		default:
-			//log(fmt.Sprintf("keyDownHandler: keyCode=%d", kbev.KeyCode))
+			log(fmt.Sprintf("keyDownHandler: keyCode=%d", kbev.KeyCode))
 		}
 
 	}
@@ -37,6 +55,11 @@ func trapKeyboard(gameInfo *gameState) {
 		kbev := ev.(*dom.KeyboardEvent)
 
 		switch kbev.KeyCode {
+		case 68:
+			if gameInfo.kb.keyDownD {
+				gameInfo.kb.keyDownD = false
+				//keyReleasedD(gameInfo)
+			}
 		case 90:
 			if gameInfo.kb.keyDownZ {
 				gameInfo.kb.keyDownZ = false

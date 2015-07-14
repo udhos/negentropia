@@ -47,6 +47,10 @@ func gameLoop(gameInfo *gameState) {
 	ticker := time.NewTicker(time.Millisecond * FRAME_INTERVAL)
 	go func() {
 		for t := range ticker.C {
+			if gameInfo.debugDraw {
+				log(fmt.Sprintf("gameLoop: exiting due debugDraw=%v", gameInfo.debugDraw))
+				break
+			}
 			draw(gameInfo, t)
 		}
 	}()
@@ -147,6 +151,7 @@ type gameState struct {
 	extensionUintIndexEnabled bool
 	skybox                    *skyboxShader
 	box                       *boxdemo
+	debugDraw                 bool
 }
 
 func resetGame(gameInfo *gameState) {
@@ -187,7 +192,7 @@ func main() {
 
 	gameLoop(gameInfo)
 
-	//gameInfo.box = newBoxdemo(gameInfo)
+	gameInfo.box = newBoxdemo(gameInfo)
 
 	log("main: end")
 

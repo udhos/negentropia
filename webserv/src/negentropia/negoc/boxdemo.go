@@ -56,7 +56,7 @@ func newBoxdemo(gameInfo *gameState) *boxdemo {
 	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, box.cubeIndices, gl.STATIC_DRAW)
 
 	box.inst = newInstanceNull("boxdemo-instance")
-	box.inst.scale = 10
+	box.inst.scale = 20
 
 	box.program = newShaderProgram(gl, "/shader/skybox_vs.txt", "/shader/skybox_fs.txt")
 	if box.program == nil {
