@@ -205,14 +205,12 @@ func (m *skyboxModel) draw(gameInfo *gameState, prog shader) {
 	for i, inst := range m.instanceList {
 		inst.uploadModelView(gameInfo, gl, u_MV, &gameInfo.cam)
 
-		if gameInfo.debugDraw {
-			log(fmt.Sprintf("skyboxModel.draw(): model=%v instance[%d]=%v", m.name(), i, inst.id))
-		}
-
-		for _, grp := range m.mesh.Groups {
-			gl.DrawElements(gl.TRIANGLES, grp.IndexCount,
-				m.vertexIndexElementType,
-				grp.IndexBegin*m.vertexIndexElementSize)
+		for g, grp := range m.mesh.Groups {
+			if gameInfo.debugDraw {
+				log(fmt.Sprintf("skyboxModel.draw(): model=%v instance[%d]=%v group=%d DrawElements: elemType=%d elemSize=%d count=%d begin=%d ",
+					m.name(), i, inst.id, g, m.vertexIndexElementType, m.vertexIndexElementSize, grp.IndexCount, grp.IndexBegin))
+			}
+			gl.DrawElements(gl.TRIANGLES, grp.IndexCount, m.vertexIndexElementType, grp.IndexBegin*m.vertexIndexElementSize)
 		}
 	}
 

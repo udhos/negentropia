@@ -151,7 +151,7 @@ func (m *simpleModel) createBuffers(objURL string, gl *webgl.Context, extensionU
 		m.vertexIndexElementType = gl.UNSIGNED_INT
 		m.vertexIndexElementSize = 4
 	} else {
-		if o.BigIndexFound && extensionUintIndexEnabled {
+		if o.BigIndexFound && !extensionUintIndexEnabled {
 			log(fmt.Sprintf("createBuffers: objURL=%s BigIndexFound BUT WebGL extension missing", objURL))
 		}
 
