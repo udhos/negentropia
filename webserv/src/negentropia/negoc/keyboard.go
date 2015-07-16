@@ -15,8 +15,10 @@ type keyboard struct {
 // keyPressedD is called only once when key state changes from UP to DOWN
 func keyPressedD(gameInfo *gameState) {
 	if gameInfo.debugDraw {
-		log("keyPressedD: drawing once")
-		draw(gameInfo, time.Time{})
+		now := time.Now()
+		log(fmt.Sprintf("keyPressedD: drawing once now=%v", now))
+		update(gameInfo, now)
+		draw(gameInfo, now)
 	} else {
 		log("keyPressedD: disabling draw loop -- hit again to draw")
 		gameInfo.debugDraw = true

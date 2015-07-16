@@ -1,10 +1,12 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"math"
-	//"negentropia/world/parser"
 	//"strings"
+	"time"
+
+	//"negentropia/world/parser"
 )
 
 type camera struct {
@@ -33,9 +35,20 @@ func resetCamera(cam *camera) {
 		0,
 	}
 
+	cameraOrbitRadius(cam)
+}
+
+func cameraOrbitRadius(cam *camera) {
 	cam.orbitRadius = distance3(cam.camPosX, cam.camPosY, cam.camPosZ, cam.camFocusX, cam.camFocusY, cam.camFocusZ)
 }
 
+func cameraOrbitFrom(cam *camera, x, y, z float64) {
+	cameraMoveTo(cam, []float64{x, y, z})
+	cameraOrbitRadius(cam)
+	log(fmt.Sprintf("cameraOrbitFrom: %v,%v,%v radius=%v", x, y, z, cam.orbitRadius))
+}
+
+/*
 var camRad = 0.0
 
 func incRad(r, delta float64) float64 {
@@ -46,23 +59,24 @@ func incRad(r, delta float64) float64 {
 	}
 	return r
 }
+*/
 
-func loadCameraViewMatrixInto(gameInfo *gameState, cam *camera, V *Matrix4) {
+func cameraUpdate(gameInfo *gameState, t time.Time) {
+	sec := float64(t.Second()) + float64(t.Nanosecond())/1000000000
 
-	delta := math.Pi / 20
-	camRad = incRad(camRad, delta)
-
-	//log(fmt.Sprintf("camera: angle=%v delta=%v", camRad*180/math.Pi, delta*180/math.Pi))
+	turnsPerSec := .1
+	camRad := sec * 2 * math.Pi * turnsPerSec
 
 	cos := math.Cos(camRad)
 	sin := math.Sin(camRad)
 
-	camPosX, camPosY, camPosZ := cam.orbitRadius*sin, 0.0, cam.orbitRadius*cos
+	camPosX, camPosY, camPosZ := gameInfo.cam.orbitRadius*sin, 0.0, gameInfo.cam.orbitRadius*cos
+
 	cameraControlMoveTo(gameInfo, []float64{camPosX, camPosY, camPosZ})
+}
 
+func loadCameraViewMatrixInto(gameInfo *gameState, cam *camera, V *Matrix4) {
 	setViewMatrix(V, cam.camFocusX, cam.camFocusY, cam.camFocusZ, cam.camUpX, cam.camUpY, cam.camUpZ, cam.camPosX, cam.camPosY, cam.camPosZ)
-
-	//log(fmt.Sprintf("angle=%v delta=%v up=%v,%v,%v view=%v", camUpRad*180/math.Pi, delta*180/math.Pi, camUpX, camUpY, camUpZ, V))
 }
 
 func cameraMoveTo(cam *camera, coord []float64) {
@@ -70,7 +84,7 @@ func cameraMoveTo(cam *camera, coord []float64) {
 	cam.camPosY = coord[1]
 	cam.camPosZ = coord[2]
 
-	cam.orbitRadius = distance3(cam.camPosX, cam.camPosY, cam.camPosZ, cam.camFocusX, cam.camFocusY, cam.camFocusZ)
+	//cam.orbitRadius = distance3(cam.camPosX, cam.camPosY, cam.camPosZ, cam.camFocusX, cam.camFocusY, cam.camFocusZ)
 
 	//log(fmt.Sprintf("cameraMoveTo: orbitRadius=%v", cam.orbitRadius))
 }

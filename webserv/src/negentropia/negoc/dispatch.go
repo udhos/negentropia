@@ -46,7 +46,8 @@ func dispatch(gameInfo *gameState, code int, data string, tab map[string]string)
 				log(fmt.Sprintf("dispatch: error parsing Vector3(%s): %v", camCoord, err))
 			} else {
 				//cameraMoveTo(&gameInfo.cam, coord)
-				cameraControlMoveTo(gameInfo, coord)
+				//cameraControlMoveTo(gameInfo, coord)
+				cameraOrbitFrom(&gameInfo.cam, coord[0], coord[1], coord[2])
 			}
 		}
 

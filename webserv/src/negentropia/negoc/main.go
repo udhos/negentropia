@@ -16,6 +16,10 @@ func log(msg string) {
 	println(m)
 }
 
+func update(gameInfo *gameState, t time.Time) {
+	cameraUpdate(gameInfo, t)
+}
+
 func draw(gameInfo *gameState, t time.Time) {
 
 	gl := gameInfo.gl
@@ -36,7 +40,7 @@ func draw(gameInfo *gameState, t time.Time) {
 	}
 }
 
-const FRAME_RATE = 2                     // frames per second
+const FRAME_RATE = 10                    // frames per second
 const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
 
 func gameLoop(gameInfo *gameState) {
@@ -49,6 +53,7 @@ func gameLoop(gameInfo *gameState) {
 				log(fmt.Sprintf("gameLoop: exiting due debugDraw=%v", gameInfo.debugDraw))
 				break
 			}
+			update(gameInfo, t)
 			draw(gameInfo, t)
 		}
 	}()
