@@ -23,18 +23,16 @@ func draw(gameInfo *gameState, t time.Time) {
 	gl.BindFramebuffer(gl.FRAMEBUFFER, nil) // select default framebuffer attached to on-screen canvas
 	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
-	// scan programs
-
 	for _, s := range gameInfo.shaderList {
 		s.draw(gameInfo)
 	}
 
-	if skybox := gameInfo.skybox; skybox != nil {
-		skybox.draw(gameInfo)
-	}
-
 	if box := gameInfo.box; box != nil {
 		box.draw(gameInfo)
+	}
+
+	if skybox := gameInfo.skybox; skybox != nil {
+		skybox.draw(gameInfo)
 	}
 }
 

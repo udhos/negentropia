@@ -146,7 +146,7 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	i := newInstanceNull("skybox-instance")
 	// skyboxScale should not matter much when it is centered on camera
 	// skybox faces should however be within view frustum
-	i.scale = 30
+	i.scale = 10
 
 	m.addInstance(i) // add instance to model
 

@@ -12,6 +12,8 @@ Otherwise this will absolutely guarantee that the skybox will be drawn at the ve
 no matter what values you pick for zNear and zFar, and you don't need to do anything fancy.
 Just the most basic shaders and you get the desired result.
 
+NOTE: Needed to change from gl.depthFunc(gl.LESS) to gl.depthFunc(gl.LEQUAL)
+
 Option 2:
 To make it always render to the far-plane, you can also put this at the end of your
 vertex shader (instead of your logarithmic z line).

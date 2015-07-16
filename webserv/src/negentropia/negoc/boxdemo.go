@@ -122,5 +122,5 @@ func (b *boxdemo) draw(gameInfo *gameState) {
 	gl.BindTexture(gl.TEXTURE_CUBE_MAP, nil)
 	gl.BindBuffer(gl.ARRAY_BUFFER, nil)
 
-	gl.DepthRange(0.0, 1.0) // restore default
+	//gl.DepthRange(0.0, 1.0) // restore default
 }

@@ -120,7 +120,7 @@ func initContext(gameInfo *gameState) {
 	gl.ClearColor(0.8, 0.3, 0.01, 1)
 
 	gl.Enable(gl.DEPTH_TEST) // enable depth testing
-	gl.DepthFunc(gl.LESS)    // gl.LESS is default depth test
+	gl.DepthFunc(gl.LEQUAL)  // gl.LESS is default depth test
 	gl.DepthRange(0.0, 1.0)  // default
 
 	updateViewport(gameInfo)
