@@ -144,7 +144,9 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	m.addCubemapFace(gl, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, box.FaceBack)
 
 	i := newInstanceNull("skybox-instance")
-	i.scale = 10 // skyboxScale should not matter when it is centered on camera
+	// skyboxScale should not matter much when it is centered on camera
+	// skybox faces should however be within view frustum
+	i.scale = 30
 
 	m.addInstance(i) // add instance to model
 
@@ -192,7 +194,7 @@ func (m *skyboxModel) draw(gameInfo *gameState, prog shader) {
 	gl.BindBuffer(gl.ARRAY_BUFFER, m.vertexBuffer)
 
 	// vertex coord x,y,z
-	gl.VertexAttribPointer(prog.attrLoc_Position(), vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0)
+	gl.VertexAttribPointer(skyboxSh.a_Position, vertexPositionBufferItemSize, gl.FLOAT, false, 0, 0)
 
 	gl.BindTexture(gl.TEXTURE_CUBE_MAP, m.cubemapTexture)
 
@@ -200,7 +202,7 @@ func (m *skyboxModel) draw(gameInfo *gameState, prog shader) {
 
 	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, m.vertexIndexBuffer)
 
-	u_MV := prog.unif_MV()
+	u_MV := skyboxSh.u_MV
 
 	for i, inst := range m.instanceList {
 		inst.uploadModelView(gameInfo, gl, u_MV, &gameInfo.cam)
