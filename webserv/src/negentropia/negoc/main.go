@@ -63,22 +63,23 @@ func gameLoop(gameInfo *gameState) {
 }
 */
 
-func gameLoop(gameInfo *gameState) {
-	//log(fmt.Sprintf("gameLoop: frame_rate=%v fps frame_interval=%v msec", FRAME_RATE, FRAME_INTERVAL))
-
+func gameLoopStart(gameInfo *gameState) {
 	var tick func(timestamp float32)
 
 	tick = func(timestamp float32) {
+		if !gameInfo.debugDraw {
+			gameInfo.animFrameId = requestAnimationFrame(tick) // re-schedule
+		}
 		t := time.Now()
 		update(gameInfo, t)
 		draw(gameInfo, t)
-		if gameInfo.debugDraw {
-			return // do not re-schedule
-		}
-		gameInfo.animFrameId = requestAnimationFrame(tick) // re-schedule
 	}
 
 	gameInfo.animFrameId = requestAnimationFrame(tick) // schedule
+}
+
+func gameLoopStop(gameInfo *gameState) {
+	cancelAnimationFrame(gameInfo.animFrameId)
 }
 
 func testModelView() {
@@ -216,7 +217,7 @@ func main() {
 
 	trapKeyboard(gameInfo)
 
-	gameLoop(gameInfo)
+	gameLoopStart(gameInfo)
 
 	gameInfo.box = newBoxdemo(gameInfo)
 

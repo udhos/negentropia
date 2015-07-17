@@ -22,7 +22,7 @@ func keyPressedD(gameInfo *gameState) {
 	} else {
 		log("keyPressedD: disabling draw loop -- hit again to draw")
 		gameInfo.debugDraw = true
-		cancelAnimationFrame(gameInfo.animFrameId)
+		gameLoopStop(gameInfo)
 	}
 }
 
