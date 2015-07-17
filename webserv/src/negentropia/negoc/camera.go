@@ -61,11 +61,13 @@ func incRad(r, delta float64) float64 {
 }
 */
 
+const pi2 = 2 * math.Pi
+
 func cameraUpdate(gameInfo *gameState, t time.Time) {
 	sec := float64(t.Second()) + float64(t.Nanosecond())/1000000000
 
 	turnsPerSec := .1
-	camRad := sec * 2 * math.Pi * turnsPerSec
+	camRad := sec * pi2 * turnsPerSec
 
 	cos := math.Cos(camRad)
 	sin := math.Sin(camRad)
