@@ -40,9 +40,12 @@ func draw(gameInfo *gameState, t time.Time) {
 	}
 }
 
+/*
 const FRAME_RATE = 10                    // frames per second
 const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
+*/
 
+/*
 func gameLoop(gameInfo *gameState) {
 	log(fmt.Sprintf("gameLoop: frame_rate=%v fps frame_interval=%v msec", FRAME_RATE, FRAME_INTERVAL))
 
@@ -57,6 +60,25 @@ func gameLoop(gameInfo *gameState) {
 			draw(gameInfo, t)
 		}
 	}()
+}
+*/
+
+func gameLoop(gameInfo *gameState) {
+	//log(fmt.Sprintf("gameLoop: frame_rate=%v fps frame_interval=%v msec", FRAME_RATE, FRAME_INTERVAL))
+
+	var tick func(timestamp float32)
+
+	tick = func(timestamp float32) {
+		t := time.Now()
+		update(gameInfo, t)
+		draw(gameInfo, t)
+		if gameInfo.debugDraw {
+			return // do not re-schedule
+		}
+		gameInfo.animFrameId = requestAnimationFrame(tick) // re-schedule
+	}
+
+	gameInfo.animFrameId = requestAnimationFrame(tick) // schedule
 }
 
 func testModelView() {
@@ -155,6 +177,7 @@ type gameState struct {
 	skybox                    *skyboxShader
 	box                       *boxdemo
 	debugDraw                 bool
+	animFrameId               int
 }
 
 func resetGame(gameInfo *gameState) {

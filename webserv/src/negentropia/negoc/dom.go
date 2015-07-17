@@ -18,5 +18,5 @@ func requestAnimationFrame(callback func(timestamp float32)) int {
 }
 
 func cancelAnimationFrame(id int) {
-	js.Global.Call("cancelAnimationFrame")
+	js.Global.Call("cancelAnimationFrame", id)
 }
