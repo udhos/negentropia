@@ -6,6 +6,15 @@ import (
 	"honnef.co/go/js/dom"
 )
 
+func getCanvasCoord(canvas dom.Element, clientX, clientY int) (int, int) {
+	rect := canvas.GetBoundingClientRect()
+
+	canvasX := clientX - rect.Left
+	canvasY := clientY - rect.Top
+
+	return canvasX, canvasY
+}
+
 func trapMouse(gameInfo *gameState) {
 
 	wheelHandler := func(ev dom.Event) {
@@ -14,13 +23,17 @@ func trapMouse(gameInfo *gameState) {
 	}
 
 	mouseUpHandler := func(ev dom.Event) {
-		mouseEv := ev.(*dom.MouseEvent)
-		log(fmt.Sprintf("mouseUpHandler: event=%v", mouseEv))
+		m := ev.(*dom.MouseEvent)
+		el := dom.WrapElement(gameInfo.canvas)
+		canvasX, canvasY := getCanvasCoord(el, m.ClientX, m.ClientY)
+		log(fmt.Sprintf("mouseUpHandler: %v,%v", canvasX, canvasY))
 	}
 
 	mouseDownHandler := func(ev dom.Event) {
-		mouseEv := ev.(*dom.MouseEvent)
-		log(fmt.Sprintf("mouseDownHandler: event=%v", mouseEv))
+		m := ev.(*dom.MouseEvent)
+		el := dom.WrapElement(gameInfo.canvas)
+		canvasX, canvasY := getCanvasCoord(el, m.ClientX, m.ClientY)
+		log(fmt.Sprintf("mouseDownHandler: %v,%v", canvasX, canvasY))
 	}
 
 	el := dom.WrapElement(gameInfo.canvas)
