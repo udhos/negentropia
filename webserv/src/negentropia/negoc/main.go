@@ -5,7 +5,7 @@ import (
 	//"math"
 	"time"
 
-	//"github.com/gopherjs/gopherjs/js"
+	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 
 	"negentropia/world/obj"
@@ -179,6 +179,7 @@ type gameState struct {
 	box                       *boxdemo
 	debugDraw                 bool
 	animFrameId               int
+	canvas                    *js.Object
 }
 
 func resetGame(gameInfo *gameState) {
@@ -192,7 +193,7 @@ func main() {
 
 	gameInfo := &gameState{defaultTextureUnit: 0}
 
-	gameInfo.gl = initGL()
+	gameInfo.gl, gameInfo.canvas = initGL()
 	if gameInfo.gl == nil {
 		log("main: no webgl context, exiting")
 		return
@@ -216,6 +217,7 @@ func main() {
 	setPerspective(gameInfo) // requires aspectRatio
 
 	trapKeyboard(gameInfo)
+	trapMouse(gameInfo)
 
 	gameLoopStart(gameInfo)
 

@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func initGL() *webgl.Context {
+func initGL() (*webgl.Context, *js.Object) {
 
 	document := js.Global.Get("document")
 	//body := document.Get("body")
@@ -29,10 +29,10 @@ func initGL() *webgl.Context {
 	gl, err := webgl.NewContext(canvas, attrs)
 	if err != nil {
 		log(err.Error())
-		return nil
+		return nil, nil
 	}
 
-	return gl
+	return gl, canvas
 }
 
 func setViewport(gl *webgl.Context, w, h int) float64 {
