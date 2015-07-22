@@ -3,13 +3,50 @@ package main
 import (
 	"math"
 	//"fmt"
-	//"negentropia/world/parser"
 	//"strings"
+	"errors"
+
+	//"negentropia/world/parser"
 	"negentropia/world/util"
 )
 
 type Matrix4 struct {
 	data []float32
+}
+
+func (m *Matrix4) copyFrom(src *Matrix4) {
+	copy(m.data, src.data)
+}
+
+func (m *Matrix4) invert() {
+	// Matrix4.invert() FIXME WRITEME
+}
+
+// transform: multiply this matrix [m] by vector [x,y,z,w]
+func (m *Matrix4) transform(x, y, z, w float64) (tx, ty, tz, tw float64) {
+	m0 := float64(m.data[0])
+	m1 := float64(m.data[1])
+	m2 := float64(m.data[2])
+	m3 := float64(m.data[3])
+	m4 := float64(m.data[4])
+	m5 := float64(m.data[5])
+	m6 := float64(m.data[6])
+	m7 := float64(m.data[7])
+	m8 := float64(m.data[8])
+	m9 := float64(m.data[9])
+	m10 := float64(m.data[10])
+	m11 := float64(m.data[11])
+	m12 := float64(m.data[12])
+	m13 := float64(m.data[13])
+	m14 := float64(m.data[14])
+	m15 := float64(m.data[15])
+
+	tx = m0*x + m4*y + m8*z + m12*w
+	ty = m1*x + m5*y + m9*z + m13*w
+	tz = m2*x + m6*y + m10*z + m14*w
+	tw = m3*x + m7*y + m11*z + m15*w
+
+	return
 }
 
 // usually set w to 1.0
@@ -175,9 +212,10 @@ func setRotationMatrix(rotationMatrix *Matrix4, forwardX, forwardY, forwardZ, up
 	Model transformation is the inverse of the view transformation.
 	Common use is to compute object location/orientation into full transformation matrix.
 
-	V*T*R*U*S = full transformation
+	P*V*T*R*U*S = full transformation
+	P = Perspective
 	V = View (inverse of camera) built by setViewMatrix
-	T*R = model transformation built by setModelMatrix
+	T*R = model transformation built by THIS setModelMatrix
 	T = Translation
 	R = Rotation
 	U = Undo Model Local Rotation
@@ -222,8 +260,9 @@ func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY
 	View transformation is the inverse of the model transformation.
 	Common use is to compute camera location/orientation into full transformation matrix.
 
-	V*T*R*U*S = full transformation
-	V = View (inverse of camera) built by setViewMatrix
+	P*V*T*R*U*S = full transformation
+	P = Perspective
+	V = View (inverse of camera) built by THIS setViewMatrix
 	T*R = model transformation built by setModelMatrix
 	T = Translation
 	R = Rotation
@@ -295,4 +334,70 @@ func setFrustumMatrix(perspectiveMatrix *Matrix4, left, right, bottom, top, near
 		0, 0, r2c2, r2c3, // "r2"
 		0, 0, -1, 0, // "r3"
 	}
+}
+
+/*
+	camera = includes both the perspective and view transforms
+
+	P*V*T*R*U*S = full transformation
+	P = Perspective
+	V = View (inverse of camera) built by setViewMatrix
+	T*R = model transformation built by setModelMatrix
+	T = Translation
+	R = Rotation
+	U = Undo Model Local Rotation
+	S = Scaling
+*/
+func unproject(camera *Matrix4, viewportX, viewportWidth, viewportY, viewportHeight, pickX, pickY int, pickZ float64) (worldX, worldY, worldZ float64, err error) {
+
+	// from screen coordinates to clip coordinates
+	pX := (2.0 * float64(pickX-viewportX) / float64(viewportWidth)) - 1.0
+	pY := (2.0 * float64(pickY-viewportY) / float64(viewportHeight)) - 1.0
+	pZ := (2.0 * float64(pickZ)) - 1.0
+
+	if pX < -1.0 || pY < -1.0 ||
+		pX > 1.0 || pY > 1.0 ||
+		pZ < -1.0 || pZ > 1.0 {
+		err = errors.New("unproject: pick point outside unit cube")
+		return
+	}
+
+	var invertedCameraMatrix Matrix4
+	invertedCameraMatrix.copyFrom(camera)
+	invertedCameraMatrix.invert()
+	vx, vy, vz, vw := invertedCameraMatrix.transform(pX, pY, pZ, 1.0)
+	if vw == 0.0 {
+		err = errors.New("unproject: unprojected pick point with W=0")
+		return
+	}
+	invW := 1.0 / vw
+	worldX = vx * invW
+	worldY = vy * invW
+	worldZ = vz * invW
+
+	return
+}
+
+/*
+	camera = includes both the perspective and view transforms
+
+	P*V*T*R*U*S = full transformation
+	P = Perspective
+	V = View (inverse of camera) built by setViewMatrix
+	T*R = model transformation built by setModelMatrix
+	T = Translation
+	R = Rotation
+	U = Undo Model Local Rotation
+	S = Scaling
+*/
+func pickRay(camera *Matrix4, viewportX, viewportWidth, viewportY, viewportHeight, pickX, pickY int) (nearX, nearY, nearZ, farX, farY, farZ float64, err error) {
+
+	nearX, nearY, nearZ, err = unproject(camera, viewportX, viewportWidth, viewportY, viewportHeight, pickX, viewportHeight-pickY, 0.0)
+	if err != nil {
+		return
+	}
+
+	farX, farY, farZ, err = unproject(camera, viewportX, viewportWidth, viewportY, viewportHeight, pickX, viewportHeight-pickY, 1.0)
+
+	return
 }

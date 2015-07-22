@@ -97,6 +97,7 @@ func (i *instance) draw(gameInfo *gameState, mod *model, u_MV, u_Sampler *js.Obj
 func (i *instance) uploadModelView(gameInfo *gameState, gl *webgl.Context, u_MV *js.Object, cam *camera) {
 
 	/*
+	   P = Perspective
 	   V = View (inverse of camera matrix)
 	   T = Translation
 	   R = Rotation
@@ -104,6 +105,7 @@ func (i *instance) uploadModelView(gameInfo *gameState, gl *webgl.Context, u_MV 
 	   S = Scaling
 
 	   MV = V*T*R*U*S
+	   Full transform: P * MV
 	*/
 
 	var MV Matrix4
