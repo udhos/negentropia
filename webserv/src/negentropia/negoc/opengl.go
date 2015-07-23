@@ -423,16 +423,16 @@ func unproject(camera *Matrix4, viewportX, viewportWidth, viewportY, viewportHei
 	// from screen coordinates to clip coordinates
 	pX := (2.0 * float64(pickX-viewportX) / float64(viewportWidth)) - 1.0
 	pY := (2.0 * float64(pickY-viewportY) / float64(viewportHeight)) - 1.0
-	pZ := (2.0 * float64(pickZ)) - 1.0
+	pZ := 2.0*pickZ - 1.0
 
 	if pX < -1.0 || pX > 1.0 || pY < -1.0 || pY > 1.0 || pZ < -1.0 || pZ > 1.0 {
 		err = errors.New("unproject: pick point outside unit cube")
 		return
 	}
 
+	// invertedCamera: clip coord -> undo perspective -> undo view -> world coord
 	var invertedCamera Matrix4
 	invertedCamera.copyInverseFrom(camera)
-
 	vx, vy, vz, vw := invertedCamera.transform(pX, pY, pZ, 1.0)
 	if vw == 0.0 {
 		err = errors.New("unproject: unprojected pick point with W=0")
