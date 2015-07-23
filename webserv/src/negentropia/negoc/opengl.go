@@ -413,9 +413,7 @@ func unproject(camera *Matrix4, viewportX, viewportWidth, viewportY, viewportHei
 	pY := (2.0 * float64(pickY-viewportY) / float64(viewportHeight)) - 1.0
 	pZ := (2.0 * float64(pickZ)) - 1.0
 
-	if pX < -1.0 || pY < -1.0 ||
-		pX > 1.0 || pY > 1.0 ||
-		pZ < -1.0 || pZ > 1.0 {
+	if pX < -1.0 || pX > 1.0 || pY < -1.0 || pY > 1.0 || pZ < -1.0 || pZ > 1.0 {
 		err = errors.New("unproject: pick point outside unit cube")
 		return
 	}
