@@ -32,8 +32,6 @@ func (m *Matrix4) invert() {
 
 func (m *Matrix4) copyInverseFrom(src *Matrix4) error {
 
-	m.malloc()
-
 	a00 := src.data[0]
 	a01 := src.data[1]
 	a02 := src.data[2]
@@ -70,6 +68,8 @@ func (m *Matrix4) copyInverseFrom(src *Matrix4) error {
 		return errors.New("copyInverseFrom: null determinant")
 	}
 	invDet := 1.0 / det
+
+	m.malloc()
 
 	m.data[0] = (a11*b11 - a12*b10 + a13*b09) * invDet
 	m.data[1] = (-a01*b11 + a02*b10 - a03*b09) * invDet
