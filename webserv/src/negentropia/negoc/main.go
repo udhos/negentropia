@@ -180,6 +180,8 @@ type gameState struct {
 	debugDraw                 bool
 	animFrameId               int
 	canvas                    *js.Object
+	viewportWidth             int
+	viewportHeight            int
 }
 
 func resetGame(gameInfo *gameState) {
@@ -191,7 +193,7 @@ func resetGame(gameInfo *gameState) {
 func main() {
 	log("main: begin")
 
-	gameInfo := &gameState{defaultTextureUnit: 0}
+	gameInfo := &gameState{viewportWidth: 600, viewportHeight: 400}
 
 	gameInfo.gl, gameInfo.canvas = initGL()
 	if gameInfo.gl == nil {

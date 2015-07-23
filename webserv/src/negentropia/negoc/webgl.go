@@ -106,7 +106,7 @@ func enableExtensions(gameInfo *gameState) {
 }
 
 func updateViewport(gameInfo *gameState) {
-	gameInfo.canvasAspect = setViewport(gameInfo.gl, 600, 400)
+	gameInfo.canvasAspect = setViewport(gameInfo.gl, gameInfo.viewportWidth, gameInfo.viewportHeight)
 }
 
 func initContext(gameInfo *gameState) {

@@ -14,7 +14,15 @@ type Matrix4 struct {
 	data []float32
 }
 
+func (m *Matrix4) malloc() {
+	if len(m.data) == 16 {
+		return
+	}
+	m.data = make([]float32, 16, 16)
+}
+
 func (m *Matrix4) copyFrom(src *Matrix4) {
+	m.malloc()
 	copy(m.data, src.data)
 }
 
@@ -23,6 +31,9 @@ func (m *Matrix4) invert() {
 }
 
 func (m *Matrix4) copyInverseFrom(src *Matrix4) error {
+
+	m.malloc()
+
 	a00 := src.data[0]
 	a01 := src.data[1]
 	a02 := src.data[2]
@@ -82,6 +93,7 @@ func (m *Matrix4) copyInverseFrom(src *Matrix4) error {
 
 // transform: multiply this matrix [m] by vector [x,y,z,w]
 func (m *Matrix4) transform(x, y, z, w float64) (tx, ty, tz, tw float64) {
+
 	m0 := float64(m.data[0])
 	m1 := float64(m.data[1])
 	m2 := float64(m.data[2])
@@ -420,6 +432,7 @@ func unproject(camera *Matrix4, viewportX, viewportWidth, viewportY, viewportHei
 
 	var invertedCamera Matrix4
 	invertedCamera.copyInverseFrom(camera)
+
 	vx, vy, vz, vw := invertedCamera.transform(pX, pY, pZ, 1.0)
 	if vw == 0.0 {
 		err = errors.New("unproject: unprojected pick point with W=0")

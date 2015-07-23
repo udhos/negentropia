@@ -59,6 +59,7 @@ func trapMouse(gameInfo *gameState) {
 		m.PreventDefault()
 		canvasX, canvasY := getCanvasCoord(canvas, m.ClientX, m.ClientY)
 		log(fmt.Sprintf("mouseDownHandler: %v,%v", canvasX, canvasY))
+		pick(gameInfo, canvasX, canvasY)
 	}
 
 	canvas.AddEventListener("wheel", false, wheelHandler)
