@@ -15,10 +15,9 @@ type Matrix4 struct {
 }
 
 func (m *Matrix4) malloc() {
-	if len(m.data) == 16 {
-		return
+	if len(m.data) != 16 {
+		m.data = make([]float32, 16, 16)
 	}
-	m.data = make([]float32, 16, 16)
 }
 
 func (m *Matrix4) copyFrom(src *Matrix4) {
@@ -418,12 +417,12 @@ func setFrustumMatrix(perspectiveMatrix *Matrix4, left, right, bottom, top, near
 	U = Undo Model Local Rotation
 	S = Scaling
 */
-func unproject(camera *Matrix4, viewportX, viewportWidth, viewportY, viewportHeight, pickX, pickY int, pickZ float64) (worldX, worldY, worldZ float64, err error) {
+func unproject(camera *Matrix4, viewportX, viewportWidth, viewportY, viewportHeight, pickX, pickY int, depth float64) (worldX, worldY, worldZ float64, err error) {
 
 	// from screen coordinates to clip coordinates
 	pX := (2.0 * float64(pickX-viewportX) / float64(viewportWidth)) - 1.0
 	pY := (2.0 * float64(pickY-viewportY) / float64(viewportHeight)) - 1.0
-	pZ := 2.0*pickZ - 1.0
+	pZ := 2.0*depth - 1.0
 
 	if pX < -1.0 || pX > 1.0 || pY < -1.0 || pY > 1.0 || pZ < -1.0 || pZ > 1.0 {
 		err = errors.New("unproject: pick point outside unit cube")
