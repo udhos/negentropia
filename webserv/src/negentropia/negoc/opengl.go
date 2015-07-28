@@ -281,6 +281,7 @@ func setRotationMatrix(rotationMatrix *Matrix4, forwardX, forwardY, forwardZ, up
 	Model transformation is the inverse of the view transformation.
 	Common use is to compute object location/orientation into full transformation matrix.
 
+	obj.coord. -> P*V*T*R*U*S -> clip coord -> divide by w -> NDC coord -> viewport transform -> window coord
 	P*V*T*R*U*S = full transformation
 	P = Perspective
 	V = View (inverse of camera) built by setViewMatrix
@@ -329,6 +330,7 @@ func setModelMatrix(modelMatrix *Matrix4, forwardX, forwardY, forwardZ, upX, upY
 	View transformation is the inverse of the model transformation.
 	Common use is to compute camera location/orientation into full transformation matrix.
 
+	obj.coord. -> P*V*T*R*U*S -> clip coord -> divide by w -> NDC coord -> viewport transform -> window coord
 	P*V*T*R*U*S = full transformation
 	P = Perspective
 	V = View (inverse of camera) built by THIS setViewMatrix
@@ -408,6 +410,7 @@ func setFrustumMatrix(perspectiveMatrix *Matrix4, left, right, bottom, top, near
 /*
 	camera = includes both the perspective and view transforms
 
+	obj.coord. -> P*V*T*R*U*S -> clip coord -> divide by w -> NDC coord -> viewport transform -> window coord
 	P*V*T*R*U*S = full transformation
 	P = Perspective
 	V = View (inverse of camera) built by setViewMatrix
@@ -448,6 +451,7 @@ func unproject(camera *Matrix4, viewportX, viewportWidth, viewportY, viewportHei
 /*
 	camera = includes both the perspective and view transforms
 
+	obj.coord. -> P*V*T*R*U*S -> clip coord -> divide by w -> NDC coord -> viewport transform -> window coord
 	P*V*T*R*U*S = full transformation
 	P = Perspective
 	V = View (inverse of camera) built by setViewMatrix
@@ -477,9 +481,9 @@ func pickRay(camera *Matrix4, viewportX, viewportWidth, viewportY, viewportHeigh
 func viewportTransform(viewportX, viewportWidth, viewportY, viewportHeight int, depthNear, depthFar, ndcX, ndcY, ndcZ float64) (int, int, float64) {
 	halfWidth := float64(viewportWidth) / 2.0
 	halfHeight := float64(viewportHeight) / 2.0
-	vx := ndcX*halfWidth + halfWidth + float64(viewportX)
-	vy := ndcY*halfHeight + halfHeight + float64(viewportY)
+	vx := round(ndcX*halfWidth+halfWidth) + viewportX
+	vy := round(ndcY*halfHeight+halfHeight) + viewportY
 	depth := (ndcZ*(depthFar-depthNear) + (depthFar + depthNear)) / 2.0
 
-	return round(vx), viewportHeight - round(vy), depth
+	return vx, viewportHeight - vy, depth
 }
