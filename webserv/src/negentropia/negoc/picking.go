@@ -17,9 +17,17 @@ func pick(gameInfo *gameState, canvasX, canvasY int) {
 
 	log(fmt.Sprintf("pick: canvas=%v,%v near=%v,%v,%v far=%v,%v,%v error=%v", canvasX, canvasY, nearX, nearY, nearZ, farX, farY, farZ, err))
 
-	pNearX, pNearY, pNearZ, pNearW := cameraMatrix.transform(nearX, nearY, nearZ, 1)
-	log(fmt.Sprintf("pick: projected near=%v,%v,%v", pNearX/pNearW, pNearY/pNearW, pNearZ/pNearW))
+	clipNearX, clipNearY, clipNearZ, clipNearW := cameraMatrix.transform(nearX, nearY, nearZ, 1)
+	ndcNearX, ndcNearY, ndcNearZ := clipNearX/clipNearW, clipNearY/clipNearW, clipNearZ/clipNearW
+	log(fmt.Sprintf("pick: projected ndcNear=%v,%v,%v", ndcNearX, ndcNearY, ndcNearZ))
 
-	pFarX, pFarY, pFarZ, pFarW := cameraMatrix.transform(farX, farY, farZ, 1)
-	log(fmt.Sprintf("pick: projected far=%v,%v,%v", pFarX/pFarW, pFarY/pFarW, pFarZ/pFarW))
+	clipFarX, clipFarY, clipFarZ, clipFarW := cameraMatrix.transform(farX, farY, farZ, 1)
+	ndcFarX, ndcFarY, ndcFarZ := clipFarX/clipFarW, clipFarY/clipFarW, clipFarZ/clipFarW
+	log(fmt.Sprintf("pick: projected ndcFar=%v,%v,%v", ndcFarX, ndcFarY, ndcFarZ))
+
+	screenNearX, screenNearY, screenNearDepth := viewportTransform(0, gameInfo.viewportWidth, 0, gameInfo.viewportHeight, 0.0, 1.0, ndcNearX, ndcNearY, ndcNearZ)
+	log(fmt.Sprintf("pick: screenNear=%v,%v,%v", screenNearX, screenNearY, screenNearDepth))
+
+	screenFarX, screenFarY, screenFarDepth := viewportTransform(0, gameInfo.viewportWidth, 0, gameInfo.viewportHeight, 0.0, 1.0, ndcFarX, ndcFarY, ndcFarZ)
+	log(fmt.Sprintf("pick: screenFar=%v,%v,%v", screenFarX, screenFarY, screenFarDepth))
 }

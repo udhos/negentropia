@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"math"
+	"time"
+
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	//"honnef.co/go/js/dom"
-	"math"
-	"time"
 )
 
 func initGL() (*webgl.Context, *js.Object) {
