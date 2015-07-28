@@ -48,31 +48,26 @@ func cameraOrbitFrom(cam *camera, x, y, z float64) {
 	log(fmt.Sprintf("cameraOrbitFrom: %v,%v,%v radius=%v", x, y, z, cam.orbitRadius))
 }
 
-/*
-var camRad = 0.0
-
-func incRad(r, delta float64) float64 {
-	const pi2 = 2 * math.Pi
-	r += delta
-	if r > .999*pi2 {
-		r = 0
-	}
-	return r
-}
-*/
-
 const pi2 = 2 * math.Pi
 
 func cameraUpdate(gameInfo *gameState, t time.Time) {
-	sec := float64(t.Second()) + float64(t.Nanosecond())/1000000000
+	var camPosX, camPosY, camPosZ float64
 
-	turnsPerSec := .1
-	camRad := sec * pi2 * turnsPerSec
+	autoRotate := false
 
-	cos := math.Cos(camRad)
-	sin := math.Sin(camRad)
+	if autoRotate {
+		sec := float64(t.Second()) + float64(t.Nanosecond())/1000000000
 
-	camPosX, camPosY, camPosZ := gameInfo.cam.orbitRadius*sin, 0.0, gameInfo.cam.orbitRadius*cos
+		turnsPerSec := .1
+		camRad := sec * pi2 * turnsPerSec
+
+		cos := math.Cos(camRad)
+		sin := math.Sin(camRad)
+
+		camPosX, camPosY, camPosZ = gameInfo.cam.orbitRadius*sin, 0.0, gameInfo.cam.orbitRadius*cos
+	} else {
+		camPosX, camPosY, camPosZ = gameInfo.cam.camPosX, gameInfo.cam.camPosY, gameInfo.cam.camPosZ
+	}
 
 	cameraControlMoveTo(gameInfo, []float64{camPosX, camPosY, camPosZ})
 }
