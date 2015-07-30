@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"sort"
 
 	"github.com/gopherjs/gopherjs/js"
@@ -15,6 +16,7 @@ type model interface {
 	findInstance(id string) *instance
 	addInstance(inst *instance)
 	draw(gameInfo *gameState, prog shader)
+	getBoundingRadius() float64
 }
 
 type simpleModel struct {
@@ -25,11 +27,16 @@ type simpleModel struct {
 	vertexIndexBuffer      *js.Object
 	vertexIndexElementType int
 	vertexIndexElementSize int
+	boundingRadius         float64
 }
 
 type texturizedModel struct {
 	simpleModel
 	textures []*texture
+}
+
+func (m *simpleModel) getBoundingRadius() float64 {
+	return m.boundingRadius
 }
 
 func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
@@ -168,6 +175,23 @@ func (m *simpleModel) createBuffers(objURL string, gl *webgl.Context, extensionU
 		objURL, o.BigIndexFound, extensionUintIndexEnabled, m.vertexIndexElementType, m.vertexIndexElementSize))
 }
 
+func findBoundingRadius(o *obj.Obj) float64 {
+
+	farthestSquaredDist := 0.0
+
+	offset := o.StrideOffsetPosition / 4
+	step := o.StrideSize / 4
+	for i := offset; i < len(o.Coord); i += step {
+		x, y, z := float64(o.Coord[i]), float64(o.Coord[i+1]), float64(o.Coord[i+2])
+		squaredDist := x*x + y*y + z*z
+		if squaredDist > farthestSquaredDist {
+			farthestSquaredDist = squaredDist
+		}
+	}
+
+	return math.Sqrt(farthestSquaredDist)
+}
+
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	front, up []float64, assetPath asset, textureTable map[string]*texture,
 	repeatTexture bool, materialLib obj.MaterialLib, extensionUintIndexEnabled bool) *texturizedModel {
@@ -278,6 +302,8 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		log(fmt.Sprintf("newModel: objURL=%s BAD group/texture count: groups=%d textures=%d", objURL, len(o.Groups), len(mod.textures)))
 		return nil
 	}
+
+	mod.boundingRadius = findBoundingRadius(o)
 
 	mod.mesh = o
 

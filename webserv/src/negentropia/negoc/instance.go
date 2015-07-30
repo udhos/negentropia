@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"math"
+	//"math"
 	"strconv"
 	//"strings"
 
@@ -10,7 +10,7 @@ import (
 	"github.com/gopherjs/webgl"
 
 	//"negentropia/world/parser"
-	"negentropia/world/obj"
+	//"negentropia/world/obj"
 )
 
 type instance struct {
@@ -21,31 +21,18 @@ type instance struct {
 	scale                        float64
 	undoModelRotation            Matrix4 // U
 	rotation                     Matrix4 // R * U
-	boundingRadius               float64
+	modelBoundingRadius          float64
 }
 
-func (i *instance) findBoundingRadius(o *obj.Obj) {
-
-	farthestSquaredDist := 0.0
-
-	offset := o.StrideOffsetPosition / 4
-	step := o.StrideSize / 4
-	for i := offset; i < len(o.Coord); i = i + step {
-		x, y, z := float64(o.Coord[i]), float64(o.Coord[i+1]), float64(o.Coord[i+2])
-		squaredDist := x*x + y*y + z*z
-		if squaredDist > farthestSquaredDist {
-			farthestSquaredDist = squaredDist
-		}
-	}
-
-	i.boundingRadius = i.scale * math.Sqrt(farthestSquaredDist)
+func (i *instance) boundingRadius() float64 {
+	return i.scale * i.modelBoundingRadius
 }
 
 func newInstanceNull(id string) *instance {
-	return newInstance(id, nil, 0, 0, -1, 0, 1, 0, 0, 0, 0, 1)
+	return newInstance(id, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0, 1)
 }
 
-func newInstance(id string, mesh *obj.Obj, modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ, scale float64) *instance {
+func newInstance(id string, modelRadius, modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ, scale float64) *instance {
 	i := &instance{id: id, scale: scale}
 
 	i.forwardX, i.forwardY, i.forwardZ = normalize3(modelForwardX, modelForwardY, modelForwardZ)
@@ -58,10 +45,9 @@ func newInstance(id string, mesh *obj.Obj, modelForwardX, modelForwardY, modelFo
 	i.undoModelRotationFrom(modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ) // setup U
 	i.updateModelMatrix()                                                                              // rotation = T*R*U
 
-	if mesh != nil {
-		i.findBoundingRadius(mesh)
-	}
-	log(fmt.Sprintf("newInstance: instance=%s boundingRadius=%v", id, i.boundingRadius))
+	i.modelBoundingRadius = modelRadius
+
+	log(fmt.Sprintf("newInstance: instance=%s boundingRadius=%v", id, i.boundingRadius()))
 
 	return i
 }
@@ -260,14 +246,16 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		return
 	}
 
-	var mesh *obj.Obj
-	if simple, isSimple := mod.(*simpleModel); isSimple {
-		mesh = simple.mesh
-	} else if tex, isTex := mod.(*texturizedModel); isTex {
-		mesh = tex.mesh
-	}
+	/*
+		var mesh *obj.Obj
+		if simple, isSimple := mod.(*simpleModel); isSimple {
+			mesh = simple.mesh
+		} else if tex, isTex := mod.(*texturizedModel); isTex {
+			mesh = tex.mesh
+		}
+	*/
 
-	inst = newInstance(id, mesh, f[0], f[1], f[2], u[0], u[1], u[2], c[0], c[1], c[2], s)
+	inst = newInstance(id, mod.getBoundingRadius(), f[0], f[1], f[2], u[0], u[1], u[2], c[0], c[1], c[2], s)
 
 	log(fmt.Sprintf("createInstance: id=%s prog=%s coord=%v f=%v u=%v scale=%f inst=%v", id, programName, c, f, u, s, inst))
 

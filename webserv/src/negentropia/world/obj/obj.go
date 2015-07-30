@@ -208,8 +208,9 @@ func (o *Obj) NumberOfElements() int {
 }
 
 func (o *Obj) VertexCoordinates(stride int) (float32, float32, float32) {
+	offset := o.StrideOffsetPosition / 4
 	floatsPerStride := o.StrideSize / 4
-	f := stride * floatsPerStride
+	f := offset + stride*floatsPerStride
 	return o.Coord[f], o.Coord[f+1], o.Coord[f+2]
 }
 
