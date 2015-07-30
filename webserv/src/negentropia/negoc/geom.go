@@ -53,7 +53,8 @@ func intersectRaySphere(r ray, s sphere) (hit bool, t1, t2 float64) {
 		return
 	}
 
-	d2 := tc*tc - dot3(Lx, Ly, Lz, Lx, Ly, Lz)
+	LL := Lx*Lx + Ly*Ly + Lz*Lz // L dot L = dot3(Lx,Ly,Lz,Lx,Ly,Lz) = squaredLength(L)
+	d2 := tc*tc - LL
 	radius2 := s.radius * s.radius
 	if d2 > radius2 {
 		return

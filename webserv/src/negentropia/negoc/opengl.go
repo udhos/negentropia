@@ -250,7 +250,7 @@ func dot3(x1, y1, z1, x2, y2, z2 float64) float64 {
 }
 
 func lengthSquared3(x, y, z float64) float64 {
-	return x*x + y*y + z*z
+	return x*x + y*y + z*z // dot3(x,y,z,x,y,z)
 }
 
 func length3(x, y, z float64) float64 {
