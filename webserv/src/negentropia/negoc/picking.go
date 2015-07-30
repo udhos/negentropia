@@ -30,4 +30,14 @@ func pick(gameInfo *gameState, canvasX, canvasY int) {
 
 	screenFarX, screenFarY, screenFarDepth := viewportTransform(0, gameInfo.viewportWidth, 0, gameInfo.viewportHeight, 0.0, 1.0, ndcFarX, ndcFarY, ndcFarZ)
 	log(fmt.Sprintf("pick: screenFar=%v,%v,%v", screenFarX, screenFarY, screenFarDepth))
+
+	ray := ray{nearX, nearY, nearZ, farX - nearX, farY - nearY, farZ - nearZ}
+
+	pickInstance(gameInfo.shaderList, ray)
+}
+
+func pickInstance(shaderList []shader, r ray) {
+	for _, s := range shaderList {
+		s.pickInstance(r)
+	}
 }

@@ -17,6 +17,7 @@ type shader interface {
 	//unif_Sampler() *js.Object
 	attrLoc_Position() int
 	//attrLoc_TextureCoord() int
+	pickInstance(r ray)
 }
 
 type simpleShader struct {
@@ -32,6 +33,12 @@ type simpleTexturizer struct {
 	simpleShader
 	u_Sampler      *js.Object
 	a_TextureCoord int
+}
+
+func (s *simpleShader) pickInstance(r ray) {
+	for _, m := range s.modelList {
+		m.pickInstance(r)
+	}
 }
 
 func (s *simpleShader) unif_MV() *js.Object {

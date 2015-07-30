@@ -17,6 +17,7 @@ type model interface {
 	addInstance(inst *instance)
 	draw(gameInfo *gameState, prog shader)
 	getBoundingRadius() float64
+	pickInstance(r ray)
 }
 
 type simpleModel struct {
@@ -37,6 +38,14 @@ type texturizedModel struct {
 
 func (m *simpleModel) getBoundingRadius() float64 {
 	return m.boundingRadius
+}
+
+func (m *simpleModel) pickInstance(r ray) {
+	for _, inst := range m.instanceList {
+		sph := sphere{inst.posX, inst.posY, inst.posZ, inst.boundingRadius()}
+		hit, _, _ := intersectRaySphere(r, sph)
+		log(fmt.Sprintf("pickInstance: model=%s instance=%s ray=%v sphere=%v hit=%v", m.name(), inst.id, r, sph, hit))
+	}
 }
 
 func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
