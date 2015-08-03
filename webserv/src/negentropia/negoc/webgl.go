@@ -7,7 +7,7 @@ import (
 
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
-	//"honnef.co/go/js/dom"
+	"honnef.co/go/js/dom"
 )
 
 func initGL() (*webgl.Context, *js.Object) {
@@ -16,12 +16,13 @@ func initGL() (*webgl.Context, *js.Object) {
 	//body := document.Get("body")
 
 	//el := dom.GetWindow().Document().QuerySelector("#canvasbox")
-	canvasid := "#canvasbox"
-	el := docQuery(canvasid)
-	log(fmt.Sprintf("initGL: %s el=%v", canvasid, el))
+	boxid := "#canvasbox"
+	el := docQuery(boxid)
+	log(fmt.Sprintf("initGL: %s el=%v", boxid, el))
 	canvasbox := el.Underlying()
 
 	canvas := document.Call("createElement", "canvas")
+	canvas.Set("id", "main_canvas") // CSS style is attached to id #main_canvas
 
 	canvasbox.Call("appendChild", canvas)
 
@@ -34,6 +35,26 @@ func initGL() (*webgl.Context, *js.Object) {
 	}
 
 	return gl, canvas
+}
+
+func getCanvasSize(gl *webgl.Context) (int, int) {
+	canvas := gl.Get("canvas")
+	w := canvas.Get("width").Int()
+	h := canvas.Get("height").Int()
+
+	cw := canvas.Get("clientWidth").Int()
+	ch := canvas.Get("clientHeight").Int()
+
+	sw := canvas.Get("scrollWidth").Int()
+	sh := canvas.Get("scrollHeight").Int()
+
+	style := windowGetComputedStyle(dom.WrapElement(canvas))
+	stw := style.Get("width").Int()
+	sth := style.Get("height").Int()
+
+	log(fmt.Sprintf("getCanvasSize: canvas=%dx%d client=%dx%d scroll=%dx%d style=%dx%d", w, h, cw, ch, sw, sh, stw, sth))
+
+	return cw, ch
 }
 
 func setViewport(gl *webgl.Context, w, h int) float64 {
@@ -62,6 +83,8 @@ func setViewport(gl *webgl.Context, w, h int) float64 {
 	canvasAspect := float64(drawingBufferWidth) / float64(drawingBufferHeight)
 
 	log(fmt.Sprintf("setViewport: %v x %v aspect=%v", drawingBufferWidth, drawingBufferHeight, canvasAspect))
+
+	getCanvasSize(gl)
 
 	return canvasAspect
 }

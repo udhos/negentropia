@@ -193,7 +193,7 @@ func resetGame(gameInfo *gameState) {
 func main() {
 	log("main: begin")
 
-	gameInfo := &gameState{viewportWidth: 600, viewportHeight: 400}
+	gameInfo := &gameState{}
 
 	gameInfo.gl, gameInfo.canvas = initGL()
 	if gameInfo.gl == nil {
@@ -202,6 +202,11 @@ func main() {
 	}
 
 	log("main: WebGL context initialized")
+
+	w, h := getCanvasSize(gameInfo.gl)
+	gameInfo.viewportWidth = w
+	gameInfo.viewportHeight = h
+	log(fmt.Sprintf("main: canvas size: %d x %d", gameInfo.viewportWidth, gameInfo.viewportHeight))
 
 	resetCamera(&gameInfo.cam)
 

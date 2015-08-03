@@ -5,6 +5,10 @@ import (
 	"honnef.co/go/js/dom"
 )
 
+func windowGetComputedStyle(el dom.Element) *dom.CSSStyleDeclaration {
+	return dom.GetWindow().GetComputedStyle(el, "")
+}
+
 func docQuery(query string) dom.Element {
 	return dom.GetWindow().Document().QuerySelector(query)
 }
