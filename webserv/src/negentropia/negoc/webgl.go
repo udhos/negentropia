@@ -48,11 +48,19 @@ func getCanvasSize(gl *webgl.Context) (int, int) {
 	sw := canvas.Get("scrollWidth").Int()
 	sh := canvas.Get("scrollHeight").Int()
 
-	style := windowGetComputedStyle(dom.WrapElement(canvas))
+	el := dom.WrapElement(canvas)
+
+	rect := el.GetBoundingClientRect()
+	rl := rect.Left
+	rt := rect.Top
+	rw := rect.Width
+	rh := rect.Height
+
+	style := windowGetComputedStyle(el)
 	stw := style.Get("width").Int()
 	sth := style.Get("height").Int()
 
-	log(fmt.Sprintf("getCanvasSize: canvas=%dx%d client=%dx%d scroll=%dx%d style=%dx%d", w, h, cw, ch, sw, sh, stw, sth))
+	log(fmt.Sprintf("getCanvasSize: canvas=%dx%d client=%dx%d scroll=%dx%d rect=(%dx%d)%dx%d style=%dx%d", w, h, cw, ch, sw, sh, rl, rt, rw, rh, stw, sth))
 
 	return cw, ch
 }
