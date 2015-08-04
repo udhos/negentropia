@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+<title>Mouse Canvas</title>
+
+<script type="text/javascript">
+
+	var logbox;
+	var lineCount = 0;
+	var canvas;
+
+	function init_log() {
+		logbox = document.createElement('div');
+		document.body.appendChild(logbox);
+	}
+	
+	function log(msg) {
+		++lineCount;
+		
+		msg = lineCount + " " + msg;
+		
+		console.info(msg);
+		
+		var div = document.createElement('div');
+		div.textContent = msg;
+		logbox.appendChild(div);
+		
+		if (logbox.children.length > 10) {
+			logbox.removeChild(logbox.children[0]);
+		}
+	}
+	
+	function getCanvasCoord(x, y) {
+		rect = canvas.getBoundingClientRect()
+		var cx = x - rect.left;
+		var cy = y - ~~rect.top;
+		log("getCanvasCoord: mouse=" + x + "," + y + " canvas=" + cx + "," + cy);
+	}
+	
+	function mouseUpHandler(event) {
+		var x = event.clientX;
+		var y = event.clientY;
+		log("mouseUpHandler: x=" + x + " y=" + y);
+		getCanvasCoord(x, y);
+	}
+
+	function mouseDownHandler(event) {
+		var x = event.clientX;
+		var y = event.clientY;
+		log("mouseDownHandler: x=" + x + " y=" + y);
+		getCanvasCoord(x, y);
+	}
+
+	function mouseMoveHandler(event) {
+		var x = event.clientX;
+		var y = event.clientY;
+		log("mouseMoveHandler: x=" + x + " y=" + y);
+		getCanvasCoord(x, y);
+	}
+	
+	function main() {
+		
+		init_log();
+		
+		canvas = document.getElementById("main_canvas")
+	
+		log("main(): begin");
+		canvas.addEventListener("mouseup", mouseUpHandler, false);
+		canvas.addEventListener("mousedown", mouseDownHandler, false);
+		canvas.addEventListener("mousemove", mouseMoveHandler, false);
+		log("main(): end");
+	}
+	
+</script>
+
+</head>
+
+<body onload="main()">
+
+<h1>Click mouse button within canvas</h2>
+
+<!--canvas id="main_canvas" style="border:2px solid black; background-color:lightgrey;" width="300" height="200" -->
+<canvas id="main_canvas" style="background-color:lightgrey;" width="300" height="200">
+    Browser missing &lt;canvas&gt; support!
+</canvas>
+
+</body>
+
+</html>
+

@@ -28,6 +28,7 @@
 !sample/triangle
 !sample/skybox
 !sample/skybox/web
+!sample/mouse_canvas_js
 !sample/mouse_wheel
 !sample/mouse_wheel/web
 !sample/mouse_wheel2
