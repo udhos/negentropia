@@ -379,13 +379,13 @@ func setViewMatrix(viewMatrix *Matrix4, focusX, focusY, focusZ, upX, upY, upZ, p
 	}
 }
 
-func setPerspectiveMatrix(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
+func setPerspectiveMatrix1(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
 	height := math.Tan(fieldOfViewYRadians*0.5) * zNear
 	width := height * aspectRatio
 	setFrustumMatrix(perspectiveMatrix, -width, width, -height, height, zNear, zFar)
 }
 
-func setFrustumMatrix(perspectiveMatrix *Matrix4, left, right, bottom, top, near, far float64) {
+func setFrustumMatrix(frustumMatrix *Matrix4, left, right, bottom, top, near, far float64) {
 	two_near := 2.0 * near
 	right_minus_left := right - left
 	top_minus_bottom := top - bottom
@@ -399,11 +399,45 @@ func setFrustumMatrix(perspectiveMatrix *Matrix4, left, right, bottom, top, near
 	r2c2 := float32(-(far + near) / far_minus_near)
 	r2c3 := float32(-(two_near * far) / far_minus_near)
 
-	perspectiveMatrix.data = []float32{
+	frustumMatrix.data = []float32{
 		r0c0, 0, r0c2, 0, // "r0"
 		0, r1c1, r1c2, 0, // "r1"
 		0, 0, r2c2, r2c3, // "r2"
 		0, 0, -1, 0, // "r3"
+	}
+}
+
+func setPerspectiveMatrix2(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
+	f := math.Tan(math.Pi*0.5 - fieldOfViewYRadians*0.5)
+	rangeInv := 1.0 / (zNear - zFar)
+
+	d0 := float32(f / aspectRatio)
+	d5 := float32(f)
+	d10 := float32((zNear + zFar) * rangeInv)
+	d14 := float32(zNear * zFar * rangeInv * 2.0)
+
+	perspectiveMatrix.data = []float32{
+		d0, 0, 0, 0,
+		0, d5, 0, 0,
+		0, 0, d10, -1,
+		0, 0, d14, 0,
+	}
+}
+
+func setPerspectiveMatrix3(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
+	f := 1.0 / math.Tan(fieldOfViewYRadians*0.5)
+	nf := 1.0 / (zNear - zFar)
+
+	d0 := float32(f / aspectRatio)
+	d5 := float32(f)
+	d10 := float32((zNear + zFar) * nf)
+	d14 := float32(2.0 * zNear * zFar * nf)
+
+	perspectiveMatrix.data = []float32{
+		d0, 0, 0, 0,
+		0, d5, 0, 0,
+		0, 0, d10, -1,
+		0, 0, d14, 0,
 	}
 }
 
