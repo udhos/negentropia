@@ -7,17 +7,17 @@ import (
 func debugPick(gameInfo *gameState, cameraMatrix *Matrix4, nearX, nearY, nearZ, farX, farY, farZ float64) {
 	clipNearX, clipNearY, clipNearZ, clipNearW := cameraMatrix.transform(nearX, nearY, nearZ, 1)
 	ndcNearX, ndcNearY, ndcNearZ := clipNearX/clipNearW, clipNearY/clipNearW, clipNearZ/clipNearW
-	log(fmt.Sprintf("pick: projected ndcNear=%v,%v,%v", ndcNearX, ndcNearY, ndcNearZ))
+	log(fmt.Sprintf("debugPick: projected ndcNear=%v,%v,%v", ndcNearX, ndcNearY, ndcNearZ))
 
 	clipFarX, clipFarY, clipFarZ, clipFarW := cameraMatrix.transform(farX, farY, farZ, 1)
 	ndcFarX, ndcFarY, ndcFarZ := clipFarX/clipFarW, clipFarY/clipFarW, clipFarZ/clipFarW
-	log(fmt.Sprintf("pick: projected ndcFar=%v,%v,%v", ndcFarX, ndcFarY, ndcFarZ))
+	log(fmt.Sprintf("debugPick: projected ndcFar=%v,%v,%v", ndcFarX, ndcFarY, ndcFarZ))
 
 	screenNearX, screenNearY, screenNearDepth := viewportTransform(0, gameInfo.viewportWidth, 0, gameInfo.viewportHeight, 0.0, 1.0, ndcNearX, ndcNearY, ndcNearZ)
-	log(fmt.Sprintf("pick: screenNear=%v,%v,%v", screenNearX, screenNearY, screenNearDepth))
+	log(fmt.Sprintf("debugPick: screenNear=%v,%v,%v", screenNearX, screenNearY, screenNearDepth))
 
 	screenFarX, screenFarY, screenFarDepth := viewportTransform(0, gameInfo.viewportWidth, 0, gameInfo.viewportHeight, 0.0, 1.0, ndcFarX, ndcFarY, ndcFarZ)
-	log(fmt.Sprintf("pick: screenFar=%v,%v,%v", screenFarX, screenFarY, screenFarDepth))
+	log(fmt.Sprintf("debugPick: screenFar=%v,%v,%v", screenFarX, screenFarY, screenFarDepth))
 }
 
 func pick(gameInfo *gameState, canvasX, canvasY int) {
