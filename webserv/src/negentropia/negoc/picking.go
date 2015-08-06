@@ -5,6 +5,14 @@ import (
 )
 
 func debugPick(gameInfo *gameState, cameraMatrix *Matrix4, nearX, nearY, nearZ, farX, farY, farZ float64) {
+
+	cam := &gameInfo.cam
+
+	log(fmt.Sprintf("debugPick: camera: focus=%v,%v,%v up=%v,%v,%v pos=%v,%v,%v",
+		cam.camFocusX, cam.camFocusY, cam.camFocusZ,
+		cam.camUpX, cam.camUpY, cam.camUpZ,
+		cam.camPosX, cam.camPosY, cam.camPosZ))
+
 	clipNearX, clipNearY, clipNearZ, clipNearW := cameraMatrix.transform(nearX, nearY, nearZ, 1)
 	ndcNearX, ndcNearY, ndcNearZ := clipNearX/clipNearW, clipNearY/clipNearW, clipNearZ/clipNearW
 	log(fmt.Sprintf("debugPick: projected ndcNear=%v,%v,%v", ndcNearX, ndcNearY, ndcNearZ))
