@@ -408,30 +408,13 @@ func setFrustumMatrix(frustumMatrix *Matrix4, left, right, bottom, top, near, fa
 }
 
 func setPerspectiveMatrix2(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
-	f := math.Tan(math.Pi*0.5 - fieldOfViewYRadians*0.5)
+	f := math.Tan(math.Pi*0.5 - fieldOfViewYRadians*0.5) // = cotan(fieldOfViewYRadians/2)
 	rangeInv := 1.0 / (zNear - zFar)
 
 	d0 := float32(f / aspectRatio)
 	d5 := float32(f)
 	d10 := float32((zNear + zFar) * rangeInv)
 	d14 := float32(zNear * zFar * rangeInv * 2.0)
-
-	perspectiveMatrix.data = []float32{
-		d0, 0, 0, 0,
-		0, d5, 0, 0,
-		0, 0, d10, -1,
-		0, 0, d14, 0,
-	}
-}
-
-func setPerspectiveMatrix3(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
-	f := 1.0 / math.Tan(fieldOfViewYRadians*0.5)
-	nf := 1.0 / (zNear - zFar)
-
-	d0 := float32(f / aspectRatio)
-	d5 := float32(f)
-	d10 := float32((zNear + zFar) * nf)
-	d14 := float32(2.0 * zNear * zFar * nf)
 
 	perspectiveMatrix.data = []float32{
 		d0, 0, 0, 0,

@@ -123,7 +123,6 @@ func setPerspective(gameInfo *gameState) {
 
 	setPerspectiveMatrix1(&gameInfo.pMatrix, fieldOfViewYRadians, gameInfo.canvasAspect, planeNear, planeFar)
 	setPerspectiveMatrix2(&gameInfo.pMatrix, fieldOfViewYRadians, gameInfo.canvasAspect, planeNear, planeFar)
-	setPerspectiveMatrix3(&gameInfo.pMatrix, fieldOfViewYRadians, gameInfo.canvasAspect, planeNear, planeFar)
 
 	//log(fmt.Sprintf("perspective: %v", gameInfo.pMatrix))
 }
