@@ -162,6 +162,16 @@ func testModelTRU() {
 	log(fmt.Sprintf("testModelTRU: M2 = %v", M2))
 }
 
+func testIntersectRaySphere() {
+	s := sphere{0, 0, 0, 1}
+	r1 := ray{5, -1, 0, 0, 1, 0}
+	r2 := ray{.5, -1, 0, 0, 1, 0}
+	hit1, _, _ := intersectRaySphere(r1, s)
+	hit2, _, _ := intersectRaySphere(r2, s)
+	log(fmt.Sprintf("testIntersectRaySphere: ray 1: expected=MISS hit=%v", hit1))
+	log(fmt.Sprintf("testIntersectRaySphere: ray 2: expected=HIT  hit=%v", hit2))
+}
+
 type gameState struct {
 	gl                        *webgl.Context
 	sock                      *gameWebsocket
@@ -236,4 +246,5 @@ func main() {
 	//testRotation()
 	//testView()
 	//testModelTRU()
+	testIntersectRaySphere()
 }
