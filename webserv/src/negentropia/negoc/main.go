@@ -165,11 +165,20 @@ func testModelTRU() {
 func testIntersectRaySphere() {
 	s := sphere{0, 0, 0, 1}
 	r1 := ray{5, -1, 0, 0, 1, 0}
-	r2 := ray{.5, -1, 0, 0, 1, 0}
-	hit1, _, _ := intersectRaySphere(r1, s)
-	hit2, _, _ := intersectRaySphere(r2, s)
-	log(fmt.Sprintf("testIntersectRaySphere: ray 1: expected=MISS hit=%v", hit1))
-	log(fmt.Sprintf("testIntersectRaySphere: ray 2: expected=HIT  hit=%v", hit2))
+	r2 := ray{1, -1, 0, 0, 1, 0}
+	r3 := ray{.5, -1, 0, 0, 1, 0}
+	hit1, t1a, t1b := intersectRaySphere(r1, s)
+	hit2, t2a, t2b := intersectRaySphere(r2, s)
+	hit3, t3a, t3b := intersectRaySphere(r3, s)
+	p1ax, p1ay, p1az := r1.getPoint(t1a)
+	p1bx, p1by, p1bz := r1.getPoint(t1b)
+	p2ax, p2ay, p2az := r2.getPoint(t2a)
+	p2bx, p2by, p2bz := r2.getPoint(t2b)
+	p3ax, p3ay, p3az := r3.getPoint(t3a)
+	p3bx, p3by, p3bz := r3.getPoint(t3b)
+	log(fmt.Sprintf("testIntersectRaySphere: ray 1: expected=MISS hit=%v A=%v,%v,%v B=%v,%v,%v", hit1, p1ax, p1ay, p1az, p1bx, p1by, p1bz))
+	log(fmt.Sprintf("testIntersectRaySphere: ray 2: expected=HIT  hit=%v A=%v,%v,%v B=%v,%v,%v", hit2, p2ax, p2ay, p2az, p2bx, p2by, p2bz))
+	log(fmt.Sprintf("testIntersectRaySphere: ray 3: expected=HIT  hit=%v A=%v,%v,%v B=%v,%v,%v", hit3, p3ax, p3ay, p3az, p3bx, p3by, p3bz))
 }
 
 type gameState struct {
