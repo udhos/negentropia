@@ -16,29 +16,7 @@ type sphere struct {
 }
 
 /*
-bool intersect(Ray* r, Sphere* s, float* t1, float *t2)
-{
-	//solve for tc
-	float L = s->center - r->origin;
-	float tc = dot(L, r->direction);
-
-	if ( tc < 0.0 ) return false;
-	float d2 = (tc*tc) - (L*L);
-
-	float radius2 = s->radius * s->radius;
-	if ( d2 > radius2) return false;
-
-	//solve for t1c
-	float t1c = sqrt( radius2 - d2 );
-
-	//solve for intersection points
-	*t1 = tc - t1c;
-	*t2 = tc + t1c;
-
-	return true;
-}
-
-http://kylehalladay.com/blog/tutorial/math/2013/12/24/Ray-Sphere-Intersection.html
+http://www.csee.umbc.edu/~olano/435f02/ray-sphere.html
 
 output:
 hit: is there intersection?
@@ -47,24 +25,20 @@ t2: intersection point2 = r.origin + r.direction * t2
 */
 func intersectRaySphere(r ray, s sphere) (hit bool, t1, t2 float64) {
 
-	Lx, Ly, Lz := s.centerX-r.originX, s.centerY-r.originY, s.centerZ-r.originZ
-	tc := dot3(Lx, Ly, Lz, r.directionX, r.directionY, r.directionZ)
-	if tc < 0.0 {
+	a := lengthSquared3(r.directionX, r.directionY, r.directionZ)
+	coX, coY, coZ := r.originX-s.centerX, r.originY-s.centerY, r.originZ-s.centerZ
+	b := 2 * dot3(r.directionX, r.directionY, r.directionZ, coX, coY, coZ)
+	c := lengthSquared3(coX, coY, coZ) - s.radius*s.radius
+
+	delta := b*b - 4*a*c
+	if delta < 0.0 {
 		return
 	}
-
-	LL := Lx*Lx + Ly*Ly + Lz*Lz // L dot L = dot3(Lx,Ly,Lz,Lx,Ly,Lz) = squaredLength(L)
-	d2 := tc*tc - LL
-	radius2 := s.radius * s.radius
-	if d2 > radius2 {
-		return
-	}
-
-	t1c := math.Sqrt(radius2 - d2)
-	t1 = tc - t1c
-	t2 = tc + t1c
 
 	hit = true
+	deltaRoot := math.Sqrt(delta)
+	t1 = (-b - deltaRoot) / 2 * a
+	t2 = (-b + deltaRoot) / 2 * a
 
 	return
 }
