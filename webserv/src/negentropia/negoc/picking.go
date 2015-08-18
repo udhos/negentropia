@@ -41,7 +41,7 @@ func pick(gameInfo *gameState, canvasX, canvasY int) {
 
 	log(fmt.Sprintf("pick: canvas=%v,%v near=%v,%v,%v far=%v,%v,%v error=%v", canvasX, canvasY, nearX, nearY, nearZ, farX, farY, farZ, err))
 
-	debugPick(gameInfo, &cameraMatrix, nearX, nearY, nearZ, farX, farY, farZ)
+	//debugPick(gameInfo, &cameraMatrix, nearX, nearY, nearZ, farX, farY, farZ)
 
 	ray := ray{nearX, nearY, nearZ, farX - nearX, farY - nearY, farZ - nearZ}
 

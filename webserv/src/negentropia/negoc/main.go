@@ -255,5 +255,5 @@ func main() {
 	//testRotation()
 	//testView()
 	//testModelTRU()
-	testIntersectRaySphere()
+	//testIntersectRaySphere()
 }
