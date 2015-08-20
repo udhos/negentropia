@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 )
 
 func debugPick(gameInfo *gameState, cameraMatrix *Matrix4, nearX, nearY, nearZ, farX, farY, farZ float64) {
@@ -45,11 +46,20 @@ func pick(gameInfo *gameState, canvasX, canvasY int) {
 
 	ray := ray{nearX, nearY, nearZ, farX - nearX, farY - nearY, farZ - nearZ}
 
-	pickInstance(gameInfo.shaderList, ray, gameInfo.cam.camPosX, gameInfo.cam.camPosY, gameInfo.cam.camPosZ)
+	i := pickInstance(gameInfo.shaderList, ray, gameInfo.cam.camPosX, gameInfo.cam.camPosY, gameInfo.cam.camPosZ)
+
+	log(fmt.Sprintf("pick: found=%v", i))
 }
 
-func pickInstance(shaderList []shader, r ray, camPosX, camPosY, camPosZ float64) {
+type bestPick struct {
+	i               *instance
+	distanceSquared float64
+}
+
+func pickInstance(shaderList []shader, r ray, camPosX, camPosY, camPosZ float64) *instance {
+	closest := &bestPick{nil, math.MaxFloat64}
 	for _, s := range shaderList {
-		s.pickInstance(r, camPosX, camPosY, camPosZ)
+		s.pickInstance(r, camPosX, camPosY, camPosZ, closest)
 	}
+	return closest.i
 }

@@ -17,7 +17,7 @@ type model interface {
 	addInstance(inst *instance)
 	draw(gameInfo *gameState, prog shader)
 	getBoundingRadius() float64
-	pickInstance(r ray, camPosX, camPosY, camPosZ float64)
+	pickInstance(r ray, camPosX, camPosY, camPosZ float64, closest *bestPick)
 }
 
 type simpleModel struct {
@@ -40,15 +40,34 @@ func (m *simpleModel) getBoundingRadius() float64 {
 	return m.boundingRadius
 }
 
-func (m *simpleModel) pickInstance(r ray, camPosX, camPosY, camPosZ float64) {
+func (m *simpleModel) pickInstance(r ray, camPosX, camPosY, camPosZ float64, closest *bestPick) {
 	for _, inst := range m.instanceList {
 		log(fmt.Sprintf("pickInstance: model=%s instance=%s pick=%v", m.name(), inst.id, inst.picking))
 		if !inst.picking {
 			continue // not a pickable instance
 		}
 		sph := sphere{inst.posX, inst.posY, inst.posZ, inst.boundingRadius()}
-		hit, _, _ := intersectRaySphere(r, sph)
+		hit, t1, t2 := intersectRaySphere(r, sph)
 		log(fmt.Sprintf("pickInstance: model=%s instance=%s ray=%v sphere=%v hit=%v", m.name(), inst.id, r, sph, hit))
+		if !hit {
+			continue
+		}
+
+		// test distance from camera to hit point 1
+		p1x, p1y, p1z := r.getPoint(t1)
+		dist1 := distanceSquared3(p1x, p1y, p1z, camPosX, camPosY, camPosZ)
+		if dist1 < closest.distanceSquared {
+			closest.distanceSquared = dist1
+			closest.i = inst
+		}
+
+		// test distance from camera to hit point 2
+		p2x, p2y, p2z := r.getPoint(t2)
+		dist2 := distanceSquared3(p2x, p2y, p2z, camPosX, camPosY, camPosZ)
+		if dist2 < closest.distanceSquared {
+			closest.distanceSquared = dist2
+			closest.i = inst
+		}
 	}
 }
 

@@ -233,6 +233,10 @@ func setIdentityMatrix(m *Matrix4) {
 	}
 }
 
+func distanceSquared3(x1, y1, z1, x2, y2, z2 float64) float64 {
+	return lengthSquared3(x2-x1, y2-y1, z2-z1)
+}
+
 func distance3(x1, y1, z1, x2, y2, z2 float64) float64 {
 	return length3(x2-x1, y2-y1, z2-z1)
 }
