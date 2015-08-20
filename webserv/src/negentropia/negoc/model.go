@@ -17,7 +17,7 @@ type model interface {
 	addInstance(inst *instance)
 	draw(gameInfo *gameState, prog shader)
 	getBoundingRadius() float64
-	pickInstance(r ray)
+	pickInstance(r ray, camPosX, camPosY, camPosZ float64)
 }
 
 type simpleModel struct {
@@ -40,7 +40,7 @@ func (m *simpleModel) getBoundingRadius() float64 {
 	return m.boundingRadius
 }
 
-func (m *simpleModel) pickInstance(r ray) {
+func (m *simpleModel) pickInstance(r ray, camPosX, camPosY, camPosZ float64) {
 	for _, inst := range m.instanceList {
 		log(fmt.Sprintf("pickInstance: model=%s instance=%s pick=%v", m.name(), inst.id, inst.picking))
 		if !inst.picking {

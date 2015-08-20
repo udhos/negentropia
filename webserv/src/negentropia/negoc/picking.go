@@ -45,11 +45,11 @@ func pick(gameInfo *gameState, canvasX, canvasY int) {
 
 	ray := ray{nearX, nearY, nearZ, farX - nearX, farY - nearY, farZ - nearZ}
 
-	pickInstance(gameInfo.shaderList, ray)
+	pickInstance(gameInfo.shaderList, ray, gameInfo.cam.camPosX, gameInfo.cam.camPosY, gameInfo.cam.camPosZ)
 }
 
-func pickInstance(shaderList []shader, r ray) {
+func pickInstance(shaderList []shader, r ray, camPosX, camPosY, camPosZ float64) {
 	for _, s := range shaderList {
-		s.pickInstance(r)
+		s.pickInstance(r, camPosX, camPosY, camPosZ)
 	}
 }
