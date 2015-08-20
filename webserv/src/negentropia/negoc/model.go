@@ -42,6 +42,10 @@ func (m *simpleModel) getBoundingRadius() float64 {
 
 func (m *simpleModel) pickInstance(r ray) {
 	for _, inst := range m.instanceList {
+		log(fmt.Sprintf("pickInstance: model=%s instance=%s pick=%v", m.name(), inst.id, inst.picking))
+		if !inst.picking {
+			continue // not a pickable instance
+		}
 		sph := sphere{inst.posX, inst.posY, inst.posZ, inst.boundingRadius()}
 		hit, _, _ := intersectRaySphere(r, sph)
 		log(fmt.Sprintf("pickInstance: model=%s instance=%s ray=%v sphere=%v hit=%v", m.name(), inst.id, r, sph, hit))

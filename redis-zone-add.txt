@@ -176,6 +176,7 @@ hset o:concrete repeatTexture t
 hset m:zero_city0_floor obj o:concrete
 hset m:zero_city0_floor coord 0.0,0.0,0.0
 hset m:zero_city0_floor scale 500.0
+hset m:zero_city0_floor picking f
 
 # create instance
 hset m:zero_car0 obj o:car

@@ -19,6 +19,7 @@ type instance struct {
 	forwardX, forwardY, forwardZ float64
 	upX, upY, upZ                float64
 	scale                        float64
+	picking                      bool
 	undoModelRotation            Matrix4 // U
 	rotation                     Matrix4 // R * U
 	modelBoundingRadius          float64
@@ -29,11 +30,11 @@ func (i *instance) boundingRadius() float64 {
 }
 
 func newInstanceNull(id string) *instance {
-	return newInstance(id, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0, 1)
+	return newInstance(id, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0, 1, false)
 }
 
-func newInstance(id string, modelRadius, modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ, scale float64) *instance {
-	i := &instance{id: id, scale: scale}
+func newInstance(id string, modelRadius, modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ, scale float64, picking bool) *instance {
+	i := &instance{id: id, scale: scale, picking: picking}
 
 	i.forwardX, i.forwardY, i.forwardZ = normalize3(modelForwardX, modelForwardY, modelForwardZ)
 	i.upX, i.upY, i.upZ = normalize3(modelUpX, modelUpY, modelUpZ)
@@ -47,7 +48,7 @@ func newInstance(id string, modelRadius, modelForwardX, modelForwardY, modelForw
 
 	i.modelBoundingRadius = modelRadius
 
-	log(fmt.Sprintf("newInstance: instance=%s boundingRadius=%v", id, i.boundingRadius()))
+	log(fmt.Sprintf("newInstance: instance=%s boundingRadius=%v picking=%v", id, i.boundingRadius(), i.picking))
 
 	return i
 }
@@ -231,6 +232,8 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 	repeatTexture := tab["repeatTexture"]
 	repeat := stringIsTrue(repeatTexture)
 
+	picking := !stringIsFalse(tab["picking"])
+
 	mod := shader.findModel(modelName)
 	if mod == nil {
 		log(fmt.Sprintf("createInstance: id=%s program=%s model=%s not found", id, programName, modelName))
@@ -255,7 +258,7 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		}
 	*/
 
-	inst = newInstance(id, mod.getBoundingRadius(), f[0], f[1], f[2], u[0], u[1], u[2], c[0], c[1], c[2], s)
+	inst = newInstance(id, mod.getBoundingRadius(), f[0], f[1], f[2], u[0], u[1], u[2], c[0], c[1], c[2], s, picking)
 
 	log(fmt.Sprintf("createInstance: id=%s prog=%s coord=%v f=%v u=%v scale=%f inst=%v", id, programName, c, f, u, s, inst))
 

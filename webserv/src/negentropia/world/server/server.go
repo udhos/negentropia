@@ -162,6 +162,7 @@ func sendZoneDynamic(p *Player, loc string) {
 			coord := store.QueryField(inst, "coord")
 			scale := store.QueryField(inst, "scale")
 			mission := store.QueryField(inst, "mission")
+			picking := store.QueryField(inst, "picking")
 
 			url := store.QueryField(obj, "objURL")
 			globeRadius := store.QueryField(obj, "globeRadius")
@@ -183,6 +184,7 @@ func sendZoneDynamic(p *Player, loc string) {
 				"coord":         coord,
 				"scale":         scale,
 				"mission":       mission,
+				"picking":       picking,
 			}
 
 			if url != "" {
