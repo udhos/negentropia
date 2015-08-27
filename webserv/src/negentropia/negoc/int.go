@@ -11,12 +11,16 @@ func intAbs(v int) int {
 	return v
 }
 
-func round(a float64) int {
+func round(a float64) float64 {
 	var r float64
 	if a < 0 {
 		r = math.Ceil(a - 0.5)
 	} else {
 		r = math.Floor(a + 0.5)
 	}
-	return int(r)
+	return r
+}
+
+func roundToInt(a float64) int {
+	return int(roundToInt(a))
 }
