@@ -22,5 +22,5 @@ func round(a float64) float64 {
 }
 
 func roundToInt(a float64) int {
-	return int(roundToInt(a))
+	return int(round(a))
 }
