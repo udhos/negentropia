@@ -60,7 +60,7 @@ func getCanvasSize(gl *webgl.Context) (int, int) {
 	stw := style.Get("width").Int()
 	sth := style.Get("height").Int()
 
-	log(fmt.Sprintf("getCanvasSize: canvas=%dx%d client=%dx%d scroll=%dx%d rect=(%dx%d)%dx%d style=%dx%d", w, h, cw, ch, sw, sh, rl, rt, rw, rh, stw, sth))
+	log(fmt.Sprintf("getCanvasSize: canvas=%dx%d client=%dx%d scroll=%dx%d rect=(%fx%f)%fx%f style=%dx%d", w, h, cw, ch, sw, sh, rl, rt, rw, rh, stw, sth))
 
 	return cw, ch
 }
