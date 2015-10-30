@@ -9,8 +9,8 @@ import (
 func getCanvasCoord(canvas dom.Element, clientX, clientY int) (int, int) {
 	rect := canvas.GetBoundingClientRect()
 
-	canvasX := clientX - rect.Left
-	canvasY := clientY - rect.Top
+	canvasX := clientX - roundToInt(rect.Left)
+	canvasY := clientY - roundToInt(rect.Top)
 
 	return canvasX, canvasY
 }
