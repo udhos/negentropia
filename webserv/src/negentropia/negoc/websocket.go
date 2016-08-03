@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"time"
 
 	"github.com/gopherjs/websocket"
@@ -16,7 +17,7 @@ import (
 
 type gameWebsocket struct {
 	uri     string
-	conn    *websocket.Conn
+	conn    *net.Conn
 	status  dom.Element
 	encoder *json.Encoder
 }
@@ -40,7 +41,7 @@ func (ws *gameWebsocket) write(msg *ipc.ClientMsg) error {
 
 	if err := ws.encoder.Encode(&msg); err != nil {
 		log(fmt.Sprintf("websocket write: error: %s", err))
-		ws.conn.Close()
+		(*ws.conn).Close()
 		ws.conn = nil
 		ws.status.SetTextContent("disconnected")
 		return err
@@ -65,8 +66,8 @@ func (ws *gameWebsocket) open(uri, sid string, status dom.Element) {
 		return
 	}
 
-	ws.conn = c
-	ws.encoder = json.NewEncoder(ws.conn)
+	ws.conn = &c
+	ws.encoder = json.NewEncoder(*ws.conn)
 
 	info = fmt.Sprintf("connected: %s", ws.uri)
 	log(fmt.Sprintf("websocket open: %s", info))
@@ -110,7 +111,7 @@ func handleWebsocket(gameInfo *gameState, wsUri, sid string, status dom.Element)
 
 		// read loop
 		for {
-			decoder := json.NewDecoder(gameInfo.sock.conn)
+			decoder := json.NewDecoder(*gameInfo.sock.conn)
 
 			if err := decoder.Decode(&msg); err != nil {
 				log(fmt.Sprintf("handleWebsocket: JSON decoding error: %s", err))
