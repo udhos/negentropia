@@ -8,7 +8,6 @@ import (
 
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
-
 	//"negentropia/world/parser"
 	//"negentropia/world/obj"
 )

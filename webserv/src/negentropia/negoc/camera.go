@@ -5,7 +5,6 @@ import (
 	"math"
 	//"strings"
 	"time"
-
 	//"negentropia/world/parser"
 )
 

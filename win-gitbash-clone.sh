@@ -34,5 +34,6 @@ go_get github.com/udhos/goauth2/oauth
 
 # gopherjs dependencies
 cat $DEVEL/negentropia/gopherjs-deps.txt | while read i; do
-	go_get $i
+	j=`echo $i` ;# withstand CR LR issues
+	go_get $j
 done

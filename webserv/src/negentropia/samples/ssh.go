@@ -53,13 +53,13 @@ func main() {
 		log.Fatalf("request for pseudo terminal failed: %s", err)
 	}
 	log.Printf("** pseudo-terminal ready")
-	
+
 	/*
-	// Start remote shell
-	if err := session.Shell(); err != nil {
-		log.Fatalf("failed to start shell: %s", err)
-	}
-	log.Printf("** remote shell ready")
+		// Start remote shell
+		if err := session.Shell(); err != nil {
+			log.Fatalf("failed to start shell: %s", err)
+		}
+		log.Printf("** remote shell ready")
 	*/
 
 	cmd := "ls -la"
