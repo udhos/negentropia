@@ -40,29 +40,6 @@ func draw(gameInfo *gameState, t time.Time) {
 	}
 }
 
-/*
-const FRAME_RATE = 10                    // frames per second
-const FRAME_INTERVAL = 1000 / FRAME_RATE // msec
-*/
-
-/*
-func gameLoop(gameInfo *gameState) {
-	log(fmt.Sprintf("gameLoop: frame_rate=%v fps frame_interval=%v msec", FRAME_RATE, FRAME_INTERVAL))
-
-	ticker := time.NewTicker(time.Millisecond * FRAME_INTERVAL)
-	go func() {
-		for t := range ticker.C {
-			if gameInfo.debugDraw {
-				log(fmt.Sprintf("gameLoop: exiting due debugDraw=%v", gameInfo.debugDraw))
-				break
-			}
-			update(gameInfo, t)
-			draw(gameInfo, t)
-		}
-	}()
-}
-*/
-
 func gameLoopStart(gameInfo *gameState) {
 	var tick func(timestamp float32)
 

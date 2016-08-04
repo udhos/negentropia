@@ -52,7 +52,7 @@ const pi2 = 2 * math.Pi
 func cameraUpdate(gameInfo *gameState, t time.Time) {
 	var camPosX, camPosY, camPosZ float64
 
-	autoRotate := false
+	autoRotate := true
 
 	if autoRotate {
 		sec := float64(t.Second()) + float64(t.Nanosecond())/1000000000

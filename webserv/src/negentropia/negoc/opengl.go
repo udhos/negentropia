@@ -383,35 +383,7 @@ func setViewMatrix(viewMatrix *Matrix4, focusX, focusY, focusZ, upX, upY, upZ, p
 	}
 }
 
-func setPerspectiveMatrix1(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
-	height := math.Tan(fieldOfViewYRadians*0.5) * zNear
-	width := height * aspectRatio
-	setFrustumMatrix(perspectiveMatrix, -width, width, -height, height, zNear, zFar)
-}
-
-func setFrustumMatrix(frustumMatrix *Matrix4, left, right, bottom, top, near, far float64) {
-	two_near := 2.0 * near
-	right_minus_left := right - left
-	top_minus_bottom := top - bottom
-	far_minus_near := far - near
-
-	// row x col in the representation below
-	r0c0 := float32(two_near / right_minus_left)
-	r1c1 := float32(two_near / top_minus_bottom)
-	r0c2 := float32((right + left) / right_minus_left)
-	r1c2 := float32((top + bottom) / top_minus_bottom)
-	r2c2 := float32(-(far + near) / far_minus_near)
-	r2c3 := float32(-(two_near * far) / far_minus_near)
-
-	frustumMatrix.data = []float32{
-		r0c0, 0, r0c2, 0, // "r0"
-		0, r1c1, r1c2, 0, // "r1"
-		0, 0, r2c2, r2c3, // "r2"
-		0, 0, -1, 0, // "r3"
-	}
-}
-
-func setPerspectiveMatrix2(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
+func setPerspectiveMatrix(perspectiveMatrix *Matrix4, fieldOfViewYRadians, aspectRatio, zNear, zFar float64) {
 	f := math.Tan(math.Pi*0.5 - fieldOfViewYRadians*0.5) // = cotan(fieldOfViewYRadians/2)
 	rangeInv := 1.0 / (zNear - zFar)
 
