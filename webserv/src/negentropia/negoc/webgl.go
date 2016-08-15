@@ -7,6 +7,7 @@ import (
 
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
+	"github.com/udhos/goglmath"
 	"honnef.co/go/js/dom"
 )
 
@@ -97,8 +98,8 @@ func setViewport(gl *webgl.Context, w, h int) float64 {
 	return canvasAspect
 }
 
-func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *Matrix4) {
-	gl.UniformMatrix4fv(u_P, false, P.data)
+func uploadPerspective(gl *webgl.Context, u_P *js.Object, P *goglmath.Matrix4) {
+	gl.UniformMatrix4fv(u_P, false, P.Data())
 }
 
 func updateCulling(gl *webgl.Context, backfaceCulling bool) {
@@ -121,7 +122,7 @@ func setPerspective(gameInfo *gameState) {
 	planeNear := 2.0   // 2m
 	planeFar := 5000.0 // 5km
 
-	setPerspectiveMatrix(&gameInfo.pMatrix, fieldOfViewYRadians, gameInfo.canvasAspect, planeNear, planeFar)
+	goglmath.SetPerspectiveMatrix(&gameInfo.pMatrix, fieldOfViewYRadians, gameInfo.canvasAspect, planeNear, planeFar)
 
 	//log(fmt.Sprintf("perspective: %v", gameInfo.pMatrix))
 }

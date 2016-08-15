@@ -8,6 +8,7 @@ import (
 
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
+	"github.com/udhos/goglmath"
 	//"negentropia/world/parser"
 	//"negentropia/world/obj"
 )
@@ -19,8 +20,8 @@ type instance struct {
 	upX, upY, upZ                float64
 	scale                        float64
 	picking                      bool
-	undoModelRotation            Matrix4 // U
-	rotation                     Matrix4 // R * U
+	undoModelRotation            goglmath.Matrix4 // U
+	rotation                     goglmath.Matrix4 // R * U
 	modelBoundingRadius          float64
 }
 
@@ -35,8 +36,8 @@ func newInstanceNull(id string) *instance {
 func newInstance(id string, modelRadius, modelForwardX, modelForwardY, modelForwardZ, modelUpX, modelUpY, modelUpZ, posX, posY, posZ, scale float64, picking bool) *instance {
 	i := &instance{id: id, scale: scale, picking: picking}
 
-	i.forwardX, i.forwardY, i.forwardZ = normalize3(modelForwardX, modelForwardY, modelForwardZ)
-	i.upX, i.upY, i.upZ = normalize3(modelUpX, modelUpY, modelUpZ)
+	i.forwardX, i.forwardY, i.forwardZ = goglmath.Normalize3(modelForwardX, modelForwardY, modelForwardZ)
+	i.upX, i.upY, i.upZ = goglmath.Normalize3(modelUpX, modelUpY, modelUpZ)
 	i.posX, i.posY, i.posZ = posX, posY, posZ
 
 	// U: undo model implicit rotation
@@ -56,18 +57,18 @@ func newInstance(id string, modelRadius, modelForwardX, modelForwardY, modelForw
 func (i *instance) undoModelRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
 	// focus = translation + forward
 	// in object-space coordinates: translation = 0, focus = forward
-	setViewMatrix(&i.undoModelRotation, forwardX, forwardY, forwardZ, upX, upY, upZ, 0, 0, 0)
+	goglmath.SetViewMatrix(&i.undoModelRotation, forwardX, forwardY, forwardZ, upX, upY, upZ, 0, 0, 0)
 }
 
 func (i *instance) setRotationFrom(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
-	setRotationMatrix(&i.rotation, forwardX, forwardY, forwardZ, upX, upY, upZ) // rotation = R
-	i.rotation.multiply(&i.undoModelRotation)                                   // rotation = R * U
+	goglmath.SetRotationMatrix(&i.rotation, forwardX, forwardY, forwardZ, upX, upY, upZ) // rotation = R
+	i.rotation.Multiply(&i.undoModelRotation)                                            // rotation = R * U
 }
 
 // update T*R*U
 func (i *instance) updateModelMatrix() {
-	setModelMatrix(&i.rotation, i.forwardX, i.forwardY, i.forwardZ, i.upX, i.upY, i.upZ, i.posX, i.posY, i.posZ) // rotation = T*R
-	i.rotation.multiply(&i.undoModelRotation)                                                                    // rotation = T*R*U
+	goglmath.SetModelMatrix(&i.rotation, i.forwardX, i.forwardY, i.forwardZ, i.upX, i.upY, i.upZ, i.posX, i.posY, i.posZ) // rotation = T*R
+	i.rotation.Multiply(&i.undoModelRotation)                                                                             // rotation = T*R*U
 }
 
 func (i *instance) setRotation(forwardX, forwardY, forwardZ, upX, upY, upZ float64) {
@@ -120,16 +121,16 @@ func (i *instance) uploadModelView(gameInfo *gameState, gl *webgl.Context, u_MV 
 	   Full transform: P * MV
 	*/
 
-	var MV Matrix4
+	var MV goglmath.Matrix4
 	loadCameraViewMatrixInto(gameInfo, cam, &MV) // MV = V
 
 	//MV.translate(i.posX, i.posY, i.posZ, 1) // MV = V*T
 
-	MV.multiply(&i.rotation) // MV = V*T*R*U (rotation = T*R*U)
+	MV.Multiply(&i.rotation) // MV = V*T*R*U (rotation = T*R*U)
 
-	MV.scale(i.scale, i.scale, i.scale, 1.0) // MV = V*T*R*U*S
+	MV.Scale(i.scale, i.scale, i.scale, 1.0) // MV = V*T*R*U*S
 
-	gl.UniformMatrix4fv(u_MV, false, MV.data)
+	gl.UniformMatrix4fv(u_MV, false, MV.Data())
 }
 
 func createInstance(gameInfo *gameState, tab map[string]string) {
@@ -171,8 +172,8 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		return
 	}
 
-	if !ortho3(f[0], f[1], f[2], u[0], u[1], u[2]) {
-		log(fmt.Sprintf("createInstance: id=%s NOT ORTHOGONAL f=%v u=%v: dot=%f", id, f, u, dot3(f[0], f[1], f[2], u[0], u[1], u[2])))
+	if !goglmath.Ortho3(f[0], f[1], f[2], u[0], u[1], u[2]) {
+		log(fmt.Sprintf("createInstance: id=%s NOT ORTHOGONAL f=%v u=%v: dot=%f", id, f, u, goglmath.Dot3(f[0], f[1], f[2], u[0], u[1], u[2])))
 	}
 
 	var coord string

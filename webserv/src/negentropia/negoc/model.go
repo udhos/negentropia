@@ -7,6 +7,7 @@ import (
 
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
+	"github.com/udhos/goglmath"
 
 	"negentropia/world/obj"
 )
@@ -55,7 +56,7 @@ func (m *simpleModel) pickInstance(r ray, camPosX, camPosY, camPosZ float64, clo
 
 		// test distance from camera to hit point 1
 		p1x, p1y, p1z := r.getPoint(t1)
-		dist1 := distanceSquared3(p1x, p1y, p1z, camPosX, camPosY, camPosZ)
+		dist1 := goglmath.DistanceSquared3(p1x, p1y, p1z, camPosX, camPosY, camPosZ)
 		if dist1 < closest.distanceSquared {
 			closest.distanceSquared = dist1
 			closest.i = inst
@@ -63,7 +64,7 @@ func (m *simpleModel) pickInstance(r ray, camPosX, camPosY, camPosZ float64, clo
 
 		// test distance from camera to hit point 2
 		p2x, p2y, p2z := r.getPoint(t2)
-		dist2 := distanceSquared3(p2x, p2y, p2z, camPosX, camPosY, camPosZ)
+		dist2 := goglmath.DistanceSquared3(p2x, p2y, p2z, camPosX, camPosY, camPosZ)
 		if dist2 < closest.distanceSquared {
 			closest.distanceSquared = dist2
 			closest.i = inst

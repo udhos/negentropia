@@ -5,6 +5,8 @@ import (
 	"math"
 	//"strings"
 	"time"
+
+	"github.com/udhos/goglmath"
 	//"negentropia/world/parser"
 )
 
@@ -38,7 +40,7 @@ func resetCamera(cam *camera) {
 }
 
 func cameraOrbitRadius(cam *camera) {
-	cam.orbitRadius = distance3(cam.camPosX, cam.camPosY, cam.camPosZ, cam.camFocusX, cam.camFocusY, cam.camFocusZ)
+	cam.orbitRadius = goglmath.Distance3(cam.camPosX, cam.camPosY, cam.camPosZ, cam.camFocusX, cam.camFocusY, cam.camFocusZ)
 }
 
 func cameraOrbitFrom(cam *camera, x, y, z float64) {
@@ -71,8 +73,8 @@ func cameraUpdate(gameInfo *gameState, t time.Time) {
 	cameraControlMoveTo(gameInfo, []float64{camPosX, camPosY, camPosZ})
 }
 
-func loadCameraViewMatrixInto(gameInfo *gameState, cam *camera, V *Matrix4) {
-	setViewMatrix(V, cam.camFocusX, cam.camFocusY, cam.camFocusZ, cam.camUpX, cam.camUpY, cam.camUpZ, cam.camPosX, cam.camPosY, cam.camPosZ)
+func loadCameraViewMatrixInto(gameInfo *gameState, cam *camera, V *goglmath.Matrix4) {
+	goglmath.SetViewMatrix(V, cam.camFocusX, cam.camFocusY, cam.camFocusZ, cam.camUpX, cam.camUpY, cam.camUpZ, cam.camPosX, cam.camPosY, cam.camPosZ)
 }
 
 func cameraMoveTo(cam *camera, coord []float64) {

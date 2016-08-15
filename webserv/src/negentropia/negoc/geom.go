@@ -3,6 +3,8 @@ package main
 import (
 	"math"
 	//"fmt"
+
+	"github.com/udhos/goglmath"
 )
 
 type ray struct {
@@ -31,9 +33,9 @@ func intersectRaySphere(r ray, s sphere) (hit bool, t1, t2 float64) {
 
 	coX, coY, coZ := r.originX-s.centerX, r.originY-s.centerY, r.originZ-s.centerZ
 
-	a := lengthSquared3(r.directionX, r.directionY, r.directionZ)
-	b := 2.0 * dot3(r.directionX, r.directionY, r.directionZ, coX, coY, coZ)
-	c := lengthSquared3(coX, coY, coZ) - s.radius*s.radius
+	a := goglmath.LengthSquared3(r.directionX, r.directionY, r.directionZ)
+	b := 2.0 * goglmath.Dot3(r.directionX, r.directionY, r.directionZ, coX, coY, coZ)
+	c := goglmath.LengthSquared3(coX, coY, coZ) - s.radius*s.radius
 
 	delta := b*b - 4*a*c
 	if delta < 0.0 {

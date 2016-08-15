@@ -7,6 +7,7 @@ import (
 
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
+	"github.com/udhos/goglmath"
 
 	"negentropia/world/obj"
 )
@@ -64,19 +65,19 @@ func testModelView() {
 	pos := []float64{1, 1, 1}
 	focus := []float64{0, 0, -1}
 	up := []float64{0, 1, 0}
-	var V Matrix4
-	setViewMatrix(&V, focus[0], focus[1], focus[2], up[0], up[1], up[2], pos[0], pos[1], pos[2])
+	var V goglmath.Matrix4
+	goglmath.SetViewMatrix(&V, focus[0], focus[1], focus[2], up[0], up[1], up[2], pos[0], pos[1], pos[2])
 	log(fmt.Sprintf("testModelView: view = %v", V))
 
 	forward := []float64{focus[0] - pos[0], focus[1] - pos[1], focus[2] - pos[2]}
-	forward[0], forward[1], forward[2] = normalize3(forward[0], forward[1], forward[2])
-	rightX, rightY, rightZ := normalize3(cross3(forward[0], forward[1], forward[2], up[0], up[1], up[2]))
-	uX, uY, uZ := normalize3(cross3(rightX, rightY, rightZ, forward[0], forward[1], forward[2]))
-	var M Matrix4
-	setModelMatrix(&M, forward[0], forward[1], forward[2], uX, uY, uZ, pos[0], pos[1], pos[2])
+	forward[0], forward[1], forward[2] = goglmath.Normalize3(forward[0], forward[1], forward[2])
+	rightX, rightY, rightZ := goglmath.Normalize3(goglmath.Cross3(forward[0], forward[1], forward[2], up[0], up[1], up[2]))
+	uX, uY, uZ := goglmath.Normalize3(goglmath.Cross3(rightX, rightY, rightZ, forward[0], forward[1], forward[2]))
+	var M goglmath.Matrix4
+	goglmath.SetModelMatrix(&M, forward[0], forward[1], forward[2], uX, uY, uZ, pos[0], pos[1], pos[2])
 	log(fmt.Sprintf("testModelView: model = %v", M))
 
-	V.multiply(&M)
+	V.Multiply(&M)
 	log(fmt.Sprintf("testModelView: model x view = %v", V))
 }
 
@@ -89,14 +90,14 @@ func testRotation() {
 	uz := 0.0
 	log(fmt.Sprintf("forward=%v,%v,%v up=%v,%v,%v", fx, fy, fz, ux, uy, uz))
 
-	var rotation Matrix4
-	setRotationMatrix(&rotation, fx, fy, fz, ux, uy, uz)
+	var rotation goglmath.Matrix4
+	goglmath.SetRotationMatrix(&rotation, fx, fy, fz, ux, uy, uz)
 	log(fmt.Sprintf("rotation = %v", rotation))
 }
 
 func testView() {
-	var V Matrix4
-	setViewMatrix(&V, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+	var V goglmath.Matrix4
+	goglmath.SetViewMatrix(&V, 0, 0, -1, 0, 1, 0, 0, 0, 0)
 	log(fmt.Sprintf("testView: view = %v", V))
 }
 
@@ -121,10 +122,10 @@ func testModelTRU() {
 	i1 := instance{}
 	i1.undoModelRotationFrom(ufx, ufy, ufz, uux, uuy, uuz) // rotation = U
 	i1.setRotationFrom(fx, fy, fz, ux, uy, uz)             // rotation = R*U
-	var M1 Matrix4
-	setIdentityMatrix(&M1)
-	M1.translate(tx, ty, tz, 1) // M1 = T
-	M1.multiply(&i1.rotation)   // M1 = T*R*U
+	var M1 goglmath.Matrix4
+	M1.SetIdentity()
+	M1.Translate(tx, ty, tz, 1) // M1 = T
+	M1.Multiply(&i1.rotation)   // M1 = T*R*U
 
 	log(fmt.Sprintf("testModelTRU: M1 = %v", M1))
 
@@ -132,9 +133,9 @@ func testModelTRU() {
 	i2.undoModelRotationFrom(ufx, ufy, ufz, uux, uuy, uuz) // rotation = U
 	i2.setRotation(fx, fy, fz, ux, uy, uz)                 // rotation = T*R*U
 	i2.setTranslation(tx, ty, tz)                          // rotation = T*R*U
-	var M2 Matrix4
-	setIdentityMatrix(&M2)
-	M2.multiply(&i2.rotation) // M2 = T*R*U
+	var M2 goglmath.Matrix4
+	M2.SetIdentity()
+	M2.Multiply(&i2.rotation) // M2 = T*R*U
 
 	log(fmt.Sprintf("testModelTRU: M2 = %v", M2))
 }
@@ -162,7 +163,7 @@ type gameState struct {
 	gl                        *webgl.Context
 	sock                      *gameWebsocket
 	defaultTextureUnit        int
-	pMatrix                   Matrix4 // perspective matrix
+	pMatrix                   goglmath.Matrix4 // perspective matrix
 	canvasAspect              float64
 	cam                       camera
 	shaderList                []shader
