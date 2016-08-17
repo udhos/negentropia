@@ -232,21 +232,18 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 
 	picking := !stringIsFalse(tab["picking"])
 
-	mod := shader.findModel(modelName)
-	if mod == nil {
+	mod, found := shader.findModel(modelName)
+	if !found {
 		log(fmt.Sprintf("createInstance: id=%s program=%s model=%s not found", id, programName, modelName))
-		mod = newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.assetPath, gameInfo.textureTable, repeat, gameInfo.materialLib, gameInfo.extensionUintIndexEnabled)
-		if mod == nil {
-			log(fmt.Sprintf("createInstance: id=%s program=%s failure creating model=%s", id, programName, modelName))
+		mod, err = newModel(shader, modelName, gameInfo.gl, objURL, f, u, gameInfo.assetPath, gameInfo.textureTable, repeat, gameInfo.materialLib, gameInfo.extensionUintIndexEnabled)
+		if err != nil {
+			log(fmt.Sprintf("createInstance: id=%s program=%s failure creating model=%s: %v", id, programName, modelName, err))
 			return
 		}
 	}
 
-	var trueNil model
-	log(fmt.Sprintf("createInstance: id=%s program=%s model=%s newModel=%v newModelIsNil=%v (trueNil=%v trueNilIsNil=%v)", id, programName, modelName, mod, mod == nil, trueNil, trueNil == nil))
-
-	inst := mod.findInstance(id)
-	if inst != nil {
+	inst, found1 := mod.findInstance(id)
+	if found1 {
 		log(fmt.Sprintf("createInstance: id=%s model=%s prog=%s ignoring instance redefinition", id, modelName, programName))
 		return
 	}

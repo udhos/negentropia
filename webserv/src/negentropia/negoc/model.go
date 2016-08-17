@@ -13,7 +13,7 @@ import (
 
 type model interface {
 	name() string
-	findInstance(id string) *instance
+	findInstance(id string) (*instance, bool)
 	addInstance(inst *instance)
 	draw(gameInfo *gameState, prog shader)
 	getBoundingRadius() float64
@@ -226,7 +226,7 @@ func findBoundingRadius(o *gwob.Obj) float64 {
 
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	front, up []float64, assetPath asset, textureTable map[string]*texture,
-	repeatTexture bool, materialLib gwob.MaterialLib, extensionUintIndexEnabled bool) *texturizedModel {
+	repeatTexture bool, materialLib gwob.MaterialLib, extensionUintIndexEnabled bool) (*texturizedModel, error) {
 
 	// allocate new model
 	mod := &texturizedModel{simpleModel: simpleModel{modelName: modelName}}
@@ -237,22 +237,19 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	var err error
 
 	if buf, err = httpFetch(objURL); err != nil {
-		log(fmt.Sprintf("newModel: fetch model from objURL=%s error: %v", objURL, err))
-		return nil
+		return nil, fmt.Errorf("newModel: fetch model from objURL=%s error: %v", objURL, err)
 	}
 
 	opt := &gwob.ObjParserOptions{Logger: func(msg string) { log(fmt.Sprintf("newModel: %s", msg)) }}
 	var o *gwob.Obj
 	if o, err = gwob.NewObjFromBuf(buf, opt); err != nil {
-		log(fmt.Sprintf("newModel: parse error objURL=%s error: %v", objURL, err))
-		return nil
+		return nil, fmt.Errorf("newModel: parse error objURL=%s error: %v", objURL, err)
 	}
 
 	log(fmt.Sprintf("newModel: objURL=%s elements=%d bigIndex=%v texCoord=%v normCoord=%v", objURL, o.NumberOfElements(), o.BigIndexFound, o.TextCoordFound, o.NormCoordFound))
 
 	if !o.TextCoordFound {
-		log(fmt.Sprintf("newModel: objURL=%s FIXME texture coordinates required", objURL))
-		return nil
+		return nil, fmt.Errorf("newModel: objURL=%s FIXME texture coordinates required", objURL)
 	}
 
 	libURL := fmt.Sprintf("%s/%s", assetPath.mtl, o.Mtllib)
@@ -265,16 +262,16 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 		if g.IndexCount < 3 {
 			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s bad index list size", objURL, g.Name, g.IndexCount, o.Mtllib))
-			if addGroupTextureNull(mod, gl, groupListSize, i) != nil {
-				return nil
+			if err = addGroupTextureNull(mod, gl, groupListSize, i); err != nil {
+				return nil, err
 			}
 			continue // skip group missing index list
 		}
 
 		if g.Usemtl == "" {
 			log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s missing material name", objURL, g.Name, g.IndexCount, o.Mtllib))
-			if addGroupTextureNull(mod, gl, groupListSize, i) != nil {
-				return nil
+			if err = addGroupTextureNull(mod, gl, groupListSize, i); err != nil {
+				return nil, err
 			}
 			continue // skip group missing material name
 		}
@@ -288,8 +285,8 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 			if libErr := fetchMaterialLib(materialLib, libURL); libErr != nil {
 				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s material=%s LIB FAILURE: %v", objURL, g.Name, g.IndexCount, libURL, g.Usemtl, libErr))
-				if addGroupTextureNull(mod, gl, groupListSize, i) != nil {
-					return nil
+				if err = addGroupTextureNull(mod, gl, groupListSize, i); err != nil {
+					return nil, err
 				}
 				continue // ugh
 			}
@@ -298,8 +295,8 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 
 			if mat, matOk = materialLib.Lib[g.Usemtl]; !matOk {
 				log(fmt.Sprintf("newModel: objURL=%s group=%s size=%d mtllib=%s MISSING material=%s", objURL, g.Name, g.IndexCount, libURL, g.Usemtl))
-				if addGroupTextureNull(mod, gl, groupListSize, i) != nil {
-					return nil
+				if err = addGroupTextureNull(mod, gl, groupListSize, i); err != nil {
+					return nil, err
 				}
 				continue // ugh
 			}
@@ -325,14 +322,13 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 			wrap = gl.CLAMP_TO_EDGE
 		}
 
-		if addGroupTexture(mod, gl, textureTable, groupListSize, i, mat.Map_Kd, textureURL, tempColor, wrap) != nil {
-			return nil
+		if err = addGroupTexture(mod, gl, textureTable, groupListSize, i, mat.Map_Kd, textureURL, tempColor, wrap); err != nil {
+			return nil, err
 		}
 	}
 
 	if len(o.Groups) != len(mod.textures) {
-		log(fmt.Sprintf("newModel: objURL=%s BAD group/texture count: groups=%d textures=%d", objURL, len(o.Groups), len(mod.textures)))
-		return nil
+		return nil, fmt.Errorf("newModel: objURL=%s BAD group/texture count: groups=%d textures=%d", objURL, len(o.Groups), len(mod.textures))
 	}
 
 	mod.boundingRadius = findBoundingRadius(o)
@@ -348,7 +344,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	// push new model into shader.modelList
 	s.addModel(mod)
 
-	return mod
+	return mod, nil
 }
 
 const vertexPositionBufferItemSize = 3 // coord x,y,z
@@ -417,13 +413,13 @@ func (m *simpleModel) name() string {
 	return m.modelName
 }
 
-func (m *simpleModel) findInstance(id string) *instance {
+func (m *simpleModel) findInstance(id string) (*instance, bool) {
 	for _, i := range m.instanceList {
 		if id == i.id {
-			return i
+			return i, true
 		}
 	}
-	return nil
+	return nil, false
 }
 
 func (m *simpleModel) addInstance(inst *instance) {

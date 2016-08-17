@@ -11,7 +11,7 @@ type shader interface {
 	name() string
 	//init(gl *webgl.Context)
 	draw(gameInfo *gameState)
-	findModel(name string) model
+	findModel(name string) (model, bool)
 	addModel(mod model)
 	unif_MV() *js.Object
 	//unif_Sampler() *js.Object
@@ -61,13 +61,13 @@ func (s *simpleShader) addModel(m model) {
 	s.modelList = append(s.modelList, m)
 }
 
-func (s *simpleShader) findModel(name string) model {
+func (s *simpleShader) findModel(name string) (model, bool) {
 	for _, m := range s.modelList {
 		if name == m.name() {
-			return m
+			return m, true
 		}
 	}
-	return nil
+	return nil, false
 }
 
 func (s *simpleShader) name() string {
