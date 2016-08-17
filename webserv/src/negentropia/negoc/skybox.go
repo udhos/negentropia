@@ -6,8 +6,7 @@ import (
 
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
-
-	"negentropia/world/obj"
+	"github.com/udhos/gwob"
 )
 
 // skybox struct for decoding json
@@ -122,8 +121,8 @@ func fetchSkybox(gameInfo *gameState, skyboxURL string) {
 	skybox.init(gl)
 
 	// create model from mesh
-	var o *obj.Obj
-	o, err = obj.NewObjFromVertex(cube.VertCoord, cube.VertInd)
+	var o *gwob.Obj
+	o, err = gwob.NewObjFromVertex(cube.VertCoord, cube.VertInd)
 
 	log(fmt.Sprintf("fetchSkybox: skyboxURL=%s reversing cube indices", skyboxURL))
 	reverse(o.Indices)

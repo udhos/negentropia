@@ -9,8 +9,6 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	"github.com/udhos/goglmath"
-	//"negentropia/world/parser"
-	//"negentropia/world/obj"
 )
 
 type instance struct {
@@ -244,20 +242,14 @@ func createInstance(gameInfo *gameState, tab map[string]string) {
 		}
 	}
 
+	var trueNil model
+	log(fmt.Sprintf("createInstance: id=%s program=%s model=%s newModel=%v newModelIsNil=%v (trueNil=%v trueNilIsNil=%v)", id, programName, modelName, mod, mod == nil, trueNil, trueNil == nil))
+
 	inst := mod.findInstance(id)
 	if inst != nil {
 		log(fmt.Sprintf("createInstance: id=%s model=%s prog=%s ignoring instance redefinition", id, modelName, programName))
 		return
 	}
-
-	/*
-		var mesh *obj.Obj
-		if simple, isSimple := mod.(*simpleModel); isSimple {
-			mesh = simple.mesh
-		} else if tex, isTex := mod.(*texturizedModel); isTex {
-			mesh = tex.mesh
-		}
-	*/
 
 	inst = newInstance(id, mod.getBoundingRadius(), f[0], f[1], f[2], u[0], u[1], u[2], c[0], c[1], c[2], s, picking)
 

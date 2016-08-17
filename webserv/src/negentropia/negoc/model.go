@@ -8,8 +8,7 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	"github.com/udhos/goglmath"
-
-	"negentropia/world/obj"
+	"github.com/udhos/gwob"
 )
 
 type model interface {
@@ -24,7 +23,7 @@ type model interface {
 type simpleModel struct {
 	modelName              string
 	instanceList           []*instance
-	mesh                   *obj.Obj
+	mesh                   *gwob.Obj
 	vertexBuffer           *js.Object
 	vertexIndexBuffer      *js.Object
 	vertexIndexElementType int
@@ -72,7 +71,7 @@ func (m *simpleModel) pickInstance(r ray, camPosX, camPosY, camPosZ float64, clo
 	}
 }
 
-func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
+func fetchMaterialLib(materialLib gwob.MaterialLib, libURL string) error {
 	//var buf []byte
 
 	buf, err := httpFetch(libURL)
@@ -80,10 +79,10 @@ func fetchMaterialLib(materialLib obj.MaterialLib, libURL string) error {
 		return fmt.Errorf("fetchMaterialLib: URL=%s failure: %v", libURL, err)
 	}
 
-	opt := &obj.ObjParserOptions{Logger: func(msg string) { log(fmt.Sprintf("fetchMaterialLib: %s", msg)) }}
+	opt := &gwob.ObjParserOptions{Logger: func(msg string) { log(fmt.Sprintf("fetchMaterialLib: %s", msg)) }}
 
-	var lib obj.MaterialLib
-	if lib, err = obj.ReadMaterialLibFromBuf(buf, opt); err != nil {
+	var lib gwob.MaterialLib
+	if lib, err = gwob.ReadMaterialLibFromBuf(buf, opt); err != nil {
 		return err
 	}
 
@@ -208,7 +207,7 @@ func (m *simpleModel) createBuffers(objURL string, gl *webgl.Context, extensionU
 		objURL, o.BigIndexFound, extensionUintIndexEnabled, m.vertexIndexElementType, m.vertexIndexElementSize))
 }
 
-func findBoundingRadius(o *obj.Obj) float64 {
+func findBoundingRadius(o *gwob.Obj) float64 {
 
 	farthestSquaredDist := 0.0
 
@@ -227,7 +226,7 @@ func findBoundingRadius(o *obj.Obj) float64 {
 
 func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 	front, up []float64, assetPath asset, textureTable map[string]*texture,
-	repeatTexture bool, materialLib obj.MaterialLib, extensionUintIndexEnabled bool) *texturizedModel {
+	repeatTexture bool, materialLib gwob.MaterialLib, extensionUintIndexEnabled bool) *texturizedModel {
 
 	// allocate new model
 	mod := &texturizedModel{simpleModel: simpleModel{modelName: modelName}}
@@ -242,9 +241,9 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 		return nil
 	}
 
-	opt := &obj.ObjParserOptions{Logger: func(msg string) { log(fmt.Sprintf("newModel: %s", msg)) }}
-	var o *obj.Obj
-	if o, err = obj.NewObjFromBuf(buf, opt); err != nil {
+	opt := &gwob.ObjParserOptions{Logger: func(msg string) { log(fmt.Sprintf("newModel: %s", msg)) }}
+	var o *gwob.Obj
+	if o, err = gwob.NewObjFromBuf(buf, opt); err != nil {
 		log(fmt.Sprintf("newModel: parse error objURL=%s error: %v", objURL, err))
 		return nil
 	}
@@ -280,7 +279,7 @@ func newModel(s shader, modelName string, gl *webgl.Context, objURL string,
 			continue // skip group missing material name
 		}
 
-		var mat *obj.Material
+		var mat *gwob.Material
 		var matOk bool
 		if mat, matOk = materialLib.Lib[g.Usemtl]; !matOk {
 			// material not found -- fetch lib

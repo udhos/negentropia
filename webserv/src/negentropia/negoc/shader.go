@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
-	//"negentropia/world/obj"
 )
 
 type shader interface {

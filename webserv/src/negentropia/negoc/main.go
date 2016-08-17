@@ -8,8 +8,7 @@ import (
 	"github.com/gopherjs/gopherjs/js"
 	"github.com/gopherjs/webgl"
 	"github.com/udhos/goglmath"
-
-	"negentropia/world/obj"
+	"github.com/udhos/gwob"
 )
 
 func log(msg string) {
@@ -169,7 +168,7 @@ type gameState struct {
 	shaderList                []shader
 	textureTable              map[string]*texture
 	assetPath                 asset
-	materialLib               obj.MaterialLib
+	materialLib               gwob.MaterialLib
 	kb                        keyboard
 	extensionUintIndexEnabled bool
 	skybox                    *skyboxShader
@@ -182,7 +181,7 @@ type gameState struct {
 }
 
 func resetGame(gameInfo *gameState) {
-	gameInfo.materialLib = obj.NewMaterialLib()
+	gameInfo.materialLib = gwob.NewMaterialLib()
 	gameInfo.shaderList = []shader{}              // drop existing shaders
 	gameInfo.textureTable = map[string]*texture{} // drop existing texture table
 }
