@@ -9,11 +9,11 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/udhos/gwob"
 	"github.com/udhos/vectormath"
 
 	"negentropia/ipc"
 	"negentropia/webserv/store"
-	"negentropia/world/obj"
 )
 
 type Unit struct {
@@ -215,9 +215,9 @@ func loadModelRadius(model, objURL string) float64 {
 		log.Printf("loadModelRadius: fetch model=%v objURL=%v error: %v", model, objURL, err)
 		return 1.0
 	}
-	opt := &obj.ObjParserOptions{Logger: func(msg string) { log.Printf("loadModelRadius: %s", msg) }, LogStats: true}
-	var o *obj.Obj
-	if o, err = obj.NewObjFromBuf(buf, opt); err != nil {
+	opt := &gwob.ObjParserOptions{Logger: func(msg string) { log.Printf("loadModelRadius: %s", msg) }, LogStats: true}
+	var o *gwob.Obj
+	if o, err = gwob.NewObjFromBuf(buf, opt); err != nil {
 		log.Printf("loadModelRadius: parse model=%v objURL=%v error: %v", model, objURL, err)
 		return 1.0
 	}

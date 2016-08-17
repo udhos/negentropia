@@ -1,4 +1,4 @@
-@rem win-gopherjs
+@rem win-gopherjs-build
 
 set DEVEL=c:\tmp\devel
 set GOPATH=%DEVEL%\negentropia\webserv
