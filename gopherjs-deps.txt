@@ -1,6 +1,4 @@
 github.com/gopherjs/gopherjs
 github.com/gopherjs/webgl
 github.com/gopherjs/websocket
-github.com/udhos/cookie
-github.com/udhos/goglmath
 honnef.co/go/js/dom

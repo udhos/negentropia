@@ -14,6 +14,10 @@ go_get () {
 	go get $i
 }
 
+go_get github.com/udhos/cookie
+go_get github.com/udhos/goglmath
+go_get github.com/udhos/gwob
+
 #
 # fetch from github with git bash
 #
@@ -22,7 +26,7 @@ go_get () {
 go_get gopkg.in/redis.v2 ;# github: github.com/go-redis/redis
 #go_get github.com/HairyMezican/goauth2/oauth
 #go_get github.com/spate/vectormath
-go_get github.com/udhos/vectormath
+go_get github.com/udhos/vectormath ;# FIXME should stop using this
 
 #
 # fetch from google code (could be under cmd prompt)
