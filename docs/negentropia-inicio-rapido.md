@@ -1,8 +1,8 @@
 Negentropia - início rápido pt_BR
 ---------------------------------
 
-Passos 1-8: instalação (executados uma única vez)
-Passos 9-10: ciclo de desenvolvimento
+- Passos 1-8: instalação (executados uma única vez)
+- Passos 9-10: ciclo de desenvolvimento
 
 1) Os servidores do negentropia só rodam em Windows.
    Rodar em Linux deve ser fácil, mas nunca tentei.
@@ -34,22 +34,22 @@ Passos 9-10: ciclo de desenvolvimento
 
 Por exemplo:
 
-hset everton.marques@gmail.com location z:simple_zone
-hset everton.marques@gmail.com password-sha1-hex 40bd001563085fc35165329ea1ff5c5ecbdbbeef
+    hset everton.marques@gmail.com location z:simple_zone
+    hset everton.marques@gmail.com password-sha1-hex 40bd001563085fc35165329ea1ff5c5ecbdbbeef
 
 40bd001563085fc35165329ea1ff5c5ecbdbbeef é o SHA1 para a senha '123'.
 
 8) Em um DOS prompt (cmd), execute:
 
-copy \tmp\devel\negentropia\config-common-sample.txt \tmp\devel\config-common.txt
-copy \tmp\devel\negentropia\config-webserv-sample.txt \tmp\devel\config-webserv.txt
-copy \tmp\devel\negentropia\config-world-sample.txt \tmp\devel\config-world.txt
+    copy \tmp\devel\negentropia\config-common-sample.txt \tmp\devel\config-common.txt
+    copy \tmp\devel\negentropia\config-webserv-sample.txt \tmp\devel\config-webserv.txt
+    copy \tmp\devel\negentropia\config-world-sample.txt \tmp\devel\config-world.txt
 
 9) Em um DOS prompt (cmd), execute:
 	
-c:\tmp\devel\win-build
-c:\tmp\devel\win-run
-c:\tmp\devel\win-zone-add
+    c:\tmp\devel\win-build
+    c:\tmp\devel\win-run
+    c:\tmp\devel\win-zone-add
 
 10) Abra a URL do negentropia com um navegador:
 
