@@ -1,6 +1,7 @@
 *
 !.gitignore
 !*.go
+!*.md
 !*.html
 !*.tpl
 !*.txt

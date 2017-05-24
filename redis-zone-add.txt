@@ -4,6 +4,16 @@
 hset everton.marques@gmail.com location z:0
 hset everton.marques@gmail.com location z:zero_mine0
 hset everton.marques@gmail.com location z:simple_zone
+
+# set user password to 123
+#
+# get sha1 for string '123':
+# $ echo -n 123 | sha1sum
+# 40bd001563085fc35165329ea1ff5c5ecbdbbeef  -
+# $
+#
+hset everton.marques@gmail.com password-sha1-hex 40bd001563085fc35165329ea1ff5c5ecbdbbeef
+
 hset udhos0@gmail.com          location z:1
 
 # add shader program
