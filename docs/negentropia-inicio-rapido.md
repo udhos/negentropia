@@ -13,15 +13,19 @@ Negentropia - início rápido pt_BR
 
 3) Instalar Redis no Windows - https://redis.io/download
    Instalado, o Redis deve disponibilizar algumas ferramentas na pasta "C:\redis" (este caminho é importante):
-   ‪C:\redis\redis-cli.exe
-   ‪C:\redis\redis-server.exe
+   
+    ‪C:\redis\redis-cli.exe
+    C:\redis\redis-server.exe
 
 4) Abra o git-bash e crie o diretório: /c/tmp/devel
-   $ mkdir /c/tmp/devel
-   (o prefixo /c no path acima é o drive C: do Windows)
+
+    $ mkdir /c/tmp/devel
+
+(o prefixo /c no path acima é o drive C: do Windows)
    
 5) Baixe o script win-gitbash-clone.sh para o diretório: /c/tmp/devel
-   https://raw.githubusercontent.com/udhos/negentropia/master/win-gitbash-clone.sh
+
+https://raw.githubusercontent.com/udhos/negentropia/master/win-gitbash-clone.sh
 
 6) Dentro do git-bash, execute o script: win-gitbash-clone.sh
    Assim:
@@ -41,12 +45,16 @@ Por exemplo:
 
 8) Em um DOS prompt (cmd), execute:
 
+Copiar arquivos:
+
     copy \tmp\devel\negentropia\config-common-sample.txt \tmp\devel\config-common.txt
     copy \tmp\devel\negentropia\config-webserv-sample.txt \tmp\devel\config-webserv.txt
     copy \tmp\devel\negentropia\config-world-sample.txt \tmp\devel\config-world.txt
 
 9) Em um DOS prompt (cmd), execute:
-	
+
+Scripts:
+
     c:\tmp\devel\win-build
     c:\tmp\devel\win-run
     c:\tmp\devel\win-zone-add
