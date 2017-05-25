@@ -12,6 +12,7 @@ Os servidores do negentropia só rodam em Windows. Rodar em Linux deve ser fáci
    A instação do Git deve disponibilizar o utilitário "git-bash".
 
 3) Instalar Redis no Windows - https://redis.io/download
+   Binários disponíveis aqui: https://github.com/MSOpenTech/redis/releases
    Instalado, o Redis deve disponibilizar algumas ferramentas na pasta "C:\redis" (este caminho é importante):
    
     ‪C:\redis\redis-cli.exe
