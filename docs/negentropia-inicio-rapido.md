@@ -75,6 +75,8 @@ Dicas:
 
 a) Após o login, você pode chavear entre as zonas disponíveis pressionando a tecla 'z'.
 
+NOTA: Algumas zonas com objetos grandes demoram para carregar mesmo. Aperte 'z' uma vez e aguarde alguns segundos.
+
 b) É recomendável abrir o URL do negentropia com o Console javascript do navegador ativo, para acompanhar os logs de debug. 
 
 ---
