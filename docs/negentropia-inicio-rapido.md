@@ -9,11 +9,14 @@ Os servidores do negentropia só rodam em Windows. Rodar em Linux deve ser fáci
 1) Instalar Go - https://storage.googleapis.com/golang/go1.8.3.windows-amd64.msi
 
 2) Instalar Git no Windows - https://git-scm.com/downloads
-   A instação do Git deve disponibilizar o utilitário "git-bash".
+
+A instação do Git deve disponibilizar o utilitário "git-bash".
 
 3) Instalar Redis no Windows - https://redis.io/download
-   Binários disponíveis aqui: https://github.com/MSOpenTech/redis/releases
-   Instalado, o Redis deve disponibilizar algumas ferramentas na pasta "C:\redis" (este caminho é importante):
+
+Binários disponíveis aqui: https://github.com/MSOpenTech/redis/releases
+
+Instalado, o Redis deve disponibilizar algumas ferramentas na pasta "C:\redis" (este caminho é importante):
    
     ‪C:\redis\redis-cli.exe
     C:\redis\redis-server.exe
@@ -29,7 +32,9 @@ Os servidores do negentropia só rodam em Windows. Rodar em Linux deve ser fáci
 https://raw.githubusercontent.com/udhos/negentropia/master/win-gitbash-clone.sh
 
 6) Dentro do git-bash, execute o script: win-gitbash-clone.sh
-   Assim:
+
+Assim:
+   
    $ /c/tmp/devel/win-gitbash-clone.sh
 
 7) Edite o arquivo redis-zone-add.txt para atribuir uma zona inicial ao seu endereço de email.
