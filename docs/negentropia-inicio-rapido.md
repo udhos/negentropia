@@ -35,12 +35,12 @@ https://raw.githubusercontent.com/udhos/negentropia/master/win-gitbash-clone.sh
 
 Assim:
    
-   $ /c/tmp/devel/win-gitbash-clone.sh
+    $ /c/tmp/devel/win-gitbash-clone.sh
 
 7) Edite o arquivo redis-zone-add.txt para atribuir uma zona inicial ao seu endereço de email.
    Esse endereço de email será usado para fazer login.
 
-‪C:\tmp\devel\negentropia\redis-zone-add.txt
+    ‪C:\tmp\devel\negentropia\redis-zone-add.txt
 
 Por exemplo:
 
