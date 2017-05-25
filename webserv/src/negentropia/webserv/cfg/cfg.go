@@ -5,9 +5,10 @@ package cfg
 import "log"
 
 var (
-	homePath                    string
+	//homePath   string
 	homeJSPath                  string
 	homeGoPath                  string
+	homeDartPath                string
 	logoutPath                  string
 	loginPath                   string
 	loginAuthPath               string
@@ -35,9 +36,10 @@ var (
 func SetBasePath(basePath string) {
 	log.Printf("cfg.SetBasePath: www base path: %s", basePath)
 
-	homePath = basePath + "/"
+	//homePath = basePath + "/"
+	homeGoPath = basePath + "/"
+	homeDartPath = basePath + "/homeDart"
 	homeJSPath = basePath + "/homeJS"
-	homeGoPath = basePath + "/homeGo"
 	logoutPath = basePath + "/logout"
 	loginPath = basePath + "/login"
 	loginAuthPath = basePath + "/loginAuth"
@@ -53,9 +55,10 @@ func SetBasePath(basePath string) {
 	resetPassConfirmProcessPath = basePath + "/resetPassConfirmProcess"
 }
 
-func HomePath() string                    { return homePath }
-func HomeJSPath() string                  { return homeJSPath }
+func HomePath() string                    { return homeGoPath }
 func HomeGoPath() string                  { return homeGoPath }
+func HomeDartPath() string                { return homeDartPath }
+func HomeJSPath() string                  { return homeJSPath }
 func LogoutPath() string                  { return logoutPath }
 func LoginPath() string                   { return loginPath }
 func LoginAuthPath() string               { return loginAuthPath }
@@ -71,7 +74,7 @@ func ResetPassConfirmPath() string        { return resetPassConfirmPath }
 func ResetPassConfirmProcessPath() string { return resetPassConfirmProcessPath }
 
 // Full URLs to embed in email
-func HomeURL() string    { return Protocol + "://" + RedirectHost + RedirectPort + homePath }
+func HomeURL() string    { return Protocol + "://" + RedirectHost + RedirectPort + HomePath() }
 func ConfirmURL() string { return Protocol + "://" + RedirectHost + RedirectPort + confirmPath }
 func ConfirmProcessURL() string {
 	return Protocol + "://" + RedirectHost + RedirectPort + confirmProcessPath

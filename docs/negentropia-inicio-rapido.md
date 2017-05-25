@@ -71,6 +71,12 @@ http://localhost:8080/ne/
 
 Fazer login usando o par email/senha cadastrado no passo 7.
 
+Dicas:
+
+a) Após o login, você pode chavear entre as zonas disponíveis pressionando a tecla 'z'.
+
+b) É recomendável abrir o URL do negentropia com o Console javascript do navegador ativo, para acompanhar os logs de debug. 
+
 ---
 FIM
 ---
