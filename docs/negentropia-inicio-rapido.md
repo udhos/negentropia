@@ -4,9 +4,9 @@ Negentropia - início rápido pt_BR
 - Passos 1-8: instalação (executados uma única vez)
 - Passos 9-10: ciclo de desenvolvimento
 
-1) Os servidores do negentropia só rodam em Windows.
-   Rodar em Linux deve ser fácil, mas nunca tentei.
-   Então, por enquanto, Windows.
+Os servidores do negentropia só rodam em Windows. Rodar em Linux deve ser fácil, mas nunca tentei.
+   
+1) Instalar Go - https://storage.googleapis.com/golang/go1.8.3.windows-amd64.msi
 
 2) Instalar Git no Windows - https://git-scm.com/downloads
    A instação do Git deve disponibilizar o utilitário "git-bash".
